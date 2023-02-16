@@ -32,7 +32,7 @@ import Controller from './src/screens/Authenticated/Robot/Controller';
 
 const Stack = createNativeStackNavigator()
 const Bottom = createBottomTabNavigator();
-
+//Testing
 function Robot () {
   const colorCtx = useContext(ColorContext);
   const navigation = useNavigation();
