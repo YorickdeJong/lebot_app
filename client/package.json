@@ -17,6 +17,7 @@
     "expo": "~47.0.12",
     "expo-app-loading": "^2.1.1",
     "expo-linear-gradient": "^12.0.1",
+    "expo-splash-screen": "~0.17.5",
     "expo-status-bar": "~1.4.2",
     "expo-updates": "~0.15.6",
     "react": "18.1.0",
@@ -29,7 +30,7 @@
     "react-native-screens": "~3.18.0",
     "react-native-web": "~0.18.7",
     "react-navigation": "^4.4.4",
-    "expo-splash-screen": "~0.17.5"
+    "ssh2": "^1.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
