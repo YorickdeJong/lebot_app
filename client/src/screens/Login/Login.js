@@ -7,6 +7,7 @@ import { getUserProfileDetails, login } from "../../hooks/auth";
 import LoadingOverlay from "../../components/UI/LoadingOverlay";
 import { ColorContext } from "../../store/color-context";
 import { UserProfileContext } from "../../store/userProfile-context";
+import { LinearGradient } from "expo-linear-gradient"
 
 function Login() {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -19,9 +20,6 @@ function Login() {
         setIsAuthenticating(true);
         try {
             const userData = await login(email, password);
-            console.log(userData)
-            console.log(userData.id)
-            console.log(userData.token)
             const userProfile = await getUserProfileDetails(userData.id);
             authCtx.authenticate(userData.token);
             userCtx.editUserProfile(userProfile);

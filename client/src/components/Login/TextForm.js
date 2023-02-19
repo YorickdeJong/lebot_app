@@ -5,6 +5,7 @@ import ChangeButton from "../UI/ChangeButton";
 import TextContainer from "../../components/Login/TextContainer";
 import { ColorsBlue, ColorsGreen } from "../../constants/palet";
 import { ColorContext } from "../../store/color-context";
+import { LinearGradient } from "expo-linear-gradient"
 
 function TextForm({LoginVariable, onAuthenticate, onCreateUser}) {
     const navigation = useNavigation()
@@ -163,7 +164,7 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser}) {
     const box = [styles.box, {backgroundColor: backgroundChoice, shadowColor: shadow}]
 
     return(
-    <View style={box}>
+    <LinearGradient style = {styles.box} colors =  {colorCtx.isBlue ? [ColorsGreen.green700, ColorsGreen.green200] : [ColorsBlue.blue1000, ColorsBlue.blue500]}> 
         <TextContainer 
         textContent = "Email"
         setUserDetails={onUserInputHandler.bind(this, 'email')}
@@ -252,7 +253,7 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser}) {
             {LoginVariable ? "Create Account Instead" : "Login Instead"} 
             </ChangeButton>
         </View>
-    </View>
+    </LinearGradient>
     )
 }
 
@@ -266,6 +267,7 @@ const styles = StyleSheet.create({
         elevation: 2,
         shadowOffset: {height:2, width:0 },
         shadowRadius: 10,
+        shadowColor: ColorsBlue.blue200,
         shadowOpacity: 0.5
     },
     buttonContainer: { 

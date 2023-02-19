@@ -1,10 +1,10 @@
 import {useState, useContext} from 'react'
-import UserTextContainer from '../../components/userProfile/UserTextContainer'
 import {View, StyleSheet, Alert} from 'react-native'
-import Icon from '../../components/Icon';
-import { ColorsBlue } from '../../constants/palet';
-import { UserProfileContext } from '../../store/userProfile-context';
-import { changeUserProfile } from '../../hooks/auth';
+import Icon from '../../../components/Icon';
+import UserTextContainer from '../../../components/userProfile/UserTextContainer';
+import { ColorsBlue } from '../../../constants/palet';
+import { UserProfileContext } from '../../../store/userProfile-context';
+import { changeUserProfile } from '../../../hooks/auth';
 
 function ChangePassword({route, navigation}) {
     const userCtx = useContext(UserProfileContext)

@@ -3,6 +3,7 @@ import { ColorsBlue, ColorsGreen } from "../../constants/palet"
 import { useContext } from "react"
 import { ColorContext } from "../../store/color-context"
 import Icon from "../Icon"
+import { LinearGradient } from "expo-linear-gradient"
 
 function SettingsTile({type, color, icon,  iconColor, textColor, onPress}){
     const colorCtx = useContext(ColorContext)
@@ -11,9 +12,10 @@ function SettingsTile({type, color, icon,  iconColor, textColor, onPress}){
         <Pressable
         onPress = {onPress}
         style = {({pressed}) => {
-            return [[styles.tile, {backgroundColor: colorCtx.isBlue ? color[0] : color[1]}], 
+            return [styles.tile, , 
             pressed && styles.pressed]
         }}>
+            <LinearGradient colors={[ColorsBlue.blue700, ColorsBlue.blue100]} style = {styles.colorGradient}>
             <Text style = {[styles.text, {color: colorCtx.isBlue ? textColor[0] : textColor[1]}]}>{type}</Text>
             <View style = {styles.iconContainer}>
                 <Icon 
@@ -24,6 +26,7 @@ function SettingsTile({type, color, icon,  iconColor, textColor, onPress}){
                 addStyle = {{marginRight: 0}}
                 />  
             </View>
+            </LinearGradient>
         </Pressable>
     )
 }
@@ -47,6 +50,10 @@ const styles = StyleSheet.create({
     },
     pressed: {
         opacity: 0.7
+    },
+    colorGradient: {
+        borderRadius: 6, 
+        flex: 1
     },
     text: {
         textAlign: 'center',

@@ -20,14 +20,15 @@ import {  ColorsBlue, ColorsGreen } from './src/constants/palet';
 import Icon from './src/components/Icon';
 import Assignment from './src/screens/Authenticated/Assignments/Assignment';
 import Settings from './src/screens/Authenticated/Settings/Settings';
-import UserProfile from './src/screens/UserProfile/UserProfile';
+import UserProfile from './src/screens/Authenticated/UserProfile/UserProfile';
 import Results from './src/screens/Authenticated/Settings/Results';
-import ChangeUserName from './src/screens/UserProfile/ChangeUsername';
-import ChangePassword from './src/screens/UserProfile/ChangePassword';
-import ChangeEmail from './src/screens/UserProfile/ChangeEmail';
+import ChangeUserName from './src/screens/Authenticated/UserProfile/ChangeUsername';
+import ChangePassword from './src/screens/Authenticated/UserProfile/ChangePassword';
+import ChangeEmail from './src/screens/Authenticated/UserProfile/ChangeEmail';
 import UserProfileContextProvider from './src/store/userProfile-context';
 import SSHConnectionScreen from './src/screens/Authenticated/Robot/SSH';
 import Controller from './src/screens/Authenticated/Robot/Controller';
+import SocketContextProvider from './src/store/socket-context';
 
 //test
 const Stack = createNativeStackNavigator()
@@ -62,7 +63,7 @@ function Robot () {
         name = "RobotCommands"
         options= {{
           title: 'Robot Commands',
-          // headerShown: false
+          
         }}/>
 
         <Stack.Screen 
@@ -100,6 +101,7 @@ function Robot () {
             )
           }
         }}/>
+
     </Stack.Navigator>
   )
 }
@@ -416,13 +418,15 @@ export default function App() {
   return (
     <>
       <StatusBar style="light" />
-      <UserProfileContextProvider>
-        <ColorContextProvider>
-          <AuthContextProvider>
-            <Root />
-          </AuthContextProvider>
-        </ColorContextProvider>
-      </UserProfileContextProvider>
+      <SocketContextProvider>
+        <UserProfileContextProvider>
+          <ColorContextProvider>
+            <AuthContextProvider>
+              <Root />
+            </AuthContextProvider>
+          </ColorContextProvider>
+        </UserProfileContextProvider>
+      </SocketContextProvider>
     </>
   );
 }

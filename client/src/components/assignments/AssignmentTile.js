@@ -1,15 +1,15 @@
 
 import { ColorsBlue, ColorsGreen } from "../../constants/palet";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable, Image } from "react-native";
 import {useContext, useState } from 'react'
 import { ColorContext } from "../../store/color-context";
+import { LinearGradient } from "expo-linear-gradient"
 
 
-
-function AssignmentTile ({onPress, title, subject, assignment_number, completion_status, description}) {
+function AssignmentTile ({onPress, title, subject, assignment_number, completion_status, description, image_file_path}) {
     const colorCtx = useContext(ColorContext)
     
-    const tileColor = [ [ColorsGreen.green100, ColorsBlue.blue100], [ColorsGreen.green400, ColorsBlue.blue400]];
+    const tileColor = [ [ColorsBlue.blue500, ColorsBlue.blue100], [ColorsBlue.blue700, ColorsBlue.blue900]];
     let index = 0;
     
     if (completion_status === true)
@@ -21,7 +21,7 @@ function AssignmentTile ({onPress, title, subject, assignment_number, completion
     <Pressable
     onPress={onPress}
     style = {({pressed}) => [[styles.tile, {backgroundColor: colorCtx.isBlue ? tileColor[index][0] : tileColor[index][1]}], pressed && styles.pressed]}>
-        <View >
+        <LinearGradient colors={tileColor[index]} style = {styles.colorGradient}>
             <View style={styles.titlecontainer}>
                 <Text style = {[styles.title, 
                     subject === "Natuurkunde" ? 
@@ -40,13 +40,18 @@ function AssignmentTile ({onPress, title, subject, assignment_number, completion
             {color: ColorsBlue.blue700} : {color: ColorsGreen.green700}]}>
                 {subject}
             </Text>
+            <Image 
+            source = {require('../../../assets/ForcesImage.jpg')}
+            style={styles.image}
+            resizeMode="contain"
+            />
             <Text style={[styles.text, {fontSize: 16}]}>
                 {description}
             </Text>
             <Text style={[styles.text, {color: completion_status ? ColorsGreen.green100 : ColorsBlue.error300}]}>
                 {!completion_status ? "TODO" : "COMPLETED"}
             </Text> 
-        </View>
+        </LinearGradient>
     </Pressable>
     )
 }
@@ -55,6 +60,10 @@ export default AssignmentTile
 
 
 const styles = StyleSheet.create({
+    colorGradient: {
+        borderRadius: 6, 
+        flex: 1
+    },
     pressed: {
         opacity: 0.7
     },  
@@ -65,7 +74,7 @@ const styles = StyleSheet.create({
     tile: {
         flex: 1,
         backgroundColor: ColorsBlue.blue200,
-        height: 150,
+        height: 200,
         margin: 10,
         borderRadius: 6,
         elevation: 4, 
@@ -96,5 +105,10 @@ const styles = StyleSheet.create({
     },
     subject: {
         textAlign: 'center',
+    },
+    image: {
+        width: '100%',
+        height: '100%',
+        alignSelf: 'center'
     }
 })

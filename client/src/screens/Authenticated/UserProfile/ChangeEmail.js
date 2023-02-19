@@ -1,10 +1,10 @@
 import {useState, useEffect, useContext} from 'react'
-import UserTextContainer from '../../components/userProfile/UserTextContainer'
 import {View, StyleSheet, Alert} from 'react-native'
-import Icon from '../../components/Icon';
-import { ColorsBlue } from '../../constants/palet';
-import { UserProfileContext } from '../../store/userProfile-context';
-import { changeUserProfile } from '../../hooks/auth';
+import UserTextContainer from '../../../components/userProfile/UserTextContainer';
+import Icon from '../../../components/Icon';
+import { ColorsBlue } from '../../../constants/palet';
+import { UserProfileContext } from '../../../store/userProfile-context';
+import { changeUserProfile } from '../../../hooks/auth';
 
 function ChangeEmail({route, navigation}) {
     const email = route.params.email

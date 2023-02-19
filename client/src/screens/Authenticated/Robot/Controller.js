@@ -1,15 +1,24 @@
+import { LinearGradient } from 'expo-linear-gradient';
+import { useEffect, useContext
+ } from 'react'
 import {View, Text, StyleSheet} from 'react-native'
 import Icon from '../../../components/Icon'
 import { ColorsBlue } from '../../../constants/palet'
 
-
+import { SocketContext } from '../../../store/socket-context';
 function Controller() {
+    const socketCtx = useContext(SocketContext);
+
+    useEffect(() => {
+        console.log(socketCtx.isConnected)
+    }, [])
+    
 
     function moveHandler(inputType) {
         switch (inputType){
             case 'up':
                 console.log('moving forward');
-                // ssh move forward command to rasppi
+                socketCtx.Command('dir', 'dir')
                 break;
 
             case 'right': 
@@ -30,8 +39,7 @@ function Controller() {
     } 
 
     return (
-        <View style = {styles.outerContainer}>
-        
+        <LinearGradient style = {styles.outerContainer} colors = {[ColorsBlue.blue1300, ColorsBlue.blue500, ColorsBlue.blue1300]}>
             <View style = {styles.upperContainer}>      
                 <Icon 
                 icon='arrow-up-circle'
@@ -49,7 +57,6 @@ function Controller() {
                     onPress = {moveHandler.bind(this, 'left')}
                     />
                 </View> 
-                <View style= {styles.middlemiddleContainer}></View>
                <View style = {styles.middleRightContainer}>
                     <Icon 
                     icon='arrow-forward-circle'
@@ -67,8 +74,8 @@ function Controller() {
                 onPress = {moveHandler.bind(this, 'down')}
                 />
             </View>
-            <Text>Controller</Text>
-        </View>
+
+        </LinearGradient>
     )
 }
 
@@ -80,7 +87,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        marginLeft: 20
+        paddingLeft:20
     },
     upperContainer: {
     },
