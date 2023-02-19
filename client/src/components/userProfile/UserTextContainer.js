@@ -1,26 +1,35 @@
 
 import {View, Text, StyleSheet,} from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
 import Icon from '../../components/Icon'
 import { ColorsBlue } from '../../constants/palet'
 
 
-function UserTextContainer({text, onPressHandler, inputHandler, value, checkInput}) {
+function UserTextContainer({text, onPressHandler, inputHandler, value, checkInput, connectedText,
+onSubmitEditing}) {
     return(
         <View style = {styles.outerContainer}>
-            <Text style = {styles.text}>{text}</Text>
+            <View style={styles.textContainer}>
+                <Text style = {styles.text}>{text}</Text>
+                <Text style = {[styles.text, {marginRight: 5, color: ColorsBlue.blue100}]}>{connectedText}</Text>
+            </View>
+            {/* <Text style = {styles.text}>{text}</Text> */}
             <View style = {[checkInput ? styles.outerInputContainer : [styles.outerInputContainer, {backgroundColor: ColorsBlue.error300}]]}>
                 <TextInput 
                 style = {styles.innerInputContainer}
                 onChangeText ={inputHandler}
                 value = {value}
+                onSubmitEditing={onSubmitEditing}
+                autoCapitalize='none'
                 />
                 <Icon 
                 icon = 'close'
                 size = {24}
                 color = {ColorsBlue.blue500}
                 addStyle = {styles.iconStyle}
-                onPress  = {onPressHandler}/>
+                onPress  = {onPressHandler}   
+                />
             </View>
         </View>
     )
@@ -34,8 +43,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold'
     },
+    textContainer:{
+        flexDirection: 'row', 
+        justifyContent: 'space-between'
+    },  
     outerInputContainer: {
-        marginTop: 10, 
+        marginTop: 10,
         borderRadius: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',

@@ -7,7 +7,7 @@ import { ColorContext } from "../../store/color-context";
 function ChangeButton({children, onPress}) {
     const colorCtx = useContext(ColorContext);
 
-    const button = [styles.button, {backgroundColor: colorCtx.isBlue ? ColorsGreen.green700 : ColorsBlue.blue700,
+    const button = [styles.button, {backgroundColor: colorCtx.isBlue ? ColorsGreen.green700 : ColorsBlue.blue900,
      shadowColor: colorCtx.isBlue ? ColorsGreen.green1200 : ColorsBlue.blue1200}]
 
     return(
