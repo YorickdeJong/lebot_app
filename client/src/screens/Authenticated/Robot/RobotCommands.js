@@ -1,40 +1,55 @@
 
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useState } from "react";
-import { View, StyleSheet, Text, Modal } from "react-native";
+import { View, StyleSheet, Text, Modal, Alert } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import SettingsTile from "../../../components/settings/SettingsTile";
 import { robotData } from "../../../data/RobotData";
 import { AuthContext } from "../../../store/auth-context";
 import { ColorContext } from "../../../store/color-context";
+import { SocketContext } from "../../../store/socket-context";
 
 function Settings() {
-    const colorCtx = useContext(ColorContext)
+    const socketCtx = useContext(SocketContext)
     const authCtx = useContext(AuthContext)
     const navigation = useNavigation()
 
     function settingsGrid(itemData) {
-        
         function onPressHandler() {
-            console.log('pressed')
             switch(itemData.item.type) {
                 case 'Connect':
                     navigation.replace('SSHConnectionScreen');
                     break;
 
                 case 'Controll Robot':
+                    if (!socketCtx.isConnected) {
+                        Alert.alert('You must connect first!');
+                        return;
+                    }
                     navigation.replace('Controller')
                     break;
                 
                 case 'Lidar':
+                    if (!socketCtx.isConnected) {
+                        Alert.alert('You must connect first!');
+                        return;
+                    }
                     navigation.replace('AutonomousDrivingLidar');
                     break;
 
                 case 'Sonar':
+                    if (!socketCtx.isConnected) {
+                        Alert.alert('You must connect first!');
+                        return;
+                    }
                     authCtx.logout('AutonomousDrivingSonar');
                     break;
                 
                 case 'Autonomous Driving':
+                    if (!socketCtx.isConnected) {
+                        Alert.alert('You must connect first!');
+                        return;
+                    }
                     authCtx.logout('AutonomousDrivingCombined');
                     break;
                 }

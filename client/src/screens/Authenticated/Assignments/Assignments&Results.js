@@ -29,12 +29,12 @@ function AssignmentsResults() {
     
     return (
         <View style={styles.outercontainer}>
-        <FlatList 
-        data={DUMMY_EXPENSES}
-        keyExtractor = {(item) => item.id}
-        numColumns = {1}
-        renderItem = {renderAssignment} 
-        />
+            <FlatList 
+            data={DUMMY_EXPENSES}
+            keyExtractor = {(item) => item.id}
+            numColumns = {1}
+            renderItem = {renderAssignment} 
+            />
         </View>
 
 

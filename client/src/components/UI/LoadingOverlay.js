@@ -1,10 +1,18 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { useContext, useEffect } from 'react';
+import { SocketContext } from '../../store/socket-context';
 
 function LoadingOverlay({ message }) {
+  const socketCtx = useContext(SocketContext)
+
   return (
-    <View style={styles.rootContainer}>
-      <Text style={styles.message}>{message}</Text>
-      <ActivityIndicator size="large" />
+    <View>
+        {socketCtx.isLoading && (
+      <View style={styles.rootContainer}>
+        <Text style={styles.message}>{message}</Text>
+        <ActivityIndicator size="large" />
+      </View>
+      )}
     </View>
   );
 }
@@ -23,3 +31,4 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
 });
+

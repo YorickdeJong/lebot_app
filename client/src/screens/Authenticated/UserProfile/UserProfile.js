@@ -2,12 +2,12 @@
 import { useNavigation } from '@react-navigation/native';
 import  {View, Text, StyleSheet} from 'react-native'
 import {useContext} from 'react'
-import TitleContainer from '../../components/settings/TitleContainer'
-import UserProfileBar from '../../components/settings/UserProfileBar'
-import { UserProfileContext } from '../../store/userProfile-context';
-import Icon from '../../components/Icon';
-import { ColorsBlue } from '../../constants/palet';
-import { AuthContext } from '../../store/auth-context';
+import TitleContainer from '../../../components/settings/TitleContainer'
+import UserProfileBar from '../../../components/settings/UserProfileBar'
+import { UserProfileContext } from '../../../store/userProfile-context';
+import Icon from '../../../components/Icon';
+import { ColorsBlue } from '../../../constants/palet';
+import { AuthContext } from '../../../store/auth-context';
 
 function UserProfile() {
     const userCtx = useContext(UserProfileContext);

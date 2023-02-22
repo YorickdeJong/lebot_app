@@ -38,10 +38,12 @@ const styles = StyleSheet.create({
     textInput: {
         marginTop: 5,
         marginHorizontal: 20,
+        height: 30,
         borderRadius: 5, 
         elevation: 2,
         shadowOffset: {height:2, width:0 },
         shadowRadius: 5,
+        shadowColor: ColorsBlue.blue200,
         shadowOpacity: 0.5,
         paddingLeft: 5
     }

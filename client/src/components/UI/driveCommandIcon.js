@@ -2,10 +2,11 @@ import {Ionicons, MaterialCommunityIcons} from '@expo/vector-icons'
 import { Pressable, StyleSheet, View, Text } from 'react-native'
 
 
-function Icon ({icon, size, color, onPress, addStyle, differentDir}) {
+function DriveCommandIcon ({icon, size, color, onPressIn, onPressOut, addStyle, differentDir}) {
     return (
     <Pressable
-        onPress = {onPress}
+        onPressIn = {onPressIn}
+        onPressOut = {onPressOut}
         style = {({pressed}) => {
             return [[styles.iconContainer, addStyle], pressed && styles.pressed]
         }}
@@ -28,7 +29,7 @@ function Icon ({icon, size, color, onPress, addStyle, differentDir}) {
     )
 }
 
-export default Icon
+export default DriveCommandIcon
 
 const styles = StyleSheet.create({
     iconContainer: {
