@@ -38,8 +38,7 @@ function listenToClient(io, sshClient) {
                 return;
             }
             try {
-                activeStream = await sshController.runCommandOnRemoteDeviceInternal(data.command, sshClient);
-                console.log(activeStream)
+                const activeStream = await sshController.runCommandOnRemoteDeviceInternal(data.command, sshClient, socket);
                 socket.emit('output', { activeStream });
             } 
             catch (err) {

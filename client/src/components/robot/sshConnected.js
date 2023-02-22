@@ -1,5 +1,5 @@
 import { SocketContext } from '../../store/socket-context';
-import { useContext, useState, useEffect } from 'react'
+import { useContext, useState, useEffect, useRef } from 'react'
 import { View, Text, Alert, StyleSheet} from 'react-native'
 import UserTextContainer from '../userProfile/UserTextContainer';
 import { ColorsBlue } from '../../constants/palet';
@@ -10,12 +10,31 @@ import { FlatList } from 'react-native-gesture-handler';
 
 function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
     const socketCtx = useContext(SocketContext);
-
-    // ssh commands
     const [currentPath, setCurrentPath] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [showFooter, setShowFooter] = useState(true);
+    let data;
 
-    function onInputSubmitWindows() {
+    useEffect(() => {
+        socketCtx.Loading(true);
+        console.log('executed')
+        if (socketCtx.output && socketCtx.output !== ''){
+            console.log('exeucted twice')
+            socketCtx.Loading(false);
+        }
+    }, [])
+
+    useEffect(() => {
+        socketCtx.Loading(true);
+        if (socketCtx.output && socketCtx.output !== ''){
+            socketCtx.Loading(false);
+        }
+    }, [socketCtx.output])
+
+    // Comaptible for windows and linux
+    function onInputSubmit() {
+        console.log(`Before: ${socketCtx.isLoading}`)
+        socketCtx.Loading(true)
+        console.log(`After: ${socketCtx.isLoading}`)
         let executeCommand; 
         let inputType = '';
         
@@ -25,6 +44,7 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
              executeCommand = '';
              inputType = 'cd';
          }
+
 
         // If command is 'cd ..', go back to previous folder
         if (command === 'cd ..') {
@@ -59,6 +79,11 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
             inputType = 'dir';
         }
 
+        if (command.startsWith('roslaunch')) {
+            executeCommand = currentPath + ' && ' + command;
+            inputType = 'roslaunch'
+        }
+
         if (!executeCommand && !inputType) {
             Alert.alert('Please Provide a valid command');
             return;
@@ -68,9 +93,10 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
         socketCtx.Command(inputType, executeCommand)
     }
 
+    // Comaptible for windows and linux
     function handleBackButton() {
         let executeCommand;
-        setIsLoading(true)
+        socketCtx.Loading(true)
         const lastSlashIndex = currentPath.lastIndexOf('/');
         if (lastSlashIndex !== -1) {
             setCurrentPath(currentPath.substring(0, lastSlashIndex));
@@ -80,7 +106,9 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
             setCurrentPath('')
             executeCommand = '';
         }
-        socketCtx.Command('cdBack', executeCommand)
+        socketCtx.Command('cdBack', executeCommand, (data) => {
+        });
+
         // check if command is empty
         if (executeCommand)
         {
@@ -90,19 +118,48 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
             executeCommand = 'dir'
         }
         socketCtx.Command('dir', executeCommand) 
-        setIsLoading(false)
-    }
-
-    if (isLoading) {
-        return(
-            <LoadingOverlay message= 'Loading Data...' />
-        )
     }
 
     // output for FlatList
-    const data = serverOutput.split('\n').map((line) => ({ key: line }));
+
+    if (serverOutput){
+        if (socketCtx.os === 'windows'){
+            data = serverOutput.split('\n').map((line) => ({ key: line })); // if windows split \n, if linux split(' ')
+        }
+        else {
+            data = serverOutput.split(/\t|  |\n/).map((line) => ({ key: line })); // splits bot \t and '  '
+            data = data.filter(obj => obj.key != '')
+        }
+    }
+
+
+    //Showing footer message for flatlist
+    const listRef = useRef(null);
+    const containerHeight = 300; // change this to the height of your container
+
+    const handleContentSizeChange = (contentWidth, contentHeight) => {
+        const listHeight = contentHeight + 20; // add some padding
+        const isListTooTall = listHeight > containerHeight;
+
+        setShowFooter(isListTooTall);
+    };
+
+    const renderFooter = () => {
+        if (!showFooter) {
+        return null;
+        }
+
+        return (
+        <View style={{ alignItems: 'center' }}>
+            <Text style={{ color: 'gray' }}>There are more items if you scroll down</Text>
+        </View>
+        );
+    };
+
+
     return (
         <View>
+
             {socketCtx.isConnected && 
                 <UserTextContainer 
                 text = "Command"
@@ -111,7 +168,7 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
                 inputHandler={inputHandler.bind(this, 'command')}
                 value = {command}
                 onPressHandler = {resetContent.bind(this, 'command')}
-                onSubmitEditing={onInputSubmitWindows}
+                onSubmitEditing={onInputSubmit}
                 />
             }
             {socketCtx.isConnected &&
@@ -124,29 +181,33 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
                     icon='arrow-back-sharp'
                     size = {23}
                     color = "white"
-                    addStyle = {{marginTop: 6}}
+                    addStyle = {{marginTop: 6, marginLeft: 18}}
                     onPress = {handleBackButton}
                     />
-                    <Text style={[styles.text, {marginLeft: 0, marginRight: 30}]}>Output</Text>
+                    <Text style={[styles.text, {marginLeft: 0}]}>Output</Text>
                     <Text></Text>
                 </View>
                 <View style={styles.border} />
-                
-                <FlatList
-                    data={data}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => {
-                        return (
-                            <SSHPressable
-                             output = {item.key}
-                             currentPath={currentPath}
-                             setCurrentPath={setCurrentPath}
-                             />
-                        )
-                    } 
+                {socketCtx.isLoading && <LoadingOverlay message = 'Loading Data'/>}
+                {!socketCtx.isLoading &&
+                    <FlatList
+                        data={data}
+                        keyExtractor={(item, index) => index.toString()}
+                        ListFooterComponent={renderFooter}
+                        onContentSizeChange={handleContentSizeChange}
+                        renderItem={({ item }) => {
+                            return (
+                                <SSHPressable
+                                output = {item.key}
+                                currentPath={currentPath}
+                                setCurrentPath={setCurrentPath}
+                                />
+                                )
+                            } 
+                        }
+                        />
                 }
-                />
-            </View>
+                </View>
             }
         </View>
     )
@@ -161,15 +222,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginTop: 10,
         marginRight: 10,
-        marginLeft: 15
+        marginLeft: 15,
     },
     outputContainer: {
-        alignItems: 'center',
         borderRadius: 8,
         backgroundColor: ColorsBlue.blue500,
         marginTop: 10, 
         margin: 20,
-        paddingBottom: 20
+        paddingBottom: 20,
+        maxHeight: 420
     },
     border: {
         height: 3,
@@ -178,5 +239,5 @@ const styles = StyleSheet.create({
         width:"90%",
         borderRadius: 8,
         backgroundColor: ColorsBlue.blue100
-    }
+    },
 })

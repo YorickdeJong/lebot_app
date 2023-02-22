@@ -29,6 +29,7 @@ import UserProfileContextProvider from './src/store/userProfile-context';
 import SSHConnectionScreen from './src/screens/Authenticated/Robot/SSH';
 import Controller from './src/screens/Authenticated/Robot/Controller';
 import SocketContextProvider from './src/store/socket-context';
+import { SocketContext } from './src/store/socket-context';
 
 //test
 const Stack = createNativeStackNavigator()
@@ -37,6 +38,11 @@ const Bottom = createBottomTabNavigator();
 function Robot () {
   const colorCtx = useContext(ColorContext);
   const navigation = useNavigation();
+  const socketCtx = useContext(SocketContext)
+
+  useEffect(() => {
+      console.log(`isLoading changed to: ${socketCtx.isLoading}`)
+  }, [socketCtx.isLoading])
 
   return (
     <Stack.Navigator
@@ -218,7 +224,7 @@ function Authorized() {
             size = {30}
             color = {tintColor}
             onPress = {() => {
-              navigation.navigate('AssignmentsResults')
+              navigation.goBack();
             }}/>
           )
         }

@@ -15,7 +15,7 @@ function SettingsTile({type, color, icon,  iconColor, textColor, onPress}){
             return [styles.tile, , 
             pressed && styles.pressed]
         }}>
-            <LinearGradient colors={[ColorsBlue.blue700, ColorsBlue.blue100]} style = {styles.colorGradient}>
+            <LinearGradient colors={[ColorsBlue.blue700, ColorsBlue.blue500, ColorsBlue.blue200, ColorsBlue.blue100, ColorsBlue.blue50]} style = {styles.colorGradient}>
             <Text style = {[styles.text, {color: colorCtx.isBlue ? textColor[0] : textColor[1]}]}>{type}</Text>
             <View style = {styles.iconContainer}>
                 <Icon 

@@ -7,7 +7,7 @@ import { ColorsBlue } from '../../constants/palet'
 
 
 function UserTextContainer({text, onPressHandler, inputHandler, value, checkInput, connectedText,
-onSubmitEditing}) {
+onSubmitEditing, secure}) {
     return(
         <View style = {styles.outerContainer}>
             <View style={styles.textContainer}>
@@ -22,6 +22,7 @@ onSubmitEditing}) {
                 value = {value}
                 onSubmitEditing={onSubmitEditing}
                 autoCapitalize='none'
+                secureTextEntry = {secure}
                 />
                 <Icon 
                 icon = 'close'

@@ -30,6 +30,7 @@ function SSHForm({handleExecuteCommand, setIpAddress,
             case 'command': 
                 setCommand(input);
                 break;
+            
         }
     }
 
@@ -68,13 +69,30 @@ function SSHForm({handleExecuteCommand, setIpAddress,
             />
 
 
-        <View style = {styles.container}>
-            <Icon 
-            icon = {socketCtx.isConnected? 'lock-closed': 'lock-open' }
-            size = {50}
-            color = {ColorsBlue.blue200}
-            onPress = {handleExecuteCommand}
-            />
+        <View style = {[socketCtx.isConnected? styles.container: [styles.container, {flexDirection: 'row', justifyContent: 'space-around'}]]}>
+            <View style = {styles.button}>
+                <Icon 
+                icon = {socketCtx.isConnected? 'lan-disconnect': 'logo-windows' }
+                size = {50}
+                color = {ColorsBlue.blue200}
+                onPress = {handleExecuteCommand.bind(this, 'windows')}
+                differentDir={socketCtx.isConnected ? true: false}
+                />
+                {!socketCtx.isConnected && <Text style={styles.text}>Windows</Text>}
+            </View>
+            
+            {!socketCtx.isConnected && 
+            <View style = {styles.button}>
+                <Icon 
+                icon = {'ubuntu'}
+                size = {53}
+                color = {ColorsBlue.blue200}
+                differentDir={true}
+                onPress = {handleExecuteCommand.bind(this, 'linux')}
+                />
+                <Text style={[styles.text, {marginRight: 10}]}>Linux</Text>
+            </View>}
+            
         </View>
     </View>
     )
@@ -85,7 +103,18 @@ export default SSHForm
 
 const styles = StyleSheet.create({
     container: {
-        alignItems: 'center'
+        alignItems: 'center',
+        margin: 20
     },
-
+    text: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginTop: 10,
+        textAlign: 'center'
+    },
+    button: {
+        alignItems: 'center',
+        textAlign: 'center'
+    }
 })

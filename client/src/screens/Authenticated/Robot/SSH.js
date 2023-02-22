@@ -12,44 +12,19 @@ const SSHConnectionScreen = () => {
     useEffect(() => {
         socketCtx.CreateSocketConnection();
     }, []);
-    
 
-
-    // useEffect(() => {
-    //     function setDir() {
-    //         setLoading(true)
-    //         if (socketCtx.isConnected && socketCtx) {
-    //             console.log('check')
-    //             socketCtx.Command('dir', 'dir')
-    //             console.log('check 1')
-    //             setLoading(false)
-    //         }
-    //         else {
-    //             console.log('failed to set dir')
-    //             setLoading(false)
-    //         }
-    //     }
-    //     setDir()
-    // }, [socketCtx.isConnected])
-
-    // useEffect(() => {
-    //     socketCtx.Command('dir', 'dir')
-    // }, [socketCtx.output])
-    
     const handleConnect = (inputType, input) => {
         switch(inputType) {
             case 'disconnect': 
-                socketCtx.Disconnect()
+                socketCtx.Disconnect(() => {
+                    socketCtx.Loading(false)
+                })
                 break;
             case 'connect': 
                 socketCtx.Connect(input);
                 break;
         }
-        
-    }
-
-    if (loading) {
-        return <LoadingOverlay message='Loading results'/>
+    
     }
 
 

@@ -7,11 +7,16 @@ export const SocketContext = createContext({
     output: '',
     dir: '',
     isConnected: false,
+    os: '',
+    isLoading: false, 
     CreateSocketConnection: (socket) => {},
     Connect: () => {},
     Disconnect: () => {},
+    Command: (input, command) => {},
     responseOutput: (output) => {},
-    responseDir: (dir) => {}
+    responseDir: (dir) => {},
+    OS: (os) => {},
+    Loading: (loading) => {}
 })
 
 
@@ -20,7 +25,9 @@ function SocketContextProvider({children}) {
     const [socket, setSocket] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [output, setOutput] = useState('');
-    const [dir, setDir] = useState(' root');
+    const [dir, setDir] = useState('');
+    const [os, setOs] = useState('')
+    const [isLoading, setIsLoading] = useState(false);
 
     const SOCKET_SERVER_URL = 'http://10.7.191.114:3000'
     
@@ -28,7 +35,7 @@ function SocketContextProvider({children}) {
         setSocket(io(SOCKET_SERVER_URL))
     }
 
-    function Connect(config) {
+    function Connect(config, callback) {
         try{
             socket.emit('connectToRemoteDevice',  config );
             
@@ -38,44 +45,55 @@ function SocketContextProvider({children}) {
             setOutput('Connection Failed')
             
         }
+
+        if(callback) {
+            callback()
+        }
     }
 
     function Disconnect() {
-        try{
-            socket.emit('disconnected');
-            setIsConnected(false);
-            
-        }
-        catch(error) {
-            console.log(error);
-            setOutput('Failed to disconnect')
-            
+        if (isConnected) {
+            try{
+                socket.emit('disconnected');
+                setIsConnected(false);
+                
+            }
+            catch(error) {
+                console.log(error);
+                setOutput('Failed to disconnect')
+                
+            }
         }
     }
 
     function Command(inputType, command) {
         try {
             socket.emit('command', {command: command}) //TODOProblem
-            socket.on('output', (data) => {
-                if (data.activeStream.commandStatus) {
+            socket.on('terminalOutput', (data) => {
+                if (data) {
+                    console.log(data.data)
                     switch(inputType) {
-                        case 'cd':
-                            if (command.startsWith('cd ')) {
-                                command = command.substring(3, command.length)
+                        case 'cd' || 'cdBack':
+                            if (data.data.includes('@') && 
+                                data.data.includes(':') && 
+                                data.data.includes(':')){
+                                setDir(data.data);
                             }
-                            setDir(' root/' + command);
                             break;
-                        case 'cdBack': 
-                            if (command.startsWith('cd ')) {
-                                command = command.substring(3, command.length)
-                            }ç
-                            setDir(' root/' + command);
-                            break;
+
                         case 'mkdir':
                             setOutput('new directory created');
                             break;
-                        case 'dir':
-                            setOutput(data.activeStream.output)
+
+                        case 'dir' || 'roslaunch':
+                            if ((!data.data.includes('@') && 
+                                !data.data.includes(':') && 
+                                !data.data.includes(':')) &&
+                                !data.data.includes('cd ')&&
+                                !data.data.includes('dir') &&
+                                data.data){
+                                setOutput(data.data) 
+                            }
                             break;
                     }
                 }
@@ -92,8 +110,9 @@ function SocketContextProvider({children}) {
             setIsConnected(false);
             Alert.alert('You have been disconnected from the ssh connection')
         };
-    
+        
     }
+
 
     function responseOutput(response){
         setOutput(response);
@@ -103,8 +122,16 @@ function SocketContextProvider({children}) {
         setDir(dir);
     }
 
+    function OS(os) {
+        setOs(os)
+    }
+
+    function Loading(loading) {
+        setIsLoading(loading)
+    }
+
     useEffect( () => {
-        setDir(' root')
+        setDir('')
         setIsConnected(false);
     }, [])
 
@@ -112,7 +139,9 @@ function SocketContextProvider({children}) {
         if(isConnected) {
             Command('dir', 'dir')
         }
+
     }, [isConnected])
+
     //Sockets have to be app state wide 
     useEffect(() => {
         if (socket) {
@@ -127,7 +156,7 @@ function SocketContextProvider({children}) {
             } 
             else {
                 console.error('Failed to establish SSH connection');
-                setIsConnected(data.connected);
+                Disconnect();
             }
             });
 
@@ -139,12 +168,16 @@ function SocketContextProvider({children}) {
         output: output,
         dir: dir, 
         isConnected: isConnected,
+        os: os,
+        isLoading: isLoading,
         CreateSocketConnection: CreateSocketConnection,
         Connect: Connect,
         Disconnect: Disconnect,
         Command: Command,
         responseOutput: responseOutput,
-        responseDir: responseDir
+        responseDir: responseDir,
+        OS: OS,
+        Loading: Loading,
     } 
 
     return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

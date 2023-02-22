@@ -1,105 +1,116 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import { useEffect, useContext
+import { useEffect, useContext, useState
  } from 'react'
-import {View, Text, StyleSheet} from 'react-native'
+import {View, Text, StyleSheet, Alert} from 'react-native'
 import Icon from '../../../components/Icon'
+import DriveLayout from '../../../components/robot/driving_on_command/DriveLayout';
 import { ColorsBlue } from '../../../constants/palet'
 
 import { SocketContext } from '../../../store/socket-context';
-function Controller() {
+function Controller({navigation}) {
     const socketCtx = useContext(SocketContext);
+    const [keyStroke, setKeyStroke] = useState('')
+    const [power, setPower] = useState(false);
+    const [alertShown, setAlertShown] = useState(false);
+    
+    const velMax = 50.2;
+    const velRamp = 10.2;
+    function powerHandler() {
+        setPower(!power);
+        if (!power) {            
+            socketCtx.Command('', `cd Documents/LeBot/catkin_work && roslaunch driver_bot_cpp move_on_command.launch vel_max:=${velMax} vel_ramp:=${velRamp}`); //cd $(dirname $(find / -name catkin_work 2>/dev/null)) && roslaunch driver_bot_cpp driving_on_command.launch 
+            return;
+        }
+        socketCtx.socket.emit('driveCommand', {command: "\x03"});
+    }
+
+    function moveHandler(inputType, isDown) {
+        console.log('check')
+        if (power) {
+            switch (inputType){
+                case 'up':
+                   if (isDown) {
+                        console.log("moving forward");
+                        setKeyStroke("w");
+                    } 
+                    else {
+                        console.log("stop moving forward");
+                        setKeyStroke("x");
+                    }
+                    break;
+
+                case "right":
+                    if (isDown) {
+                        console.log("moving right");
+                        setKeyStroke("d");
+                    } 
+                    else {
+                        console.log("stop moving right");
+                        setKeyStroke("x");
+                    }
+                    break;
+
+                case "left":
+                    if (isDown) {
+                        console.log("moving left");
+                        setKeyStroke("a");
+                    } 
+                    else {
+                        console.log("stop moving left");
+                        setKeyStroke("x");
+                    }
+                    break;
+
+                case "down":
+                    if (isDown) {
+                        console.log("moving backwards");
+                        setKeyStroke("s");
+                    } 
+                    else {
+                        console.log("stop moving backwards");
+                        setKeyStroke("x");
+                    }
+                    break;
+                }
+            } 
+            else {
+                console.log(alertShown)
+                if (!alertShown) {
+                    Alert.alert(
+                        "Power off",
+                        "You must turn on the power first!",
+                        [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                            setAlertShown(false);
+                            },
+                        },
+                        ],
+                        { onDismiss: () => setAlertShown(false) }
+                    );
+                setAlertShown(true);
+            }
+        }
+    }
 
     useEffect(() => {
-        console.log(socketCtx.isConnected)
-    }, [])
-    
+        socketCtx.socket.emit('driveCommand', {command: keyStroke})
+    }, [keyStroke])
 
-    function moveHandler(inputType) {
-        switch (inputType){
-            case 'up':
-                console.log('moving forward');
-                socketCtx.Command('dir', 'dir')
-                break;
-
-            case 'right': 
-                console.log('moving right');
-                // ssh move forward command to rasppi
-                break;
-
-            case 'left': 
-                console.log('moving left');
-                // ssh move forward command to rasppi
-                break;
-
-            case 'down': 
-                console.log('moving backwards');
-                // ssh move forward command to rasppi
-                break;
-            }
-    } 
+    function disconnectHandle() {
+        console.log('disconnected');
+        socketCtx.Disconnect()
+        navigation.replace('RobotCommands')
+    }
 
     return (
-        <LinearGradient style = {styles.outerContainer} colors = {[ColorsBlue.blue1300, ColorsBlue.blue500, ColorsBlue.blue1300]}>
-            <View style = {styles.upperContainer}>      
-                <Icon 
-                icon='arrow-up-circle'
-                size={120}
-                color={ColorsBlue.blue100}
-                onPress = {moveHandler.bind(this, 'up')}
-                />
-            </View>
-            <View style = {styles.middleContainer}>
-                 <View style = {styles.middleLeftContainer}> 
-                    <Icon 
-                    icon='arrow-back-circle'
-                    size={120}
-                    color={ColorsBlue.blue100}
-                    onPress = {moveHandler.bind(this, 'left')}
-                    />
-                </View> 
-               <View style = {styles.middleRightContainer}>
-                    <Icon 
-                    icon='arrow-forward-circle'
-                    size={120}
-                    color={ColorsBlue.blue100}
-                    onPress = {moveHandler.bind(this, 'right')}
-                    />
-                 </View> 
-            </View>
-            <View style = {styles.lowerContainer}>
-                <Icon 
-                icon= 'arrow-down-circle'
-                size={120}
-                color={ColorsBlue.blue100}
-                onPress = {moveHandler.bind(this, 'down')}
-                />
-            </View>
-
-        </LinearGradient>
-    )
+        <DriveLayout 
+        moveHandler={moveHandler}
+        powerHandler={powerHandler}
+        disconnectHandle={disconnectHandle}
+        power = {power}/>
+        )
 }
 
 export default Controller
-
-
-const styles = StyleSheet.create({
-    outerContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft:20
-    },
-    upperContainer: {
-    },
-    middleContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    lowerContainer: {
-    },
-    middleLeftContainer: {
-        marginRight: 90
-    },
-    middleRightContainer: {
-    }
-})

@@ -26,37 +26,43 @@ async function connectToRemoteDevice(sshConfig, socket, sshClient) {
     }
 }
 
-
-async function runCommandOnRemoteDeviceInternal(command, sshClient) {
+async function runCommandOnRemoteDeviceInternal(command, sshClient, socket) {
     let commandStatus = false;
     const output = await new Promise((resolve, reject) => {
-        sshClient.exec(command, (err, stream) => {
-        if (err) {
-            reject(err);
-        }
+        sshClient.shell('bash', (err, stream) => {
+            if (err) {
+                reject(err);
+            }
+            
+            socket.on('driveCommand', (data) => {
+                console.log(`Received Command: ${data.command}`)
+                stream.write(data.command + '\n');
+            })
 
-        // TODO add a try except here sucht that a message is sent to the front end containing a boolean,
-        // This value tells if the command went through correctly -> front end prints alert if command is incorrect
-        let output = '';
-        try{ 
+            let output = '';
             stream.on('data', (data) => {
                 output += data.toString();
+                socket.emit('terminalOutput', { data: data.toString()});
+                commandStatus = true;
             });
-            commandStatus = true
-            console.log('Command succeeded')
-        }
-        catch(err){
-            console.log('command failed')
-            commandStatus = false
-        }
-        stream.on('end', () => {
-            // console.log(`Command '${command}' output: ${output}`);
-            resolve(output);
-        });
-        stream.on('error', (err) => {
-            console.error(`Command '${command}' error:`, err);
-            reject(err);
-        });
+
+            stream.on('close', (code) => {
+                console.log(`Command '${command}' output: ${output}`);
+                commandStatus = true;
+                resolve(output);
+            });
+
+            stream.on('endStream', () => {
+                console.log('ENDED STREAM');
+                resolve(output);
+            });
+
+            stream.on('error', (err) => {
+                console.error(`Command '${command}' error:`, err);
+                reject(err);
+            });
+
+            stream.write(command + '\n');
         });
     });
 
@@ -67,7 +73,6 @@ async function runCommandOnRemoteDeviceInternal(command, sshClient) {
 
     return data;
 }
-
 
 //--------------- Start specific script on external device -----------------//
 async function startScriptOnRemoteDevice(data, sshClient) {

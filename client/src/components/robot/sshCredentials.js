@@ -18,8 +18,8 @@ function SSHCredentials({handleConnect, serverOutput}) {
         checkPassword: false,
     })
 
-    const handleExecuteCommand = async () => {
-
+    const handleExecuteCommand = async (inputType) => {
+        socketCtx.Loading(true);
         if (!socketCtx.isConnected) {
             let checkIP = ipAddress.length >= 12 && ipAddress.includes('.');
             let checkUsername = username.length > 0;
@@ -42,13 +42,24 @@ function SSHCredentials({handleConnect, serverOutput}) {
                 username: username,
                 password: password,
             }
+
+            switch(inputType) {
+                case 'windows':
+                    socketCtx.OS(inputType);
+                    break;
+                case 'linux':
+                    socketCtx.OS(inputType);
+                    break;
+            }
+            
             handleConnect(config);
+
         }
         else {
             handleConnect();
+            socketCtx.emit('endStream')
         }
     }
-
 
     return (
         <SSHForm 

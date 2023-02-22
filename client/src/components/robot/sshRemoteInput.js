@@ -35,6 +35,7 @@ function SSHRemoteInput({inputHandler, credentialsInvalid, ipAddress, username, 
                 inputHandler = {inputHandler.bind(this, 'password')}
                 value = {password}
                 onPressHandler = {resetContent.bind(this, 'password')}
+                secure
                 />
             }
         </View>
