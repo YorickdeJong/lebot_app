@@ -39,4 +39,4 @@ async function startServer() {
 }
 
 startServer()
-socketsSSH.listenToClient(ioSSH, sshClient); 
+socketsSSH.listenToClientSSH(ioSSH, sshClient); 

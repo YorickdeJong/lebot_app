@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native"
+import { ImageBackground, StyleSheet, View } from "react-native"
 import Icon from "../../Icon"
 import { ColorsBlue } from "../../../constants/palet"
 import { LinearGradient } from "expo-linear-gradient"
@@ -7,7 +7,12 @@ import DriveCommandIcon from "../../UI/driveCommandIcon"
 function DriveLayout({moveHandler, powerHandler, power, disconnectHandle}) {
     return (
 
-        <LinearGradient style = {styles.outerContainer} colors = {[ColorsBlue.blue1300, ColorsBlue.blue500, ColorsBlue.blue1300]}>
+        <View style={{backgroundColor: ColorsBlue.blue1200, flex: 1}}>
+        <ImageBackground
+            source={require('./../../../../assets/grid.jpg')} 
+            style= {styles.background}
+            imageStyle={{opacity: 0.4}}
+            >
                 <View style = {styles.upperContainer}>
                     <View style = {styles.upperIcons}>
                         <Icon 
@@ -32,45 +37,47 @@ function DriveLayout({moveHandler, powerHandler, power, disconnectHandle}) {
                         differentDir={true}/>
                     </View>
                 </View>
-                <View style = {[styles.arrow, {marginTop: 30}]}>      
-                    <DriveCommandIcon
-                    icon='arrow-up-circle'
-                    size={120}
-                    color={ColorsBlue.blue100}
-                    onPressIn = {moveHandler.bind(this, "up", true)}
-                    onPressOut = {moveHandler.bind(this, "up", false)}
-                    />
-                </View>
-                <View style = {styles.middleContainer}>
-                    <View style = {styles.middleLeftContainer}> 
-                        <DriveCommandIcon 
-                        icon='arrow-back-circle'
-                        size={120}
-                        color={ColorsBlue.blue100}
-                        onPressIn = {moveHandler.bind(this, "left", true)}
-                        onPressOut = {moveHandler.bind(this, "left", false)}
-                        />
-                    </View> 
-                <View>
+                    <View style = {[styles.arrow, {marginTop: 30}]}>      
                         <DriveCommandIcon
-                        icon='arrow-forward-circle'
+                        icon='arrow-up-circle'
                         size={120}
-                        color={ColorsBlue.blue100}
-                    onPressIn = {moveHandler.bind(this, "right", true)}
-                    onPressOut = {moveHandler.bind(this, "right", false)}
+                        color={ColorsBlue.blue500}
+                        onPressIn = {moveHandler.bind(this, "up", true)}
+                        onPressOut = {moveHandler.bind(this, "up", false)}
                         />
-                    </View> 
-                </View>
-                <View style = {styles.arrow}>
-                    <DriveCommandIcon 
-                    icon= 'arrow-down-circle'
-                    size={120}
-                    color={ColorsBlue.blue100}
-                    onPressIn = {moveHandler.bind(this, "down", true)}
-                    onPressOut = {moveHandler.bind(this, "down", false)}
-                    />
-                </View>
-        </LinearGradient>
+                    </View>
+                    <View style = {styles.middleContainer}>
+                        <View style = {styles.middleLeftContainer}> 
+                            <DriveCommandIcon 
+                            icon='arrow-back-circle'
+                            size={120}
+                            color={ColorsBlue.blue500}
+                            onPressIn = {moveHandler.bind(this, "left", true)}
+                            onPressOut = {moveHandler.bind(this, "left", false)}
+                            />
+                        </View> 
+                    <View>
+                            <DriveCommandIcon
+                            icon='arrow-forward-circle'
+                            size={120}
+                            color={ColorsBlue.blue500}
+                        onPressIn = {moveHandler.bind(this, "right", true)}
+                        onPressOut = {moveHandler.bind(this, "right", false)}
+                            />
+                        </View> 
+                    </View>
+                    <View style = {styles.arrow}>
+                        <DriveCommandIcon 
+                        icon= 'arrow-down-circle'
+                        size={120}
+                        color={ColorsBlue.blue500}
+                        onPressIn = {moveHandler.bind(this, "down", true)}
+                        onPressOut = {moveHandler.bind(this, "down", false)}
+                        />
+                    </View>
+        </ImageBackground>
+    </View>
+   
     )
 }
 
@@ -103,5 +110,9 @@ const styles = StyleSheet.create({
     },
     arrow: {
         alignItems: 'center'
+    },
+    background: {
+        flex: 1,
+        paddingLeft: 20
     }
 })

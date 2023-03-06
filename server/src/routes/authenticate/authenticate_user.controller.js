@@ -17,53 +17,52 @@ function verifyToken(token) {
   return jwt.verify(token, secret);
 }
 
-const authenticateUser = (req, res) => {
-  const { email, password } = req.body;
+const authenticateUser = async (req, res) => {
+    const { email, password } = req.body;
+    const client = await pool.connect();
 
+    try {
+        const { rows } = await client.query(authenticateUserQuery, [email]);
+        if (rows.length === 0) {
+            return res.status(401).send({ error: 'Email or password is incorrect' });
+        }
 
-  pool.query(authenticateUserQuery, [email], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send({ error: 'An error occurred while logging in' });
-    }
+        const user = rows[0];
+        const isMatch = await bcrypt.compare(password, user.password);
 
-    if (result.rows.length === 0) {
-      return res.status(401).send({ error: 'Email or password is incorrect' });
-    }
+        if (!isMatch) {
+            return res.status(401).send({ error: 'Email or password is incorrect' });
+        }
 
-    const user = result.rows[0];
-    const id = user.id
-    const token = generateToken(user.id);
+        const id = user.id
+        const token = generateToken(user.id);
 
-    bcrypt.compare(password, user.password, (err, isMatch) => {
-      if (err) {
-        console.error(err);
+        res.json({ 
+            message: 'User authenticated',
+            token,
+            id
+        });
+    } 
+    catch (error) {
+        console.error(error);
         return res.status(500).send({ error: 'An error occurred while logging in' });
-      }
-
-      if (!isMatch) {
-        return res.status(401).send({ error: 'Email or password is incorrect' });
-      }
-
-      res.json({ 
-        message: 'User authenticated',
-        token,
-        id
-      });
-    });
-  });
-}
+    } 
+    finally {
+        client.release();
+    }
+  }
 
 // Middleware to verify JWT
 function authenticate(req, res, next) {
   const token = req.headers.authorization;
 
   try {
-    const decoded = verifyToken(token);
-    req.userId = decoded.userId;
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
+      const decoded = verifyToken(token);
+      req.userId = decoded.userId;
+      next();
+  } 
+  catch (error) {
+      return res.status(401).json({ message: "Unauthorized" });
   }
 }
 

@@ -1,0 +1,28 @@
+﻿assignment_id,assignment_number,subject,title,question,answer,image_file_path,currency
+1,1,Physics,Beweging,"Rij rond met de auto voor 30 seconden. De auto produceert hierna een s, t grafiek. Bereken tussen t = 5 en t = 10s de gemiddelde snelheid",5,"""""",10
+2,2,Physics,Beweging,"We weten dat de gemiddelde snelheid een benadering is van de echte snelheid van de auto. Dit komt omdat we naar de snelheid op 2 punten kijken i.p.v. de snelheid op elke tijdsstap. Dit wetende, brainstorm met elkaar of door jullie berekende snelheid gebruikt kan worden als de daadwerkelijke snelheid.",5,"""""",15
+3,3,Physics,Beweging,Bereken de versnelling die de auto heeft op punt t = 0 en t = 0.5,5,"""""",20
+4,4,Physics,Beweging,Wat veranderd er aan de versnelling op t = 0 en t = 0.5? Bedenk samen waarom deze verandering plaats vind.,5,"""""",25
+5,5,Physics,Beweging,Bereken de gemiddelde versnelling tussen t = 4 en t = 7.,5,"""""",30
+6,6,Physics,Beweging,Bedenk samen met jou groepje welk krachten er op de auto werken als deze binnen rijd. Bedenk samen waarom deze krachten niet verwaarloosd mogen worden.,5,"""""",35
+7,7,Physics,Beweging,Laat de auto weer een stuk rijden. Wanneer is de totale kracht 0 en wanneer niet?,5,"""""",40
+8,8,Physics,Beweging,Hoe zouden we de totale kracht die op de auto werkt kunnen bepalen? Reken deze kracht uit op punt t = 0.5.,5,"""""",45
+9,9,Physics,Beweging,Bedenk met de door jullie opgestelde krachtenbalans hoe we motor kracht en wrijvingskracht kunnen bepalen.,5,"""""",50
+10,1,Physics,Energie,Uit de vorige vraag weten we dat de robot na een bepaalde tijd met een constante snelheid gaat rijden. Bereken voor een tijdsinterval van 3 seconden wat het geleverder vermogen is van de auto,5,"""""",20
+11,2,Physics,Energie,"Hoe zou je het vermogen kunnen bepalen op een punt waar het vermogen niet constant is? Geef je tijds stap aan en bereken op dit punt het vermogen,",5,"""""",28
+12,3,Physics,Energie,"Rij de auto weer rond. Bedenk met je groepje hoe je de kinetische energie zou berekenen op t = 0.5, 2, 5 en 10 seconde. ",5,"""""",36
+13,4,Physics,Energie,Wat geeft de kinetische energie weer op deze punten?,5,"""""",44
+14,5,Physics,Energie,"Bekijk nu het verschil in kinetische energie op het begin en eindpunt. Is deze uitkomst logisch? Waarom wel, waarom niet",5,"""""",52
+15,6,Physics,Energie,Stel de energie balans op voor de auto en bereken de wrijvingsenergie. Bedenk waarom je energieën wel of niet kan verwaarlozen.,5,"""""",60
+16,1,Physics,Golven,Hier nog een vraag voor bedenken,5,"""""",10
+17,1,Physics,Stroom,We gaan nu kijken naar het circuit van de auto. De rede dat we dit doen is zodat we zeker weten dat alle motoren voldoende stroom krijgen. De motoren zijn verbonden met draden aan het batterijen. Bedenk een manier om de weerstand van de draad te berekenen. ,5,"""""",10
+18,2,Physics,Stroom,Waarom is het belangrijk om de weerstand van de draad te weten?,5,"""""",20
+19,3,Physics,Stroom,"Gegeven dat elke batterij een stroom van 1.5A geeft, bereken het vermogen van de draad ",5,"""""",30
+20,4,Physics,Stroom,We weten dat elke batterij een stroom van 1.5A geeft. De fabrikanten van de motoren hebben ons ook verteld dat de motor een voltage tussen de 7.5 - 12V kan hebben. Bereken de range van de weerstand die de motor heeft bij een geleverde stroom van 6 batterijen. ,5,"""""",40
+21,5,Physics,Stroom,Bereken het totale elektrische vermogen van de motoren.,5,"""""",50
+22,1,Physics,E.M.,Wat is de elektrische kracht die de motoren kunnen leveren?,5,"""""",10
+23,1,Mathematics,Raaklijnen,Bereken de raaklijn,5,"""""",10
+24,1,Mathematics,Afgeleide,bereken de afgeleide,5,"""""",10
+25,1,Mathematics,Vectoren,Bereken de vector in 2d,5,"""""",10
+26,1,Mathematics,Integreren,bereken de massa van de auto gegeven dat de dichtheid gelijk is aan p = 700 kg/m^3. Je mag het volume benaderen met een omwentellichaam,5,"""""",10
+27,1,Mathematics,Gonio,Bereken iets met de lidar,5,"""""",10

@@ -5,14 +5,14 @@ import { ColorsBlue, ColorsGreen } from '../constants/palet';
 
 export const ColorContext = createContext({
     isBlue: false,
-    iconColor: ColorsGreen.green400,
+    iconColor: ColorsBlue.blue400,
     setColor: (storedColor, storedIconColor) => {},
 })
 
 
 function ColorContextProvider({children}) {
     const [isBlueColor, setIsBlueColor] = useState(false)
-    const [iconColor, setIconColor] = useState(ColorsGreen.green400) 
+    const [iconColor, setIconColor] = useState(ColorsBlue.blue400) 
     
     async function setColor(storedColor, storedIconColor) {
         if (storedColor && storedIconColor)
@@ -24,11 +24,11 @@ function ColorContextProvider({children}) {
             return;
         }
 
-        setIsBlueColor(!isBlueColor)
-        AsyncStorage.setItem('color', JSON.stringify(!isBlueColor))
+        setIsBlueColor(isBlueColor)
+        AsyncStorage.setItem('color', JSON.stringify(isBlueColor))
 
         if (isBlueColor) {
-            setIconColor(ColorsGreen.green400)
+            setIconColor(ColorsBlue.blue400)
         }
         else {
             setIconColor(ColorsBlue.blue400)

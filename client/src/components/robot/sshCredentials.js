@@ -8,7 +8,7 @@ function SSHCredentials({handleConnect, serverOutput}) {
     const socketCtx = useContext(SocketContext);
 
     // ssh connection
-    const [ipAddress, setIpAddress] = useState('10.7.191.135');
+    const [ipAddress, setIpAddress] = useState('192.168.1.22');
     const [username, setUsername] = useState('ubuntu');
     const [password, setPassword] = useState('password');
 
@@ -51,9 +51,7 @@ function SSHCredentials({handleConnect, serverOutput}) {
                     socketCtx.OS(inputType);
                     break;
             }
-            
             handleConnect(config);
-
         }
         else {
             handleConnect();

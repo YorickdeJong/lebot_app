@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const url = `http://10.7.191.114:3000/api/v1/`;
+const url = `http://192.168.1.27:3000/api/v1/`;
 
 
 
@@ -14,7 +14,7 @@ export async function createUser({email, password, username, name, lastName, DOB
             dob: DOB,
             school: school,
             classschool: classSchool,
-            level: level,
+            level: level, //TODO add tokens
             returnSecureToken: true,
         });
 
@@ -30,6 +30,7 @@ export async function login(email, password) {
 
   return response.data;
 }
+
 
 export async function getUserProfileDetails(id) {
     try{
@@ -53,8 +54,6 @@ export async function deleteUserProfile(id) {
 }
 
 export async function changeUserProfile(userProfile) {
-    console.log(userProfile)
-    console.log(userProfile.id)
     try {
         const response =  await axios.put(url + `users/${userProfile.id}`, userProfile)
         return response.data

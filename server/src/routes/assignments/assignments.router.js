@@ -1,17 +1,21 @@
 const {Router} = require('express');
 
 const {
-    insertAssignment,
-    getAssignmentsForUser,
-    updateCompletionStatus
+    getAllAssignment,
+    getAssignment,
+    getAssignmentIdByNumber,
+    createAssignment,
+    updateAssignment,
+    deleteAssignment
 } = require('./assignments.controller')
 
 const router = Router()
 
-//use /api/v1/login end point and then do operations on that endpoint
-// router.delete('/:id', deleteLogin)
-router.get('/', getAssignmentsForUser)
-router.post('/', insertAssignment)
-router.put('/:id', updateCompletionStatus)
+router.get('/all', getAllAssignment);
+router.get('/specific', getAssignment);
+router.get('/', getAssignmentIdByNumber)
+router.post('/', createAssignment);
+router.put('/:id', updateAssignment);
+router.delete('/:id', deleteAssignment);
 
 module.exports = router;

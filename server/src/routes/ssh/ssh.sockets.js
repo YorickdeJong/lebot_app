@@ -1,7 +1,7 @@
 const sshController = require('./ssh.controller')
 let activeStream = null;
 
-function listenToClient(io, sshClient) {
+function listenToClientSSH(io, sshClient) {
 
     io.on('connection', (socket) => {
         console.log('Client connected');
@@ -74,5 +74,5 @@ function listenToClient(io, sshClient) {
 
 
 module.exports = {
-    listenToClient
+    listenToClientSSH
 }

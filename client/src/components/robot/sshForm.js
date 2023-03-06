@@ -1,4 +1,4 @@
-import { View, Text, Alert} from 'react-native'
+import { View, Text, Alert, ImageBackground} from 'react-native'
 import { useContext, useState, useEffect } from 'react'
 import Icon from '../Icon';
 import UserTextContainer from '../userProfile/UserTextContainer';
@@ -52,7 +52,12 @@ function SSHForm({handleExecuteCommand, setIpAddress,
     }
 
     return (
-        <View>
+        <View style={{backgroundColor: ColorsBlue.blue1200, flex: 1}}>
+        <ImageBackground
+            source={require('./../../../assets/grid.jpg')} 
+            style= {styles.background}
+            imageStyle={{opacity: 0.4}}
+            >
             <SSHRemoteInput 
             inputHandler={inputHandler}
             resetContent={resetContent}
@@ -93,8 +98,10 @@ function SSHForm({handleExecuteCommand, setIpAddress,
                 <Text style={[styles.text, {marginRight: 10}]}>Linux</Text>
             </View>}
             
-        </View>
+            </View>
+        </ImageBackground>
     </View>
+   
     )
 }
 
@@ -116,5 +123,10 @@ const styles = StyleSheet.create({
     button: {
         alignItems: 'center',
         textAlign: 'center'
+    },
+    background: {
+        flex: 1,
+        borderTopColor: ColorsBlue.blue100,
+        borderTopWidth: 0.2,
     }
 })

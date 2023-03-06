@@ -6,13 +6,13 @@ import { ColorContext } from "../../store/color-context";
 function TextContainer({textContent, setUserDetails, value, isValid, addStyle, secure}) {
     const colorCtx = useContext(ColorContext);
     
-    const backgroundChoice = colorCtx.isBlue ? ColorsGreen.green400 : ColorsBlue.blue400
+    const backgroundChoice = colorCtx.isBlue ? ColorsGreen.green400 : ColorsBlue.blue200
     const shadow = colorCtx.isBlue ? ColorsGreen.green1200: ColorsBlue.blue1200
     const textInput = [styles.textInput, {backgroundColor: backgroundChoice,  shadowColor: shadow}]
 
     return(
     <View style = {addStyle}>
-        <Text style={[styles.text, {color: colorCtx.isBlue ? ColorsGreen.green200 : ColorsBlue.blue200}]}>{textContent}</Text>
+        <Text style={[styles.text, {color: colorCtx.isBlue ? ColorsGreen.green200 : ColorsBlue.blue100}]}>{textContent}</Text>
         <TextInput 
         style= {[textInput, isValid && {backgroundColor: ColorsGreen.error300}]}
         onChangeText = {setUserDetails}

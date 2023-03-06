@@ -1,9 +1,10 @@
 
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useState } from "react";
-import { View, StyleSheet, Text, Modal, Alert } from "react-native";
+import { View, StyleSheet, Text, Modal, Alert, ImageBackground } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import SettingsTile from "../../../components/settings/SettingsTile";
+import { ColorsBlue } from "../../../constants/palet";
 import { robotData } from "../../../data/RobotData";
 import { AuthContext } from "../../../store/auth-context";
 import { ColorContext } from "../../../store/color-context";
@@ -42,7 +43,6 @@ function Settings() {
                         Alert.alert('You must connect first!');
                         return;
                     }
-                    authCtx.logout('AutonomousDrivingSonar');
                     break;
                 
                 case 'Autonomous Driving':
@@ -50,9 +50,13 @@ function Settings() {
                         Alert.alert('You must connect first!');
                         return;
                     }
-                    authCtx.logout('AutonomousDrivingCombined');
                     break;
-                }
+
+                case 'Robot Store':
+                    navigation.replace('RobotStore')
+                    break;
+                
+            }
         }
         return (
             <SettingsTile 
@@ -64,13 +68,21 @@ function Settings() {
        
     }
     return (
-        <View style = {styles.modalContainer}> 
-            <FlatList 
-            data = {robotData}
-            keyExtractor = {item => item.id}
-            renderItem = {settingsGrid}
-            numColumns = {2}
-            />
+        <View style = {styles.backgroundColor}>
+            <ImageBackground
+                source={require('./../../../../assets/road-race-car-vintage-patent-blueprint-design-turnpike.jpg')} 
+                style={styles.backgroundImage}
+                imageStyle={{opacity: 0.20}}
+                >
+                <View style={styles.content}>
+                    <FlatList 
+                    data = {robotData}
+                    keyExtractor = {item => item.id}
+                    renderItem = {settingsGrid}
+                    numColumns = {2}
+                    />
+                </View>
+            </ImageBackground>
         </View>
     )
 }
@@ -84,5 +96,21 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         marginTop: 50,
+    },
+    content: {
+        justifyContent: 'center',
+        flex: 1,
+        marginTop: 13
+
+    },
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'contain',
+        borderTopColor: ColorsBlue.blue100,
+        borderTopWidth: 0.2
+    },
+    backgroundColor: {
+        flex: 1,
+        backgroundColor: ColorsBlue.blue1300
     }
 })

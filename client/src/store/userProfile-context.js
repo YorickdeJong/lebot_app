@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { createContext, useState, useEffect } from "react"
+import { changeUserProfile } from "../hooks/auth";
 
 
 export const UserProfileContext = createContext({
@@ -34,7 +35,7 @@ function UserProfileContextProvider({children}) {
         dob: '',
         school: '',
         classschool: '',
-        level: '',
+        level: '', 
         id: ''
     });
 
@@ -43,6 +44,9 @@ function UserProfileContextProvider({children}) {
         loadUserProfileFromStorage();
     }, []);
 
+    useEffect(() => {
+        changeUserProfile(userProfile)
+    }, [userProfile])
     async function loadUserProfileFromStorage() {
         try {
             const jsonValue = await AsyncStorage.getItem("userProfile");
@@ -85,24 +89,14 @@ function UserProfileContextProvider({children}) {
         saveUserProfileToStorage({ ...userProfile, password: newPassword });
     }
 
+
+
     function getUserProfile() {
         return userProfile;
     }
 
     const value = {
-        userprofile: {
-            username: userProfile.username,
-            password: userProfile.password,
-            email: userProfile.email,
-            name: userProfile.name,
-            lastname: userProfile.lastname,
-            dob: userProfile.dob,
-            school: userProfile.school,
-            classschool: userProfile.classschool,
-            level: userProfile.level,
-            id: userProfile.id
-        },
-
+        userprofile: userProfile,
         editUserProfile: editUserProfile,
         editUsername: editUsername,
         editEmail: editEmail,

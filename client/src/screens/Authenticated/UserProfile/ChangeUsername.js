@@ -4,7 +4,6 @@ import UserTextContainer from '../../../components/userProfile/UserTextContainer
 import Icon from '../../../components/Icon';
 import { ColorsBlue } from '../../../constants/palet';
 import { UserProfileContext } from '../../../store/userProfile-context';
-import { changeUserProfile } from '../../../hooks/auth';
 
 function ChangeUserName({route, navigation}) {
     const username = route.params.username
@@ -27,9 +26,8 @@ function ChangeUserName({route, navigation}) {
             Alert.alert("Username is too short, please include more characters");
         }
         
-        userCtx.editUsername(usernameInput)
-        changeUserProfile(userCtx.userprofile)
-        navigation.replace('userProfile')
+        userCtx.editUsername(usernameInput);
+        navigation.replace('userProfile');
     }
 
     useEffect(() => {

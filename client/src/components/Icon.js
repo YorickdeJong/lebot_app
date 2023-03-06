@@ -31,9 +31,7 @@ function Icon ({icon, size, color, onPress, addStyle, differentDir}) {
 export default Icon
 
 const styles = StyleSheet.create({
-    iconContainer: {
-        marginRight: 10,
-    },
+
     pressed: {
         opacity: 0.1
     },

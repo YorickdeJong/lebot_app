@@ -1,10 +1,11 @@
 
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useState } from "react";
-import { View, StyleSheet, Text, Modal } from "react-native";
+import { View, StyleSheet, Text, Modal, ImageBackground } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import SettingsTile from "../../../components/settings/SettingsTile";
 import LoadingOverlay from "../../../components/UI/LoadingOverlay";
+import { ColorsBlue } from "../../../constants/palet";
 import { settingsData } from "../../../data/settingsData";
 import { AuthContext } from "../../../store/auth-context";
 import { ColorContext } from "../../../store/color-context";
@@ -49,12 +50,18 @@ function Settings() {
     }
     return (
         <View style = {styles.modalContainer}> 
-            <FlatList 
-            data = {settingsData}
-            keyExtractor = {item => item.id}
-            renderItem = {settingsGrid}
-            numColumns = {2}
-            />
+            <ImageBackground
+                source={require('./../../../../assets/carBluePrint2.jpg')} 
+                style={styles.backgroundImage}
+                imageStyle={{opacity: 0.15}}
+            >
+                <FlatList 
+                data = {settingsData}
+                keyExtractor = {item => item.id}
+                renderItem = {settingsGrid}
+                numColumns = {2}
+                />
+            </ImageBackground>
         </View>
     )
 }
@@ -67,6 +74,14 @@ const styles = StyleSheet.create({
         flex: 1
     },
     modalContainer: {
-        marginTop: 50,
+        flex: 1, 
+        backgroundColor: ColorsBlue.blue1300
+    },
+    backgroundImage: {
+        flex: 1,
+        resizeMode: 'contain',
+        borderTopColor: ColorsBlue.blue100,
+        borderTopWidth: 0.2,
+        paddingTop: 50,
     }
 })

@@ -29,7 +29,7 @@ function SocketContextProvider({children}) {
     const [os, setOs] = useState('')
     const [isLoading, setIsLoading] = useState(false);
 
-    const SOCKET_SERVER_URL = 'http://10.7.191.114:3000'
+    const SOCKET_SERVER_URL = 'http://192.168.1.27:3000'
     
     function CreateSocketConnection() {
         setSocket(io(SOCKET_SERVER_URL))

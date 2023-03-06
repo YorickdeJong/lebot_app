@@ -33,7 +33,7 @@ const updateUserQuery = `
     school=$7, 
     classschool=$8, 
     level=$9 
-    WHERE id=$10 
+    WHERE id=$10
     RETURNING *
 `;
 

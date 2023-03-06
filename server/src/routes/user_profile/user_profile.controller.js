@@ -15,16 +15,19 @@ const {
 
 
 const getAllUserProfiles = async (req, res) => {
-    const id = req.params.id;
 
     try {
         const client = await pool.connect();
         const { rows } = await client.query(getAllUserProfilesQuery);
-        res.status(200).json(rows);
+        return res.status(200).json(rows);
     } 
     catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        return res.status(500).json({ error: 'Server error' });
+    }
+
+    finally {
+        client.release(); 
     }
 }
 
@@ -33,6 +36,7 @@ const getAllUserProfiles = async (req, res) => {
 const getUserProfileById = async (req, res) => {
     const id = req.params.id;   
     const client = await pool.connect();
+
     try {
         const { rows } = await client.query(getUserByIdQuery, [id]);
 
@@ -62,7 +66,7 @@ const createUserProfile = async (req, res) => {
 
     // Check if account already exists in database
     try {
-        const { rows } = await pool.query(checkEmailExists, [email]);
+        const { rows } = await client.query(checkEmailExists, [email]);
         if (rows.length > 0) {
             return res.status(400).json({ message: 'An account with this email already exists.' });
         }
@@ -91,17 +95,17 @@ const createUserProfile = async (req, res) => {
         const createdUserProfile = result.rows[0];
         const token = generateToken(createdUserProfile.id);
         const id = createdUserProfile.id
+
         // check if all went well
         await client.query('COMMIT');
+        console.log('succesfully created account')
 
-        res.json({ 
+        return res.status(200).json({ 
             message: 'User authenticated',
             token,
             id
         });
         
-        console.log('succesfully created account')
-        // return createdUserProfile;
 
     } 
     
@@ -109,8 +113,8 @@ const createUserProfile = async (req, res) => {
         // print error message if error occured
         await client.query('ROLLBACK');
         // res.status(500).json(error);
-        console.log('failed to add user')
-        throw error;
+        console.log(error)
+        return res.status(500).json({error: 'Failed to add user'})
     } 
     
     finally {
@@ -120,30 +124,30 @@ const createUserProfile = async (req, res) => {
 
 // UPDATE an existing user
 const updateUser = async(req, res)  => {
-    const id = req.params.id; 
     const client = await pool.connect();
-    console.log(req.body)
+    
     try {
-        const { email, password, username, name, lastname, dob, school, classschool, level } = req.body;
-        
+        const id = req.params.id; 
+        const { email, password, username, name, lastname, dob, school, classschool, level} = req.body;
         const values = [email, password, username, name, lastname, dob, school, classschool, level, id]
-
+        
         const result = await client.query(updateUserQuery, values);
         const updatedUser = result.rows[0];
 
         if (!updatedUser) {
-            res.status(404).json({ error: `User with ID ${id} not found` });
-            onsole.log('Account not found')
+            console.log('Account not found')
+            return res.status(404).json({ error: `User with ID ${id} not found` });
         } 
         else {
             console.log('succesfully updated account')
-            res.status(200).json(updatedUser);
+            console.log(updatedUser)
+            return res.status(200).json(updatedUser);
         }
   } 
 
   catch (error) {
         console.log('failed to update user')
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
   }
 
   finally {
@@ -157,23 +161,23 @@ const deleteUser = async (req, res) => {
     const client = await pool.connect();
 
     try {
-            const result = await client.query(deleteUserQuery, [id]);
-            const deletedUser = result.rows[0];
+        const result = await client.query(deleteUserQuery, [id]);
+        const deletedUser = result.rows[0];
 
         if (!deletedUser) {
-        res.status(404).json({ error: `User with ID ${id} not found` });
-        console.log('user not found, could not delete')
+            console.log('user not found, could not delete')
+            return res.status(404).json({ error: `User with ID ${id} not found` });
         }
         
         else {
-        res.status(200).json(deletedUser);
-        console.log('deleted user')
-        }
+            console.log('deleted user')
+            return res.status(200).json(deletedUser);
+            }
     } 
     
     catch (error) {
-        res.status(500).json({ error: error.message });
         console.log('failed to delete user')
+        return res.status(500).json({ error: error.message });
     }
 
     finally {
@@ -195,7 +199,8 @@ function authenticate(req, res, next) {
     const decoded = verifyToken(token);
     req.userId = decoded.userId;
     next();
-  } catch (error) {
+  } 
+  catch (error) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 }

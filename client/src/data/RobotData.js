@@ -1,48 +1,68 @@
 
-import { ColorsGreen, ColorsBlue } from "../constants/palet";
+import { ColorsGreen, ColorsBlue, ColorsTile } from "../constants/palet";
 
+const iconColors = [ColorsGreen.green1000,  ColorsTile.mathematics]
+const textColors = [ColorsGreen.green100,  ColorsTile.mathematics]
 
 export const robotData = 
     [
         {
-            color: [ColorsGreen.green100, ColorsBlue.blue100],
-            iconColor: [ColorsGreen.green900,  ColorsBlue.blue900],
-            textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
+            iconColor: iconColors,
+            textColor: textColors,
             type: "Connect",
             icon: 'key',
             id: 1,
         }, 
         {
-            color: [ColorsGreen.green500,  ColorsBlue.blue700],
-            iconColor: [ColorsGreen.green900,  ColorsBlue.blue900],
-            textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
+            iconColor: iconColors,
+            textColor: textColors,
             type: "Controll Robot",
             icon: 'game-controller',
             id: 2,
         }, 
         {
-            color: [ColorsGreen.green400,  ColorsBlue.blue700],
-            iconColor: [ColorsGreen.green900,  ColorsBlue.blue900],
-            textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
+            iconColor: iconColors,
+            textColor: textColors,
             type: "Lidar",
             icon: 'scan-circle-sharp',
             id: 3,
         },
         {
-            color: [ColorsGreen.green100,  ColorsBlue.blue100],
-            iconColor: [ColorsGreen.green700,  ColorsBlue.blue900],
-            textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
+            iconColor: iconColors,
+            textColor: textColors,
             type: "Sonar",
             icon: 'wifi-outline',
             id: 4,
         },
         {
-            color: [ColorsGreen.green100,  ColorsBlue.blue100],
-            iconColor: [ColorsGreen.green700,  ColorsBlue.blue900],
-            textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
+            iconColor: iconColors,
+            textColor: textColors,
             type: "Autonomous Driving",
             icon: 'md-car',
-            id: 4,
-        }
+            id: 5,
+        },
+        {
+            iconColor: iconColors,
+            textColor: textColors,
+            type: "Robot Store",
+            icon: 'store',
+            id: 6,
+            differentDir: true
+        },
+        {
+            iconColor: iconColors,
+            textColor: textColors,
+            type: "Create \n Assignment",
+            icon: 'playlist-plus',
+            id: 7,
+            differentDir: true
+        },
+        {
+            iconColor: iconColors,
+            textColor: textColors,
+            type: "Leaderboard",
+            icon: 'stats-chart-outline',
+            id: 8,
+        },
     ]
 
