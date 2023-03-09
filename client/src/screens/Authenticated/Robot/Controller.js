@@ -1,10 +1,7 @@
-import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useContext, useState
  } from 'react'
-import {View, Text, StyleSheet, Alert} from 'react-native'
-import Icon from '../../../components/Icon'
+import {Alert} from 'react-native'
 import DriveLayout from '../../../components/robot/driving_on_command/DriveLayout';
-import { ColorsBlue } from '../../../constants/palet'
 import { CarContext } from '../../../store/car-context';
 
 import { SocketContext } from '../../../store/socket-context';
@@ -20,7 +17,7 @@ function Controller({navigation}) {
     function powerHandler() {
         setPower(!power);
         if (!power) {            
-            socketCtx.Command('', `cd Documents/LeBot/catkin_work && roslaunch driver_bot_cpp move_on_command.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration}`); //cd $(dirname $(find / -name catkin_work 2>/dev/null)) && roslaunch driver_bot_cpp driving_on_command.launch 
+            socketCtx.Command('', `cd Documents/LeBot/catkin_work && roslaunch driver_bot_cpp move_on_command.launch vel_max:=100 vel_ramp:=${carCtx.carProperties.acceleration}`); // ${carCtx.carProperties.speed} cd $(dirname $(find / -name catkin_work 2>/dev/null)) && roslaunch driver_bot_cpp driving_on_command.launch 
             return;
         }
         socketCtx.socket.emit('driveCommand', {command: "\x03"});

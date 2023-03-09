@@ -27,15 +27,17 @@ function Login() {
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
     const imagesCtx = useContext(ImagesContext);
     const carCtx = useContext(CarContext);
-    let loading = true;
 
     async function loginHandler({ email, password }) {
-
         setIsAuthenticating(true);
         try {
+            console.log('check')
             const userData = await login(email, password);
+            console.log('check 2')
             const userProfile = await getUserProfileDetails(userData.id);
+            console.log('check 3')
             const assignments = await getAllAssignments();
+            console.log('check 4')
             const assignmentDetails = await getAllAssignmentDetails(userData.id)
             const images = await getAllImages(userData.id);
             const carDetails = await getUserCarDetails(userData.id);
@@ -59,9 +61,9 @@ function Login() {
     }
 
 
-    if (isAuthenticating) {
-        return <LoadingOverlay message="Logging you in..." />;
-    }
+    // if (isAuthenticating) {
+    //     return <LoadingOverlay message="Logging you in..." />;
+    // }
 
     return (
         <LinearGradient colors = {[ColorsBlue.blue1200, ColorsBlue.blue1200]} style = {styles.outerContainer}>

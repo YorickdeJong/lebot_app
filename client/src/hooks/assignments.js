@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const url = `http://192.168.1.27:3000/api/v1/assignments`;
+//const url = `http://10.7.191.114:3000/api/v1/assignments`; //Passessese
+const url = `http://172.20.10.2:3000/api/v1/assignments`; //Iphone
 
 export async function getAssignments(title, assignment_number) {
     try{

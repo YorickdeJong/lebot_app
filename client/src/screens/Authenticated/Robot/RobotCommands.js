@@ -72,7 +72,7 @@ function Settings() {
             <ImageBackground
                 source={require('./../../../../assets/road-race-car-vintage-patent-blueprint-design-turnpike.jpg')} 
                 style={styles.backgroundImage}
-                imageStyle={{opacity: 0.20}}
+                imageStyle={{opacity: 0.18}}
                 >
                 <View style={styles.content}>
                     <FlatList 

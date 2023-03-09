@@ -16,8 +16,8 @@ const {
 
 const getAllUserProfiles = async (req, res) => {
 
+    const client = await pool.connect();
     try {
-        const client = await pool.connect();
         const { rows } = await client.query(getAllUserProfilesQuery);
         return res.status(200).json(rows);
     } 

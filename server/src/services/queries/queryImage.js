@@ -8,7 +8,7 @@ const getAllimagesQuery = `
 const getImageQuery = `
     SELECT * FROM images i
     INNER JOIN user_profile u ON u.id = i.user_profile_id
-    WHERE i.assignment_number = $1 AND u.id = $2;
+    WHERE i.assignment_number = $1 AND u.id = $2 AND i.title = $3;
     `; //we return image data and look for user id and assignment number
 
 

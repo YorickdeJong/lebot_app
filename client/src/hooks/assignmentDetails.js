@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const url = `http://192.168.1.27:3000/api/v1/assignmentDetails`;
+// const url = `http://10.7.191.114:3000/api/v1/assignmentDetails`; //Passessese
+const url = `http://172.20.10.2:3000/api/v1/assignmentDetails`; //Iphone
 
 export async function getAllAssignmentDetails(user_id) {
     console.log(`userID: ${user_id}`)

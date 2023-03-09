@@ -4,6 +4,7 @@ const http = require('http');
 const app = require('./app');
 const path = require('path');
 const socketsSSH = require('./routes/ssh/ssh.sockets')
+const socketsImages = require('./routes/images/image.socket')
 const io = require('socket.io')
 const Client = require('ssh2').Client;
 let sshClient = new Client();
@@ -22,7 +23,7 @@ const PORT = 3000
 const server = http.createServer(app)
 
 //Initiate Socket
-const ioSSH = io(server, {
+const ioConnect = io(server, {
     cors: {
         origin: '*',
         methods: ['GET', 'POST']
@@ -39,4 +40,5 @@ async function startServer() {
 }
 
 startServer()
-socketsSSH.listenToClientSSH(ioSSH, sshClient); 
+socketsSSH.listenToClientSSH(ioConnect, sshClient); 
+socketsImages.listenToClientImages(ioConnect);

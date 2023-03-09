@@ -50,6 +50,7 @@ const getUserImage = async (req, res) => {
             return res.status(400).json({error: 'Images for specific assignment do not exits'})
         }
         else {
+            io.emit('images', rows);
             return res.status(200).json(rows)
         }
     } 
