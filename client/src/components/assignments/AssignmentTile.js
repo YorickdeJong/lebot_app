@@ -30,24 +30,32 @@ function AssignmentTile ({onPress, title, subject, icon,
             colors = completionStatus ? colorDark : colorLight;
             currentStatus = carCtx.upgradeLog.Speed[id - 1] ? status[1] : ": €" + status[0]
             rewardColor = ColorsTile.blue700;
+            borderColor =  completionStatus ? ColorsTile.blue900 : ColorsTile.blue600;
+            shadowColor = ColorsBlue.blue900;
             break;
         case 'Acc':
             completionStatus = carCtx.upgradeLog.Acc[id - 1]
             colors = completionStatus ? colorDark : colorLight;
             currentStatus = carCtx.upgradeLog.Acc[id - 1] ? status[1] : (": €" + status[0]);
             rewardColor = ColorsPurple.purple700;
+            borderColor = completionStatus ? ColorsPurple.purple700 : ColorsPurple.purple600;
+            shadowColor = ColorsPurple.purple900;
             break;
         case 'Handling':
             completionStatus = carCtx.upgradeLog.Handling[id - 1]
             colors = completionStatus ? colorDark : colorLight;
             currentStatus = carCtx.upgradeLog.Handling[id - 1] ? status[1] : (": €" + status[0]);
             rewardColor = ColorsRed.red700;
+            borderColor = completionStatus ? ColorsRed.red700 : ColorsRed.red600;
+            shadowColor = ColorsRed.red900;
             break;
         case 'Wheels':
             completionStatus = carCtx.upgradeLog.Wheels[id - 1]
             colors = completionStatus ? colorDark : colorLight;
             currentStatus = carCtx.upgradeLog.Wheels[id - 1] ? status[1] : (": €" + status[0]);
             rewardColor = ColorsOrange.orange700;
+            borderColor = completionStatus ? ColorsOrange.orange800 : ColorsOrange.orange600;
+            shadowColor = ColorsOrange.orange900;
             break;
         case 'Physics':
             completionStatus = completionData.totalCompletedAssignments === completionData.totalAssignments;
@@ -56,14 +64,18 @@ function AssignmentTile ({onPress, title, subject, icon,
             currentStatus = completionStatus ? "COMPLETED" : ": €" + completionData.acquiredCurrency + "/" + completionData.totalCurrency;
             rewardColor = ColorsBlue.blue50;
             finishedAssignmentsColor = ColorsBlue.blue50;
+            borderColor = completionStatus ? ColorsBlue.blue800 : ColorsBlue.blue700;
+            shadowColor = ColorsBlue.blue900;
             break;
         case 'Mathematics': 
             completionStatus = completionData.totalCompletedAssignments === completionData.totalAssignments;
             completedAssignments = "Vol: " + completionData.totalCompletedAssignments + "/" + completionData.totalAssignments;
             colors = completionStatus ? colorDark : colorLight;
             currentStatus = completionStatus ? "COMPLETED" : ": €" + completionData.acquiredCurrency + "/" + completionData.totalCurrency;
-            rewardColor =  ColorsBlue.blue50;
-            finishedAssignmentsColor = ColorsBlue.blue50;
+            rewardColor = ColorsTile.mathematics;
+            finishedAssignmentsColor = ColorsTile.mathematics
+            borderColor = ColorsBlue.blue700;
+            shadowColor = ColorsBlue.blue900;
             break;
     }
 
@@ -87,7 +99,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             onPress={onPress}
             style={({
                 pressed
-            }) => [styles.tile, pressed && styles.pressed]}
+            }) => [styles.tile, {borderColor, shadowColor: shadowColor}, pressed && styles.pressed]}
         >
             <LinearGradient 
                 colors={colors} 
@@ -107,7 +119,7 @@ function AssignmentTile ({onPress, title, subject, icon,
 
                     <Text 
                         style={[styles.title, subject === "Physics" ? 
-                        {color: ColorsTile.blue200} : {color: colorText}]
+                        {color: ColorsBlue.blue50} : {color: colorText}]
                     }>
                         {title}
                     </Text>
@@ -116,14 +128,16 @@ function AssignmentTile ({onPress, title, subject, icon,
                     <Icon 
                         size={45}
                         color={subject === "Physics" ? 
-                            ColorsTile.blue200 : colorIcon}
+                            ColorsBlue.blue50 : colorIcon}
                         icon={icon}
                         differentDir={true}
                         onPress = {onPress}
                     />
                 </View>
                 <View style = {{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    {(!completionStatus) && <Icon 
+                    {/* Logic to display cash icon */}
+                    {(!completionStatus) && 
+                    <Icon 
                     icon="cash-multiple"
                     size = {12}
                     color = {rewardColor}
@@ -162,7 +176,6 @@ const styles = StyleSheet.create({
         marginTop: 15,
     },  
     tile: {
-        backgroundColor: ColorsBlue.blue200,
         height: 155,
         width: 100,
         marginHorizontal: 8,
@@ -170,10 +183,11 @@ const styles = StyleSheet.create({
         marginTop: 20,
         borderRadius: 4,
         elevation: 4, 
-        shadowColor: ColorsBlue.blue1200,
+        
         shadowOffset: {height: 1, width: 0},
-        shadowRadius: 7,
+        shadowRadius: 5,
         shadowOpacity: 0.7,
+        borderWidth: 0.9,
     },
     title: {
         marginTop: 6,

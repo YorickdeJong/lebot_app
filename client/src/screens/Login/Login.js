@@ -12,11 +12,13 @@ import { UserProfileContext } from "../../store/userProfile-context";
 import { AssignmentContext } from "../../store/assignment-context";
 import { getAllAssignments } from "../../hooks/assignments";
 import { ImagesContext } from "../../store/images-context";
-import { getAllImages } from "../../hooks/images";
+import { getAllImages } from "../../hooks/measurement_results";
 import { AssignmentDetailsContext } from "../../store/assignment-Details-context";
 import { getAllAssignmentDetails} from "../../hooks/assignmentDetails";
 import { CarContext } from "../../store/car-context";
 import { getUserCarDetails } from "../../hooks/carDetails";
+import { ChatContext } from "../../store/chat-context";
+import { getChatHistory } from "../../hooks/chatgpt";
 
 function Login() {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -27,20 +29,18 @@ function Login() {
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
     const imagesCtx = useContext(ImagesContext);
     const carCtx = useContext(CarContext);
+    const chatCtx = useContext(ChatContext);
 
     async function loginHandler({ email, password }) {
         setIsAuthenticating(true);
         try {
-            console.log('check')
             const userData = await login(email, password);
-            console.log('check 2')
             const userProfile = await getUserProfileDetails(userData.id);
-            console.log('check 3')
             const assignments = await getAllAssignments();
-            console.log('check 4')
             const assignmentDetails = await getAllAssignmentDetails(userData.id)
             const images = await getAllImages(userData.id);
             const carDetails = await getUserCarDetails(userData.id);
+            const chatHistory = await getChatHistory(userData.id, );
 
             authCtx.authenticate(userData.token);
             userCtx.editUserProfile(userProfile);
@@ -48,6 +48,7 @@ function Login() {
             assignmentDetailsCtx.initializeAssignmentDetails(assignmentDetails)
             imagesCtx.initializeImages(images)
             carCtx.initializeCarDetails(carDetails)
+            chatCtx.initializeChatHistory(chatHistory)
         } 
 
         catch (error) {

@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useState, useEffect, useContext } from "react";
-import { useImages } from "../hooks/images";
+import { useImages } from "../hooks/measurement_results";
 import { UserProfileContext } from "./userProfile-context";
 
 export const ImagesContext = createContext({

@@ -12,7 +12,6 @@ import { SocketContext } from "../../../store/socket-context";
 
 function Settings() {
     const socketCtx = useContext(SocketContext)
-    const authCtx = useContext(AuthContext)
     const navigation = useNavigation()
 
     function settingsGrid(itemData) {
@@ -69,10 +68,10 @@ function Settings() {
     }
     return (
         <View style = {styles.backgroundColor}>
-            <ImageBackground
-                source={require('./../../../../assets/road-race-car-vintage-patent-blueprint-design-turnpike.jpg')} 
+            <ImageBackground 
+                source={require('./../../../../assets/chatbackground.png')} 
                 style={styles.backgroundImage}
-                imageStyle={{opacity: 0.18}}
+                imageStyle={{opacity: 0.15}}
                 >
                 <View style={styles.content}>
                     <FlatList 

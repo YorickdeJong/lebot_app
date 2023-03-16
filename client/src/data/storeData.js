@@ -4,7 +4,7 @@ import { ColorsGreen, ColorsBlue, ColorsTile,
     ColorsDarkerBronze, ColorsDarkerSilver, ColorsLighterGold, 
     ColorsDarkerDiamond, ColorsOrange, ColorsRed, ColorsPurple, 
     ColorsDarkerBlue, ColorsLightBlue, ColorsDarkerOrange, ColorsDarkerRed, 
-    ColorsDarkerPurple, ColorsDarkerGreen } from "../constants/palet";
+    ColorsDarkerPurple, ColorsDarkerGreen, colorRGB } from "../constants/palet";
 
 const iconColors = ColorsTile.blue500
 const textColors = ColorsTile.blue500
@@ -27,6 +27,10 @@ const ColorGold = convertColorObjectToArray(ColorsLighterGold);
 const ColorDarkerGold = convertColorObjectToArray(StoreColors);
 const ColorDiamond = convertColorObjectToArray(ColorsDiamond);
 const ColorDarkerDiamond = convertColorObjectToArray(ColorsDarkerDiamond);
+
+
+// const ColorDarkerOrange = colorRGB(ColorsOrange.orange1000, ColorsOrange.orange800, 10)
+// const ColorDarkerOrange = colorRGB(ColorsBlue.blue1000, ColorsBlue.blue700, 5)
 
 // orange, red, purple, blue, green
 const ColorOrange = convertColorObjectToArray(ColorsOrange);

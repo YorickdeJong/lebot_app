@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Image, StyleSheet, Text, View, Animated, FlatList } from "react-native"
-import { ColorsTile } from "../../constants/palet"
+import { ColorsLighterGold, ColorsTile, StoreColors } from "../../constants/palet"
 import { ImagesContext } from "../../store/images-context";
 import Icon from "../Icon";
 
@@ -84,7 +84,7 @@ function ImageContainer({imageHeight, title, assignment_number, tokens}) {
             <View style = {[styles.borderNumber, {marginTop: 10}]}>
                 <Text style = {{marginLeft: 35}}></Text>
                 <Text style = {styles.questionNumber}>Robot Output Data</Text>
-                <Text style = {styles.questionNumber}>€{tokens}</Text>
+                <Text style = {styles.tokens}>€{tokens}</Text>
             </View>
 
             <View style={[styles.imageContainer]}>
@@ -108,7 +108,7 @@ function ImageContainer({imageHeight, title, assignment_number, tokens}) {
                         <View style = {{margin: 5}}>
                             <Icon 
                             icon = {index === currentIndex ? "ellipse-sharp" : "ellipse-outline"}
-                            color = {ColorsTile.blue200}
+                            color = {index === currentIndex ? ColorsLighterGold.gold900: ColorsTile.blue200}
                             size = {36} 
                             />
                         </View>
@@ -152,6 +152,11 @@ const styles= StyleSheet.create({
     },
     questionNumber: {
         color: ColorsTile.blue200,
+        textAlign: 'center',
+        fontSize: 24,
+    },
+    tokens: {
+        color: ColorsLighterGold.gold900,
         textAlign: 'center',
         fontSize: 24,
     },

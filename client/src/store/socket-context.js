@@ -9,6 +9,8 @@ export const SocketContext = createContext({
     isConnected: false,
     os: '',
     isLoading: false, 
+    power: false,
+    isMeasurementStarted: false,
     CreateSocketConnection: (socket) => {},
     Connect: () => {},
     Disconnect: () => {},
@@ -16,7 +18,8 @@ export const SocketContext = createContext({
     responseOutput: (output) => {},
     responseDir: (dir) => {},
     OS: (os) => {},
-    Loading: (loading) => {}
+    Loading: (loading) => {},
+    setIsMeasurementStarted: (isMeasurementStarted) => {},
 })
 
 
@@ -28,6 +31,8 @@ function SocketContextProvider({children}) {
     const [dir, setDir] = useState('');
     const [os, setOs] = useState('')
     const [isLoading, setIsLoading] = useState(false);
+    const [power, setPower] = useState(false); 
+    const [isMeasurementStarted, setIsMeasurementStarted] = useState(false);
 
     const SOCKET_SERVER_URL = 'http://172.20.10.2:3000'
     
@@ -66,12 +71,23 @@ function SocketContextProvider({children}) {
         }
     }
 
+    function listenForStartScript() { //in useEffect in chartContext
+        if (!isMeasurementStarted){
+            socket.on('measurementStarted', (data) => {
+                console.log(`DATA MESSAGE: ${data.message}`)
+                if(data.message === 'Measurement started') {
+                    console.log('Measurement Started, DATA RECEIVED')
+                    setIsMeasurementStarted(true)
+                }
+            }) 
+        }
+    }
+
     function Command(inputType, command) {
         try {
             socket.emit('command', {command: command}) //TODOProblem
             socket.on('terminalOutput', (data) => {
                 if (data) {
-                    console.log(data.data)
                     switch(inputType) {
                         case 'cd' || 'cdBack':
                             if (data.data.includes('@') && 
@@ -145,23 +161,27 @@ function SocketContextProvider({children}) {
     //Sockets have to be app state wide 
     useEffect(() => {
         if (socket) {
-           socket.on('connection', () => {
+            socket.on('connection', () => {
                 console.log('Connected to server');
-            });
+                });
 
-            socket.on('sshConnectionStatus', (data) => {
-            if (data && data.connected) {
-                console.log('SSH connection established Frontend');
-                setIsConnected(data.connected)
-            } 
-            else {
-                console.error('Failed to establish SSH connection');
-                Disconnect();
+                socket.on('sshConnectionStatus', (data) => {
+                    if (data && data.connected) {
+                        console.log('SSH connection established Frontend');
+                        setIsConnected(data.connected)
+                    } 
+                    else {
+                        console.error('Failed to establish SSH connection');
+                        Disconnect();
+                    }
+                });
+            if (!isMeasurementStarted){
+                listenForStartScript();
             }
-            });
-
         };
+        
     }, [socket]);
+    
 
     const value = {
         socket: socket,
@@ -170,6 +190,8 @@ function SocketContextProvider({children}) {
         isConnected: isConnected,
         os: os,
         isLoading: isLoading,
+        power,
+        isMeasurementStarted,
         CreateSocketConnection: CreateSocketConnection,
         Connect: Connect,
         Disconnect: Disconnect,
@@ -178,6 +200,8 @@ function SocketContextProvider({children}) {
         responseDir: responseDir,
         OS: OS,
         Loading: Loading,
+        setPower,
+        setIsMeasurementStarted,
     } 
 
     return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

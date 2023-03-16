@@ -4,7 +4,6 @@ const http = require('http');
 const app = require('./app');
 const path = require('path');
 const socketsSSH = require('./routes/ssh/ssh.sockets')
-const socketsImages = require('./routes/images/image.socket')
 const io = require('socket.io')
 const Client = require('ssh2').Client;
 let sshClient = new Client();
@@ -34,11 +33,10 @@ const ioConnect = io(server, {
 //Start Server and socket
 async function startServer() {
     
-    server.listen(PORT, () => {
+    server.listen(PORT, (w) => {
         console.log(`listening on port ${PORT}...`)
     })
 }
 
 startServer()
 socketsSSH.listenToClientSSH(ioConnect, sshClient); 
-socketsImages.listenToClientImages(ioConnect);

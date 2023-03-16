@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, TouchableOpacity, Text, ImageBackground, View, Image } from 'react-native';
-import { NavigationContainer, DefaultTheme, useNavigation, StackActions } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, useNavigation, StackActions, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useContext, useEffect, useState } from 'react';
@@ -37,10 +37,16 @@ import CarContextProvider from './src/store/car-context';
 import AssignmentContextProvider, { AssignmentContext } from './src/store/assignment-context';
 import ImagesContextProvider from './src/store/images-context';
 import AssignmentDetailsContextProvider from './src/store/assignment-Details-context';
+import ChatGPT from './src/screens/chatgpt/Chatgpt';
+import ChatContextProvider, { ChatContext } from './src/store/chat-context';
+import Chats from './src/screens/chatgpt/ChatsList';
+import ChartContextProvider from './src/store/chart-context';
 
 //test
 const Stack = createNativeStackNavigator()
 const Bottom = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
 const colors = [
       ColorsDarkestBlue.blue1000, ColorsDarkestBlue.blue900,
       ColorsDarkestBlue.blue800, ColorsDarkestBlue.blue700,
@@ -51,6 +57,73 @@ const colors = [
 const locations = colors.map(
     (_, index) => index / (colors.length - 1)
 );
+
+
+function Chat() {
+  const navigation = useNavigation();
+  const chatCtx = useContext(ChatContext);
+  const thread_id = chatCtx.thread_ids.length
+
+  const {description, title} = chatCtx.getDescriptionsForThreadId(chatCtx.currentThreadId)
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: 'white',
+        headerBackground: () => (
+          <LinearGradient
+            colors={colors}
+            style={{ flex: 1 }}
+            locations={locations}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+          />
+        ),
+        headerRight: ({tintColor}) => {
+            return (
+              <Icon 
+              size = {24}
+              icon = "settings-sharp"
+              color = {tintColor}
+              addStyle = {{marginRight: 15}}
+              onPress={() => 
+                navigation.navigate('Settings')}/>
+          )},
+
+        headerLeft: ({tintColor}) => {
+          return (
+            <Icon 
+            size = {24}
+              icon = "chatbubbles"
+              color = {tintColor}
+              addStyle = {{marginLeft: 15}}
+              onPress={() => 
+                navigation.navigate('Chats')}/> // add component Drawer here
+          )},
+        }}>
+
+          <Stack.Screen 
+          component={Chats}
+          name = "Chats"
+          options = {{
+            title: 'Chat Threads',
+            showListIcon: false,
+          }}
+          />
+
+        <Stack.Screen 
+        component={ChatGPT}
+        name = "Chat"
+        options= {{
+          title: title  
+        }}
+        initialParams={{ thread_id }}
+        />
+
+    </Stack.Navigator>
+  )
+}
+
 
 function Robot () {
   const colorCtx = useContext(ColorContext);
@@ -223,7 +296,7 @@ function Assignments() {
 function BottomMenu() {
   const colorCtx = useContext(ColorContext)
   const navigation = useNavigation()
-
+  const chatCtx = useContext(ChatContext)
 
   return (
       <Bottom.Navigator
@@ -285,6 +358,26 @@ function BottomMenu() {
           headerShown: false
       }}
       />
+
+      <Bottom.Screen 
+      component={Chat}
+      name = "ChatGPT"
+      options={{
+          title: `Chatgpt`,
+          tabBarIcon: ({color}) => {
+            return (
+              <Icon 
+              size = {24}
+              icon = "robot-happy-outline"
+              color = {color}
+              addStyle = {{marginRight: 0}}
+              onPress={() => navigation.replace('Chats')}
+              differentDir/>
+            )
+          },
+          headerShown: false
+      }}
+      />
       
       <Bottom.Screen 
       component={Assignments}
@@ -304,7 +397,8 @@ function BottomMenu() {
           headerShown: false
       }}
       />
-      
+
+
     </Bottom.Navigator>
   );
 }
@@ -317,7 +411,7 @@ function Authorized() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: colorCtx.isBlue ? ColorsGreen.green1200: ColorsBlue.blue1200 },
+        headerStyle: { backgroundColor: ColorsBlue.blue1200 },
         headerTintColor: 'white',
       }}
     >
@@ -555,23 +649,27 @@ export default function App() {
   return (
     <>
     <StatusBar style="light" />
-    <AssignmentDetailsContextProvider>
-      <ImagesContextProvider>
-        <AssignmentContextProvider>
-            <SocketContextProvider>
-              <UserProfileContextProvider>
-                <CarContextProvider>
-                <ColorContextProvider>
-                  <AuthContextProvider>
-                    <Root />
-                  </AuthContextProvider>
-                </ColorContextProvider>
-                </CarContextProvider>
-              </UserProfileContextProvider>
-            </SocketContextProvider>
-        </AssignmentContextProvider>
-      </ImagesContextProvider>
-    </AssignmentDetailsContextProvider>
+    <UserProfileContextProvider>
+      <SocketContextProvider>
+      <ChatContextProvider>
+        <AssignmentDetailsContextProvider>
+          <ChartContextProvider>
+            <ImagesContextProvider>
+              <AssignmentContextProvider>
+                  <CarContextProvider>
+                    <ColorContextProvider>
+                      <AuthContextProvider>
+                        <Root />
+                      </AuthContextProvider>
+                    </ColorContextProvider>
+                  </CarContextProvider>
+              </AssignmentContextProvider>
+            </ImagesContextProvider>
+          </ChartContextProvider>
+        </AssignmentDetailsContextProvider>
+      </ChatContextProvider>
+    </SocketContextProvider>
+    </UserProfileContextProvider>
     </>
   );
 }

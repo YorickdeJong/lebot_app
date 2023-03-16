@@ -1,6 +1,7 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useContext, useEffect } from 'react';
 import { SocketContext } from '../../store/socket-context';
+import { ColorsBlue } from '../../constants/palet';
 
 function LoadingOverlay({ message }) {
   const socketCtx = useContext(SocketContext)
@@ -27,7 +28,9 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   message: {
-    fontSize: 16,
+    fontSize: 20,
+    color: ColorsBlue.blue200,
+    textAlign: 'center',
     marginBottom: 12,
   },
 });

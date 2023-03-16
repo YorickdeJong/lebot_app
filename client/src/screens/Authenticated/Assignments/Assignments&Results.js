@@ -31,11 +31,15 @@ function AssignmentsResults() {
     return (
         <View style = {styles.backgroundColor}>
         <ImageBackground
-            source={require('./../../../../assets/grid.jpg')} 
+            // source={require('./../../../../assets/grid.jpg')} 
+            source={require('./../../../../assets/chatbackground.png')} 
+            // source={require('./../../../../assets/grid.jpg')} 
+            // source={require('./../../../../assets/grid.jpg')} 
+            // source={require('./../../../../assets/equations4.jpg')} 
             style={
             styles.backgroundImage
             }
-            imageStyle={{opacity: 0.4}}
+            imageStyle={{opacity: 0.18}}
         >
             <Text style={[styles.text, {marginTop: 20}]}>Natuurkunde Vragen</Text>
             <FlatList 
@@ -92,6 +96,6 @@ const styles = StyleSheet.create({
     },
     backgroundColor: {
         flex: 1,
-        backgroundColor: ColorsBlue.blue1100
+        backgroundColor: ColorsBlue.blue1200
     }
 })

@@ -64,7 +64,6 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
                                     }
                                     break;
                             }
-                            console.log(carCtx.carProperties.speed)
                         }
                         catch(err)
                         {

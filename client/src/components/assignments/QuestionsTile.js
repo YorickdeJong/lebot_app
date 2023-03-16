@@ -4,7 +4,7 @@ import { useEffect, useState, useRef} from "react";
 import { ImageBackground,  StyleSheet, Animated, Keyboard} from "react-native";
 import { ScrollView} from "react-native-gesture-handler";
 
-import { ColorsDarkestBlue, ColorsTile } from "../../constants/palet";
+import { ColorsBlue, ColorsDarkestBlue, ColorsTile } from "../../constants/palet";
 import ImageContainer from "./ImageContainer";
 import QuestionContainer from "./QuestionContainer";
 
@@ -57,13 +57,9 @@ function QuestionsTile({assignmentNumber, assignmentTopic}) {
         }
     }, []);
   
-
-  
-
-
     return (
         <LinearGradient
-            colors={[ColorsDarkestBlue.blue1000, ColorsDarkestBlue.blue700, ColorsDarkestBlue.blue1000]}
+            colors={[ColorsBlue.blue1300, ColorsBlue.blue1200, ColorsBlue.blue1300]}
             style={{ flex: 1 }}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -73,7 +69,7 @@ function QuestionsTile({assignmentNumber, assignmentTopic}) {
                 style={
                 {flex: 1, resizeMode: 'contain'}
                 }
-                imageStyle={{opacity: 0.13}}
+                imageStyle={{opacity: 0.15}}
             >
                 <BlurView intensity={2} >
                     <ScrollView

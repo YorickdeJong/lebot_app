@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
-import { ColorsBlue, ColorsTile } from "../../constants/palet"
+import { ColorsBlue, ColorsGray, ColorsTile } from "../../constants/palet"
 import { AssignmentDetailsContext } from "../../store/assignment-Details-context";
 import { CarContext } from "../../store/car-context";
 import { UserProfileContext } from "../../store/userProfile-context";
@@ -98,7 +98,7 @@ const styles= StyleSheet.create({
         fontSize: 24,
     },
     question: {
-        color: ColorsTile.blue200,
+        color: ColorsGray.gray200,
         textAlign: 'flex-start',
         margin: 20,
         fontSize: 16,
