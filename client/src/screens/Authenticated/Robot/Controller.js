@@ -19,7 +19,7 @@ function Controller({navigation}) {
     function powerHandler() {
         socketCtx.setPower(!socketCtx.power);
         if (!socketCtx.power) {            
-            socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp move_on_command.launch vel_max:=${velMax} vel_ramp:=${velRamp}`); // ${carCtx.carProperties.speed} cd $(dirname $(find / -name catkin_work 2>/dev/null)) && roslaunch driver_bot_cpp driving_on_command.launch 
+            socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${velMax} vel_ramp:=${velRamp}`); // ${carCtx.carProperties.speed} cd $(dirname $(find / -name catkin_work 2>/dev/null)) && roslaunch driver_bot_cpp driving_on_command.launch 
             return;
         }
         socketCtx.socket.emit('driveCommand', {command: "\x03"});
