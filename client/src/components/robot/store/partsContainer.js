@@ -6,7 +6,7 @@ import PartsButton from "./partsButton"
 
 
 
-function PartsContainer({backgroundColors}){
+function PartsContainer({backgroundColors, borderColors}){
     function renderParts(itemData) {
         function onPressHandler() {
             console.log(`Bought Part ${itemData.item}`)
@@ -21,7 +21,7 @@ function PartsContainer({backgroundColors}){
     }
     
     return(
-        <BlurView intensity={3} style={[styles.parts, {backgroundColor: backgroundColors}]}>
+        <BlurView intensity={3} style={[styles.parts, {backgroundColor: backgroundColors, borderColor: borderColors}]}>
             <Text style = {styles.text}>Parts</Text>
             <View style = {styles.flatList}>
                 <FlatList 
@@ -44,7 +44,8 @@ const styles = StyleSheet.create({
         backgroundColor: ColorsTile.blue900,
         borderRadius: 5, 
         margin: 10,
-        alignItems: 'center' 
+        alignItems: 'center' ,
+        borderWidth: 0.9
     },
     text: {
         color: "white",

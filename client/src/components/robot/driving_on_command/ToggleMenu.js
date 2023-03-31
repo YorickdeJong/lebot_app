@@ -3,16 +3,21 @@ import Icon from "../../Icon"
 import { ColorsBlue } from "../../../constants/palet"
 import { LinearGradient } from "expo-linear-gradient"
 import { BlurView } from 'expo-blur';
-import { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ChartToggle from "./chartToggle";
 import { ChartContext } from "../../../store/chart-context";
 
 
 
-function ToggleMenu({toggleModal, isStopActive, headerHeight}) {
+function ToggleMenu({toggleModal, isStopActive, headerHeight, displayNumber}) {
     const chartCtx = useContext(ChartContext)
 
+    useEffect(() => {
+        chartCtx.setTrueCount(Object.values(chartCtx.chartToggle).filter(value => value === true).length - 4); //minus 1 here since time is always true
+    }, [chartCtx.chartToggle])
+
+    
     const toggleChartSettings = (input) => {
         switch(input){
             case 's-t':
@@ -33,7 +38,7 @@ function ToggleMenu({toggleModal, isStopActive, headerHeight}) {
     return (
         <Modal 
         visible={isStopActive} 
-        animationType="slide"
+        animationType="fade"
         transparent>
             <BlurView style={styles.modalContainer} intensity={20}>
                 <LinearGradient 
@@ -68,17 +73,18 @@ function ToggleMenu({toggleModal, isStopActive, headerHeight}) {
                             toggleChartSettings = {toggleChartSettings.bind(this, 'v-t')}
                             />
 
-                            <ChartToggle 
+                            {/* Display forces and energy in 2nd and 3rd assignment */}
+                            {displayNumber == 2 && <ChartToggle 
                             graphName = "F-s graph:"
                             toggleChart = {chartCtx.chartToggle.F_s}
                             toggleChartSettings = {toggleChartSettings.bind(this, 'F-s')}
-                            />
+                            />}
                             
-                            <ChartToggle 
+                            {displayNumber == 3 && <ChartToggle 
                             graphName = "E-t graph:"
                             toggleChart = {chartCtx.chartToggle.E_t}
                             toggleChartSettings = {toggleChartSettings.bind(this, 'E-t')}
-                            />
+                            />}
                             </View>
                         </View>
 
@@ -89,7 +95,7 @@ function ToggleMenu({toggleModal, isStopActive, headerHeight}) {
     )
 }
 
-export default ToggleMenu
+export default React.memo(ToggleMenu)
 
 const styles = StyleSheet.create({
     icon: {

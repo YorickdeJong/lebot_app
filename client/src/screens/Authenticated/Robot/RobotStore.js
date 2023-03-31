@@ -25,9 +25,9 @@ function RobotStore() {
     return (
     <View style = {styles.outerContainer}>
         <LinearGradient
-                colors={colors}
+                colors={[ColorsBlue.blue1300, ColorsBlue.blue1100]}
                 style={{ flex: 1 }}
-                locations={locations}
+                // locations={locations}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
@@ -36,7 +36,7 @@ function RobotStore() {
                 style={
                 {flex: 1, resizeMode: 'contain'}
                 }
-                imageStyle={{opacity: 0.13}}
+                imageStyle={{opacity: 0.1}}
             >
             <ScrollView style = {{flex: 1}}
             showsVerticalScrollIndicator={false}>
@@ -47,28 +47,37 @@ function RobotStore() {
                 data = {speedData}
                 Completed = {true}
                 backgroundColors = 'rgba(49, 82, 143, 0.3)'
+                borderColors = {ColorsTile.blue700}
                 />
             
                 <UpgradeContainer 
                 upgradeType = "Acc"
                 data = {accelData}
                 Completed = {false}
-                backgroundColors = 'rgba(105, 45, 105, 0.45)'/>
+                backgroundColors = 'rgba(105, 45, 105, 0.45)'
+                borderColors = {ColorsPurple.purple700}
+                />
 
                 <UpgradeContainer 
                 upgradeType = "Handling"
                 data = {handlingData}
                 Completed = {true}
-                backgroundColors = 'rgba(150, 49, 49, 0.4)'/>
+                backgroundColors = 'rgba(150, 49, 49, 0.4)'
+                borderColors = {ColorsRed.red700}
+                />
 
                 <UpgradeContainer 
                 upgradeType = "Wheels"
                 data = {wheelsData}
                 Completed = {false}
-                backgroundColors = 'rgba(140, 75, 45, 0.45)'/>
+                backgroundColors = 'rgba(140, 75, 45, 0.45)'
+                borderColors = {ColorsOrange.orange700}
+                />
 
                 <PartsContainer 
-                backgroundColors = 'rgba(42, 77, 12, 0.35)'/>
+                backgroundColors = 'rgba(42, 77, 12, 0.35)'
+                borderColors = {ColorsGreen.green700}
+                />
 
             </View>
             </ScrollView>
@@ -88,6 +97,8 @@ const styles = StyleSheet.create({
     },
 
     outerContainer: {
-        flex: 1
+        flex: 1,
+        borderTopColor: ColorsBlue.blue900,
+        borderTopWidth: 1,
     }
 })

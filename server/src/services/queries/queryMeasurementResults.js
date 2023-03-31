@@ -20,10 +20,9 @@ const getLatestMeasurementResultQuery = `
 
 
 const createMeasurementResultQuery = `
-  INSERT INTO measurement_results (assignment_number, distance, distance_force, force, energy, 
-        velocity, time, time_velocity, time_energy, 
-        user_id, title, type, record_number)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+  INSERT INTO measurement_results (assignment_number, distance, force, energy, 
+        velocity, time, user_id, title, type, motor_number, record_number)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
   RETURNING *;
 `;
 
@@ -32,28 +31,27 @@ const updateMeasurementResultQuery = `
   UPDATE measurement_results SET
   assignment_number=$1,
   distance=$2,
-  distance_force=$3,
-  force=$4,
-  energy=$5,
-  velocity=$6,
-  time=$7,
-  time_velocity=$8,
-  time_energy=$9,
-  user_id=$10,
-  title=$11,
-  type=$12
-  WHERE record_number=$13
+  force=$3,
+  energy=$4,
+  velocity=$5,
+  time=$6,
+  user_id=$7,
+  title=$8,
+  type=$9,
+  motor_number=$10
+  WHERE record_number=$11
   RETURNING *;
 `;
 
 const existInDatabaseQuery = `
-    SELECT * FROM measurement_results WHERE record_number = $1
+  SELECT * FROM measurement_results WHERE record_number = $1
 `;
 
 
 const deleteMeasurementResultQuery = `
-  DELETE FROM measurement_results WHERE id=$1 RETURNING *;
+  DELETE FROM measurement_results WHERE record_number=$1 RETURNING *;
 `;
+
   module.exports = {
     getAllMeasurementResultsQuery,
     getSpecificMeasurementResultQuery,

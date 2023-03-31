@@ -6,12 +6,6 @@ import LoadingOverlay from '../../../components/UI/LoadingOverlay'
 
 const SSHConnectionScreen = () => {
     const socketCtx = useContext(SocketContext);
-    const [loading, setLoading] = useState(false);
-
-    // Call CreateConnection on mount
-    useEffect(() => {
-        socketCtx.CreateSocketConnection();
-    }, []);
 
     const handleConnect = (inputType, input) => {
         switch(inputType) {
@@ -38,4 +32,4 @@ const SSHConnectionScreen = () => {
     );
 };
 
-export default SSHConnectionScreen
+export default React.memo(SSHConnectionScreen)

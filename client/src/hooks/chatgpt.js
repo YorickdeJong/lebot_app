@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-//const url = `http://10.7.191.114:3000/api/v1/chatgpt`; //Passessese
-const url = `http://172.20.10.2:3000/api/v1/chatgpt`; //Iphone
+const url = `http://10.7.191.114:3000/api/v1/chatgpt`; //Passessese
+// const url = `http://172.20.10.2:3000/api/v1/chatgpt`; //Iphone
 
 
 // In the response of the post request, the answer of chatgpt is stored in the data field

@@ -22,7 +22,7 @@ export const SocketContext = createContext({
     setIsMeasurementStarted: (isMeasurementStarted) => {},
 })
 
-
+//N.B. EVERY COMPONENT THAT USES SOCKET WILL NEED TO BE WRAPPED IN A REACT.MEMO, OTHERWISE IT WILL CAUSE LARGE AMOUNTS OF UNNECESSARY RERENDERS
 
 function SocketContextProvider({children}) {
     const [socket, setSocket] = useState(null);
@@ -34,8 +34,15 @@ function SocketContextProvider({children}) {
     const [power, setPower] = useState(false); 
     const [isMeasurementStarted, setIsMeasurementStarted] = useState(false);
 
-    const SOCKET_SERVER_URL = 'http://172.20.10.2:3000'
+    const SOCKET_SERVER_URL = 'http://10.7.191.114:3000' // iphone: 'http://172.20.10.2:3000'
     
+
+    // Call CreateConnection on mount
+    useEffect(() => {
+        CreateSocketConnection();
+    }, []);
+
+
     function CreateSocketConnection() {
         setSocket(io(SOCKET_SERVER_URL))
     }
@@ -168,7 +175,9 @@ function SocketContextProvider({children}) {
                 socket.on('sshConnectionStatus', (data) => {
                     if (data && data.connected) {
                         console.log('SSH connection established Frontend');
-                        setIsConnected(data.connected)
+                        if (socket.connected){
+                            setIsConnected(data.connected);
+                        }
                     } 
                     else {
                         console.error('Failed to establish SSH connection');

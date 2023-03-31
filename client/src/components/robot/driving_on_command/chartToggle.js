@@ -3,10 +3,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { ColorsBlue } from "../../../constants/palet";
 
 
-function ChartToggle({graphName, toggleChart, toggleChartSettings}){
+function ChartToggle({graphName, toggleChart, toggleChartSettings, extraStyle}){
     return(
 
-            <View style = {styles.textContainer}>
+            <View style = {[styles.textContainer, {...extraStyle}]}>
                 <Text style = {styles.text}>{graphName}</Text>
                 <TouchableOpacity onPress={toggleChartSettings}>
                     <View style={styles.stopContainer}>

@@ -1,181 +1,277 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { LineChart, YAxis, XAxis, Grid } from 'react-native-svg-charts';
-import { ColorsBlue, ColorsRed } from "../../../constants/palet";
-import { Rect, Circle } from 'react-native-svg';
-import { LinearGradient } from "expo-linear-gradient";
-import { ChartContext } from "../../../store/chart-context";
+import { LineChart, YAxis, XAxis, Grid, ChartContext } from 'react-native-svg-charts';
+import { ColorsBlue, ColorsBrownWood, ColorsGreen, ColorsLighterGold, ColorsPurple, ColorsRed } from "../../../constants/palet";
+import { Circle } from 'react-native-svg';
+import { Path } from "react-native-svg";
+import * as shape from 'd3-shape';
+import * as d3 from 'd3';
+import { Legend } from "./ChartAccesories/Legend";
+import { BlurView } from "expo-blur";
+//-----------------------------------------------------------------//
+//N.B. DO NOT IMPORT CHARTCONTEXT HERE, IT WILL CAUSE many rerenders!
+//-----------------------------------------------------------------//
+
+const ColorPoints = [ColorsRed.red700, ColorsPurple.purple600,  ColorsGreen.green900, ColorsBrownWood.wood500]
 
 
-function GraphDisplay({dataType, yData, xData, chartHeight}) {
-    const chartCtx = useContext(ChartContext);
-    const newChartData = useMemo(() => xData.map((x, index) => ({ x, y: yData[index] })), [xData, yData]);
-    // const [chartData, setChartData] = useState(newChartData);
-    // console.log(`new chart ${newChartData}`)
+
+function GraphDisplay({
+    dataType,
+    data,
+    chartHeight,
+    finalPlot,
+    trueCount,
+    padding,
+    motorNumber,
+    legend
+}) {
+    const [chartData, setChartData] = useState([]);
+    let {xData, yData} = data;
+    const numberOfTicks = 8;
+    const {title, xlabel, ylabel} = getTitleXLabelYLabel(dataType)
+
+    console.log(`CHECK GRAPHDISPLAY`)
+
+    // Update chart data whenever xData or yData change
+    useEffect(() => {
+        setChartDataHandler();
+    }, [data, finalPlot]);
+
+    const setChartDataHandler = useCallback(() => {
+        const flattenData = (xData, yData) => {
+            let flattened = [];
+
+            yData.map((yArr, yArrIndex) => {
+                let lineData = [];
+                yArr.map((y, index) => {
+                    lineData.push({
+                        x: xData[index],
+                        y,
+                    });
+                });
+                flattened.push(lineData);
+            });
+
+            return flattened;
+        };
+
+        if (chartData.length === 0) {
+            setChartData(flattenData(xData, yData));
+        }
+
+        setChartData((prevData) => {
+            const newData = flattenData(xData, yData);
+
+            // Initialize prevData if it's empty or contains uninitialized elements
+            if (prevData[0].length === 0 || prevData.some((prevLineData) => prevLineData === undefined)) {
+                return newData;
+            }
+            // Check if the newData arrays contain any new points
+            const hasNewDataPoints = newData.some((newLineData, i) => newLineData.length !== prevData[i].length);
+
+            // If there are no new data points, return the prevState unchanged
+            if (!hasNewDataPoints) {
+                return prevData;
+            }
+
+            // Update each line with new data
+            return prevData.map((prevLineData, i) => {
+                const latestTimestamp = newData[i].length > 0 ? newData[i][newData[i].length - 1].x : 0;
+
+                const filterOldData = (arr) =>
+                    arr.filter((obj) => latestTimestamp - obj.x <= 60);
+
+                return [...filterOldData(prevLineData), ...newData[i].slice(prevLineData.length)];
+            });
+        });
+
+    }, [xData, yData, finalPlot]);
+
+    const findBroadestRange = (data2D) => {
+        let min = Infinity;
+        let max = -Infinity;
+
+        // Flatten the data array
+        const flattenedData = data2D.reduce((acc, curr) => acc.concat(curr), []);
+
+        // Find min and max
+        min = Math.min(...flattenedData);
+        max = Math.max(...flattenedData);
+
+        return { min, max };
+    };
+
+    const { min: yMin, max: yMax } = findBroadestRange(yData);
 
 
-    // useEffect(() => {
-    //     // Add new data points to the chart data
-    //     setChartData(prevChartData => ({
-    //         ...prevChartData,
-    //         [dataType]: [...prevChartData[dataType], ...newChartData],
-    //     }));
-    // }, [newChartData]);
+    // Calculate lines for plot
+    const Lines = ({x, y}) => {
+        const line = shape
+        .line()
+        .x((d) => x(d.x))
+        .y((d) => y(d.y))
 
-    
-    let title, xlable, ylable;
-    switch(dataType){
-        case "distance":
-            title = "s-t graph";
-            xlable = " t";
-            ylable = " s";
-            break;
-        case "speed":
-            title = "v-t graph";
-            xlable = " t";
-            ylable = " v";
-            break;
-        case "force":
-            title = "f-s graph";
-            xlable = " s";
-            ylable = " N";
-            break;
-        case "energy":
-            title = "E-t graph";
-            xlable = " t";
-            ylable = " J";
-            break;
-    }
+        return chartData.map((data, index) => {
+            const color = ColorPoints[motorNumber[index] - 1];
 
-    const numberOfTicks = 7;
-    const xDataordered = xData.sort((a, b) => a - b);
+            return (
+                <Path
+                    key={`extra-${index}`}
+                    d={line(data)}
+                    stroke={color}
+                    strokeWidth={2}
+                    fill="none"
+                />
+            );
+        });
+    };
 
-    const Decorator = ({ x, y, data }) => {
-        //scales data point radius to amount of datapoints
-        const maxRadius = 15/ (chartCtx.trueCount ** 0.8);
-        const radius = Math.min(maxRadius, maxRadius / Math.sqrt(data.length));
+    const Decorator = ({ x, y,}) => {
+        // Scales data point radius to the amount of datapoints
 
-        return data.map((value, index) => (
-            <Circle
-                key={index}
+        return chartData.map((data, index) => {
+            const maxRadius = 15 / (trueCount ** 0.8);
+            const radius = Math.min(maxRadius, maxRadius / Math.sqrt(data.length));
+            const color = ColorPoints[motorNumber[index] - 1]
+
+            return data.map((value, pointIndex) => (
+                <Circle
+                key={`${index}-${pointIndex}`}
                 cx={x(value.x)}
                 cy={y(value.y)}
                 r={radius}
-                stroke={ColorsRed.red500}
+                stroke={color}
                 fill={'white'}
-            />
-        ));
+                />
+            ));
+        })
     };
 
+    const legendItems = useMemo(() => [
+        motorNumber[0] && { label: `Motor ${motorNumber[0]}`, color: ColorPoints[motorNumber[0] - 1] },
+        motorNumber[1] && { label: `Motor ${motorNumber[1]}`, color: ColorPoints[motorNumber[1] - 1] },
+        motorNumber[2] && { label: `Motor ${motorNumber[2]}`, color: ColorPoints[motorNumber[2] - 1] },
+        motorNumber[3] && { label: `Motor ${motorNumber[3]}`, color: ColorPoints[motorNumber[3] - 1] },
+    ].filter(Boolean), [motorNumber]);
+    
+    if (chartData.length === 0){
+        return null;
+    } 
+
+
     return (
-        <LinearGradient 
-            style = {styles.graphContainer}
-            colors={[ColorsBlue.blue1200, ColorsBlue.blue1100]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-             >
-                <Text style={{ textAlign: 'center', fontSize: 16, fontWeight: 'bold', marginVertical: 8, color: ColorsBlue.blue50 }}>
+        <View style = {styles.graphContainer}>
+                <Text style={[styles.title, {paddingBottom: trueCount > 1 ? 5 : 0}]}>
                     {title}
                 </Text>
             <View style={{ flexDirection: 'row', height: chartHeight }}>
                 <View style={styles.YlableContainer}>
-                    <Text style = {[styles.Ylabel, chartCtx.trueCount === 1 && {marginRight: 5, fontSize: 14}]}>{ylable}</Text>
+                    <Text style = {[styles.Ylabel, trueCount === 1 && {marginRight: 5, fontSize: 14}]}>{ylabel}</Text>
                     <YAxis
-                    data={yData}
-                    contentInset={{top: 0, bottom: 40}}
+                    data={yData[0]} // Pass the first array just for axis range calculations
+                    contentInset={{top: 0, bottom: trueCount === 1 ? 40 : 30, top: 10 }}
                     svg={{ fontSize: 10, fill: ColorsBlue.blue50 }}
                     numberOfTicks={numberOfTicks}
                     formatLabel={(value) => `${value}`}
-                    yMin={Math.min(...yData)}
-                    yMax={Math.max(...yData)}
+                    yMin={yMin}
+                    yMax={yMax}
                     />
                 </View>
-                <View style={{ flex: 1, marginLeft: 10 }}>
+                <View style={{ flex: 1, marginLeft: 10,  }}>
                     <LineChart
-                        data={newChartData}
-                        svg={{ stroke: ColorsRed.red500 }}
-                        contentInset={{top: 0, bottom: 40, left: 5, right: 8}}
+                        data={chartData[0]} // Pass the first array just for axis range calculations
+                        contentInset={{ top: 0, left: 5, right: 8, bottom: 10, top: 5 }}
                         style={{ flex: 1 }}
-                        yMin={Math.min(...yData)}
-                        yMax={Math.max(...yData)}
-                        xMin={0}
-                        xMax={Math.max(...xData)}
-                        numberOfTicks={numberOfTicks}
+                        yMin={yMin}
+                        yMax={yMax}
+                        xMin={dataType == "force" ? Math.min(xData[0]) : xData[0][0]}
+                        xMax={dataType == "force" ? Math.max(xData[0]) : xData[0][0]}
+                        numberOfTicks = {numberOfTicks}
                         gridMinInterval={1}
                         gridMaxInterval={1}
                         animate={true}
-                        animationDuration={200}
-                        animationEasing={'ease-in-out'}
+                        animationDuration={100}
+                        animationEasing={"ease-in-out"}
                         showGrid={true}
                         xAccessor={({ item }) => item.x}
                         yAccessor={({ item }) => item.y}
                     >
-                    
-                    <Grid
-                    svg={{
-                        strokeOpacity: 0.5,
-                        strokeDasharray: '0',
-                        strokeWidth: 1,
-                        stroke: ColorsBlue.blue200
-                    }}
-                    belowChart={true}
-                    />
-                    <Decorator data={newChartData}/>
+                        <Grid
+                        svg={{
+                            strokeOpacity: 0.5,
+                            strokeDasharray: "0",
+                            strokeWidth: 1,
+                            stroke: ColorsBlue.blue200,
+                        }}
+                        belowChart={true}
+                        />
+                            <Lines />   
+                            <Decorator />
                     </LineChart>
+                    <BlurView intensity={10} style = {styles.legend}>
+                        {legend && <Legend items={legendItems} />}
+                    </BlurView>
+
                     <View style={styles.XlableContainer}>
                         <XAxis
-                            data={xDataordered}
+                            data={dataType === "force" ? xData[0] : xData}
                             contentInset={{ left: 5, right: 8 }}
                             svg={{ fontSize: 10, fill: ColorsBlue.blue50 }}
-                            numberOfTicks={5}
+                            numberOfTicks = {numberOfTicks}
                             formatLabel={(value, index) => value ? `${value}` : ''}
-                            xMin={0}
-                            xMax={xData[xData.length - 1]}
+                            xMin={dataType == "force" ? Math.min(xData[0]) : xData[0][0]}
+                            xMax={dataType == "force" ? Math.max(xData[0]) : xData[0][0]}
                             xAccessor={({ item }) => item}
                         />
-                        <Text style = {[styles.Xlabel, chartCtx.trueCount === 1 && {marginTop: 5, fontSize: 16}]}>{xlable}</Text>
+                        <Text style = {[styles.Xlabel, trueCount === 1 && {fontSize: 16}]}>{xlabel}</Text>
                     </View>
                 </View>
             </View>
-        </LinearGradient>
+        </View>
     );
-};
+}
+
+export default React.memo(GraphDisplay)
 
 
-
-
-export default GraphDisplay
+function getTitleXLabelYLabel(dataType) {
+    switch (dataType) {
+        case "distance":
+            return { title: "s-t graph", xlabel: " t", ylabel: " s" };
+        case "speed":
+            return { title: "v-t graph", xlabel: " t", ylabel: " v" };
+        case "force":
+            return { title: "f-s graph", xlabel: " s", ylabel: " N" };
+        case "energy":
+            return { title: "E-t graph", xlabel: " t", ylabel: " J" };
+        default:
+            return { title: "", xlabel: "", ylabel: "" };
+    }
+}
 
 
 const styles = StyleSheet.create({
     graphContainer: {
-        margin: 2,
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: ColorsBlue.blue1200,
-        borderColor: ColorsBlue.blue700,
-        borderWidth: 0.6,
-        elevation: 4, 
-        shadowColor: ColorsBlue.blue900,
-        shadowOffset: {height: 1, width: 0},
-        shadowRadius: 4,
-        shadowOpacity: 0.7,
         flex: 1,
         padding: 5,
+
     },
     Ylabel: {
         fontSize: 8,
         color: ColorsBlue.blue50,
         textAlign: 'center',
         marginRight: 4,
-        marginBottom: 60,
+        marginBottom: 20,
         transform: [{rotate: '-90deg'}]
     },
     Xlabel:{
         fontSize: 10,
         color: ColorsBlue.blue50,
-        textAlign: 'center',
+        textAlign: 'flex-end',
         marginRight: 10
     },
     YlableContainer: {
@@ -185,4 +281,18 @@ const styles = StyleSheet.create({
     XlableContainer: {
         justifyContent: 'center'
     },
+    title: {
+        textAlign: 'center', 
+        fontSize: 18, 
+        fontWeight: 'bold', 
+        color: ColorsBlue.blue50
+    },
+    legend: {
+        left: 0,
+        position: 'absolute',
+        top: 0,
+        borderRadius: 6,
+        alignItems: 'center', // Add this line
+        justifyContent: 'center', // Add this line
+    }
 })

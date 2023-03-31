@@ -47,6 +47,7 @@ function UserProfileContextProvider({children}) {
     useEffect(() => {
         changeUserProfile(userProfile)
     }, [userProfile])
+    
     async function loadUserProfileFromStorage() {
         try {
             const jsonValue = await AsyncStorage.getItem("userProfile");

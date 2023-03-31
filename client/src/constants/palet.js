@@ -11,8 +11,10 @@ export const ColorsBlue = {
   blue900: '#41418D',
   blue1000: '#262666',
   blue1100: '#161652',
+  blue1150: '#080836',
   blue1200: '#06062C',
   blue1300: '#020224',
+  blue1400: '#000014',
   gray100: '#cccccc',
   gray200: '#808080',
   gray300: '#303030',
@@ -257,6 +259,8 @@ export const ColorsDarkerGreen = {
 }
 
 export const ColorsRed = {
+  ytRed: '#ff0000',
+  netflixRed: '#e50914',
   red1000: '#4d0c0c',
   red900: '#6c1d1d',
   red700: '#8f3131',

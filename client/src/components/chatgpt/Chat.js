@@ -1,36 +1,30 @@
 import React, { useContext, useRef, useState } from 'react';
-import { View, TextInput, Button, Text, StyleSheet, KeyboardAvoidingView, SafeAreaView, ImageBackground, Animated } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import { postMessage } from '../../hooks/chatgpt';
-import { ColorsBlue } from '../../constants/palet';
-import Icon from '../Icon';
-import { FlatList, TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { FlatList } from 'react-native-gesture-handler';
 import ChatBoxUser from './ChatBoxUser';
 import ChatBoxGPT from './ChatBoxGPT';
 import InputContainer from './InputContainer';
 import { ChatContext } from '../../store/chat-context';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { UserProfileContext } from '../../store/userProfile-context';
-import LoadingOverlay from '../UI/LoadingOverlay';
-import { useRoute } from '@react-navigation/native';
 import LoadingChat from '../UI/LoadingChat';
-
+import SwitchScreens from '../assignments/BuildComponent.js/SwitchScreens';
 
 const heightTextInput = 40;
 const marginBottomTextInput = 10;
 const marginTopTextInput = 10;
-const paddingChat = heightTextInput + marginBottomTextInput + marginTopTextInput;
+const paddingChat = heightTextInput + marginBottomTextInput + marginTopTextInput; 
 
-const Chat = ({keyboardHeight}) => {  
+const Chat = ({keyboardHeight, nextSlideHandler, prevSlideHandler, slideCount}) => {  
     const chatCtx = useContext(ChatContext)
     const userprofileCtx = useContext(UserProfileContext)
     const [inputValue, setInputValue] = useState('');
     const flatListRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
-    const route = useRoute();
-    
-    //get thread id from router and set it as current thread id
-    const thread_id = route.params.thread_id;
+    const thread_id = chatCtx.currentThreadId;
     const currentChatData = chatCtx.getChatForThread(thread_id);
+    const [typing, setTyping] = useState(true);
+
 
     // sending message to chatgpt
     const sendMessage = async () => {
@@ -40,15 +34,17 @@ const Chat = ({keyboardHeight}) => {
         //clear input
         setInputValue('');
         
-        console.log(`Checking current thread ${chatCtx.currentThreadId}`)
+        console.log(`Checking current thread ${thread_id}`)
+
         const chatQuestion = {
           question: tempInput,
-          thread_id: chatCtx.currentThreadId
+          thread_id: thread_id
         }
         chatCtx.addChat(chatQuestion);
-        
+        console.log(currentChatData)
+        console.log(`chat question ${JSON.stringify(chatQuestion)}`)
         //posting message to database
-        let answeredMessage = await postMessage(userprofileCtx.userprofile.id, tempInput, chatCtx.currentThreadId);
+        let answeredMessage = await postMessage(userprofileCtx.userprofile.id, tempInput, thread_id);
 
         if (!answeredMessage) {
             answeredMessage = 'Sorry, I don\'t understand that. Please try again.'
@@ -59,8 +55,10 @@ const Chat = ({keyboardHeight}) => {
         //save chat to local storage
         const chatAnswer = {
             answer: botMessage,
-            thread_id: chatCtx.currentThreadId
+            thread_id: thread_id
         }
+
+        console.log(`chat answer ${JSON.stringify(chatAnswer)}`)
         chatCtx.addChat(chatAnswer);
         
         setIsLoading(false);
@@ -75,37 +73,46 @@ const Chat = ({keyboardHeight}) => {
         <>
           {item.question && (
             <View style={{ alignItems: 'flex-end', marginRight: 10 }}>
-              <ChatBoxUser question={item.question} />
+              <ChatBoxUser question={item.question} 
+              />
             </View>
           )}
           {item.answer ? (
             <View style={{ alignItems: 'flex-start', marginLeft: 10 }}>
-              <ChatBoxGPT answer={item.answer} />
+              <ChatBoxGPT answer={item.answer} 
+              isLastItem = {isLastItem}
+              thread_id={thread_id}
+              setTyping={setTyping}
+              typing={typing}/>
             </View>
           ) : (
             isLoading &&
             isLastItem && ( // show loading overlay only for the last item
-              <LoadingChat message="Waiting on chatgpt's response..." />
+            <LoadingChat message="Waiting on chatgpt's response..." />
             )
-          )}
+            )}
+            {
+              // show next button only for the first item for assignment explanations
+              index === 0 && thread_id > 5 && !typing && (
+                <SwitchScreens 
+                prevSlideHandler={prevSlideHandler}
+                nextSlideHandler={nextSlideHandler}
+                slideCount={slideCount}
+                />
+              )
+            }
         </>
       );
     };
-    return (
 
-      <View style = {styles.container}>
-        <ImageBackground
-          source={require('./../../../assets/chatbackground.png')} 
-          style={
-          {flex: 1, resizeMode: 'contain'}
-          }
-          imageStyle={{opacity: 0.15}}
-        >
+
+    return (
           <Animated.View style = {{flex: 1, marginBottom: keyboardHeight}}>
             <View style = {styles.chat}>
               <FlatList 
                 ref={flatListRef} // Set ref to FlatList
                 data = {currentChatData}
+                showsVerticalScrollIndicator = {false}
                 keyExtractor = {(item, index) => index}
                 renderItem = {renderChat}
                 onContentSizeChange={() => flatListRef.current.scrollToEnd()} // Scroll to the end on content size change
@@ -121,9 +128,6 @@ const Chat = ({keyboardHeight}) => {
               marginTopTextInput={marginTopTextInput}
             />
         </Animated.View>
-      </ImageBackground>
-    </View>
-
     );
 };
 
@@ -131,18 +135,7 @@ export default Chat;
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: ColorsBlue.blue1300,
-    borderTopColor: ColorsBlue.blue100,
-    borderTopWidth: 0.4,
-  },
-  contentContainerStyle: {
-    flexGrow: 1,
-    justifyContent: 'flex-end',
-  },
   chat: {
-    paddingBottom: paddingChat,
+      paddingBottom: paddingChat,
   },
-
-});
+})

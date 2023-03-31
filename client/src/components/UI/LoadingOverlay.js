@@ -1,5 +1,5 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import { useContext, useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { SocketContext } from '../../store/socket-context';
 import { ColorsBlue } from '../../constants/palet';
 
@@ -18,7 +18,7 @@ function LoadingOverlay({ message }) {
   );
 }
 
-export default LoadingOverlay;
+export default React.memo(LoadingOverlay);
 
 const styles = StyleSheet.create({
   rootContainer: {

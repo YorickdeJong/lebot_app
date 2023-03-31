@@ -1,150 +1,212 @@
-import { useContext, useEffect, useState } from "react"
+import React, { useCallback, useContext, useEffect, useState, useMemo } from "react"
 import { StyleSheet, View } from "react-native"
 import { ChartContext } from "../../../store/chart-context"
 import GraphDisplay from "./graphDisplay"
 
+function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChart}) {
+
+    console.log(`CHECK CHART DISPLAY`)
+    let chartHeight = 450;
+    const { motorNumber } = chartData;
+
+    if (displayChart){
+        chartHeight = trueCount == 1 ? displayChart - 15: displayChart - 38 //adjust ratios to fit graphs
+    }
+
+    let doubleChartHeight;
+    let firstDataType, secondDataType, thirdDataType, fourthDataType
+    let firstYData, secondYData, thirdYData, fourthYData;
+    let firstXData, secondXData, thirdXData, fourthXData;
+
+    const filteredData = useCallback(() => {
+        return Object.entries(chartToggle)
+                .reduce((acc, [key, value], index) => {
+                    if (index > 3){
+                        return acc; 
+                    }
+                    if (value === true) {
+                        const chartDataKey = Object.keys(chartData)[index];
+                        acc[chartDataKey] = chartData[chartDataKey]; //returns array with 1, 2, 3, 4 arrays
+                    }
+                    return acc;
+                }, {});
+
+    }, [chartToggle, chartData]) 
 
 
+    const selectXdata = useCallback((dataType, chartData) => {
+        switch(dataType){
+            case 'distance':
+                return chartData.time; 
+            case 'speed':
+                    return chartData.time; 
+            case 'force':
+                return chartData.distance.map(dist => dist.slice(1)) //change for all 4 distances, force starts 1 iteration later
+            case 'energy':
+                return chartData.time.slice(1,-1); //energy starts one iteration later and ends one earlier
+        }
+    }, [chartData])
 
-function ChartDisplay(){
-    const chartCtx = useContext(ChartContext)
-    const [filteredChartData, setFilteredChartData] = useState(chartCtx.chartData)
-
-    let chartHeight = chartCtx.trueCount === 1 ? 400 : 350;
-    let dataType1, dataType2, dataType3, dataType4
-    let yData1, yData2, yData3, yData4
-
-    useEffect(() => {
-    if (chartCtx.chartData.distance.length === 0) {
+    if (chartData.distance.length === 0) {
         console.log('data is empty');
         return;
     }
 
-    console.log(`CHART DATA CHECK ${chartCtx.chartData}`)
-    const indexData = Object.entries(chartCtx.chartToggle)
-        .reduce((acc, [key, value], index) => {
-        if (value === true) {
-            acc.push(index);
-        }
-        return acc;
-        }, []);
+    const filteredChartData = filteredData();
 
-    const filteredData = indexData.reduce((acc, index) => {
-        const key = Object.keys(chartCtx.chartData)[index];
-        const value = Object.values(chartCtx.chartData)[index];
-        acc[key] = value;
-        return acc;
-    }, {});
-
-    console.log(`filtered data: ${JSON.stringify(filteredData)}`)
-    setFilteredChartData(filteredData);
-    }, [chartCtx.chartData, chartCtx.chartToggle]);
-
-
-    switch(chartCtx.trueCount){
+    switch(trueCount){
         case 1:
-            [dataType1, yData1] = Object.entries(filteredChartData)[0];
-            console.log(dataType1 + " " + yData1)
+
+            //TODO handle 2D arrays + handle distance array
+            [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
+            firstXData = selectXdata(firstDataType, chartData);
+
+
+            if (!Array.isArray(firstYData[0])) {
+                firstYData = [firstYData];
+            }
+            
+            const padding = displayChart? 0 : 20; 
+
             return (
-                <View style = {styles.chartContainer}>
+                <View style = {{height: displayChart ? displayChart : chartHeight}}>
                     <GraphDisplay 
-                    dataType={dataType1}
-                    yData={yData1}
-                    xData={selectXdata(dataType1, chartCtx)}
+                    dataType={firstDataType}
+                    data={{ xData: firstXData, yData: firstYData }}
                     chartHeight = {chartHeight}
+                    finalPlot = {finalPlot}
+                    trueCount = {trueCount}
+                    padding = {padding}
+                    motorNumber = {motorNumber}
+                    legend
                     />
                 </View>
             )
 
         case 2:
-            [dataType1, yData1] = Object.entries(filteredChartData)[0];
-            [dataType2, yData2] = Object.entries(filteredChartData)[1];
-            chartHeight = chartHeight / 2;
+            [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
+            [secondDataType, secondYData] = Object.entries(filteredChartData)[1];
             
+            firstXData = selectXdata(firstDataType, chartData);
+            secondXData = selectXdata(secondDataType, chartData);
+            
+            doubleChartHeight = displayChart ? chartHeight / 2 : chartHeight / 2.3;
             return (
-                <View style = {styles.chartContainer}>
+                <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
                     <GraphDisplay 
-                    dataType={dataType1}
-                    yData={yData1}
-                    xData={selectXdata(dataType1, chartCtx)}
-                    chartHeight = {chartHeight}
+                    dataType={firstDataType}
+                    data={{ xData: firstXData, yData: firstYData }}
+                    chartHeight = {doubleChartHeight}
+                    finalPlot = {finalPlot}
+                    trueCount = {trueCount}
+                    motorNumber = {motorNumber}
+                    legend
                     />
                     <GraphDisplay 
-                    dataType={dataType2}
-                    yData={yData2}
-                    xData={selectXdata(dataType2, chartCtx)}
-                    chartHeight = {chartHeight}
+                    dataType={secondDataType}
+                    data={{ xData:secondXData, yData: secondYData }}
+                    chartHeight = {doubleChartHeight}
+                    finalPlot = {finalPlot}
+                    trueCount = {trueCount}
+                    motorNumber = {motorNumber}
                     />
                 </View>
             )
 
         case 3:
-            [dataType1, yData1] = Object.entries(filteredChartData)[0];
-            [dataType2, yData2] = Object.entries(filteredChartData)[1];
-            [dataType3, yData3] = Object.entries(filteredChartData)[2];
-            chartHeight = chartHeight / 2;
+            [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
+            [secondDataType, secondYData] = Object.entries(filteredChartData)[1];
+            [thirdDataType, thirdYData] = Object.entries(filteredChartData)[2];
+            
+            firstXData = selectXdata(firstDataType, chartData);
+            secondXData = selectXdata(secondDataType, chartData);
+            thirdXData = selectXdata(thirdDataType, chartData);
+            
+            doubleChartHeight = displayChart ? chartHeight / 2 : chartHeight / 2.3;
             return (
-                <View style = {styles.chartContainer}>
+                <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
                     <View style = {{flex: 1}}>
                         <GraphDisplay 
-                        dataType={dataType1}
-                        yData={yData1}
-                        xData={selectXdata(dataType1, chartCtx)}
+                        dataType={firstDataType}
+                        data={{ xData: firstXData, yData: firstYData }}
                         chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {motorNumber}
+                        legend
                         />
                     </View>
                     <View style = {styles.twoCharts}>
                         <GraphDisplay 
-                        dataType={dataType2}
-                        yData={yData2}
-                        xData={selectXdata(dataType2, chartCtx)}
+                        dataType={secondDataType}
+                        data={{ xData:secondXData, yData: secondYData }}
                         chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {motorNumber}
                         />
                         <GraphDisplay 
-                        dataType={dataType3}
-                        yData={yData3}
-                        xData={selectXdata(dataType3, chartCtx)}
+                        dataType={thirdDataType}
+                        data={{ xData:thirdXData, yData: thirdYData }}
                         chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {motorNumber}
                         />
                     </View>
                 </View>
             )
 
         case 4:
-            [dataType1, yData1] = Object.entries(filteredChartData)[0];
-            [dataType2, yData2] = Object.entries(filteredChartData)[1];
-            [dataType3, yData3] = Object.entries(filteredChartData)[2];
-            [dataType4, yData4] = Object.entries(filteredChartData)[3];
-            chartHeight = chartHeight / 2;
+            [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
+            [secondDataType, secondYData] = Object.entries(filteredChartData)[1];
+            [thirdDataType, thirdYData] = Object.entries(filteredChartData)[2];
+            [fourthDataType, fourthYData] = Object.entries(filteredChartData)[3];
+            
+            firstXData = selectXdata(firstDataType, chartData);
+            secondXData = selectXdata(secondDataType, chartData);
+            thirdXData = selectXdata(thirdDataType, chartData);
+            fourthXData = selectXdata(fourthDataType, chartData);
+
+            doubleChartHeight = displayChart ? chartHeight / 2 : chartHeight / 2.3;
 
             return (
-                <View style = {styles.chartContainer}>
+                <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
                     <View style = {styles.twoCharts}>
                         <GraphDisplay 
-                        dataType={dataType1}
-                        yData={yData1}
-                        xData={selectXdata(dataType1, chartCtx)}
+                        dataType={firstDataType}
+                        data={{ xData: firstXData, yData: firstYData }}
                         chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {motorNumber}
+                        legend
                         />
                         <GraphDisplay 
-                        dataType={dataType2}
-                        yData={yData2}
-                        xData={selectXdata(dataType2, chartCtx)}
+                        dataType={secondDataType}
+                        data={{ xData:secondXData, yData: secondYData }}
                         chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {motorNumber}
                         />
                     </View>
                     <View style = {styles.twoCharts}>
                         <GraphDisplay 
-                        dataType={dataType3}
-                        yData={yData3}
-                        xData={selectXdata(dataType3, chartCtx)}
+                        dataType={thirdDataType}
+                        data={{ xData:thirdXData, yData: thirdYData }}
                         chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {motorNumber}
                         />
                         <GraphDisplay 
-                        dataType={dataType4}
-                        yData={yData4}
-                        xData={selectXdata(dataType4, chartCtx)}
+                        dataType={fourthDataType}
+                        data={{ xData:fourthXData, yData: fourthYData }}
                         chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {motorNumber}
                         />
                     </View>
                 </View>
@@ -153,28 +215,12 @@ function ChartDisplay(){
 }
 
 
-export default ChartDisplay
+export default React.memo(ChartDisplay)
 
-function selectXdata(dataType, chartCtx) {
-    switch(dataType){
-        case 'distance':
-            return chartCtx.chartData.time;
-        case 'speed':
-            return chartCtx.chartData.timeVelocity;
-        case 'force':
-            return chartCtx.chartData.distanceForce;
-        case 'energy':
-            return chartCtx.chartData.timeEnergy;
-    }
-}
+
 
 const styles = StyleSheet.create({
     twoCharts: {
         flexDirection: "row",
-        flex: 1
     },
-    chartContainer: {
-        height: 450,
-        
-    }
 })

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-//const url = `http://10.7.191.114:3000/api/v1/assignments`; //Passessese
-const url = `http://172.20.10.2:3000/api/v1/assignments`; //Iphone
+const url = `http://10.7.191.114:3000/api/v1/assignments`; //Passessese
+// const url = `http://172.20.10.2:3000/api/v1/assignments`; //Iphone
 
 export async function getAssignments(title, assignment_number) {
     try{
@@ -24,15 +24,3 @@ export async function getAllAssignments(){
     }
 }
 
-// Maybe add these functinalities later on
-// export async function createAssignments() {
-    
-// }
-
-// export async function updateAssignments() {
-    
-// }
-
-// export async function deleteAssignments() {
-    
-// }

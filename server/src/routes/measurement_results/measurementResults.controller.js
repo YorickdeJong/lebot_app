@@ -91,18 +91,16 @@ const getLatestMeasurementResult = async (req, res) => {
 }
 
 const createMeasurementResult = async (req, res) => {
-    const {assignment_number, distance, distanceForce, force, energy, 
-        velocity, time, timeVelocity, timeEnergy, 
-        user_id, title, type, record_number} = req.body;
+    const {assignment_number, distance, force, energy, 
+        velocity, time, user_id, title, type, record_number, motor_number} = req.body;
     const client = await pool.connect();
 
     // don't want to check if measurement for a specific assignment exists since 
     // it is possible to have multiple measurements for the same assignment
 
     try {
-        const values = [assignment_number, distance, distanceForce, force, energy, 
-        velocity, time, timeVelocity, timeEnergy, 
-        user_id, title, type, record_number]
+        const values = [assignment_number, distance, force, energy, 
+        velocity, time, user_id, title, type, motor_number, record_number, ]
         const {rows} = await client.query(createMeasurementResultQuery, values)
         console.log(rows)
         return res.status(200).json(rows)
@@ -124,9 +122,9 @@ const updateMeasurementResult = async (req, res) => {
     const client = await pool.connect();
 
     const record_number = req.params.record_number;
-    const { assignment_number, distance, distanceForce, force, energy, velocity, time, timeVelocity, timeEnergy, user_id, title, type } = req.body;
+    const { assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number } = req.body;
 
-    const values = [assignment_number, distance, distanceForce, force, energy, velocity, time, timeVelocity, timeEnergy, user_id, title, type, record_number];
+    const values = [assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number, record_number];
 
     // Check if the measurement result exists in the database
     const checkExistsQuery = existInDatabaseQuery;
@@ -165,11 +163,11 @@ const deleteMeasurementResult = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const measurement_id = req.params.id;
-        const {rows} = await client.query(deleteMeasurementResultQuery, [measurement_id]);
+        const { record_number } = req.query;
+        const {rows} = await client.query(deleteMeasurementResultQuery, [record_number]);
         
         if (rows.length === 0){
-            return res.status(404).json({error: `Results with ID ${measurement_id} was not found`})
+            return res.status(404).json({error: `Results with time ${record_number} was not found`})
         }
         else {
             console.log('Deleted result')

@@ -1,5 +1,5 @@
 import { SocketContext } from '../../store/socket-context';
-import { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { View, Text, Alert} from 'react-native'
 import UserTextContainer from '../userProfile/UserTextContainer';
 
@@ -42,4 +42,4 @@ function SSHRemoteInput({inputHandler, credentialsInvalid, ipAddress, username, 
     )
 }
 
-export default SSHRemoteInput
+export default React.memo(SSHRemoteInput)

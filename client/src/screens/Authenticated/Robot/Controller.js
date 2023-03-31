@@ -1,52 +1,63 @@
-import { useEffect, useContext, useState
+import React, { useEffect, useContext, useState
  } from 'react'
 import {Alert} from 'react-native'
 import DriveLayout from '../../../components/robot/driving_on_command/DriveLayout';
+import { AssignmentContext } from '../../../store/assignment-context';
 import { CarContext } from '../../../store/car-context';
-import { ChartContext } from '../../../store/chart-context';
-
 import { SocketContext } from '../../../store/socket-context';
+import { UserProfileContext } from '../../../store/userProfile-context';
 
-function Controller({navigation}) {
+function Controller({navigation, route}) {
     const socketCtx = useContext(SocketContext);
     const carCtx = useContext(CarContext);
-    const chartCtx = useContext(ChartContext);
     const [keyStroke, setKeyStroke] = useState('')
     const [alertShown, setAlertShown] = useState(false);
-    
-    const velMax = 50.2;
-    const velRamp = 10.2;
+    const userprofileCtx = useContext(UserProfileContext);
+    const assignmentCtx = useContext(AssignmentContext);
+    const [moveXReceived, setMoveXReceived] = useState(0);
+    const [moveYReceived, setMoveYReceived] = useState(0);
+    const {displayNumber} = route.params; // 1: windmill outline, 2: ..., 3: Car outline
+
     function powerHandler() {
         socketCtx.setPower(!socketCtx.power);
-        if (!socketCtx.power) {            
-            socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${velMax} vel_ramp:=${velRamp}`); // ${carCtx.carProperties.speed} cd $(dirname $(find / -name catkin_work 2>/dev/null)) && roslaunch driver_bot_cpp driving_on_command.launch 
-            return;
+        if (!socketCtx.power) {        
+            switch (displayNumber) {
+                case 1:
+                    //TODO change to script 1
+                    socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:=${assignmentCtx.assignmentImage.title}`); 
+                    return;
+                case 2:
+                    //TODO change to script 2
+                    socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:=${assignmentCtx.assignmentImage.title}`); 
+                    return;
+                case 3:
+                    socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:=${assignmentCtx.assignmentImage.title}`); 
+                    return;
+            }
+            
         }
         socketCtx.socket.emit('driveCommand', {command: "\x03"});
     }
 
     function moveHandler(moveX, moveY) {
-        console.log(`received moveX: ${moveX} and moveY: ${moveY}`) //TODO: check logic here
+        setMoveXReceived(moveX);
+        setMoveYReceived(moveY);
+        
         if (socketCtx.power) {
-            if (-1 <= moveX && moveX <= 1 && moveY === -1){
-                console.log("moving forward");
-                setKeyStroke("w");
+            if (-1 <= moveX && moveX <= 1 && -1 < moveY && moveY <= -0.1){
+                setKeyStroke(Math.abs(moveY.toFixed(2)) + " w");
             }
             else if (moveX === 1 && -1 <= moveY && moveY <= 1){
-                console.log("moving right");
-                setKeyStroke("d");
+                setKeyStroke(Math.abs(moveX.toFixed(2)) + " d");
             }
             else if (moveX === -1 && -1 <= moveY && moveY <= 1){
-                console.log("moving left");
-                setKeyStroke("a");
+                setKeyStroke(Math.abs(moveX.toFixed(2)) + " a");
             }
-            else if (-1 <= moveX && moveX <= 1 && moveY === 1){
-                console.log("moving backwards");
-                setKeyStroke("s");
+            else if (-1 <= moveX && moveX <= 1 && 0.1 < moveY && moveY <= 1){
+                setKeyStroke(Math.abs(moveY.toFixed(2)) + " s");
             }
             else if (moveX === 0 && moveY === 0){
-                console.log("stop moving");
-                setKeyStroke("x");
+                setKeyStroke(Math.abs(moveY.toFixed(2)) + " x");
             }
         }
         else {
@@ -73,7 +84,7 @@ function Controller({navigation}) {
 
     useEffect(() => {
         socketCtx.socket.emit('driveCommand', {command: keyStroke})
-    }, [keyStroke])
+    }, [keyStroke, moveXReceived, moveYReceived])
 
     function disconnectHandle() {
         console.log('disconnected');
@@ -84,10 +95,11 @@ function Controller({navigation}) {
     return (
         <DriveLayout 
         moveHandler={moveHandler}
-        powerHandler={powerHandler}
-        disconnectHandle={disconnectHandle}
+        midIconHandler={powerHandler}
+        rightIconHandler={disconnectHandle}
+        displayNumber={displayNumber}
         />
         )
 }
 
-export default Controller
+export default React.memo(Controller)

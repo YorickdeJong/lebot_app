@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createContext, useContext, useEffect, useState } from "react";
+import { ASSIGNMENT_EXPLANATION } from "../data/InitialAssignmentExplanation";
 import { deleteMessage, getChatHistory, postDescriptionMessage } from "../hooks/chatgpt";
 import { UserProfileContext } from "./userProfile-context";
 
@@ -23,6 +24,7 @@ export const ChatContext = createContext({
 
 function ChatContextProvider({ children }) {
     const [chat, setChat] = useState([]);
+    //TODO add second chat here that contains prewritten messages
     const [thread_ids, setThreadIds] = useState([]);
     const [currentThreadId, setCurrentThreadId] = useState(null);
     const [descriptions, setDescriptions] = useState([]);
@@ -34,7 +36,12 @@ function ChatContextProvider({ children }) {
         loadChatFromStorage();
     }, [])
     
+    // if chat changes, descriptions are loaded
     useEffect(() => {
+        if (currentThreadId > 5) {
+            return;
+        }
+        console.log(`check`)
         generateDescriptions(currentThreadId)
     },[chat])
 
@@ -108,10 +115,8 @@ function ChatContextProvider({ children }) {
     }
 
     function addThread_ID(newThread_id) {
-        console.log(`addHread_ID ${newThread_id}`)
         setThreadIds(prevThreadIds => {
             const newThreadIds = [...prevThreadIds, newThread_id];
-            console.log(`NEW THREAD IDS ${newThreadIds}`)
             saveThreadsInStorage(newThreadIds);
             return newThreadIds;
         })
@@ -123,17 +128,32 @@ function ChatContextProvider({ children }) {
         setCurrentThreadId(thread_id)
     }
 
-    function addChat(chat) {
+    async function addChat(chatMessage) {
         setChat((prevChat) => {
-            const newChatHistory = [...prevChat, chat];
+
+            // Check if the first message in the chat has the same answer and thread_id as the chatMessage
+            const currentThreadMessage = getChatForThread(chatMessage.thread_id);
+            if (
+                currentThreadMessage.length &&
+                chatMessage.thread_id >= 5 &&
+                currentThreadMessage[0].thread_id === chatMessage.thread_id &&
+                currentThreadMessage[0].answer === chatMessage.answer
+            ) {
+                console.log('Message already set');
+                return prevChat; // Don't add the chatMessage if it's the same as the first message in the chat
+            }
+        
+            const newChatHistory = [...prevChat, chatMessage];
             saveChatInStorage(newChatHistory);
             return newChatHistory;
         });
-        
     }
-
-
     async function deleteThread_ID(thread_id) {
+        if (!chat || !Array.isArray(chat)) {
+            setChat([]);
+            await AsyncStorage.setItem('chat', '');
+            await AsyncStorage.setItem('thread_ids', '');
+        }
         //delete chat from database
         deleteMessage(thread_id, user_id);
 
@@ -153,6 +173,7 @@ function ChatContextProvider({ children }) {
 
             // delete description from state and AsyncStorage
             setDescriptions(prevDescriptions => {
+                
                 const updatedDescriptions = prevDescriptions.filter(desc => desc.thread_id !== thread_id);
                 saveDescriptionsInStorage(updatedDescriptions);
                 return updatedDescriptions;
@@ -165,7 +186,11 @@ function ChatContextProvider({ children }) {
         }
     }
 
+    // add different function that filteres from other chat.
     function getChatForThread(thread_id) {
+        if (!chat || !Array.isArray(chat)) {
+           return [];
+        }
         return chat.filter(chatItem => chatItem.thread_id === thread_id);
     }
 

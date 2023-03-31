@@ -42,7 +42,8 @@ function Chats({navigation, route}) {
 
 
     function addChatHandler() {
-        if (chatCtx.thread_ids.length >= 5) {
+        console.log(`threadId length: ${chatCtx.thread_ids.length}`)
+        if (chatCtx.thread_ids.length >= 5) { //Maybe need to change this to include the preset chats
             Alert.alert('You can only have 5 chats at a time.')
             return;
         }
@@ -80,6 +81,7 @@ function Chats({navigation, route}) {
 
 
     function renderChats({item}) {
+        console.log(`in chat handler thread id: ${item}`)
         function navigateToChatHandler() {
             chatCtx.setThreadId(item)
             navigation.navigate('Chat', {
@@ -125,8 +127,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     container: {
-        borderTopColor: ColorsBlue.blue100,
-        borderTopWidth: 0.4,
+        borderTopColor: ColorsBlue.blue900,
+        borderTopWidth: 1,
         flex: 1,
         backgroundColor: ColorsBlue.blue1300,
     }

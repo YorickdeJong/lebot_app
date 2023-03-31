@@ -2,14 +2,14 @@ import { StyleSheet, View, Animated, Modal, TouchableHighlight, Text, StatusBar,
 import Icon from "../../Icon"
 import { ColorsBlue } from "../../../constants/palet"
 import { LinearGradient } from "expo-linear-gradient"
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {  Header } from 'react-navigation-stack';
 import { BlurView } from 'expo-blur';
 import ToggleMenu from "./ToggleMenu";
 import { SocketContext } from "../../../store/socket-context";
 
-function OptionsBar({powerHandler, disconnectHandle, moveHandler}) {
+function OptionsBar({midIconHandler, rightIconHandler, midIcon, rightIcon, displayNumber}) {
     const [isStopActive, setIsStopActive] = useState(false);
     const [headerHeight, setHeaderHeight] = useState(0);
     const socketCtx = useContext(SocketContext);
@@ -31,7 +31,7 @@ function OptionsBar({powerHandler, disconnectHandle, moveHandler}) {
     return(    
         <LinearGradient 
         style = {styles.upperContainer}
-        colors={[ColorsBlue.blue1200, ColorsBlue.blue1100, ColorsBlue.blue1200]}
+        colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
             >
@@ -55,17 +55,17 @@ function OptionsBar({powerHandler, disconnectHandle, moveHandler}) {
                 </TouchableOpacity>
                 
                 <Icon 
-                icon = {socketCtx.power ? "power-off" : "power"}
+                icon = {midIcon ? midIcon : (socketCtx.power ? "power-off" : "power")}
                 size={50}
-                color={ColorsBlue.blue100}
-                onPress = {powerHandler}
+                color={ColorsBlue.blue200}
+                onPress = {midIconHandler}
                 differentDir={true}/>
 
                 <Icon 
-                icon = "lan-disconnect"
+                icon = {rightIcon ? rightIcon : "lan-disconnect"} 
                 size={50}
-                color={ColorsBlue.blue100}
-                onPress = {disconnectHandle}
+                color={ColorsBlue.blue200}
+                onPress = {rightIconHandler}
                 differentDir={true}/>
             </View>
 
@@ -73,6 +73,7 @@ function OptionsBar({powerHandler, disconnectHandle, moveHandler}) {
             headerHeight = {headerHeight}
             isStopActive = {isStopActive}
             toggleModal = {toggleModal}
+            displayNumber = {displayNumber}
             />
             </View>
             </ImageBackground>
@@ -80,13 +81,12 @@ function OptionsBar({powerHandler, disconnectHandle, moveHandler}) {
     )
 }
 
-export default OptionsBar
+export default React.memo(OptionsBar)
 
 const styles = StyleSheet.create({
     upperContainer: {
         margin: 2,
         marginVertical: 4,
-        borderBottomColor: ColorsBlue.blue700,
         borderColor: ColorsBlue.blue700,
         borderWidth: 1,
         borderRadius: 5,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         height: 25,
         borderRadius: 20,
         borderWidth: 2,
-        borderColor: ColorsBlue.blue100,
+        borderColor: ColorsBlue.blue200,
         justifyContent: "center",
         alignItems: "flex-start",
     },
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
         width: 23,
         height: 23,
         borderRadius: 20,
-        backgroundColor: ColorsBlue.blue100,
+        backgroundColor: ColorsBlue.blue200,
     },
     stopCircleActive: {
         transform: [{ translateX: 25 }],

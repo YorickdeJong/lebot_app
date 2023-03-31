@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react"
+import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
 import { getLatestMeasurementResult } from "../hooks/measurement_results";
 import { SocketContext } from "./socket-context";
 import { UserProfileContext } from "./userProfile-context";
@@ -7,24 +7,26 @@ export const ChartContext = createContext({
     chartData: {},
     chartToggle: {},
     trueCount: null,
+    setTrueCount: (data) => {},
+    setChartData: (data) => {},
     setChartToggleHandler: () => {},
     setChartIndividualDataHandler: () => {},
-    setAllChartsDataHandler: () => {},
+    setAllChartsDataHandler: (newChartData) => {},
 })
 
 function ChartContextProvider({children}) {
     const userprofileCtx = useContext(UserProfileContext); 
     const socketCtx = useContext(SocketContext);
+    const [prevMeasurementResultLength, setPrevMeasurementResultLength] = useState(null);
 
     const [chartData, setChartData] = useState({
-        distance: [],
-        speed: [],
-        force: [],
-        energy: [],
+        distance: [[], [], [], []],
+        speed: [[], [], [], []],
+        force: [[], [], [], []],
+        energy: [[], [], [], []],
         time: [],
-        timeVelocity:[],
-        timeEnergy:[],
-        distanceForce:[],
+        motorNumber: [],
+        recordNumber: 0,
     });
 
     const [chartToggle, setChartToggle] = useState({
@@ -33,53 +35,45 @@ function ChartContextProvider({children}) {
         "F_s": false,
         "E_t": false,
         "time": true, //always true
-        "timeVelocity": true,
-        "timeEnergy": true,
-        "distanceForce": true,
+        "time_velocity": true, 
+        "time_energy": true,
+        "distance_force": true
     });
 
     const [trueCount, setTrueCount] = useState(Object.values(chartToggle).filter(value => value === true).length - 4);
 
+    // Fetch the latest measurement result when the power is turned on and save it such that it can be plotted in the assignments/imageContainer
     useEffect(() => {
-        setTrueCount(Object.values(chartToggle).filter(value => value === true).length - 4); //minus 1 here since time is always true
-    }, [chartToggle])
-
-    useEffect(() => {
-        console.log(`CHECK CHECK`)
-        console.log(`data length: ${chartData.distance.length}`)
         if(socketCtx.power && socketCtx.isMeasurementStarted){
-        const interval = setInterval(async () => {
-            //fetch when power is turned on
-                //wait 20 seconds untill script has started -> problem data has already been gathered then maybe 
-                const measurementResults = await getLatestMeasurementResult(userprofileCtx.userprofile.id)
-                console.log(`CHECK CHECK`)
-                console.log(`measurement resukts ${measurementResults}`)
+            let prevResults = 0
+            const interval = setInterval(async () => {
+                //fetch when power is turned on
+                    const measurementResults = await getLatestMeasurementResult(userprofileCtx.userprofile.id); //TODO CHANGE TO DIFFERENT FETCH
+                    //only set chartDataHandler if measurement results lengths are unequal
+                    if (prevResults !== measurementResults.distance[0].length){
+                        setChartDataHandler(measurementResults)
+                        prevResults = measurementResults.distance[0].length;
+                    }
+            }, 100); // update the chart every second
 
-                setChartDataHandler(measurementResults)
-            }, 2000); // update the chart every second
-            
             return () => clearInterval(interval);
         }   
         else {
             setChartData({
-                distance: [],
-                speed: [],
-                force: [],
-                energy: [],
+                distance: [[], [], [], []],
+                speed: [[], [], [], []],
+                force: [[], [], [], []],
+                energy: [[], [], [], []],
                 time: [],
-                timeVelocity:[],
-                timeEnergy:[],
-                distanceForce:[],
-            })
+                motorNumber: [],
+                recordNumber: 0,
+            });
             socketCtx.setIsMeasurementStarted(false);
+            setPrevMeasurementResultLength(0);
         }
     }, [socketCtx.power, socketCtx.isMeasurementStarted]);
 
-
-    useEffect(() => {
-        // console.log(chartData)
-    }, [chartData])
-
+    // select which charts to display
     function setChartToggleHandler(physicalQuantity) {
         setChartToggle(prevState => {
             return {
@@ -89,11 +83,50 @@ function ChartContextProvider({children}) {
         })
     }
 
-    function setAllChartsDataHandler(data) {
-        setChartData({})
-    }
+    //upon fetching, all charts are set for a certain user_id, assignment_number and title
+    const setAllChartsDataHandler = useCallback((newChartData) => {
+        if (newChartData === undefined){
+            setChartData({
+                distance: [[], [], [], []],
+                speed: [[], [], [], []],
+                force: [[], [], [], []],
+                energy: [[], [], [], []],
+                time: [],
+                motorNumber: [],
+                recordNumber: 0,
+            });
+            return
+        };
 
 
+        // Directly set the new chart data without using prevState
+        setChartData(newChartData.map((chartData, idx) => {
+            if (!chartData) {
+                return {
+                    distance: [[], [], [], []],
+                    speed: [[], [], [], []],
+                    force: [[], [], [], []],
+                    energy: [[], [], [], []],
+                    time: [],
+                    motorNumber: [],
+                    recordNumber: 0,
+                };
+            }
+
+            return {
+                distance: chartData.distance || [[], [], [], []],
+                speed: chartData.velocity || [[], [], [], []],
+                force: chartData.force || [[], [], [], []],
+                energy: chartData.energy || [[], [], [], []],
+                time: chartData.time || [],
+                motorNumber: chartData.motor_number || [],
+                recordNumber: chartData.record_number || 0,
+            };
+        }));
+        }, []);
+
+
+    //sets specific chart 
     function setChartIndividualDataHandler(physicalQuantity, data) {
         setChartData(prevState => {
             return {
@@ -102,30 +135,86 @@ function ChartContextProvider({children}) {
             }
         })
     }
- 
-    function setChartDataHandler(newData) {
-        setChartData(prevState => {
-            return {
-                ...prevState,
-                distance: [...prevState.distance, ...newData.distance],
-                time: [...prevState.time, ...newData.time],
-                speed: [...prevState.speed, ...newData.velocity],
-                force: [...prevState.force, ...newData.force],
-                energy: [...prevState.energy, ...newData.energy],
-                timeVelocity: [...prevState.timeVelocity, ...newData.time_velocity],
-                timeEnergy: [...prevState.timeEnergy, ...newData.time_energy],
-                distanceForce: [...prevState.distanceForce, ...newData.distance_force]
-            }
-        });
-    }
 
+    const setChartDataHandler = useCallback((newDataArray) => {
+        setChartData((prevState) => {
+            //handle the case where prevState has not yet been set
+            if (prevState[0] === undefined) {
+                return {
+                    distance: newDataArray.distance, 
+                    speed: newDataArray.velocity, 
+                    force: newDataArray.force, 
+                    energy: newDataArray.energy,
+                    time: newDataArray.time, 
+                    motorNumber: newDataArray.motor_number,
+                    recordNumber: newDataArray.record_number, 
+            };
+            }
+            return prevState.map((prevStateItem, idx) => {
+                const newData = newDataArray[idx];
+                if (!newData) {
+                    return prevStateItem;
+                }
+
+                const lastIndexDistance = prevStateItem.distance.length - 1;
+                const lastIndexVelocity = prevStateItem.speed.length - 1;
+                const lastIndexForce = prevStateItem.force.length - 1;
+                const lastIndexEnergy = prevStateItem.energy.length - 1;
+
+                const hasNewDataPoints = newData.distance.length !== lastIndexDistance;
+                if (!hasNewDataPoints) {
+                    return prevStateItem;
+                }
+
+                const latestTimestamp = newData.time[newData.time.length - 1];
+                
+                //Filter 1D array
+                const filterOldData = (arr, timeArr) =>
+                    arr.filter((_, index) => latestTimestamp - timeArr[index] <= 60);
+
+                //fitler 2D array
+                const filterOldData2D = (arr2D, timeArr) =>
+                    arr2D.map(arr => arr.filter((_, index) => latestTimestamp - timeArr[index] <= 60));
+
+
+                const combinedData = {
+                    distance: [
+                        ...filterOldData2D(prevStateItem.distance, prevStateItem.time),
+                        ...newData.distance.slice(lastIndexDistance),
+                    ],
+                    speed: [
+                        ...filterOldData2D(prevStateItem.speed, prevStateItem.time),
+                        ...newData.velocity.slice(lastIndexVelocity),
+                    ],
+                    force: [
+                        ...filterOldData2D(prevStateItem.force, prevStateItem.time),
+                        ...newData.force.slice(lastIndexForce),
+                    ],
+                    energy: [
+                        ...filterOldData2D(prevStateItem.energy, prevStateItem.time),
+                        ...newData.energy.slice(lastIndexEnergy),
+                    ],
+                    time: [
+                        ...filterOldData(prevStateItem.time, prevStateItem.time),
+                        ...newData.time.slice(lastIndexDistance),
+                    ],
+                };
+
+                return combinedData;
+            });
+        });
+    }, []);
+
+    //
     const values = {
         chartData,
         chartToggle,
         trueCount,
+        setTrueCount,
         setChartToggleHandler,
         setChartIndividualDataHandler,
         setAllChartsDataHandler,
+        setChartData
     }
  
     return (

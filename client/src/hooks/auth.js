@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-//const url = `http://10.7.191.114:3000/api/v1/`; //Passessese
-const url = `http://172.20.10.2:3000/api/v1/`; //Iphone
+const url = `http://10.7.191.114:3000/api/v1/`; //Passessese
+// const url = `http://172.20.10.2:3000/api/v1/`; //Iphone
 
 
 export async function createUser({email, password, username, name, lastName, DOB, school, classSchool, level}) {

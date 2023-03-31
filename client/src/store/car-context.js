@@ -12,7 +12,7 @@ export const CarContext = createContext({
         acceleration: 0,
         wheels: 0,
         handling: 0,
-        money: 0,
+        money: 1000,
     },
     upgradeLog: {
         Speed: [],
@@ -42,7 +42,7 @@ function CarContextProvider({children}) {
     })
 
     const [carProperties, setCarProperties] = useState({
-        money: 0,
+        money: 1000,
         speed: 0,
         acceleration: 0,
         wheels: 0,

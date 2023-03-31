@@ -1,13 +1,8 @@
-import { ColorsGreen, ColorsBlue, ColorsTile, 
-    ColorsBrownWood, ColorsBronze, ColorsSilver, 
-    StoreColors, ColorsDiamond, ColorsDarkerBrownWood, 
-    ColorsDarkerBronze, ColorsDarkerSilver, ColorsLighterGold, 
-    ColorsDarkerDiamond, ColorsOrange, ColorsRed, ColorsPurple, 
+import { ColorsGreen,  ColorsTile, 
+     ColorsOrange, ColorsRed, ColorsPurple, 
     ColorsDarkerBlue, ColorsLightBlue, ColorsDarkerOrange, ColorsDarkerRed, 
-    ColorsDarkerPurple, ColorsDarkerGreen, colorRGB } from "../constants/palet";
+    ColorsDarkerPurple } from "../constants/palet";
 
-const iconColors = ColorsTile.blue500
-const textColors = ColorsTile.blue500
 
 function convertColorObjectToArray(colorObject) {
   return Object.entries(colorObject).map(([name, hex]) => {
@@ -15,22 +10,6 @@ function convertColorObjectToArray(colorObject) {
 
   });
 }
-
-// wood, bronze, silver, gold, diamond
-const ColorWood = convertColorObjectToArray(ColorsBrownWood);
-const ColorDarkerWood = convertColorObjectToArray(ColorsDarkerBrownWood);
-const ColorBronze = convertColorObjectToArray(ColorsBronze);
-const ColorDarkerBronze = convertColorObjectToArray(ColorsDarkerBronze);
-const ColorSilver = convertColorObjectToArray(ColorsSilver);
-const ColorDarkerSilver = convertColorObjectToArray(ColorsDarkerSilver);
-const ColorGold = convertColorObjectToArray(ColorsLighterGold);
-const ColorDarkerGold = convertColorObjectToArray(StoreColors);
-const ColorDiamond = convertColorObjectToArray(ColorsDiamond);
-const ColorDarkerDiamond = convertColorObjectToArray(ColorsDarkerDiamond);
-
-
-// const ColorDarkerOrange = colorRGB(ColorsOrange.orange1000, ColorsOrange.orange800, 10)
-// const ColorDarkerOrange = colorRGB(ColorsBlue.blue1000, ColorsBlue.blue700, 5)
 
 // orange, red, purple, blue, green
 const ColorOrange = convertColorObjectToArray(ColorsOrange);
@@ -42,7 +21,7 @@ const ColorDarkerPurple = convertColorObjectToArray(ColorsDarkerPurple);
 const ColorBlue = convertColorObjectToArray(ColorsLightBlue);
 const ColorDarkerBlue = convertColorObjectToArray(ColorsDarkerBlue);
 const ColorGreen = convertColorObjectToArray(ColorsGreen);
-const ColorDarkerGreen = convertColorObjectToArray(ColorsDarkerGreen);
+
 
 export const speedData = 
 [

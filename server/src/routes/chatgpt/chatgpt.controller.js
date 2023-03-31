@@ -10,7 +10,7 @@ const {
 } = require('../../services/queries/queryChatgpt');
 
 const pool = require('../../services/postGreSQL');
-const apiKey = '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';
+const apiKey = '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';
 
 const getChatHistory = async (req, res) => {
     const client = await pool.connect();
@@ -46,7 +46,7 @@ const postChatgpt = async (req, res) => {
 
 
         const response = await openai.createCompletion({
-            model: 'text-davinci-003',
+            model: "text-davinci-003",
             prompt: fullContext,
             temperature: 0.5, //higher value, more risks
             max_tokens: 600,

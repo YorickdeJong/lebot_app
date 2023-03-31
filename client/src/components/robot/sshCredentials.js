@@ -8,7 +8,7 @@ function SSHCredentials({handleConnect, serverOutput}) {
     const socketCtx = useContext(SocketContext);
 
     // ssh connection
-    const [ipAddress, setIpAddress] = useState('172.20.10.6'); //Passeserel: 192.168.1.22 Iphone: 172.20.10.6
+    const [ipAddress, setIpAddress] = useState('10.7.191.113'); //Passeserel: 192.168.1.22 Iphone: 172.20.10.6
     const [username, setUsername] = useState('ubuntu');
     const [password, setPassword] = useState('password');
 
@@ -74,4 +74,4 @@ function SSHCredentials({handleConnect, serverOutput}) {
     )
 }
 
-export default SSHCredentials
+export default React.memo(SSHCredentials)

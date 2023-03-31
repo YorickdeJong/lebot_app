@@ -5,19 +5,27 @@ import { createContext, useState, useEffect } from "react";
 
 export const AssignmentContext = createContext({
     assignments: [],
+    assignmentImage: {},
     initializeAssignments: (assignments) => {},
     addAssignment: (assignment) => {},
     separateMathPhysics: (subject) => {},
-    filterSpecificTitle: (title) => {}
+    filterSpecificTitle: (title) => {},
+    setAssignmentImageHandler: (assignmentImage) => {},
+    setTitleImageHandler: (titleImage) => {},
 })
 
 
 function AssignmentContextProvider({children}) {
     const [assignments, setAssignments] = useState([]);
+    const [assignmentImage, setAssignmentImage] = useState({
+        title: '',
+        assignment_number: 0,
+    });
 
     useEffect(() => {
         loadAssignmentDataFromStorage();
     }, []);
+
 
     async function loadAssignmentDataFromStorage() {
         try {
@@ -61,12 +69,23 @@ function AssignmentContextProvider({children}) {
         return assignments.filter((item) => item.title === title);
     }
 
+    function setAssignmentImageHandler(assignmentImage) {
+        setAssignmentImage(prevState => ({...prevState, assignment_number: assignmentImage}));
+    }
+
+    function setTitleImageHandler(titleImage) {
+        setAssignmentImage(prevState => ({...prevState, title: titleImage}));
+    }
+
     const value = {
         assignments: assignments,
+        assignmentImage,
         initializeAssignments: initializeAssignments,
         addAssignment: addAssignment,
         separateMathPhysics: separateMathPhysics,
         filterSpecificTitle: filterSpecificTitle,
+        setAssignmentImageHandler,
+        setTitleImageHandler
     }
 
     return <AssignmentContext.Provider value={value}>{children}</AssignmentContext.Provider>

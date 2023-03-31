@@ -18,6 +18,6 @@ router.get('/', getSpecificMeasurementResult);
 router.get('/latest/:id', getLatestMeasurementResult);
 router.post('/', createMeasurementResult);
 router.put('/:record_number', updateMeasurementResult);
-router.delete('/:id', deleteMeasurementResult);
+router.delete('/', deleteMeasurementResult);
 
 module.exports = router;
