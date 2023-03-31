@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, TouchableOpacity, Text, ImageBackground, View, Image } from 'react-native';
-import { NavigationContainer, DefaultTheme, useNavigation, StackActions } from '@react-navigation/native';
+import { StyleSheet, TouchableOpacity, Text, ImageBackground, View, Image, Animated } from 'react-native';
+import { NavigationContainer, DefaultTheme, useNavigation, StackActions, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useContext, useEffect, useState } from 'react';
@@ -13,7 +13,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import Login from './src/screens/Login/Login';
 import Signup from './src/screens/Login/Signup';
-import SSH from './src/screens/Authenticated/Robot/SSH';
 import RobotCommands from './src/screens/Authenticated/Robot/RobotCommands';
 import AssignmentsResults from './src/screens/Authenticated/Assignments/Assignments&Results';
 import {  ColorsBlue, ColorsDarkerBlue, ColorsDarkestBlue, ColorsGreen } from './src/constants/palet';
@@ -29,18 +28,31 @@ import UserProfileContextProvider from './src/store/userProfile-context';
 import SSHConnectionScreen from './src/screens/Authenticated/Robot/SSH';
 import Controller from './src/screens/Authenticated/Robot/Controller';
 import SocketContextProvider from './src/store/socket-context';
-import { SocketContext } from './src/store/socket-context';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RobotStore from './src/screens/Authenticated/Robot/RobotStore';
 import MoneyContainer from './src/components/robot/store/moneyContainer';
 import CarContextProvider from './src/store/car-context';
 import AssignmentContextProvider, { AssignmentContext } from './src/store/assignment-context';
 import ImagesContextProvider from './src/store/images-context';
 import AssignmentDetailsContextProvider from './src/store/assignment-Details-context';
+import ChatGPT from './src/screens/chatgpt/Chatgpt';
+import ChatContextProvider, { ChatContext } from './src/store/chat-context';
+import Chats from './src/screens/chatgpt/ChatsList';
+import ChartContextProvider from './src/store/chart-context';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import BuildScreen from './src/screens/Authenticated/Assignments/BuildScreen';
+import CodeExampleScreen from './src/screens/Authenticated/Assignments/CodeExampleScreen';
+import CodeAnswerScreen from './src/screens/Authenticated/Assignments/CodeAnswerScreen';
+import { ASSIGNMENT_EXPLANATION } from './src/data/InitialAssignmentExplanation';
+import BlinkContextProvider, { BlinkContext } from './src/store/animation-context';
+
+
+
 
 //test
 const Stack = createNativeStackNavigator()
 const Bottom = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
+
 const colors = [
       ColorsDarkestBlue.blue1000, ColorsDarkestBlue.blue900,
       ColorsDarkestBlue.blue800, ColorsDarkestBlue.blue700,
@@ -52,14 +64,79 @@ const locations = colors.map(
     (_, index) => index / (colors.length - 1)
 );
 
-function Robot () {
-  const colorCtx = useContext(ColorContext);
-  const navigation = useNavigation();
-  const socketCtx = useContext(SocketContext)
 
-  useEffect(() => {
-      console.log(`isLoading changed to: ${socketCtx.isLoading}`)
-  }, [socketCtx.isLoading])
+function ChatScreen() {
+  const navigation = useNavigation();
+  const chatCtx = useContext(ChatContext);
+  const thread_id = chatCtx.thread_ids.length
+
+  const {description, title} = chatCtx.getDescriptionsForThreadId(chatCtx.currentThreadId)
+
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerTintColor: 'white',
+        headerBackground: () => (
+        <LinearGradient
+            colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]} 
+            style={{flex:1}}
+            start={{ 
+                x: 0, 
+                y: 0.5 
+            }}
+            end={{ 
+                x: 1, 
+                y: 0.5 
+            }}/>
+        ),
+        headerRight: ({tintColor}) => {
+            return (
+              <Icon 
+              size = {24}
+              icon = "settings-sharp"
+              color = {tintColor}
+              addStyle = {{marginRight: 15}}
+              onPress={() => 
+                navigation.navigate('Settings')}/>
+          )},
+
+        headerLeft: ({tintColor}) => {
+          return (
+            <Icon 
+            size = {24}
+              icon = "chatbubbles"
+              color = {tintColor}
+              addStyle = {{marginLeft: 15}}
+              onPress={() => 
+                navigation.navigate('Chats')}/> // add component Drawer here
+          )},
+        }}>
+
+          <Stack.Screen 
+          component={Chats}
+          name = "Chats"
+          options = {{
+            title: 'Chat Threads',
+            showListIcon: false,
+          }}
+          />
+
+        <Stack.Screen 
+        component={ChatGPT}
+        name = "Chat"
+        options= {{
+          title: title  
+        }}
+        initialParams={{ thread_id }}
+        />
+
+    </Stack.Navigator>
+  )
+}
+
+
+function Robot () {
+  const navigation = useNavigation();
 
   return (
     <Stack.Navigator
@@ -67,11 +144,16 @@ function Robot () {
         headerTintColor: 'white',
         headerBackground: () => (
           <LinearGradient
-            colors={colors}
-            style={{ flex: 1 }}
-            locations={locations}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+              colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]} 
+              style={{flex:1}}
+              start={{ 
+                  x: 0, 
+                  y: 0.5 
+              }}
+              end={{ 
+                  x: 1, 
+                  y: 0.5 
+              }}
           />
         ),
         headerRight: ({tintColor}) => {
@@ -152,22 +234,110 @@ function Robot () {
   )
 }
 
+
+function AssignmentTab({title}){
+    const [index, setIndex] = useState(0);
+    const [headerHeight, setHeaderHeight] = useState(0);
+
+    const [routes] = useState([
+      { key: 'first', title: 'Bouwen' },
+      { key: 'second', title: 'Codeer Theorie' },
+      { key: 'third', title: 'Codeer Vragen' },
+      { key: 'fourth', title: 'Opdracht' },
+    ]);
+  
+
+    const renderTabBar = (props) => (
+      <LinearGradient
+        colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]}
+        style={{paddingTop: 40}}
+        start={{
+          x: 0,
+          y: 0.5,
+        }}
+        end={{
+          x: 1,
+          y: 0.5,
+        }}
+      >
+      <TabBar
+        {...props}
+        style={{ backgroundColor: 'transparent' }}
+        renderLabel={({ route, focused, color }) => (
+          <Text style={{ color, fontWeight: focused ? 'bold' : 'normal', fontSize: 12,  paddingLeft: 5, paddingRight: 5 }}>
+            {/* Customize the text here */}
+            {route.title.toUpperCase()}
+          </Text>
+        )}
+      />
+      </LinearGradient>
+    );
+
+    const renderScene = ({route}) => {//SceneMap({
+        switch(route.key){
+          case 'first' :
+            return <BuildScreen 
+            title = {route.title} 
+            tabIndex={0} 
+            currentIndex={index}
+            />;
+          case 'second' :
+            return <CodeExampleScreen 
+            title = {route.title}
+            tabIndex={1} 
+            currentIndex={index}
+            />;
+          case 'third' :
+            return <CodeAnswerScreen 
+            title = {route.title}
+            tabIndex={2} 
+            currentIndex={index}
+            />;
+          case 'fourth' :
+            return <Assignment 
+            title = {title}
+            tabIndex={3}
+            currentIndex={index}
+            />;
+        }
+    };
+
+    return (
+      <View style={{ flex: 1}}>
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          renderTabBar={renderTabBar}
+          onIndexChange={setIndex}
+          initialLayout={{ width: '100%', height: '100%' }}
+        />
+      </View>
+    );
+};
+
 function Assignments() {
   const navigation = useNavigation();
+
+  const defaultHeaderBackground = () => (
+    <LinearGradient
+      colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]}
+      style={{ flex: 1 }}
+      start={{
+        x: 0,
+        y: 0.5,
+      }}
+      end={{
+        x: 1,
+        y: 0.5,
+      }}
+    />
+  );
 
   return (
     <Stack.Navigator
       screenOptions={{
+        headerBackground: defaultHeaderBackground,
         headerTintColor: 'white',
-        headerBackground: () => (
-          <LinearGradient
-            colors={colors}
-            style={{ flex: 1 }}
-            locations={locations}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          />
-        ),
         headerRight: ({tintColor}) => {
             return (
               <Icon 
@@ -200,7 +370,6 @@ function Assignments() {
       />
       
       <Stack.Screen 
-      component={Assignment}
       name = "Assignment"
       options={{
           title: 'Assignment',
@@ -212,9 +381,13 @@ function Assignments() {
             color = {tintColor}
             onPress = {() => navigation.replace('AssignmentsResults')}/>
             )
-          }
-        }}
-      />
+          },
+        headerShown: false,
+        headerBackground: null
+      }}
+        >
+        {(props) => <AssignmentTab {...props} title={props.route.params.title} />}
+      </Stack.Screen>
     </Stack.Navigator>
   )
 }
@@ -223,32 +396,35 @@ function Assignments() {
 function BottomMenu() {
   const colorCtx = useContext(ColorContext)
   const navigation = useNavigation()
-
+  const blinkCtx = useContext(BlinkContext);
+  const goldColor = 'gold';
+  
+  console.log(`blinkContext: ${blinkCtx.shouldBlink}`)
 
   return (
       <Bottom.Navigator
       screenOptions={{
+        tabBarStyle : bottomNavStyles.container,
         tabBarBackground: () => {
           return (
             <LinearGradient
-                colors={colors} 
+                colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]} 
                 style={{flex:1}}
-                locations={locations}
                 start={{ 
                     x: 0, 
-                    y: 0 
+                    y: 0.5 
                 }}
                 end={{ 
                     x: 1, 
-                    y: 1 
+                    y: 0.5 
                 }}>
             </LinearGradient>
 
           )
         },
         headerTintColor: 'white',
-        tabBarActiveTintColor: colorCtx.isBlue ? ColorsGreen.green50 : ColorsBlue.blue50, 
-        tabBarInactiveTintColor: colorCtx.isBlue ? ColorsGreen.green200 : ColorsBlue.blue100, 
+        tabBarActiveTintColor: ColorsBlue.blue400, 
+        tabBarInactiveTintColor:  ColorsBlue.blue900, 
         
 
         headerRight: ({tintColor}) => {
@@ -265,6 +441,25 @@ function BottomMenu() {
         },
         }}
       >
+      <Bottom.Screen 
+      component={Assignments}
+      name = "Assignments"
+      options={{
+          title: 'Assignments',
+         
+          tabBarIcon: ({color}) => {
+            return (
+              <Icon 
+              size = {24}
+              icon = "list"
+              color = {color}
+              addStyle = {{marginRight: 0}}
+              onPress={() => navigation.navigate('AssignmentsResults')}/>
+            )
+          },
+          headerShown: false
+      }}
+      />
 
       <Bottom.Screen 
       component={Robot}
@@ -278,27 +473,47 @@ function BottomMenu() {
               icon = "car-sport"
               color = {color}
               addStyle = {{marginRight: 0}}
-              onPress={() => navigation.replace('RobotCommands')}
+              onPress={() => navigation.navigate('RobotCommands')}
               />
             )
           },
           headerShown: false
       }}
       />
-      
+
       <Bottom.Screen 
-      component={Assignments}
-      name = "Assignments"
+      component={ChatScreen}
+      name = "ChatGPT"
       options={{
-          title: 'Assignments',
+          title: ``,
+          tabBarActiveTintColor: blinkCtx.shouldBlink && goldColor,
+          tabBarInactiveTintColor:  blinkCtx.shouldBlink && goldColor, 
           tabBarIcon: ({color}) => {
             return (
-              <Icon 
-              size = {24}
-              icon = "list"
-              color = {color}
-              addStyle = {{marginRight: 0}}
-              onPress={() => navigation.replace('AssignmentsResults')}/>
+            <Animated.View style={{ opacity: blinkCtx.shouldBlink ? blinkCtx.blinkAnimation : 1, 
+            justifyContent: 'center', 
+            alignItems: 'center',
+            paddingTop: 20 }}
+            >
+              <Icon
+                size={24}
+                icon="robot-happy-outline"
+                color={blinkCtx.shouldBlink ? goldColor: color}
+                addStyle={{ marginRight: 0 }}
+                onPress={() => navigation.navigate('Chats')}
+                differentDir
+              />
+              <Animated.Text
+              style={{
+                color: blinkCtx.shouldBlink ? goldColor : color,
+                fontSize: 10,
+                paddingTop: 10,
+                textAlign: 'center',
+              }}
+            > 
+            Chatgpt
+            </Animated.Text>
+            </Animated.View>
             )
           },
           headerShown: false
@@ -309,6 +524,12 @@ function BottomMenu() {
   );
 }
 
+const bottomNavStyles = StyleSheet.create({
+    container: {
+        borderTopColor: ColorsBlue.blue900,
+        borderTopWidth: 1
+    }
+});
 
 function Authorized() {
   const colorCtx = useContext(ColorContext);
@@ -317,7 +538,7 @@ function Authorized() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: colorCtx.isBlue ? ColorsGreen.green1200: ColorsBlue.blue1200 },
+        headerStyle: { backgroundColor: ColorsBlue.blue1200 },
         headerTintColor: 'white',
       }}
     >
@@ -326,7 +547,7 @@ function Authorized() {
       component={BottomMenu}
       name = "BottomMenu"
       options = {{
-        headerShown: false
+        headerShown: false,
       }}
       />
       
@@ -348,6 +569,7 @@ function Authorized() {
           )
         }
       }}
+      
       />
 
 
@@ -457,13 +679,18 @@ function Authenticate() {
       screenOptions={{
         headerTintColor: 'white',
         headerBackground: () => (
-          <LinearGradient
-            colors={colors}
-            style={{ flex: 1 }}
-            locations={locations}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          />
+        <LinearGradient
+            colors={[ColorsBlue.blue1200, ColorsBlue.blue1100, ColorsBlue.blue1200]} 
+            style={{flex:1}}
+            start={{ 
+                x: 0, 
+                y: 0.5 
+            }}
+            end={{ 
+                x: 1, 
+                y: 0.5 
+            }}>
+        </LinearGradient>
         ),
         headerRight: () => {
          return (
@@ -519,6 +746,7 @@ function Root() {
   const authCtx = useContext(AuthContext);
   const colorCtx = useContext(ColorContext)
 
+  console.log(`CHECK RELOADING`)
   useEffect(() => {
     async function fetchToken() {
       const storedToken = await AsyncStorage.getItem('token');
@@ -555,23 +783,29 @@ export default function App() {
   return (
     <>
     <StatusBar style="light" />
-    <AssignmentDetailsContextProvider>
-      <ImagesContextProvider>
-        <AssignmentContextProvider>
-            <SocketContextProvider>
-              <UserProfileContextProvider>
-                <CarContextProvider>
-                <ColorContextProvider>
-                  <AuthContextProvider>
-                    <Root />
-                  </AuthContextProvider>
-                </ColorContextProvider>
-                </CarContextProvider>
-              </UserProfileContextProvider>
-            </SocketContextProvider>
-        </AssignmentContextProvider>
-      </ImagesContextProvider>
-    </AssignmentDetailsContextProvider>
+    <UserProfileContextProvider>
+      <SocketContextProvider>
+      <ChatContextProvider>
+        <AssignmentDetailsContextProvider>
+          <ChartContextProvider>
+            <ImagesContextProvider>
+              <AssignmentContextProvider>
+                  <CarContextProvider>
+                    <ColorContextProvider>
+                      <AuthContextProvider>
+                        <BlinkContextProvider>
+                          <Root />
+                        </BlinkContextProvider>
+                      </AuthContextProvider>
+                    </ColorContextProvider>
+                  </CarContextProvider>
+              </AssignmentContextProvider>
+            </ImagesContextProvider>
+          </ChartContextProvider>
+        </AssignmentDetailsContextProvider>
+      </ChatContextProvider>
+    </SocketContextProvider>
+    </UserProfileContextProvider>
     </>
   );
 }

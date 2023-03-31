@@ -72,7 +72,6 @@ function AssignmentDetailsContextProvider({ children }) {
         return filteredAssignments.length
     }
 
-    console.log(assignmentDetails)
     const value = {
         assignmentDetails: assignmentDetails,
         initializeAssignmentDetails: initializeAssignmentDetails,

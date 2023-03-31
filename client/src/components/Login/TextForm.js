@@ -10,7 +10,6 @@ import { BlurView } from "expo-blur";
 
 function TextForm({LoginVariable, onAuthenticate, onCreateUser}) {
     const navigation = useNavigation()
-    const colorCtx = useContext(ColorContext);
 
     const [credentialsInvalid, setCredentialsInvalid] = useState({
         email: false,

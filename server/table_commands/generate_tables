@@ -1,0 +1,92 @@
+
+// Create measurement results table
+// which assignment_number of a particular subject does the measurement belong to
+// what subject does the measurement belong to
+// measurement device 
+// device data
+
+CREATE TABLE measurement_results (
+    id SERIAL PRIMARY KEY,
+    assignment_number INTEGER NOT NULL, 
+    distance FLOAT[] NOT NULL,
+    force FLOAT[] NOT NULL,
+    energy FLOAT[] NOT NULL,
+    velocity FLOAT[] NOT NULL,
+    time TIMESTAMP[] NOT NULL,
+    user_id INTEGER NOT NULL, 
+    title VARCHAR(255) NOT NULL, 
+    created_at TIMESTAMP DEFAULT NOW(),
+    type VARCHAR(255) NOT NULL 
+);
+
+ALTER TABLE measurement_results
+ADD CONSTRAINT measurement_results_user_id_fkey
+FOREIGN KEY (user_id)
+REFERENCES user_profile (id)
+ON DELETE CASCADE;
+
+// checks if assignments are finished for a particular user
+CREATE TABLE assignment_details (
+  assignment_details_id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  assignment_id INTEGER NOT NULL,
+  submission_date TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT assignment_details_assignment_id_fkey FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE,
+  CONSTRAINT assignment_details_user_id_fkey FOREIGN KEY (user_id) REFERENCES user_profile(id) ON DELETE CASCADE
+);
+
+// contains all assignments
+CREATE TABLE assignments (
+  assignment_id SERIAL PRIMARY KEY,
+  assignment_number INTEGER NOT NULL,
+  subject VARCHAR(50) NOT NULL,
+  title VARCHAR(50) NOT NULL,
+  question TEXT NOT NULL,
+  answer TEXT,
+  image_file_path TEXT,
+  currency INTEGER NOT NULL,
+  CONSTRAINT assignments_unique_assignment_number UNIQUE (assignment_number)
+);
+
+ALTER SEQUENCE assignments_assignment_id_seq RESTART WITH 1;
+
+CREATE INDEX assignments_assignment_number_idx ON assignments(assignment_number);
+
+ALTER TABLE assignment_details ADD CONSTRAINT assignment_details_assignment_id_fkey FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE;
+
+// car details
+CREATE TABLE cars (
+  id SERIAL PRIMARY KEY,
+  speed INTEGER DEFAULT 40,
+  acceleration INTEGER DEFAULT 4,
+  wheels INTEGER DEFAULT 0,
+  handling INTEGER DEFAULT 0,
+  money INTEGER DEFAULT 70,
+  upgrade_log JSONB DEFAULT '{"Acc": [false, false, false, false, false], "Speed": [false, false, false, false, false], "Wheels": [false, false, false, false, false], "Handling": [false, false, false, false, false]}',
+  user_profile_id INTEGER REFERENCES user_profile(id)
+);
+
+
+// chatgpt database
+CREATE TABLE chatgpt (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL,
+  thread_id INTEGER NOT NULL,
+  question TEXT NOT NULL,
+  answer TEXT NOT NULL,
+  created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT NOW()
+);
+
+//user_profile 
+CREATE TABLE user_profile (
+  id SERIAL PRIMARY KEY,
+  email TEXT NOT NULL,
+  password TEXT NOT NULL,
+  username TEXT NOT NULL,
+  name TEXT NOT NULL,
+  lastname TEXT NOT NULL,
+  dob TEXT NOT NULL,
+  school TEXT NOT NULL,
+  classschool TEXT NOT NULL,
+  level TEXT NOT NULL
+);

@@ -1,5 +1,5 @@
 import { SocketContext } from '../../store/socket-context';
-import { useContext, useState, useEffect, useRef } from 'react'
+import React, { useContext, useState, useEffect, useRef } from 'react'
 import { View, Text, Alert, StyleSheet} from 'react-native'
 import UserTextContainer from '../userProfile/UserTextContainer';
 import { ColorsBlue } from '../../constants/palet';
@@ -22,13 +22,6 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
             socketCtx.Loading(false);
         }
     }, [])
-
-    useEffect(() => {
-        socketCtx.Loading(true);
-        if (socketCtx.output && socketCtx.output !== ''){
-            socketCtx.Loading(false);
-        }
-    }, [socketCtx.output])
 
     // Comaptible for windows and linux
     function onInputSubmit() {
@@ -213,7 +206,7 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
     )
 }
 
-export default SSHConnected
+export default React.memo(SSHConnected)
 
 const styles = StyleSheet.create({
     text: {

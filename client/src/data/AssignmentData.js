@@ -1,24 +1,12 @@
 import { useContext } from "react";
-import { ColorsDarkerBlue, ColorsTile } from "../constants/palet"
+import { colorRGB, ColorsBlue, ColorsDarkerBlue, ColorsTile } from "../constants/palet"
 import { AssignmentContext } from "../store/assignment-context";
 import { AssignmentDetailsContext } from "../store/assignment-Details-context";
 
-const colorsLighter = [
-      ColorsTile.blue1000, ColorsTile.blue900,
-      ColorsTile.blue700, ColorsTile.blue600,
-      ColorsTile.blue500, ColorsTile.blue400,
-      ColorsTile.blue300, ColorsTile.blue200
-  ];
-
-const colorsDarker = [
-      ColorsDarkerBlue.blue1000, ColorsDarkerBlue.blue900,
-      ColorsDarkerBlue.blue700, ColorsDarkerBlue.blue600,
-      ColorsDarkerBlue.blue500, ColorsDarkerBlue.blue400,
-      ColorsDarkerBlue.blue300, ColorsDarkerBlue.blue200
-  ];
+const lightColors = colorRGB(ColorsBlue.blue1100, ColorsBlue.blue500, 15);
+const darkColors = colorRGB(ColorsBlue.blue1100, ColorsBlue.blue900, 15);
 
 
-  
 export const assignments = (subject) => {
     const assignmentCtx = useContext(AssignmentContext);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext)
@@ -68,8 +56,9 @@ export const assignments = (subject) => {
                 totalCurrency: totalCurrency,
             },
             title: assignment.title,
-            colorLight: colorsLighter,
-            colorDark: colorsDarker,
+            // colorLight: colorsLighter,
+            colorLight: lightColors,
+            colorDark: darkColors,
             icon: icons[index]
         };
     });

@@ -39,6 +39,7 @@ const deleteAssignmentQuery = `
 
 
 
+
   module.exports = {
     checkIfAssignmentExistsQuery,
     getAllAssignmentsQuery,

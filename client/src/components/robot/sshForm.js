@@ -1,5 +1,5 @@
 import { View, Text, Alert, ImageBackground} from 'react-native'
-import { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import Icon from '../Icon';
 import UserTextContainer from '../userProfile/UserTextContainer';
 import {StyleSheet, FlatList } from 'react-native';
@@ -105,7 +105,7 @@ function SSHForm({handleExecuteCommand, setIpAddress,
     )
 }
 
-export default SSHForm
+export default React.memo(SSHForm)
 
 
 const styles = StyleSheet.create({
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     },
     background: {
         flex: 1,
-        borderTopColor: ColorsBlue.blue100,
+        borderTopColor: ColorsBlue.blue700,
         borderTopWidth: 0.2,
     }
 })

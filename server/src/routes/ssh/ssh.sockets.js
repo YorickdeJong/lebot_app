@@ -69,6 +69,11 @@ function listenToClientSSH(io, sshClient) {
                 activeStream.write(data + '\n');
             }
         });
+
+        socket.on('disconnectSocket', () => {
+            console.log('Client disconnected');
+            sshController.disconnectFromRemoteDevice(sshClient);
+        });
     });
 }    
 

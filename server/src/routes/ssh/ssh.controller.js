@@ -40,12 +40,23 @@ async function runCommandOnRemoteDeviceInternal(command, sshClient, socket) {
             })
 
             let output = '';
+            let checkOutputReceived = false;
             stream.on('data', (data) => {
                 output += data.toString();
+
+                if (!checkOutputReceived){
+                    checkOutputReceived = output.includes("MEASUREMENT STARTED CONNECTION DATABASE ACTIVE")
+                    if (checkOutputReceived){
+                        console.log('check')
+                        socket.emit('measurementStarted', { message: 'Measurement started' });
+                    }
+
+                }
+                
                 socket.emit('terminalOutput', { data: data.toString()});
                 commandStatus = true;
             });
-
+            
             stream.on('close', (code) => {
                 console.log(`Command '${command}' output: ${output}`);
                 commandStatus = true;

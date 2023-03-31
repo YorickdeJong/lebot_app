@@ -22,7 +22,7 @@ const PORT = 3000
 const server = http.createServer(app)
 
 //Initiate Socket
-const ioSSH = io(server, {
+const ioConnect = io(server, {
     cors: {
         origin: '*',
         methods: ['GET', 'POST']
@@ -33,10 +33,10 @@ const ioSSH = io(server, {
 //Start Server and socket
 async function startServer() {
     
-    server.listen(PORT, () => {
+    server.listen(PORT, (w) => {
         console.log(`listening on port ${PORT}...`)
     })
 }
 
 startServer()
-socketsSSH.listenToClientSSH(ioSSH, sshClient); 
+socketsSSH.listenToClientSSH(ioConnect, sshClient); 

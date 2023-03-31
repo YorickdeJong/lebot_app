@@ -8,7 +8,7 @@ function SSHCredentials({handleConnect, serverOutput}) {
     const socketCtx = useContext(SocketContext);
 
     // ssh connection
-    const [ipAddress, setIpAddress] = useState('192.168.1.22');
+    const [ipAddress, setIpAddress] = useState('10.7.191.113'); //Passeserel: 192.168.1.22 Iphone: 172.20.10.6
     const [username, setUsername] = useState('ubuntu');
     const [password, setPassword] = useState('password');
 
@@ -21,10 +21,11 @@ function SSHCredentials({handleConnect, serverOutput}) {
     const handleExecuteCommand = async (inputType) => {
         socketCtx.Loading(true);
         if (!socketCtx.isConnected) {
-            let checkIP = ipAddress.length >= 12 && ipAddress.includes('.');
+            let checkIP = ipAddress.length >= 10 && ipAddress.includes('.');
             let checkUsername = username.length > 0;
             let checkPassword = password.length > 0;
     
+            
     
             if (!checkIP || !checkUsername || !checkPassword ){
                 Alert.alert('Incorrect credentials, please fill in the correct ones')
@@ -55,7 +56,7 @@ function SSHCredentials({handleConnect, serverOutput}) {
         }
         else {
             handleConnect();
-            socketCtx.emit('endStream')
+            socketCtx.current.emit('endStream')
         }
     }
 
@@ -73,4 +74,4 @@ function SSHCredentials({handleConnect, serverOutput}) {
     )
 }
 
-export default SSHCredentials
+export default React.memo(SSHCredentials)

@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import { Text, FlatList, StyleSheet, ImageBackground, View } from "react-native";
 import {assignments} from "../../../data/AssignmentData";
-import AssignmentTile from "../../../components/assignments/AssignmentTile";
+import AssignmentTile from "../../../components/assignments/questions/AssignmentTile";
 import { ColorsBlue } from "../../../constants/palet";
 
 function AssignmentsResults() {
@@ -24,18 +24,18 @@ function AssignmentsResults() {
             />
         )
     }
-    
+
     const physicsAssignmentsData = assignments("Physics"); //hier filteren op physicsdata title
     const mathAssignmentsData = assignments("Mathematics");
 
     return (
         <View style = {styles.backgroundColor}>
         <ImageBackground
-            source={require('./../../../../assets/grid.jpg')} 
+            source={require('./../../../../assets/chatbackground.png')} 
             style={
             styles.backgroundImage
             }
-            imageStyle={{opacity: 0.4}}
+            imageStyle={{opacity: 0.18}}
         >
             <Text style={[styles.text, {marginTop: 20}]}>Natuurkunde Vragen</Text>
             <FlatList 
@@ -87,11 +87,11 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
         resizeMode: 'contain',
-        borderTopColor: ColorsBlue.blue100,
-        borderTopWidth: 0.2
+        borderTopColor: ColorsBlue.blue900,
+        borderTopWidth: 1
     },
     backgroundColor: {
         flex: 1,
-        backgroundColor: ColorsBlue.blue1100
+        backgroundColor: ColorsBlue.blue1200
     }
 })

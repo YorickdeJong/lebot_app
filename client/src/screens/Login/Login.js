@@ -12,40 +12,38 @@ import { UserProfileContext } from "../../store/userProfile-context";
 import { AssignmentContext } from "../../store/assignment-context";
 import { getAllAssignments } from "../../hooks/assignments";
 import { ImagesContext } from "../../store/images-context";
-import { getAllImages } from "../../hooks/images";
+import { getAllImages } from "../../hooks/measurement_results";
 import { AssignmentDetailsContext } from "../../store/assignment-Details-context";
 import { getAllAssignmentDetails} from "../../hooks/assignmentDetails";
 import { CarContext } from "../../store/car-context";
 import { getUserCarDetails } from "../../hooks/carDetails";
+import { ChatContext } from "../../store/chat-context";
+import { getChatHistory } from "../../hooks/chatgpt";
 
 function Login() {
-    const [isAuthenticating, setIsAuthenticating] = useState(false);
     const authCtx = useContext(AuthContext);
-    const colorCtx = useContext(ColorContext);
     const userCtx = useContext(UserProfileContext)
     const assignmentCtx = useContext(AssignmentContext);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
-    const imagesCtx = useContext(ImagesContext);
     const carCtx = useContext(CarContext);
-    let loading = true;
+    const chatCtx = useContext(ChatContext);
 
     async function loginHandler({ email, password }) {
-
         setIsAuthenticating(true);
         try {
             const userData = await login(email, password);
             const userProfile = await getUserProfileDetails(userData.id);
             const assignments = await getAllAssignments();
             const assignmentDetails = await getAllAssignmentDetails(userData.id)
-            const images = await getAllImages(userData.id);
             const carDetails = await getUserCarDetails(userData.id);
+            const chatHistory = await getChatHistory(userData.id);
 
             authCtx.authenticate(userData.token);
             userCtx.editUserProfile(userProfile);
             assignmentCtx.initializeAssignments(assignments)
             assignmentDetailsCtx.initializeAssignmentDetails(assignmentDetails)
-            imagesCtx.initializeImages(images)
             carCtx.initializeCarDetails(carDetails)
+            chatCtx.initializeChatHistory(chatHistory)
         } 
 
         catch (error) {
@@ -58,10 +56,6 @@ function Login() {
         }
     }
 
-
-    if (isAuthenticating) {
-        return <LoadingOverlay message="Logging you in..." />;
-    }
 
     return (
         <LinearGradient colors = {[ColorsBlue.blue1200, ColorsBlue.blue1200]} style = {styles.outerContainer}>

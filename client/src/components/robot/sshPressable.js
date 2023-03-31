@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Alert, Pressable, StyleSheet, Text, View } from "react-native";
 import { ColorsBlue } from "../../constants/palet";
 import { SocketContext } from "../../store/socket-context";
@@ -52,7 +52,7 @@ function SSHPressable({output, currentPath, setCurrentPath}) {
     )
 }
 
-export default SSHPressable
+export default React.memo(SSHPressable)
 
 const styles = StyleSheet.create({
         text: {

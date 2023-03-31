@@ -2,7 +2,7 @@
 import { Alert, StyleSheet, View } from "react-native"
 import { FlatList } from "react-native-gesture-handler"
 import { ColorsBlue, ColorsDarkerBlue, ColorsTile } from "../../../constants/palet"
-import AssignmentTile from "../../assignments/AssignmentTile"
+import AssignmentTile from "../../assignments/questions/AssignmentTile"
 import UpgradeTab from "./upgradeTab"
 import { BlurView } from 'expo-blur';
 import { useCallback, useContext, useEffect, useState} from "react"
@@ -10,7 +10,7 @@ import React from "react"
 import { CarContext } from "../../../store/car-context"
 import { changeUserCarDetails } from "../../../hooks/carDetails"
 
-const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundColors}) => {
+const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundColors, borderColors}) => {
     const carCtx = useContext(CarContext);
 
     // Set colors for upgradeTab, once an item is bot the sqaure becomes 
@@ -20,7 +20,7 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
 
         });
     }
-
+    
     const [colorsUpgrade, setColorsUpgrade] = useState([convertColorObjectToArray(ColorsDarkerBlue), 
         convertColorObjectToArray(ColorsDarkerBlue), convertColorObjectToArray(ColorsDarkerBlue),
         convertColorObjectToArray(ColorsDarkerBlue), convertColorObjectToArray(ColorsDarkerBlue)]);
@@ -64,7 +64,6 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
                                     }
                                     break;
                             }
-                            console.log(carCtx.carProperties.speed)
                         }
                         catch(err)
                         {
@@ -90,7 +89,7 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
     }, [carCtx.carProperties, carCtx.upgradeLog])
 
     return (
-            <BlurView intensity={3} style={[styles.upgradeContainer, {backgroundColor: backgroundColors}]}>
+            <BlurView intensity={3} style={[styles.upgradeContainer, {backgroundColor: backgroundColors, borderColor: borderColors}]}>
                 <View style ={styles.outerContainer}>
                     <UpgradeTab
                     upgradeType={upgradeType}
@@ -133,7 +132,8 @@ const styles= StyleSheet.create({
     upgradeContainer: {     
         justifyContent: 'center',
         margin: 10,
-        borderRadius: 5
+        borderRadius: 5,
+        borderWidth: 1,
     },
     outerContainer: {
         justifyContent: 'center',

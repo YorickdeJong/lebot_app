@@ -1,118 +1,87 @@
-import { ImageBackground, StyleSheet, View } from "react-native"
+import { ImageBackground, StyleSheet, View, Text } from "react-native"
 import Icon from "../../Icon"
 import { ColorsBlue } from "../../../constants/palet"
 import { LinearGradient } from "expo-linear-gradient"
-import DriveCommandIcon from "../../UI/driveCommandIcon"
+import GraphDisplay from "./graphDisplay"
+import OptionsBar from "./optionsBar"
+import ChartDisplay from "./chartDisplay"
+import ControlPad from "./ControllPadDisplay/ControlPad"
+import React, { useContext } from "react"
+import { SocketContext } from "../../../store/socket-context"
+import WaitingForMeasurementContainer from "./WaitingForMeasurementContainer"
+import PowerOffContianer from "./PowerOffContainer"
+import { ChartContext } from "../../../store/chart-context"
 
-function DriveLayout({moveHandler, powerHandler, power, disconnectHandle}) {
+
+function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumber}) {
+    const socketCtx = useContext(SocketContext)
+    const chartCtx = useContext(ChartContext)
+
     return (
-
-        <View style={{backgroundColor: ColorsBlue.blue1200, flex: 1}}>
+        <View style={styles.container}>
         <ImageBackground
             source={require('./../../../../assets/grid.jpg')} 
             style= {styles.background}
             imageStyle={{opacity: 0.4}}
             >
-                <View style = {styles.upperContainer}>
-                    <View style = {styles.upperIcons}>
-                        <Icon 
-                        icon = "stop-circle"
-                        size={60}
-                        color={ColorsBlue.blue500}
-                        onPress = {moveHandler.bind(this, 'stop')}
-                        differentDir={true}/>
-                        
-                        <Icon 
-                        icon = {power ? "power-off" : "power"}
-                        size={60}
-                        color={ColorsBlue.blue500}
-                        onPress = {powerHandler}
-                        differentDir={true}/>
+                <OptionsBar
+                    disconnectHandle = {rightIconHandler}
+                    midIconHandler = {midIconHandler}
+                    moveHandler = {moveHandler}
+                    displayNumber = {displayNumber}
+                />
+                {socketCtx.power ? (
+                    //Display charts if first data is send, otherwise loading screen
+                    socketCtx.isMeasurementStarted && 
+                    chartCtx.chartData.distance.length !== 0 ? (
+                        <LinearGradient 
+                        colors={[ColorsBlue.blue1300, ColorsBlue.blue1100]} //ColorsBlue.blue1200, ColorsBlue.blue1100]}
+                        start={{ x: 1, y: 0 }}
+                        end={{ x: 0, y: 1 }}
+                        style = {styles.loadingContainer}>
+                                <ChartDisplay 
+                                chartData = {chartCtx.chartData}
+                                chartToggle = {chartCtx.chartToggle}
+                                trueCount = {chartCtx.trueCount}
+                                displayChart = {460}
+                                />
+                        </LinearGradient>
+                    ) : (
+                        <WaitingForMeasurementContainer />
+                    )
+                
+                ) : (
+                    <PowerOffContianer />
+                )}
 
-                        <Icon 
-                        icon = "lan-disconnect"
-                        size={60}
-                        color={ColorsBlue.blue500}
-                        onPress = {disconnectHandle}
-                        differentDir={true}/>
-                    </View>
-                </View>
-                    <View style = {[styles.arrow, {marginTop: 30}]}>      
-                        <DriveCommandIcon
-                        icon='arrow-up-circle'
-                        size={120}
-                        color={ColorsBlue.blue500}
-                        onPressIn = {moveHandler.bind(this, "up", true)}
-                        onPressOut = {moveHandler.bind(this, "up", false)}
-                        />
-                    </View>
-                    <View style = {styles.middleContainer}>
-                        <View style = {styles.middleLeftContainer}> 
-                            <DriveCommandIcon 
-                            icon='arrow-back-circle'
-                            size={120}
-                            color={ColorsBlue.blue500}
-                            onPressIn = {moveHandler.bind(this, "left", true)}
-                            onPressOut = {moveHandler.bind(this, "left", false)}
-                            />
-                        </View> 
-                    <View>
-                            <DriveCommandIcon
-                            icon='arrow-forward-circle'
-                            size={120}
-                            color={ColorsBlue.blue500}
-                        onPressIn = {moveHandler.bind(this, "right", true)}
-                        onPressOut = {moveHandler.bind(this, "right", false)}
-                            />
-                        </View> 
-                    </View>
-                    <View style = {styles.arrow}>
-                        <DriveCommandIcon 
-                        icon= 'arrow-down-circle'
-                        size={120}
-                        color={ColorsBlue.blue500}
-                        onPressIn = {moveHandler.bind(this, "down", true)}
-                        onPressOut = {moveHandler.bind(this, "down", false)}
-                        />
-                    </View>
+                {/* TODO: change controller for windmill, maybe also change background image to be more like a windmill */}
+                <ControlPad 
+                displayNumber = {displayNumber}
+                moveHandler={moveHandler}/> 
         </ImageBackground>
     </View>
    
     )
 }
 
-export default DriveLayout
+export default React.memo(DriveLayout)
 
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        flex: 1,
-        paddingLeft:20
-    },
-    upperIcons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 5,
-    },
-    middleContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    upperContainer: {
-        marginTop: 10,
-        marginRight: 20,
-        marginBottom: 50, 
-        borderBottomColor: ColorsBlue.blue700,
-        borderBottomWidth: "2%"
-    },
-    middleLeftContainer: {
-        marginRight: 90
-    },
-    arrow: {
-        alignItems: 'center'
-    },
     background: {
         flex: 1,
-        paddingLeft: 20
-    }
+    },
+    container: {
+        backgroundColor: ColorsBlue.blue1100, 
+        flex: 1,
+        borderTopColor: ColorsBlue.blue700,
+        borderTopWidth: 0.2,
+    },
+    loadingContainer: {
+        height: 460,
+        margin: 2,
+        borderRadius: 5,
+        borderColor: ColorsBlue.blue700,
+        borderWidth: 1,
+    },
 })

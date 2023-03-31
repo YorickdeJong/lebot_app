@@ -11,8 +11,10 @@ export const ColorsBlue = {
   blue900: '#41418D',
   blue1000: '#262666',
   blue1100: '#161652',
+  blue1150: '#080836',
   blue1200: '#06062C',
   blue1300: '#020224',
+  blue1400: '#000014',
   gray100: '#cccccc',
   gray200: '#808080',
   gray300: '#303030',
@@ -257,6 +259,8 @@ export const ColorsDarkerGreen = {
 }
 
 export const ColorsRed = {
+  ytRed: '#ff0000',
+  netflixRed: '#e50914',
   red1000: '#4d0c0c',
   red900: '#6c1d1d',
   red700: '#8f3131',
@@ -288,3 +292,33 @@ export const ColorsLightBlue = {
      blue300: '#a8c3d9',
      blue200: '#d3e3f3',
 }
+
+export const ColorsGray = {
+    gray100: '#f2f2f2',
+    gray200: '#d9d9d9',
+    gray300: '#bfbfbf',
+    gray400: '#a6a6a6',
+    gray500: '#8c8c8c',
+    gray600: '#737373',
+    gray700: '#595959',
+    gray800: '#404040',
+    gray900: '#262626',
+    gray1000: '#0d0d0d',
+
+}
+
+
+export function colorRGB(color1, color2, numColors){
+  const colors = [];
+
+  for (let i = 0; i < numColors; i++) {
+    const ratio = i / (numColors - 1);
+    const r = Math.round((1 - ratio) * parseInt(color1.substring(1, 3), 16) + ratio * parseInt(color2.substring(1, 3), 16));
+    const g = Math.round((1 - ratio) * parseInt(color1.substring(3, 5), 16) + ratio * parseInt(color2.substring(3, 5), 16));
+    const b = Math.round((1 - ratio) * parseInt(color1.substring(5, 7), 16) + ratio * parseInt(color2.substring(5, 7), 16));
+    const color = `#${r.toString(16)}${g.toString(16)}${b.toString(16)}`;
+    colors.push(color);
+  }
+  return colors
+}
+

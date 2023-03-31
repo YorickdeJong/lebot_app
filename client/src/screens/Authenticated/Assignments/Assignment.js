@@ -1,9 +1,11 @@
 import { StyleSheet, View} from "react-native"
 import React, { useContext, useState } from "react";
-import QuestionsTile from "../../../components/assignments/QuestionsTile";
-import QuestionSelection from "../../../components/assignments/QuestionSelection";
+import QuestionsTile from "../../../components/assignments/questions/QuestionsTile";
+import QuestionSelection from "../../../components/assignments/questions/QuestionSelection";
 import { AssignmentContext } from "../../../store/assignment-context";
 import { AssignmentDetailsContext } from "../../../store/assignment-Details-context";
+import { useIsFocused } from "@react-navigation/native";
+import InformationQuestionsScreen from "../../../components/assignments/questions/InformationQuestionsScreen";
 
 function getFirstCompletedAssignment(assignmentDetailsCtx, title, length) {
     for (let i = 1; i < length; i++){
@@ -14,38 +16,21 @@ function getFirstCompletedAssignment(assignmentDetailsCtx, title, length) {
     return 1;
 }
 
-
-
-function Assignment({navigation, route}) {
-    const { title } = route.params;
+function Assignment({title, tabIndex, currentIndex }) {
     const assignmentCtx = useContext(AssignmentContext); //how to now the subject here?
-    const assignmentTopic = assignmentCtx.filterSpecificTitle(title);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext)
+    const assignmentTopic = assignmentCtx.filterSpecificTitle(title);
     const assignmentStartingNumber = getFirstCompletedAssignment(assignmentDetailsCtx, title, assignmentTopic.length)
     const [assignmentNumber, setAssignmentNumber] = useState(assignmentStartingNumber) //TODO make default to be the first not yet completed assignment
+    const isFocused = tabIndex === currentIndex;
 
-    function onPressAssignment(inputNumber) {
-        setAssignmentNumber(inputNumber)
-    }
-
-    // passes the correct data when a tile is clicked
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-        title: title,
-        });
-    }, [navigation, title]);
+    
 
     return (
-    <View style = {styles.container}>
-        <QuestionSelection 
-        onPressAssignment = {onPressAssignment}
+        <InformationQuestionsScreen 
+        assignmentTopic={assignmentTopic} 
         assignmentNumber={assignmentNumber}
-        assignmentTopic={assignmentTopic}/>
-        <QuestionsTile 
-        assignmentNumber={assignmentNumber}
-        assignmentTopic={assignmentTopic}/>
-        {/* Hoe ga ik hier de juiste opgave weergeven? */}
-    </View>
+        isFocused={isFocused}/>
     )
 }
 

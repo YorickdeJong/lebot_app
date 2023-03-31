@@ -53,7 +53,7 @@ function Settings() {
             <ImageBackground
                 source={require('./../../../../assets/carBluePrint2.jpg')} 
                 style={styles.backgroundImage}
-                imageStyle={{opacity: 0.15}}
+                imageStyle={{opacity: 0.09}}
             >
                 <FlatList 
                 data = {settingsData}

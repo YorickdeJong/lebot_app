@@ -9,17 +9,6 @@ import { LinearGradient } from "expo-linear-gradient"
 function SettingsTile({type, color, icon,  iconColor, textColor, onPress, differentDir}){
     const colorCtx = useContext(ColorContext)
 
-    let colors = [
-        ColorsDarkestBlue.blue700,
-        ColorsTile.blue1000, ColorsTile.blue900,
-        ColorsTile.blue700, ColorsTile.blue600,
-        ColorsTile.blue500, ColorsTile.blue400,
-        ColorsTile.blue300, ColorsTile.blue200
-    ];
-
-    colors = color ? color : colors
-    const locations = colors.map((_, index) => index / (colors.length - 1));
-    
     return (
         <Pressable
         onPress = {onPress}
@@ -28,11 +17,10 @@ function SettingsTile({type, color, icon,  iconColor, textColor, onPress, differ
             pressed && styles.pressed]
         }}>
             <LinearGradient 
-             style = {styles.colorGradient}
-             colors={colors}
-             start={{ x: 0, y: 0 }}
-             end={{ x: 1, y: 1 }}
-             locations={locations}
+            style = {styles.colorGradient}
+            colors={[ColorsBlue.blue1200, ColorsBlue.blue900]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
              >
             <Text style = {[styles.text, {color: colorCtx.isBlue ? ColorsBlue.blue50 : ColorsBlue.blue50}]}>{type}</Text>
             <View style = {styles.iconContainer}>
@@ -62,10 +50,12 @@ const styles = StyleSheet.create({
         height: 130,
         borderRadius: 6, 
         elevation: 4, 
-        shadowColor: ColorsBlue.blue1000,
-        shadowOffset: {height: 2, width: 3},
+        shadowColor: ColorsBlue.blue900,
+        shadowOffset: {height: 1, width: 0},
         shadowRadius: 4,
-        shadowOpacity: 0.7
+        shadowOpacity: 0.7,
+        borderWidth: 1,
+        borderColor: ColorsBlue.blue700,
     },
     pressed: {
         opacity: 0.7
