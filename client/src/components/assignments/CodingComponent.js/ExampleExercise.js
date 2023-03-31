@@ -11,9 +11,7 @@ import DragBlocksAnimation from './DragBlocksAnnimation';
 
 function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, isFocused, title}) {
     const [focused, setFocused] = useState(isFocused && slideCount === 3); 
-    const description = "Dit is een beschrijving van het onderwerp. Hier leren we heel veel dingen over batterijen en kabels en over hoe we ze moeten aansluiten."
 
-        
     const extraStyle = {
         marginLeft: 8,
         paddingLeft: 3,

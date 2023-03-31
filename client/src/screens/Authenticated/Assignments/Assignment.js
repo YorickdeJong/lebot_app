@@ -24,9 +24,7 @@ function Assignment({title, tabIndex, currentIndex }) {
     const [assignmentNumber, setAssignmentNumber] = useState(assignmentStartingNumber) //TODO make default to be the first not yet completed assignment
     const isFocused = tabIndex === currentIndex;
 
-    console.log(`AssignmentNumber: ${assignmentNumber}`)
-    console.log(`AssignmentTopic: ${assignmentTopic}`)
-
+    
 
     return (
         <InformationQuestionsScreen 

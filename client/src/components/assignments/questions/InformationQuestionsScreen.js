@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { ASSIGNMENT_EXPLANATION } from "../../../data/InitialAssignmentExplanation";
 import IntroScreenQuestions from "./IntroScreenQuestions";
@@ -7,9 +8,10 @@ import Questions from "./Questions";
 function InformationQuestionsScreen({assignmentTopic, assignmentNumber, isFocused}){
     const [slideCount, setSlideCount] = useState(0);
     const [typing, setTyping] = useState(true);
+    const isFoccusedScreen = useIsFocused()
     //upon changing to this screen, set the thread id to the first thread id
 
-    console.log(`check InformationQuestionsScreen`)
+    console.log(`CHECK INFORMATION SCREEN`)
 
     useEffect(() => {
         console.log(slideCount)
@@ -56,7 +58,7 @@ function InformationQuestionsScreen({assignmentTopic, assignmentNumber, isFocuse
             description = {`De eisen voor het goed functioneren van een windmolen zijn:\n\n1. De maximum snelheid ligt tussen de 0.3 en 0.4 m/s\n\n2. De snelheid is constant na 1 seconden\n\n3. De efficientie ligt boven de 60%.\n\n4. De afgelegde afstand per rotatie is 2 meter.\n\n5. De milieu impact is niet hoger dan 2.`}
             isFocused={isFocused} />
         )}
-        {slideCount === 2  && (
+        {slideCount === 2  && isFoccusedScreen && (
             <Questions
             title = "Eisen Windmolen"
             description = {`De eisen voor het goed functioneren van een windmolen zijn:\n\n1. De maximum snelheid ligt tussen de 0.3 en 0.4 m/s\n\n2. De snelheid is constant na 1 seconden\n\n3. De efficientie ligt boven de 60%.\n\n4. De afgelegde afstand per rotatie is 2 meter.\n\n5. De milieu impact is niet hoger dan 2.`} 

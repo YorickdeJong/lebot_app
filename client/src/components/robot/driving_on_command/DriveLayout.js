@@ -43,6 +43,7 @@ function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumb
                                 chartData = {chartCtx.chartData}
                                 chartToggle = {chartCtx.chartToggle}
                                 trueCount = {chartCtx.trueCount}
+                                displayChart = {460}
                                 />
                         </LinearGradient>
                     ) : (
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
         borderTopWidth: 0.2,
     },
     loadingContainer: {
-        height: 450,
+        height: 460,
         margin: 2,
         borderRadius: 5,
         borderColor: ColorsBlue.blue700,

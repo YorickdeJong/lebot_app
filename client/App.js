@@ -28,8 +28,6 @@ import UserProfileContextProvider from './src/store/userProfile-context';
 import SSHConnectionScreen from './src/screens/Authenticated/Robot/SSH';
 import Controller from './src/screens/Authenticated/Robot/Controller';
 import SocketContextProvider from './src/store/socket-context';
-import { SocketContext } from './src/store/socket-context';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import RobotStore from './src/screens/Authenticated/Robot/RobotStore';
 import MoneyContainer from './src/components/robot/store/moneyContainer';
 import CarContextProvider from './src/store/car-context';
@@ -139,11 +137,6 @@ function ChatScreen() {
 
 function Robot () {
   const navigation = useNavigation();
-  const socketCtx = useContext(SocketContext)
-
-  useEffect(() => {
-      console.log(`isLoading changed to: ${socketCtx.isLoading}`)
-  }, [socketCtx.isLoading])
 
   return (
     <Stack.Navigator
@@ -753,6 +746,7 @@ function Root() {
   const authCtx = useContext(AuthContext);
   const colorCtx = useContext(ColorContext)
 
+  console.log(`CHECK RELOADING`)
   useEffect(() => {
     async function fetchToken() {
       const storedToken = await AsyncStorage.getItem('token');

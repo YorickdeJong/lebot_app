@@ -67,8 +67,8 @@ else{
         
         if (toggle){
             console.log(`turn script off`)
-            socketCtx.socket.emit('driveCommand', {command: "\x03"});
-            socketCtx.socket.emit('disconnectSocket');
+            socketCtx.socket.current.emit('driveCommand', {command: "\x03"});
+            socketCtx.socket.current.emit('disconnectSocket');
             return;
         }
         

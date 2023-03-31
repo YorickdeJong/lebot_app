@@ -23,13 +23,6 @@ function SSHConnected({inputHandler, command, resetContent, serverOutput}) {
         }
     }, [])
 
-    useEffect(() => {
-        socketCtx.Loading(true);
-        if (socketCtx.output && socketCtx.output !== ''){
-            socketCtx.Loading(false);
-        }
-    }, [socketCtx.output])
-
     // Comaptible for windows and linux
     function onInputSubmit() {
         console.log(`Before: ${socketCtx.isLoading}`)

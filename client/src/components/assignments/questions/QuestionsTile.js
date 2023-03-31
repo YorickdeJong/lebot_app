@@ -24,6 +24,8 @@ function QuestionsTile({assignmentNumber, assignmentTopic}) {
     const imageHeight = useRef(new Animated.Value(450)).current; //Change these values when changing the image size
     const questionData = assignmentTopic[assignmentNumber - 1];
 
+    console.log(`CHECK QUESTIONTILE`)
+
     const keyboardWillShow = (event) => {
         Animated.parallel([
         Animated.timing(keyboardHeight, {

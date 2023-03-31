@@ -20,7 +20,8 @@ function RobotStore() {
     const locations = colors.map(
         (_, index) => index / (colors.length - 1)
     );
-
+    
+    console.log(`CHECK SCREEN ROBOT STORE`)
 
     return (
     <View style = {styles.outerContainer}>

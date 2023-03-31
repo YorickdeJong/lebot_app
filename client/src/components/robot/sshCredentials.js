@@ -56,7 +56,7 @@ function SSHCredentials({handleConnect, serverOutput}) {
         }
         else {
             handleConnect();
-            socketCtx.emit('endStream')
+            socketCtx.current.emit('endStream')
         }
     }
 

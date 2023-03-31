@@ -1,4 +1,4 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useRef } from "react";
 import {Alert} from 'react-native'
 
 import io from 'socket.io-client';
@@ -25,7 +25,8 @@ export const SocketContext = createContext({
 //N.B. EVERY COMPONENT THAT USES SOCKET WILL NEED TO BE WRAPPED IN A REACT.MEMO, OTHERWISE IT WILL CAUSE LARGE AMOUNTS OF UNNECESSARY RERENDERS
 
 function SocketContextProvider({children}) {
-    const [socket, setSocket] = useState(null);
+    // const [socket, setSocket] = useState(null);
+    const socket = useRef(null); //use useRef to not trigger a rerender
     const [isConnected, setIsConnected] = useState(false);
     const [output, setOutput] = useState('');
     const [dir, setDir] = useState('');
@@ -39,17 +40,64 @@ function SocketContextProvider({children}) {
 
     // Call CreateConnection on mount
     useEffect(() => {
+        console.log(`check connection 1`)
         CreateSocketConnection();
     }, []);
+    
+    useEffect( () => {
+        console.log(`check connection 1`)
+        setDir('')
+        setIsConnected(false);
+    }, [])
 
+    useEffect(() => {
+        console.log(`check connection 1`)
+        if(isConnected) {
+            Command('dir', 'dir')
+        }
+
+    }, [isConnected])
+
+    const renderCount = useRef(0);
+    useEffect(() => {
+        renderCount.current += 1;
+        console.log(`SocketContextProvider has rendered ${renderCount.current} times`);
+    });
+
+    //Sockets have to be app state wide 
+    useEffect(() => {
+        console.log(`check connection 1`)
+        if (socket.current) {
+            socket.current.on('connection', () => {
+                console.log('Connected to server');
+                });
+
+                socket.current.on('sshConnectionStatus', (data) => {
+                    if (data && data.connected) {
+                        console.log('SSH connection established Frontend');
+                        if (socket.current.connected){
+                            setIsConnected(data.connected);
+                        }
+                    } 
+                    else {
+                        console.error('Failed to establish SSH connection');
+                        Disconnect();
+                    }
+                });
+            if (!isMeasurementStarted){
+                listenForStartScript();
+            }
+        };
+        
+    }, []);
 
     function CreateSocketConnection() {
-        setSocket(io(SOCKET_SERVER_URL))
+        socket.current = (io(SOCKET_SERVER_URL))
     }
 
     function Connect(config, callback) {
         try{
-            socket.emit('connectToRemoteDevice',  config );
+            socket.current.emit('connectToRemoteDevice',  config );
             
         }
         catch(error) {
@@ -62,11 +110,11 @@ function SocketContextProvider({children}) {
             callback()
         }
     }
-
+    
     function Disconnect() {
         if (isConnected) {
             try{
-                socket.emit('disconnected');
+                socket.current.emit('disconnected');
                 setIsConnected(false);
                 
             }
@@ -80,7 +128,7 @@ function SocketContextProvider({children}) {
 
     function listenForStartScript() { //in useEffect in chartContext
         if (!isMeasurementStarted){
-            socket.on('measurementStarted', (data) => {
+            socket.current.on('measurementStarted', (data) => {
                 console.log(`DATA MESSAGE: ${data.message}`)
                 if(data.message === 'Measurement started') {
                     console.log('Measurement Started, DATA RECEIVED')
@@ -92,8 +140,8 @@ function SocketContextProvider({children}) {
 
     function Command(inputType, command) {
         try {
-            socket.emit('command', {command: command}) //TODOProblem
-            socket.on('terminalOutput', (data) => {
+            socket.current.emit('command', {command: command}) //TODOProblem
+            socket.current.on('terminalOutput', (data) => {
                 if (data) {
                     switch(inputType) {
                         case 'cd' || 'cdBack':
@@ -129,7 +177,7 @@ function SocketContextProvider({children}) {
         catch (err) {
             console.log(`Failed to send command: ${err}`)
             responseOutput('Error: ' + err.message)
-            setSocket(null) // Reset socket to trigger reconnection
+            socket.current(null) // Reset socket to trigger reconnection
             setIsConnected(false);
             Alert.alert('You have been disconnected from the ssh connection')
         };
@@ -153,44 +201,8 @@ function SocketContextProvider({children}) {
         setIsLoading(loading)
     }
 
-    useEffect( () => {
-        setDir('')
-        setIsConnected(false);
-    }, [])
-
-    useEffect(() => {
-        if(isConnected) {
-            Command('dir', 'dir')
-        }
-
-    }, [isConnected])
-
-    //Sockets have to be app state wide 
-    useEffect(() => {
-        if (socket) {
-            socket.on('connection', () => {
-                console.log('Connected to server');
-                });
-
-                socket.on('sshConnectionStatus', (data) => {
-                    if (data && data.connected) {
-                        console.log('SSH connection established Frontend');
-                        if (socket.connected){
-                            setIsConnected(data.connected);
-                        }
-                    } 
-                    else {
-                        console.error('Failed to establish SSH connection');
-                        Disconnect();
-                    }
-                });
-            if (!isMeasurementStarted){
-                listenForStartScript();
-            }
-        };
-        
-    }, [socket]);
     
+    console.log(`check rerender`)
 
     const value = {
         socket: socket,

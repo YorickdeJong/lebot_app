@@ -9,6 +9,8 @@ import { BlurView } from 'expo-blur';
 
 
 function ChatGPT() {
+    console.log(`CHECK CHAT`)
+    
     const isFocused = useIsFocused();
     const chatCtx = useContext(ChatContext);
     const [lastSelectedThreadId, setLastSelectedThreadId] = useState(chatCtx.currentThreadId);

@@ -10,7 +10,7 @@ import { robotData } from "../../../data/RobotData";;
 import { SocketContext } from "../../../store/socket-context";
 import {  Header } from 'react-navigation-stack';
 
-function Settings() {
+function RobotCommands() {
     const socketCtx = useContext(SocketContext);
     const navigation = useNavigation();
     const [headerHeight, setHeaderHeight] = useState(0);
@@ -21,6 +21,7 @@ function Settings() {
         setHeaderHeight(headerHeight);
     }, []);
 
+    console.log(`CHECK SCREEN SETTINGS`)
 
     function settingsGrid(itemData) {
         function onPressHandler() {
@@ -102,7 +103,7 @@ function Settings() {
 }
 
 
-export default React.memo(Settings)
+export default React.memo(RobotCommands)
 
 const styles = StyleSheet.create({
     iconContainer: {

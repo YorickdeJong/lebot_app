@@ -42,9 +42,9 @@ function GraphDisplay({
         const flattenData = (xData, yData) => {
             let flattened = [];
 
-            yData.map((yArr, yArrIndex) => {
+            yData.forEach((yArr, yArrIndex) => {
                 let lineData = [];
-                yArr.map((y, index) => {
+                yArr.forEach((y, index) => {
                     lineData.push({
                         x: xData[index],
                         y,
@@ -103,7 +103,7 @@ function GraphDisplay({
     };
 
     const { min: yMin, max: yMax } = findBroadestRange(yData);
-
+    const { min: xMin, max: xMax } = findBroadestRange(xData);
 
     // Calculate lines for plot
     const Lines = ({x, y}) => {
@@ -159,7 +159,6 @@ function GraphDisplay({
         return null;
     } 
 
-
     return (
         <View style = {styles.graphContainer}>
                 <Text style={[styles.title, {paddingBottom: trueCount > 1 ? 5 : 0}]}>
@@ -185,8 +184,8 @@ function GraphDisplay({
                         style={{ flex: 1 }}
                         yMin={yMin}
                         yMax={yMax}
-                        xMin={dataType == "force" ? Math.min(xData[0]) : xData[0][0]}
-                        xMax={dataType == "force" ? Math.max(xData[0]) : xData[0][0]}
+                        xMin={xMin}
+                        xMax={xMax}
                         numberOfTicks = {numberOfTicks}
                         gridMinInterval={1}
                         gridMaxInterval={1}
@@ -220,8 +219,8 @@ function GraphDisplay({
                             svg={{ fontSize: 10, fill: ColorsBlue.blue50 }}
                             numberOfTicks = {numberOfTicks}
                             formatLabel={(value, index) => value ? `${value}` : ''}
-                            xMin={dataType == "force" ? Math.min(xData[0]) : xData[0][0]}
-                            xMax={dataType == "force" ? Math.max(xData[0]) : xData[0][0]}
+                            xMin={xMin}
+                            xMax={xMax}
                             xAccessor={({ item }) => item}
                         />
                         <Text style = {[styles.Xlabel, trueCount === 1 && {fontSize: 16}]}>{xlabel}</Text>

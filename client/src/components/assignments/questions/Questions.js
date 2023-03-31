@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native'
+import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useContext, useEffect, useRef, useState } from 'react'
@@ -25,7 +25,7 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
     const keyboardHeight = useRef(new Animated.Value(0)).current;
     const imageHeight = useRef(new Animated.Value(480)).current; //Change these values when changing the image size
     const questionData = assignmentTopic[assignmentNumber - 1];
-    
+    const isFocussedDiffScreen = useIsFocused()
     const [close, setClose] = useState(false);
 
     useEffect(() => {
@@ -112,12 +112,13 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
                 >
                     <ScrollView style = {{flex: 1}}
                     showsVerticalScrollIndicator={false}>
-                            {isFocused && <ImageContainer 
+                            {isFocused && isFocussedDiffScreen && <ImageContainer 
                             assignment_number={questionData.assignment_number}
                             tokens={questionData.tokens}
                             title={questionData.title}
                             imageHeight={imageHeight}
                             keyboardHeight={keyboardHeight}
+                            isFocused2={isFocused}
                             />}
                             {!close ? 
                             <>

@@ -45,7 +45,10 @@ function ChartContextProvider({children}) {
     // Fetch the latest measurement result when the power is turned on and save it such that it can be plotted in the assignments/imageContainer
     useEffect(() => {
         if(socketCtx.power && socketCtx.isMeasurementStarted){
+            
             let prevResults = 0
+            emptyChartData(); //empty chart data before starting
+
             const interval = setInterval(async () => {
                 //fetch when power is turned on
                     const measurementResults = await getLatestMeasurementResult(userprofileCtx.userprofile.id); //TODO CHANGE TO DIFFERENT FETCH
@@ -59,15 +62,7 @@ function ChartContextProvider({children}) {
             return () => clearInterval(interval);
         }   
         else {
-            setChartData({
-                distance: [[], [], [], []],
-                speed: [[], [], [], []],
-                force: [[], [], [], []],
-                energy: [[], [], [], []],
-                time: [],
-                motorNumber: [],
-                recordNumber: 0,
-            });
+            emptyChartData();
             socketCtx.setIsMeasurementStarted(false);
             setPrevMeasurementResultLength(0);
         }
@@ -86,15 +81,7 @@ function ChartContextProvider({children}) {
     //upon fetching, all charts are set for a certain user_id, assignment_number and title
     const setAllChartsDataHandler = useCallback((newChartData) => {
         if (newChartData === undefined){
-            setChartData({
-                distance: [[], [], [], []],
-                speed: [[], [], [], []],
-                force: [[], [], [], []],
-                energy: [[], [], [], []],
-                time: [],
-                motorNumber: [],
-                recordNumber: 0,
-            });
+            emptyChartData();
             return
         };
 
@@ -205,6 +192,18 @@ function ChartContextProvider({children}) {
         });
     }, []);
 
+    function emptyChartData(){
+        setChartData({
+                distance: [[], [], [], []],
+                speed: [[], [], [], []],
+                force: [[], [], [], []],
+                energy: [[], [], [], []],
+                time: [],
+                motorNumber: [],
+                recordNumber: 0,
+        });
+    }
+    
     //
     const values = {
         chartData,

@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native'
 import { BlurView } from 'expo-blur';
-import { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { StyleSheet, View, Animated, FlatList, Alert} from "react-native"
 import { ColorsBlue, ColorsLighterGold, ColorsTile } from "../../../constants/palet"
 import { deleteMeasurementResult, getSpecificMeasurementResult } from "../../../hooks/measurement_results";
@@ -11,7 +11,7 @@ import ChartDisplay from "../../robot/driving_on_command/chartDisplay";
 import LoadingChat from "../../UI/LoadingChat";
 import AssignmentOptionsBar from "./assignmentOptionsBar";
 
-function ImageContainer({imageHeight, title, assignment_number, tokens, keyboardHeight}) {
+function ImageContainer({imageHeight, title, assignment_number, tokens, keyboardHeight, isFocused2}) {
     const chartCtx = useContext(ChartContext)
     const userprofileCtx = useContext(UserProfileContext);
     const [isFetched, setIsFetched] = useState(false);
@@ -21,8 +21,6 @@ function ImageContainer({imageHeight, title, assignment_number, tokens, keyboard
     const [chartAvailable, setChartAvailable] = useState(false);
     const isFocused = useIsFocused();
     const chartLength = chartCtx.chartData.length
-
-    console.log(`CHECK IMAGE CONTAINER`)
     
     useEffect(() => {
         if (!isFocused){ //if the screen isn't focussed, don't render
@@ -43,8 +41,41 @@ function ImageContainer({imageHeight, title, assignment_number, tokens, keyboard
         }
     }, [isLoading])
 
+    const fetchData = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const specificAssignmentImages = await getSpecificMeasurementResult(
+                userprofileCtx.userprofile.id,
+                title,
+                assignment_number
+            );
+            if (specificAssignmentImages.length === 0) {
+                console.log(`failed to fetch or no images are present in the database`);
+                setIsFetched(false);
+                setIsLoading(false);
+                setChartAvailable(false);
+                return;
+            }
+            setDataArrayLength(
+                Array.from({ length: specificAssignmentImages.length }, (_, index) => index)
+            );
 
-    useEffect(() => {   
+            chartCtx.setAllChartsDataHandler(specificAssignmentImages);
+            console.log(`fetched`);
+            setChartAvailable(true);
+            setIsFetched(true);
+            setIsLoading(false);
+        } 
+        
+        catch (error) {
+            console.log('no images yet');
+            setIsFetched(false);
+            setChartAvailable(false);
+            setIsLoading(false);
+        }
+    }, [assignment_number, chartLength, userprofileCtx.userprofile.id, chartCtx]);
+
+    useEffect(() => {  
         if (!isFocused){
             return;
         }
@@ -53,36 +84,6 @@ function ImageContainer({imageHeight, title, assignment_number, tokens, keyboard
             return
         }
 
-        async function fetchData(){
-            setIsLoading(true)
-            try {
-                const specificAssignmentImages = await getSpecificMeasurementResult(
-                    userprofileCtx.userprofile.id, 
-                    title, 
-                    assignment_number
-                );
-                if (specificAssignmentImages.length === 0){
-                    console.log(`failed to fetch or no images are present in the database`)
-                    setIsFetched(false)
-                    setIsLoading(false)
-                    setChartAvailable(false)
-                    return 
-                }
-                setDataArrayLength(Array.from({ length: specificAssignmentImages.length }, (_, index) => index));
-                chartCtx.setAllChartsDataHandler(specificAssignmentImages);
-                console.log(`fetched`)
-                setChartAvailable(true)
-                setIsFetched(true)
-                setIsLoading(false)
-            }
-            catch (error){
-                console.log('no images yet')
-                setIsFetched(false)
-                setChartAvailable(false)
-                setIsLoading(false)
-            }
-        }
-        
         fetchData();
         
     }, [assignment_number, isFetched, chartLength])
@@ -129,8 +130,8 @@ function ImageContainer({imageHeight, title, assignment_number, tokens, keyboard
         console.log('pressed')
     }
         
-    console.log(imageHeight)
     function renderImage({item}){    
+        console.log(`CHECK IMAGE CONTAINER 2`) //RELOADS TO OFTEN
         return (
             //width = imageWidth + marginContainer + margin QuestionTileContianer
             <Animated.View style={[styles.image, {height: imageHeight, width: 390}]}> 
@@ -208,7 +209,7 @@ function ImageContainer({imageHeight, title, assignment_number, tokens, keyboard
     )
 }
 
-export default ImageContainer
+export default React.memo(ImageContainer)
 
 
 

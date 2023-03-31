@@ -4,15 +4,13 @@ import { ChartContext } from "../../../store/chart-context"
 import GraphDisplay from "./graphDisplay"
 
 function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChart}) {
-
-    console.log(`CHECK CHART DISPLAY`)
-    let chartHeight = 450;
     const { motorNumber } = chartData;
 
     if (displayChart){
         chartHeight = trueCount == 1 ? displayChart - 15: displayChart - 38 //adjust ratios to fit graphs
     }
 
+    console.log(`chartdisaply CHECK`)
     let doubleChartHeight;
     let firstDataType, secondDataType, thirdDataType, fourthDataType
     let firstYData, secondYData, thirdYData, fourthYData;
@@ -54,23 +52,19 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
 
     const filteredChartData = filteredData();
 
+    const h = [[]];
     switch(trueCount){
         case 1:
 
             //TODO handle 2D arrays + handle distance array
             [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
             firstXData = selectXdata(firstDataType, chartData);
-
-
-            if (!Array.isArray(firstYData[0])) {
-                firstYData = [firstYData];
-            }
             
             const padding = displayChart? 0 : 20; 
 
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight}}>
-                    <GraphDisplay 
+                    {!(firstYData[0].length === undefined) && <GraphDisplay 
                     dataType={firstDataType}
                     data={{ xData: firstXData, yData: firstYData }}
                     chartHeight = {chartHeight}
@@ -79,7 +73,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                     padding = {padding}
                     motorNumber = {motorNumber}
                     legend
-                    />
+                    />}
                 </View>
             )
 
@@ -90,10 +84,13 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             firstXData = selectXdata(firstDataType, chartData);
             secondXData = selectXdata(secondDataType, chartData);
             
-            doubleChartHeight = displayChart ? chartHeight / 2 : chartHeight / 2.3;
+            doubleChartHeight = chartHeight / 2
+
+
+            console.log(`secondYData ${secondYData}`)
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
-                    <GraphDisplay 
+                    {!(firstYData[0].length === undefined) && <GraphDisplay 
                     dataType={firstDataType}
                     data={{ xData: firstXData, yData: firstYData }}
                     chartHeight = {doubleChartHeight}
@@ -101,15 +98,15 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                     trueCount = {trueCount}
                     motorNumber = {motorNumber}
                     legend
-                    />
-                    <GraphDisplay 
+                    />}
+                    {!(secondYData[0].length === undefined) && <GraphDisplay 
                     dataType={secondDataType}
                     data={{ xData:secondXData, yData: secondYData }}
                     chartHeight = {doubleChartHeight}
                     finalPlot = {finalPlot}
                     trueCount = {trueCount}
                     motorNumber = {motorNumber}
-                    />
+                    />}
                 </View>
             )
 
@@ -126,7 +123,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
                     <View style = {{flex: 1}}>
-                        <GraphDisplay 
+                        {!(firstYData[0].length === undefined) && <GraphDisplay 
                         dataType={firstDataType}
                         data={{ xData: firstXData, yData: firstYData }}
                         chartHeight = {chartHeight}
@@ -134,25 +131,25 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
                         legend
-                        />
+                        />}
                     </View>
                     <View style = {styles.twoCharts}>
-                        <GraphDisplay 
+                        {!(secondYData[0].length === undefined) && <GraphDisplay 
                         dataType={secondDataType}
                         data={{ xData:secondXData, yData: secondYData }}
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
-                        />
-                        <GraphDisplay 
+                        />}
+                        {!(thirdYData[0].length === undefined) && <GraphDisplay 
                         dataType={thirdDataType}
                         data={{ xData:thirdXData, yData: thirdYData }}
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
-                        />
+                        />}
                     </View>
                 </View>
             )
@@ -173,7 +170,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
                     <View style = {styles.twoCharts}>
-                        <GraphDisplay 
+                        {!(firstYData[0].length === undefined) && <GraphDisplay 
                         dataType={firstDataType}
                         data={{ xData: firstXData, yData: firstYData }}
                         chartHeight = {chartHeight}
@@ -181,33 +178,33 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
                         legend
-                        />
-                        <GraphDisplay 
+                        />}
+                        {!(secondYData[0].length === undefined) && <GraphDisplay 
                         dataType={secondDataType}
                         data={{ xData:secondXData, yData: secondYData }}
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
-                        />
+                        />}
                     </View>
                     <View style = {styles.twoCharts}>
-                        <GraphDisplay 
+                        {!(thirdYData[0].length === undefined) && <GraphDisplay 
                         dataType={thirdDataType}
                         data={{ xData:thirdXData, yData: thirdYData }}
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
-                        />
-                        <GraphDisplay 
+                        />}
+                        {!(fourthYData[0].length === undefined) && <GraphDisplay 
                         dataType={fourthDataType}
                         data={{ xData:fourthXData, yData: fourthYData }}
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
-                        />
+                        />}
                     </View>
                 </View>
             )

@@ -10,7 +10,7 @@ const {
 } = require('../../services/queries/queryChatgpt');
 
 const pool = require('../../services/postGreSQL');
-const apiKey = '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';
+const apiKey = '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';
 
 const getChatHistory = async (req, res) => {
     const client = await pool.connect();
@@ -22,8 +22,9 @@ const getChatHistory = async (req, res) => {
     }
 
     catch (error){
-        console.log(error)
-        return res.status(500).json({error: 'Failed to get chatgpt'});
+        console.log('Failed to get chatgpt')
+        return
+        // return res.status(500).json({error: 'Failed to get chatgpt'});
     }
 
     finally{
@@ -68,8 +69,9 @@ const postChatgpt = async (req, res) => {
     }
 
     catch (error){
-        console.log(error)
-        return res.status(500).json({error: 'Failed to post chatgpt'});
+        console.log('Failed to post chatgpt')
+        return
+        // return res.status(500).json({error: 'Failed to post chatgpt'});
     }
 
     finally{
@@ -104,8 +106,9 @@ const postDescriptionOfChat = async (req, res) => {
     }
 
     catch (error){
-        console.log(error)
-        return res.status(500).json({error: 'Failed to post chatgpt'});
+        console.log(`Failed to post description chatGPT`)
+        return 
+        // return res.status(500).json({error: 'Failed to post chatgpt'});
     }
 
     finally{

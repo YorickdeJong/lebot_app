@@ -7,6 +7,7 @@ import LoadingOverlay from '../../../components/UI/LoadingOverlay'
 const SSHConnectionScreen = () => {
     const socketCtx = useContext(SocketContext);
 
+    console.log(`CHECK SCREEN SSH`)
     const handleConnect = (inputType, input) => {
         switch(inputType) {
             case 'disconnect': 

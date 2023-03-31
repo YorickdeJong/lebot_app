@@ -12,6 +12,7 @@ import { ChatContext } from '../../store/chat-context'
 function Chats({navigation, route}) {
     const chatCtx = useContext(ChatContext)
 
+    console.log(`CHECK CHATGPT`)
     useEffect(() => {
         
     }, [chatCtx.thread_ids]);

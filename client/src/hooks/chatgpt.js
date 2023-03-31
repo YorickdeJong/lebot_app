@@ -7,6 +7,7 @@ const url = `http://10.7.191.114:3000/api/v1/chatgpt`; //Passessese
 // In the response of the post request, the answer of chatgpt is stored in the data field
 // Therefore, no get request is needed
 export async function postMessage(user_id, inputValue, thread_id) {
+    console.log(`posting message?`)
     try{
         const response = await axios.post(url, {
             user_id: user_id,
@@ -26,6 +27,7 @@ export async function postMessage(user_id, inputValue, thread_id) {
 }
 
 export async function postDescriptionMessage(inputValue) {
+    console.log(`posting description?`)
     try{
         const response = await axios.post(url + '/description', {
             message: inputValue,
@@ -43,6 +45,7 @@ export async function postDescriptionMessage(inputValue) {
 }
 
 export async function getChatHistory(user_id) {
+    console.log(`get message?`)
     try{
         const response = await axios.get(url + `/${user_id}`);
         const chatHistories = JSON.stringify(response.data);
