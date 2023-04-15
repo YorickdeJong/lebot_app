@@ -1,5 +1,5 @@
 const checkIfAssignmentExistsQuery = `
-    SELECT * FROM assignments WHERE assignment_number = $1 AND title = $2
+    SELECT * FROM assignments WHERE assignment_number = $1 AND title = $2 AND subject = $3
   `; //TODO add search for title too
 
 const getAllAssignmentsQuery = `
@@ -28,13 +28,13 @@ const updateAssignmentQuery = `
     question=$4,
     answer=$5, 
     image_file_path=$6, 
-    currency=$7,
-    WHERE assignment_id=$9 AND title=$4
+    currency=$7
+    WHERE assignment_id=$8
     RETURNING *
   `
 
 const deleteAssignmentQuery = `
-  DELETE FROM assignments WHERE assignment_id=$1 AND title = $2 RETURNING *
+  DELETE FROM assignments WHERE assignment_id=$1 RETURNING *
 `
 
 

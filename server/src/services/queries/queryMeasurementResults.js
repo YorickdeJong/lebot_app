@@ -7,7 +7,7 @@ const getAllMeasurementResultsQuery = `
 const getSpecificMeasurementResultQuery = `
   SELECT * FROM measurement_results mr
   INNER JOIN user_profile u ON u.id = mr.user_id
-  WHERE mr.assignment_number = $1 AND u.id = $2 AND mr.title = $3;
+  WHERE mr.assignment_number = $1 AND u.id = $2 AND mr.title = $3 AND mr.subject = $4;
 `;
 
 const getLatestMeasurementResultQuery = `
@@ -21,8 +21,8 @@ const getLatestMeasurementResultQuery = `
 
 const createMeasurementResultQuery = `
   INSERT INTO measurement_results (assignment_number, distance, force, energy, 
-        velocity, time, user_id, title, type, motor_number, record_number)
-  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        velocity, time, user_id, title, type, motor_number, subject, record_number)
+  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
   RETURNING *;
 `;
 
@@ -38,8 +38,9 @@ const updateMeasurementResultQuery = `
   user_id=$7,
   title=$8,
   type=$9,
-  motor_number=$10
-  WHERE record_number=$11
+  motor_number=$10,
+  subject=$11
+  WHERE record_number=$12
   RETURNING *;
 `;
 

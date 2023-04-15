@@ -10,7 +10,7 @@ const {
 } = require('../../services/queries/queryChatgpt');
 
 const pool = require('../../services/postGreSQL');
-const apiKey = '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';
+const apiKey = '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';
 
 const getChatHistory = async (req, res) => {
     const client = await pool.connect();

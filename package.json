@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "react-native-tab-view": "^3.5.1"
+    "react-native-tab-view": "^3.5.1",
+    "yarn": "^1.22.19"
   }
 }
