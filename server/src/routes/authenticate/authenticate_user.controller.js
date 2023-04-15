@@ -37,6 +37,7 @@ const authenticateUser = async (req, res) => {
         const id = user.id
         const token = generateToken(user.id);
 
+        console.log(`user token: ${token}`)
         res.json({ 
             message: 'User authenticated',
             token,

@@ -1,34 +1,43 @@
 import { LinearGradient } from "expo-linear-gradient"
 import { ImageBackground, StyleSheet, Text, View } from "react-native"
 import { ColorsBlue } from "../../../constants/palet"
+import { BlurView } from "expo-blur"
 
 
 
 
 function PowerOffContianer() {
     return (
-        // Display to first press power button
-        <LinearGradient 
-        colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]}
-        start={{ x: 1, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style = {styles.loadingContainer}>
-            <ImageBackground
-            source={require('./../../../../assets/chatbackground.png')} 
-            style= {{flex: 1}}
-            imageStyle={{opacity: 0.18}}
-            >
+        <View style={styles.shadowContainer}>
+            <BlurView style = {styles.loadingContainer} intensity={5} tint="dark">
                 <View style = {styles.powerOffContianer}>
                     <Text style = {styles.powerOffText}>PRESS THE POWER BUTTON TO START A MEASUREMENT</Text>
                 </View>
-            </ImageBackground>
-        </LinearGradient>
+            </BlurView>
+        </View>
     )
 }
 
 export default PowerOffContianer
 
 const styles = StyleSheet.create({
+    shadowContainer: {
+        margin: 2,
+        marginHorizontal: 5,
+        borderRadius: 5,
+        ...Platform.select({
+            ios: {
+                shadowOffset: { height: 2, width: 2},
+                shadowRadius: 3,
+                shadowOpacity: 1,
+                shadowColor: ColorsBlue.blue1400,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
+        height: 460,
+    },
     powerOffContianer: {
         flex: 1,
         justifyContent: 'center',
@@ -39,15 +48,15 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: ColorsBlue.blue200,
         textAlign: 'center',
-        textShadowColor: ColorsBlue.blue500, // set text shadow color
-        textShadowOffset: { width: 0, height: 0 }, // set text shadow offset
-        textShadowRadius: 10, // set text shadow radius
+        textShadowColor: ColorsBlue.blue1300, // set text shadow color
+        textShadowOffset: { width: 1, height: 2 }, // set text shadow offset
+        textShadowRadius: 4, // set text shadow radius
     },
     loadingContainer: {
-        height: 450,
-        margin: 2,
+        flex: 1,
         borderRadius: 5,
-        borderColor: ColorsBlue.blue700,
-        borderWidth: 1,
+        borderColor: ColorsBlue.blue1400,
+        borderWidth: 0.5,
+        overflow: 'hidden',
     },
 })

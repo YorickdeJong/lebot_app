@@ -4,37 +4,46 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ColorsBlue } from '../../../../constants/palet';
 import CarPad from './CarPad';
 import WindmillPad from './WindmillPad';
+import { BlurView } from 'expo-blur';
 
 const ControlPad = ({ moveHandler, displayNumber }) => {
 
     //TODO make the speed indicator larger depending on speed upgrades
     return (
-        <LinearGradient 
-            style = {styles.controller}
-            colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1200]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-        >
-        <ImageBackground
-            source={require('./../../../../../assets/lowerHalfControlPanel.png')} 
-            style= {{flex: 1, padding: 10}}
-            imageStyle={{opacity: 0.18}}
-            >
-            <View style = {styles.outercontainer}>
-                <View />
-                    {displayNumber === 1 && <CarPad 
-                    moveHandler = {moveHandler}/>}
-                <View />
-            </View>
-        </ImageBackground>
-        </LinearGradient>
+        <View style={styles.shadowContainer}>
+            <BlurView style = {styles.controller} intensity={10} tint="dark">
+                <View style = {styles.outercontainer}>
+                    <View />
+                        {displayNumber === 1 && <CarPad 
+                        moveHandler = {moveHandler}/>}
+                    <View />
+                </View>
+            </BlurView>
+        </View>
     );
 };
 
-export default ControlPad;
+export default React.memo(ControlPad);
 
 const styles = StyleSheet.create({
-
+    shadowContainer: {
+        margin: 3,
+        marginBottom: 8,
+        marginHorizontal: 5,
+        borderRadius: 5,
+        ...Platform.select({
+            ios: {
+                shadowOffset: { height: 1, width: 1 },
+                shadowRadius: 3,
+                shadowOpacity: 1,
+                shadowColor: ColorsBlue.blue1400,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
+        flex: 1
+    },
     outercontainer: {
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -42,13 +51,11 @@ const styles = StyleSheet.create({
     },
     controller: {
         justifyContent: 'center',
-        margin: 2,
-        marginVertical: 5,
-        borderBottomColor: ColorsBlue.blue700,
-        borderColor: ColorsBlue.blue700,
-        borderWidth: 1,
+        borderColor: ColorsBlue.blue1400,
+        borderWidth: 0.5,
         borderRadius: 5,
-        flex: 1
+        flex: 1,
+        overflow: 'hidden',
     },
 
 });

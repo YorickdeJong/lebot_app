@@ -80,8 +80,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: ColorsBlue.blue1400,
-        borderTopColor: ColorsBlue.blue900,
-        borderTopWidth: 1
     },
     contentContainerStyle: {
         flexGrow: 1,

@@ -1,13 +1,11 @@
-import { useIsFocused } from "@react-navigation/native";
-import { useContext, useEffect } from "react";
-import InformationCodingScreen from "../../../components/assignments/CodingComponent.js/informationCodingScreen";
-import { ASSIGNMENT_EXPLANATION } from "../../../data/InitialAssignmentExplanation";
-import { ChatContext } from "../../../store/chat-context";
+import InformationCodingScreenOne from "../../../components/assignments/screens/assignment_one/informationCodingScreenOne";
+import InformationCodingScreenTwo from "../../../components/assignments/screens/assignment_two/informationCodingScreenTwo";
+import InformationCodingScreenThree from "../../../components/assignments/screens/assignment_three/informationCodingScreenThree";
 
 
 
 
-function CodingScreen({tabIndex, currentIndex}){
+function CodingScreen({tabIndex, currentIndex, subject}){
     const isFocused = tabIndex === currentIndex;
 
 
@@ -15,9 +13,17 @@ function CodingScreen({tabIndex, currentIndex}){
 
 
     return (
-        <InformationCodingScreen 
-        isFocused={isFocused}
-        />
+        <>
+            {subject === 'MOTOR' && <InformationCodingScreenOne 
+            isFocused={isFocused}
+            />}
+            {subject === 'LED' && <InformationCodingScreenTwo
+            isFocused={isFocused}
+            />}
+            {subject === 'CAR' && <InformationCodingScreenThree
+            isFocused={isFocused}
+            />}
+        </>
     )
 }
 

@@ -1,18 +1,15 @@
-import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
+import { BlurView } from "expo-blur";;
 import { useContext, useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
-import { ColorsBlue, ColorsGray, ColorsTile } from "../../../constants/palet"
+import { ColorsBlue, ColorsTile } from "../../../constants/palet"
 import { AssignmentDetailsContext } from "../../../store/assignment-Details-context";
 import { CarContext } from "../../../store/car-context";
 import { UserProfileContext } from "../../../store/userProfile-context";
 import Icon from "../../Icon"
-import PressableButton from "../../robot/robot_commands/PressableButton";
 
 
-
-function QuestionContainer({questionData, question}) {
+function QuestionContainer({questionData, assignmentNumber}) {
     const [input, setInput] = useState();
     const userprofileCtx = useContext(UserProfileContext);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
@@ -54,20 +51,20 @@ function QuestionContainer({questionData, question}) {
         }   
     }
 
-    const displayQuestion = (completionStatus && !showDescription) ? questionData.question.substring(0, 33) : questionData.question
-
     return (
         <>
-            <BlurView intensity={7} style = {{width: "100%", paddingBottom: 5}}>
+            <BlurView intensity={10} tint = "dark" style = {styles.outerContainer}>
                 <View style = {styles.questionContainer}>
                     
                                  
                     <View style = {styles.questionCompletedContainer}>
-                        <Text style = {styles.questionCompleted}>{completionStatus ? "Vraag Voltooid" : "Opdracht"}</Text>
+                        <Text style = {styles.questionCompleted}>{completionStatus ? "Vraag Voltooid" : `Opdracht ${assignmentNumber}`}</Text>
                     </View>
                     
                     <View style={styles.descriptionContainer}>
-                        <Text style = {styles.question}>{question}</Text>
+                        <Text style = {styles.question}>
+                            {questionData.question}
+                        </Text>
                         
                         {!showDescription && completionStatus &&
                         <TouchableOpacity
@@ -101,7 +98,6 @@ function QuestionContainer({questionData, question}) {
                     </View>}
                 </View>
             </BlurView>
-            {/* <View style={styles.border}/> */}
         </>
     )
 }
@@ -109,19 +105,6 @@ function QuestionContainer({questionData, question}) {
 export default QuestionContainer
 
 const styles= StyleSheet.create({
-    assignment: {
-        borderColor: ColorsTile.blue200,
-        borderRadius: 5,
-        marginHorizontal: 3,
-        borderColor: ColorsBlue.blue700,
-        borderWidth: 1,
-        elevation: 4,
-        shadowColor: ColorsBlue.blue900,
-        shadowOffset: {height: 1, width: 0},
-        shadowRadius: 6,
-        shadowOpacity: 0.7,
-        flex: 1,
-    },
     questionCompletedContainer: {
         marginHorizontal: 12,
     },
@@ -133,7 +116,6 @@ const styles= StyleSheet.create({
     },
     questionContainer: {
         marginHorizontal: 7,
-        // marginVertical: 5,
         paddingTop: 5,
         paddingBottom: 5, 
         borderRadius: 5,
@@ -150,15 +132,6 @@ const styles= StyleSheet.create({
         shadowOpacity: 0.5,
         paddingLeft: 5
     },
-    border: {
-        borderBottomColor: `rgba(66, 66, 66, 0.3)`,
-        borderBottomWidth: 0.6,
-        shadowColor: `rgba(33, 33, 33)`,
-        shadowOffset: {height: 1, width: 0},
-        shadowOpacity: 1,
-        shadowRadius: 4,
-        elevation: 1,
-    },
     descriptionContainer: {
         flexDirection: 'row',
         marginLeft: 12,
@@ -170,4 +143,15 @@ const styles= StyleSheet.create({
         color: ColorsBlue.blue50,
         lineHeight: 24
     },
+    outerContainer: {
+        paddingBottom: 5,
+        marginVertical: 6,
+        marginHorizontal: 8,
+        borderWidth: 1,
+        borderColor: `rgba(77, 77, 77, 0.5)`,
+        shadowColor: `rgba(11, 11, 11)`,
+        shadowOffset: {height: 1, width: 0},
+        shadowOpacity: 1,
+        shadowRadius: 3,
+    }
 })

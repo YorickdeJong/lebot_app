@@ -8,10 +8,11 @@ export const AssignmentContext = createContext({
     assignmentImage: {},
     initializeAssignments: (assignments) => {},
     addAssignment: (assignment) => {},
-    separateMathPhysics: (subject) => {},
+    separateSubject: (subject) => {},
     filterSpecificTitle: (title) => {},
     setAssignmentImageHandler: (assignmentImage) => {},
     setTitleImageHandler: (titleImage) => {},
+    setSubjectImageHandler: (subject) => {},
 })
 
 
@@ -20,6 +21,7 @@ function AssignmentContextProvider({children}) {
     const [assignmentImage, setAssignmentImage] = useState({
         title: '',
         assignment_number: 0,
+        subject: '',
     });
 
     useEffect(() => {
@@ -60,7 +62,7 @@ function AssignmentContextProvider({children}) {
         saveAssignmentInStorage(assignments => [...assignments, assignment]);
     }
 
-    function separateMathPhysics(subject){
+    function separateSubject(subject){
         return assignments.filter((item) => item.subject === subject);
 
     }
@@ -77,15 +79,20 @@ function AssignmentContextProvider({children}) {
         setAssignmentImage(prevState => ({...prevState, title: titleImage}));
     }
 
+    function setSubjectImageHandler(subjectImage) {
+        setAssignmentImage(prevState => ({...prevState, subject: subjectImage}));
+    }
+
     const value = {
-        assignments: assignments,
+        assignments,
         assignmentImage,
-        initializeAssignments: initializeAssignments,
-        addAssignment: addAssignment,
-        separateMathPhysics: separateMathPhysics,
-        filterSpecificTitle: filterSpecificTitle,
+        initializeAssignments,
+        addAssignment,
+        separateSubject,
+        filterSpecificTitle,
         setAssignmentImageHandler,
-        setTitleImageHandler
+        setTitleImageHandler,
+        setSubjectImageHandler
     }
 
     return <AssignmentContext.Provider value={value}>{children}</AssignmentContext.Provider>

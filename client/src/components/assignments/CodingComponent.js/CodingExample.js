@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import TextDisplay from '../BuildComponent.js/TextDisplay';
 import SwitchScreens from '../BuildComponent.js/SwitchScreens';
 import LightBulbAnimation from './LightBulbAnimation';
-import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import { useContext, useEffect, useLayoutEffect, useState, useRef } from 'react';
 import { BlinkContext } from '../../../store/animation-context';
 
 
@@ -13,7 +13,7 @@ function CodingExample({nextSlideHandler, prevSlideHandler, slideCount, setTypin
     const description = "Dit is een beschrijving van het onderwerp. Hier leren we heel veel dingen over batterijen en kabels en over hoe we ze moeten aansluiten."
     const blinkCtx = useContext(BlinkContext);
     const [focused, setFocused] = useState(isFocused && slideCount === 1); 
-    
+    const scrollViewRef = useRef(null);
     
     const extraStyle = {
         marginLeft: 8,
@@ -58,7 +58,11 @@ function CodingExample({nextSlideHandler, prevSlideHandler, slideCount, setTypin
                     title={title}
                     description={description}/>
                     
-                    <ScrollView style = {{flex: 1}}>
+                    <ScrollView 
+                    style = {{flex: 1}}
+                    ref={scrollViewRef}
+                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                    >
                                 <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
                                     <ChatBoxGPT 
                                     answer={message.answer}

@@ -128,8 +128,6 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     container: {
-        borderTopColor: ColorsBlue.blue900,
-        borderTopWidth: 1,
         flex: 1,
         backgroundColor: ColorsBlue.blue1300,
     }

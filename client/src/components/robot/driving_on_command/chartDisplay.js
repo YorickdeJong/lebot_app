@@ -4,22 +4,23 @@ import { ChartContext } from "../../../store/chart-context"
 import GraphDisplay from "./graphDisplay"
 
 function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChart}) {
-    const { motorNumber } = chartData;
+    console.log(`chartdisaply CHECK`)
 
     if (displayChart){
-        chartHeight = trueCount == 1 ? displayChart - 15: displayChart - 38 //adjust ratios to fit graphs
+        chartHeight = trueCount == 1 ? displayChart - 15: displayChart - 48 //adjust ratios to fit graphs
     }
-
-    console.log(`chartdisaply CHECK`)
+    
     let doubleChartHeight;
     let firstDataType, secondDataType, thirdDataType, fourthDataType
     let firstYData, secondYData, thirdYData, fourthYData;
     let firstXData, secondXData, thirdXData, fourthXData;
+    let motorNumber, filteredChartData; 
+               
 
     const filteredData = useCallback(() => {
         return Object.entries(chartToggle)
                 .reduce((acc, [key, value], index) => {
-                    if (index > 3){
+                    if (index > 1){
                         return acc; 
                     }
                     if (value === true) {
@@ -37,11 +38,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             case 'distance':
                 return chartData.time; 
             case 'speed':
-                    return chartData.time; 
-            case 'force':
-                return chartData.distance.map(dist => dist.slice(1)) //change for all 4 distances, force starts 1 iteration later
-            case 'energy':
-                return chartData.time.slice(1,-1); //energy starts one iteration later and ends one earlier
+                    return chartData.time.slice(1);
         }
     }, [chartData])
 
@@ -50,21 +47,21 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
         return;
     }
 
-    const filteredChartData = filteredData();
-
-    const h = [[]];
+    
+    
     switch(trueCount){
         case 1:
-
+            filteredChartData = filteredData();
+            motorNumber  = chartData.motorNumber;
             //TODO handle 2D arrays + handle distance array
             [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
             firstXData = selectXdata(firstDataType, chartData);
-            
+
             const padding = displayChart? 0 : 20; 
 
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight}}>
-                    {!(firstYData[0].length === undefined) && <GraphDisplay 
+                    {!(firstYData[0] === undefined) && <GraphDisplay 
                     dataType={firstDataType}
                     data={{ xData: firstXData, yData: firstYData }}
                     chartHeight = {chartHeight}
@@ -78,19 +75,23 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             )
 
         case 2:
-            [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
-            [secondDataType, secondYData] = Object.entries(filteredChartData)[1];
-            
+            filteredChartData = filteredData();
+            motorNumber = chartData.motorNumber;
+            const entries = Object.entries(filteredChartData);
+            [firstDataType, firstYData] = entries[0];
+            [secondDataType, secondYData] = entries.length > 1 ? entries[1] : [null, []];
+        
             firstXData = selectXdata(firstDataType, chartData);
-            secondXData = selectXdata(secondDataType, chartData);
+            secondXData = secondDataType
+              ? selectXdata(secondDataType, chartData)
+              : [];
+        
             
             doubleChartHeight = chartHeight / 2
 
-
-            console.log(`secondYData ${secondYData}`)
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
-                    {!(firstYData[0].length === undefined) && <GraphDisplay 
+                    {!(firstYData[0] === undefined) && <GraphDisplay 
                     dataType={firstDataType}
                     data={{ xData: firstXData, yData: firstYData }}
                     chartHeight = {doubleChartHeight}
@@ -99,7 +100,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                     motorNumber = {motorNumber}
                     legend
                     />}
-                    {!(secondYData[0].length === undefined) && <GraphDisplay 
+                    {!(secondYData[0] === undefined) && <GraphDisplay 
                     dataType={secondDataType}
                     data={{ xData:secondXData, yData: secondYData }}
                     chartHeight = {doubleChartHeight}
@@ -111,6 +112,8 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             )
 
         case 3:
+            filteredChartData = filteredData();
+            motorNumber  = chartData.motorNumber;
             [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
             [secondDataType, secondYData] = Object.entries(filteredChartData)[1];
             [thirdDataType, thirdYData] = Object.entries(filteredChartData)[2];
@@ -123,7 +126,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
                     <View style = {{flex: 1}}>
-                        {!(firstYData[0].length === undefined) && <GraphDisplay 
+                        {!(firstYData[0] === undefined) && <GraphDisplay 
                         dataType={firstDataType}
                         data={{ xData: firstXData, yData: firstYData }}
                         chartHeight = {chartHeight}
@@ -134,7 +137,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         />}
                     </View>
                     <View style = {styles.twoCharts}>
-                        {!(secondYData[0].length === undefined) && <GraphDisplay 
+                        {!(secondYData[0] === undefined) && <GraphDisplay 
                         dataType={secondDataType}
                         data={{ xData:secondXData, yData: secondYData }}
                         chartHeight = {chartHeight}
@@ -142,7 +145,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
                         />}
-                        {!(thirdYData[0].length === undefined) && <GraphDisplay 
+                        {!(thirdYData[0] === undefined) && <GraphDisplay 
                         dataType={thirdDataType}
                         data={{ xData:thirdXData, yData: thirdYData }}
                         chartHeight = {chartHeight}
@@ -155,6 +158,8 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             )
 
         case 4:
+            filteredChartData = filteredData();
+            motorNumber  = chartData.motorNumber;
             [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
             [secondDataType, secondYData] = Object.entries(filteredChartData)[1];
             [thirdDataType, thirdYData] = Object.entries(filteredChartData)[2];
@@ -170,7 +175,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             return (
                 <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
                     <View style = {styles.twoCharts}>
-                        {!(firstYData[0].length === undefined) && <GraphDisplay 
+                        {!(firstYData[0] === undefined) && <GraphDisplay 
                         dataType={firstDataType}
                         data={{ xData: firstXData, yData: firstYData }}
                         chartHeight = {chartHeight}
@@ -179,7 +184,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         motorNumber = {motorNumber}
                         legend
                         />}
-                        {!(secondYData[0].length === undefined) && <GraphDisplay 
+                        {!(secondYData[0] === undefined) && <GraphDisplay 
                         dataType={secondDataType}
                         data={{ xData:secondXData, yData: secondYData }}
                         chartHeight = {chartHeight}
@@ -189,7 +194,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         />}
                     </View>
                     <View style = {styles.twoCharts}>
-                        {!(thirdYData[0].length === undefined) && <GraphDisplay 
+                        {!(thirdYData[0] === undefined) && <GraphDisplay 
                         dataType={thirdDataType}
                         data={{ xData:thirdXData, yData: thirdYData }}
                         chartHeight = {chartHeight}
@@ -197,7 +202,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         trueCount = {trueCount}
                         motorNumber = {motorNumber}
                         />}
-                        {!(fourthYData[0].length === undefined) && <GraphDisplay 
+                        {!(fourthYData[0]=== undefined) && <GraphDisplay 
                         dataType={fourthDataType}
                         data={{ xData:fourthXData, yData: fourthYData }}
                         chartHeight = {chartHeight}

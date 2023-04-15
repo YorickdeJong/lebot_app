@@ -23,38 +23,9 @@ export const robotData =
         {
             iconColor: iconColors,
             textColor: textColors,
-            type: "Lidar",
-            icon: 'scan-circle-sharp',
-            id: 3,
-        },
-        {
-            iconColor: iconColors,
-            textColor: textColors,
-            type: "Sonar",
-            icon: 'wifi-outline',
-            id: 4,
-        },
-        {
-            iconColor: iconColors,
-            textColor: textColors,
-            type: "Autonomous Driving",
-            icon: 'md-car',
-            id: 5,
-        },
-        {
-            iconColor: iconColors,
-            textColor: textColors,
             type: "Robot Store",
             icon: 'store',
             id: 6,
-            differentDir: true
-        },
-        {
-            iconColor: iconColors,
-            textColor: textColors,
-            type: "Create \n Assignment",
-            icon: 'playlist-plus',
-            id: 7,
             differentDir: true
         },
         {

@@ -1,4 +1,5 @@
 import {  ImageBackground, ScrollView, StyleSheet,  View } from 'react-native';
+import {useRef} from 'react';
 import { ColorsBlue, ColorsGray, } from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { BlurView } from 'expo-blur';
@@ -9,6 +10,7 @@ import SwitchScreens from './SwitchScreens';
 
 
 function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, video, title, description, isFocused}){
+    const scrollViewRef = useRef(null);
     const extraStyle = {
         marginLeft: 8,
         borderRadius: 10,
@@ -32,10 +34,14 @@ function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTypin
                 >
                 <VideoDisplay 
                 video = {video}/>
-                    <ScrollView style = {{flex: 1}}>
                     <TextDisplay 
                     title={title}
                     description={description}/>
+                    <ScrollView 
+                    style = {{flex: 1}}
+                    ref={scrollViewRef}
+                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                    >
                     
                                 <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
                                     {isFocused && <ChatBoxGPT 

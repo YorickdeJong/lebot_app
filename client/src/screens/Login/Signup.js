@@ -14,13 +14,14 @@ import { CarContext } from "../../store/car-context";
 import { createUserCarDetails } from "../../hooks/carDetails";
 import { LinearGradient } from "expo-linear-gradient";
 
-function Signup() {
+function Signup({route}) {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
     const colorCtx = useContext(ColorContext);
     const userCtx = useContext(UserProfileContext)
     const authCtx = useContext(AuthContext);
     const assignmentCtx = useContext(AssignmentContext);
     const carCtx = useContext(CarContext)
+    const authenticateType = route.params.type
 
     async function signUpHandler({email, password, username, name, lastname, dob, school, classschool, level}) {
         setIsAuthenticating(true);
@@ -62,12 +63,14 @@ function Signup() {
         style = {[styles.outerContainer, {borderTopColor: [colorCtx.isBlue ? ColorsGreen.green700 : ColorsBlue.blue700]}]}>
                 <LinearGradient colors = {[ColorsBlue.blue1200, ColorsBlue.blue1200]} style = {styles.outerContainer}>
                     <ImageBackground
-                        source={require('./../../../assets/highway(1).png')} 
+                        source={require('./../../../assets/planets/login_page.png')} 
                         style={styles.backgroundImage}
                         imageStyle={{opacity: 0.25}}>
                         <ScrollView >
                             <TextForm 
-                            onCreateUser = {signUpHandler} />
+                            onCreateUser = {signUpHandler} 
+                            authenticateType={authenticateType}
+                            />
                         </ScrollView>
                     </ImageBackground>
                 </LinearGradient>
@@ -87,8 +90,6 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
         resizeMode: 'contain',
-        borderTopColor: ColorsBlue.blue100,
-        borderTopWidth: 0.2,
         paddingBottom: 35
     }
 })

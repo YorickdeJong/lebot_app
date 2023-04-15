@@ -43,8 +43,8 @@ const getSpecificMeasurementResult = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {user_profile_id, assignment_number, title} = req.query;
-        const {rows} = await client.query(getSpecificMeasurementResultQuery, [assignment_number, user_profile_id, title]);
+        const {user_profile_id, assignment_number, title, subject} = req.query;
+        const {rows} = await client.query(getSpecificMeasurementResultQuery, [assignment_number, user_profile_id, title, subject]);
         console.log(rows);
         console.log(user_profile_id + " " + assignment_number + " " + title);
 
@@ -92,7 +92,7 @@ const getLatestMeasurementResult = async (req, res) => {
 
 const createMeasurementResult = async (req, res) => {
     const {assignment_number, distance, force, energy, 
-        velocity, time, user_id, title, type, record_number, motor_number} = req.body;
+        velocity, time, user_id, title, type, record_number, motor_number, subject} = req.body;
     const client = await pool.connect();
 
     // don't want to check if measurement for a specific assignment exists since 
@@ -100,7 +100,7 @@ const createMeasurementResult = async (req, res) => {
 
     try {
         const values = [assignment_number, distance, force, energy, 
-        velocity, time, user_id, title, type, motor_number, record_number, ]
+        velocity, time, user_id, title, type, motor_number, subject, record_number, subject]
         const {rows} = await client.query(createMeasurementResultQuery, values)
         console.log(rows)
         return res.status(200).json(rows)
@@ -117,14 +117,14 @@ const createMeasurementResult = async (req, res) => {
     }
 }
 
-
+// creates/ updates measurement
 const updateMeasurementResult = async (req, res) => {
     const client = await pool.connect();
 
     const record_number = req.params.record_number;
-    const { assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number } = req.body;
+    const { assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number, subject } = req.body;
 
-    const values = [assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number, record_number];
+    const values = [assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number, subject, record_number];
 
     // Check if the measurement result exists in the database
     const checkExistsQuery = existInDatabaseQuery;

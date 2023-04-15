@@ -1,7 +1,8 @@
-import { ImageBackground, StyleSheet } from "react-native";
+import { ImageBackground, StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ColorsBlue } from "../../../constants/palet";
 import LoadingChat from "../../UI/LoadingChat";
+import { BlurView } from "expo-blur";
 
 
 
@@ -9,27 +10,19 @@ import LoadingChat from "../../UI/LoadingChat";
 function WaitingForMeasurementContainer() {
     
     const extraStyles = {        
-        textShadowColor: ColorsBlue.blue500, 
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 10} 
+        textShadowColor: ColorsBlue.blue1400, 
+        textShadowOffset: { width: 1, height: 3 },
+        textShadowRadius: 3} 
+
     return (
-        <LinearGradient 
-            colors={[ColorsBlue.blue1300, ColorsBlue.blue1100]} //ColorsBlue.blue1200, ColorsBlue.blue1100]}
-            start={{ x: 1, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style = {styles.loadingContainer}>
-            <ImageBackground
-            source={require('./../../../../assets/chatbackground.png')} 
-            style= {{flex: 1}}
-            imageStyle={{opacity: 0.18}}
-            >
-            <LoadingChat 
-            message = "Measurement will start shortly" 
-            extraStyles = {extraStyles}
-            />
-            
-            </ImageBackground>
-        </LinearGradient>
+        <View style={styles.shadowContainer}>
+            <BlurView style = {styles.loadingContainer} intensity={2} tint="dark">
+                <LoadingChat 
+                message = "Measurement will start shortly" 
+                extraStyles = {extraStyles}
+                />
+            </BlurView>
+        </View>
     )
 }
 
@@ -38,10 +31,34 @@ export default WaitingForMeasurementContainer
 
 const styles = StyleSheet.create({
     loadingContainer: {
-        height: 450,
+        height: 460,
         margin: 2,
         borderRadius: 5,
         borderColor: ColorsBlue.blue700,
         borderWidth: 1,
     },
+    shadowContainer: {
+        margin: 2,
+        marginHorizontal: 5,
+        borderRadius: 5,
+        ...Platform.select({
+            ios: {
+                shadowOffset: { height: 2, width: 2},
+                shadowRadius: 3,
+                shadowOpacity: 1,
+                shadowColor: ColorsBlue.blue1400,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
+        height: 460,
+    },
+    loadingContainer: {
+        flex: 1,
+        borderRadius: 5,
+        borderColor: ColorsBlue.blue1400,
+        borderWidth: 0.5,
+        overflow: 'hidden',
+    }
 })

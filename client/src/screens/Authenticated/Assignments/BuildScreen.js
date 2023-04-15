@@ -1,17 +1,23 @@
-import { useIsFocused } from "@react-navigation/native";
-import { useContext, useEffect } from "react";
-import InformationBuildScreen from "../../../components/assignments/BuildComponent.js/InformationBuildScreen"
-import { ASSIGNMENT_EXPLANATION } from "../../../data/InitialAssignmentExplanation"
-import { ChatContext } from "../../../store/chat-context";
+import InformationBuildScreenOne from "../../../components/assignments/screens/assignment_one/InformationBuildScreenOne"
+import InformationBuildScreenTwo from "../../../components/assignments/screens/assignment_two/InformationBuildScreenTwo";
+import InformationBuildScreenThree from "../../../components/assignments/screens/assignment_three/InformationBuildScreenThree";
 
-function BuildScreen({tabIndex, currentIndex}){
+function BuildScreen({tabIndex, currentIndex, subject}){
     const isFocused = tabIndex === currentIndex;
 
-
+    
     return (
-        <InformationBuildScreen 
+    <>
+        {subject === 'MOTOR' && <InformationBuildScreenOne
         isFocused={isFocused}
-        />
+        />}
+        {subject === 'LED' && <InformationBuildScreenTwo 
+        isFocused={isFocused}
+        />}
+        {subject === 'CAR' && <InformationBuildScreenThree
+        isFocused={isFocused}
+        />}
+    </>
     )
 }
 

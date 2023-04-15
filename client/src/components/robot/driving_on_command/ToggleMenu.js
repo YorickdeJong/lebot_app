@@ -7,11 +7,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ChartToggle from "./chartToggle";
 import { ChartContext } from "../../../store/chart-context";
+import { ChartOptionsContext } from "../../../store/chartOptions-context";
 
 
 
 function ToggleMenu({toggleModal, isStopActive, headerHeight, displayNumber}) {
     const chartCtx = useContext(ChartContext)
+    const chartOptionsCtx = useContext(ChartOptionsContext)
 
     useEffect(() => {
         chartCtx.setTrueCount(Object.values(chartCtx.chartToggle).filter(value => value === true).length - 4); //minus 1 here since time is always true
@@ -85,6 +87,14 @@ function ToggleMenu({toggleModal, isStopActive, headerHeight, displayNumber}) {
                             toggleChart = {chartCtx.chartToggle.E_t}
                             toggleChartSettings = {toggleChartSettings.bind(this, 'E-t')}
                             />}
+
+                            <ChartToggle 
+                            graphName = "show legend:"
+                            toggleChart = {chartOptionsCtx.showLegend}
+                            toggleChartSettings = {() => chartOptionsCtx.showLegendHandler()}
+                            />
+
+
                             </View>
                         </View>
 

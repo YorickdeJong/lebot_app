@@ -1,7 +1,7 @@
 import axios from 'axios'
+import { ipAddressComputer } from '../data/ipaddresses.data';
 
-const url = `http://10.7.191.114:3000/api/v1/assignmentDetails`; //PassesseselXT
-//const url = //`http://172.20.10.2:3000/api/v1/assignmentDetails`; //Iphone
+const url = ipAddressComputer + '/api/v1/assignmentDetails'
 
 export async function getAllAssignmentDetails(user_id) {
     console.log(`userID: ${user_id}`)

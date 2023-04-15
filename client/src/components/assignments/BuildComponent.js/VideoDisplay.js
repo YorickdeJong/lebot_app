@@ -55,8 +55,6 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         shadowOpacity: 0.5,
         elevation: 4,
-        borderTopColor: ColorsBlue.blue900,
-        borderTopWidth: 1.2,
     },
     videoProgressIndicator: {
         position: 'absolute',

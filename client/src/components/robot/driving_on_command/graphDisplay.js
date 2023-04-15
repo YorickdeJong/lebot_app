@@ -8,6 +8,8 @@ import * as shape from 'd3-shape';
 import * as d3 from 'd3';
 import { Legend } from "./ChartAccesories/Legend";
 import { BlurView } from "expo-blur";
+import { ChartOptionsContext } from "../../../store/chartOptions-context";
+import CircularBuffer from "../../../algorithms/CircularBuffer";
 //-----------------------------------------------------------------//
 //N.B. DO NOT IMPORT CHARTCONTEXT HERE, IT WILL CAUSE many rerenders!
 //-----------------------------------------------------------------//
@@ -26,66 +28,44 @@ function GraphDisplay({
     motorNumber,
     legend
 }) {
-    const [chartData, setChartData] = useState([]);
+    const [chartData, setChartData] = useState([]); //useState since we want to rerender the chart when new data is added
+    const [rerenderKey, setRerenderKey] = useState(0);
+    const chartOptionsCtx = useContext(ChartOptionsContext)
     let {xData, yData} = data;
     const numberOfTicks = 8;
     const {title, xlabel, ylabel} = getTitleXLabelYLabel(dataType)
-
-    console.log(`CHECK GRAPHDISPLAY`)
-
+     
+    
     // Update chart data whenever xData or yData change
     useEffect(() => {
         setChartDataHandler();
     }, [data, finalPlot]);
-
+    
+        
     const setChartDataHandler = useCallback(() => {
-        const flattenData = (xData, yData) => {
-            let flattened = [];
-
-            yData.forEach((yArr, yArrIndex) => {
-                let lineData = [];
-                yArr.forEach((y, index) => {
-                    lineData.push({
-                        x: xData[index],
-                        y,
-                    });
+        const maxLength = finalPlot ? 1000 : 349; // Adjust this value according to your needs
+        const buffers = yData.map(() => new CircularBuffer(maxLength)); // 80 elements for speed
+    
+        yData.forEach((yArr, yArrIndex) => {
+            yArr.forEach((y, index) => {
+                buffers[yArrIndex].push({
+                    x: xData[index], //takes care of length such that x is also max 80 in length
+                    y,
                 });
-                flattened.push(lineData);
-            });
-
-            return flattened;
-        };
-
-        if (chartData.length === 0) {
-            setChartData(flattenData(xData, yData));
-        }
-
-        setChartData((prevData) => {
-            const newData = flattenData(xData, yData);
-
-            // Initialize prevData if it's empty or contains uninitialized elements
-            if (prevData[0].length === 0 || prevData.some((prevLineData) => prevLineData === undefined)) {
-                return newData;
-            }
-            // Check if the newData arrays contain any new points
-            const hasNewDataPoints = newData.some((newLineData, i) => newLineData.length !== prevData[i].length);
-
-            // If there are no new data points, return the prevState unchanged
-            if (!hasNewDataPoints) {
-                return prevData;
-            }
-
-            // Update each line with new data
-            return prevData.map((prevLineData, i) => {
-                const latestTimestamp = newData[i].length > 0 ? newData[i][newData[i].length - 1].x : 0;
-
-                const filterOldData = (arr) =>
-                    arr.filter((obj) => latestTimestamp - obj.x <= 60);
-
-                return [...filterOldData(prevLineData), ...newData[i].slice(prevLineData.length)];
             });
         });
-
+    
+        const flattened = buffers.map((buffer) => buffer.toArray());
+        if (chartData.length === 0) {
+            setChartData(flattened);
+        } else {
+            setChartData((prevData) => {
+                // Update each line with new data
+                return prevData.map((prevLineData, i) => {
+                    return flattened[i];
+                });
+            });
+        }
     }, [xData, yData, finalPlot]);
 
     const findBroadestRange = (data2D) => {
@@ -161,9 +141,17 @@ function GraphDisplay({
 
     return (
         <View style = {styles.graphContainer}>
-                <Text style={[styles.title, {paddingBottom: trueCount > 1 ? 5 : 0}]}>
+            <View style = {{marginVertical: trueCount > 1 ? 5 : 10, marginTop: trueCount > 1 ? 5 : 10}}>
+                <Text style={[styles.title, ]}>
                     {title}
                 </Text>
+            </View>
+            {/* Legend */}
+            {chartOptionsCtx.showLegend && 
+                <BlurView intensity={20} tint="dark" style = {styles.legend}>
+                        {legend && <Legend items={legendItems} />}
+                </BlurView>
+            }
             <View style={{ flexDirection: 'row', height: chartHeight }}>
                 <View style={styles.YlableContainer}>
                     <Text style = {[styles.Ylabel, trueCount === 1 && {marginRight: 5, fontSize: 14}]}>{ylabel}</Text>
@@ -179,6 +167,7 @@ function GraphDisplay({
                 </View>
                 <View style={{ flex: 1, marginLeft: 10,  }}>
                     <LineChart
+                        key={rerenderKey}
                         data={chartData[0]} // Pass the first array just for axis range calculations
                         contentInset={{ top: 0, left: 5, right: 8, bottom: 10, top: 5 }}
                         style={{ flex: 1 }}
@@ -189,9 +178,6 @@ function GraphDisplay({
                         numberOfTicks = {numberOfTicks}
                         gridMinInterval={1}
                         gridMaxInterval={1}
-                        animate={true}
-                        animationDuration={100}
-                        animationEasing={"ease-in-out"}
                         showGrid={true}
                         xAccessor={({ item }) => item.x}
                         yAccessor={({ item }) => item.y}
@@ -208,10 +194,6 @@ function GraphDisplay({
                             <Lines />   
                             <Decorator />
                     </LineChart>
-                    <BlurView intensity={10} style = {styles.legend}>
-                        {legend && <Legend items={legendItems} />}
-                    </BlurView>
-
                     <View style={styles.XlableContainer}>
                         <XAxis
                             data={dataType === "force" ? xData[0] : xData}
@@ -257,7 +239,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         padding: 5,
-
+        paddingTop: 20,
+        paddingRight: 10,
     },
     Ylabel: {
         fontSize: 8,
@@ -270,7 +253,7 @@ const styles = StyleSheet.create({
     Xlabel:{
         fontSize: 10,
         color: ColorsBlue.blue50,
-        textAlign: 'flex-end',
+        textAlign: 'center',
         marginRight: 10
     },
     YlableContainer: {
@@ -278,7 +261,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     XlableContainer: {
-        justifyContent: 'center'
+        justifyContent: 'center',
+        
     },
     title: {
         textAlign: 'center', 
@@ -287,9 +271,10 @@ const styles = StyleSheet.create({
         color: ColorsBlue.blue50
     },
     legend: {
-        left: 0,
+        zIndex: 20,
+        right: 2,
         position: 'absolute',
-        top: 0,
+        top: 10,
         borderRadius: 6,
         alignItems: 'center', // Add this line
         justifyContent: 'center', // Add this line

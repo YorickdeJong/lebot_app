@@ -7,21 +7,27 @@ import PartsContainer from "../../../components/robot/store/partsContainer";
 import UpgradeContainer from "../../../components/robot/store/upgradeContainer";
 import { ColorsBlue, ColorsDarkerBlue, ColorsDarkestBlue, ColorsGreen, ColorsLighterGold, ColorsOrange, ColorsPurple, ColorsRed, ColorsTile} from "../../../constants/palet"
 import { accelData, handlingData, speedData, wheelsData } from "../../../data/storeData";
+import ButtonList from "../../../components/UI/ButtonList.UI";
 
 function RobotStore() {
-    const colors = [
-        ColorsDarkestBlue.blue1000, ColorsDarkestBlue.blue900,
-        ColorsDarkestBlue.blue800, ColorsDarkestBlue.blue700,
-        ColorsDarkestBlue.blue700, ColorsDarkestBlue.blue700,
-        ColorsDarkestBlue.blue800, ColorsDarkestBlue.blue900,
-        ColorsDarkestBlue.blue1000
-    ];
-    
-    const locations = colors.map(
-        (_, index) => index / (colors.length - 1)
-    );
+    const [type, setType] = useState("afstand")
     
     console.log(`CHECK SCREEN ROBOT STORE`)
+
+    //TODO add function to select tiles
+    function selectUpgrade(upgradeType){
+        switch(upgradeType) {
+            case 'speed':
+                setType("speed")
+                break;
+            case 'acceleration':
+                setType("acceleration")
+                break;
+            case 'afstand':
+                setType("afstand")
+                break;
+        }
+    }
 
     return (
     <View style = {styles.outerContainer}>
@@ -33,55 +39,68 @@ function RobotStore() {
                 end={{ x: 1, y: 1 }}
             >
             <ImageBackground
-                source={require('./../../../../assets/carBluePrint2.jpg')} 
+                source={require('./../../../../assets/planets/robot_screen3.png')} 
                 style={
                 {flex: 1, resizeMode: 'contain'}
                 }
-                imageStyle={{opacity: 0.1}}
+                imageStyle={{opacity: 1}}
             >
-            <ScrollView style = {{flex: 1}}
-            showsVerticalScrollIndicator={false}>
+                <ScrollView style = {{flex: 1}}
+                showsVerticalScrollIndicator={false}>
 
-            <View style = {styles.backgroundImage}>
-                <UpgradeContainer 
-                upgradeType = "Speed"
-                data = {speedData}
-                Completed = {true}
-                backgroundColors = 'rgba(49, 82, 143, 0.3)'
-                borderColors = {ColorsTile.blue700}
-                />
-            
-                <UpgradeContainer 
-                upgradeType = "Acc"
-                data = {accelData}
-                Completed = {false}
-                backgroundColors = 'rgba(105, 45, 105, 0.45)'
-                borderColors = {ColorsPurple.purple700}
-                />
+                    <View style = {styles.backgroundImage}>
+                        {type === "speed" && 
+                            <UpgradeContainer 
+                            upgradeType = "Snelheid"
+                            textColor = {ColorsRed.red300}
+                            data = {speedData}
+                            Completed = {true}
+                            backgroundColors = 'rgba(255, 255, 255, 0.05)'
+                            borderColors = {ColorsBlue.blue1400}
+                            />
+                        }
+                    
+                        {type === "acceleration" &&
+                            <UpgradeContainer 
+                            upgradeType = "Versnelling"
+                            textColor = {ColorsPurple.purple300}
+                            data = {accelData}
+                            Completed = {false}
+                            backgroundColors = 'rgba(255, 255, 255, 0.05)'
+                            borderColors = {ColorsBlue.blue1400}
+                            />
+                        }
 
-                <UpgradeContainer 
-                upgradeType = "Handling"
-                data = {handlingData}
-                Completed = {true}
-                backgroundColors = 'rgba(150, 49, 49, 0.4)'
-                borderColors = {ColorsRed.red700}
-                />
+                        {type ===  "afstand" &&
+                            <UpgradeContainer 
+                            upgradeType = "Afstand"
+                            textColor = {ColorsOrange.orange300}
+                            data = {handlingData}
+                            Completed = {true}
+                            backgroundColors = 'rgba(255, 255, 255, 0.05)'
+                            borderColors = {ColorsBlue.blue1400}
+                            />
+                        }
 
-                <UpgradeContainer 
-                upgradeType = "Wheels"
-                data = {wheelsData}
-                Completed = {false}
-                backgroundColors = 'rgba(140, 75, 45, 0.45)'
-                borderColors = {ColorsOrange.orange700}
+                        {/* {type === 
+                            <UpgradeContainer 
+                            upgradeType = "Wheels"
+                            data = {wheelsData}
+                            Completed = {false}
+                            backgroundColors = 'rgba(140, 75, 45, 0.45)'
+                            borderColors = {ColorsOrange.orange700}
+                            />
+                        } */}
+                    </View>
+                </ScrollView>
+                <ButtonList 
+                    firstButtonHandler={selectUpgrade.bind(this, "afstand")}
+                    secondButtonHandler={selectUpgrade.bind(this, "speed")}
+                    thirdButtonHandler = {selectUpgrade.bind(this, "acceleration")}
+                    textButtonOne= "Afstand"
+                    textButtonTwo= "Snelheid"
+                    textButtonThree= "Acc."
                 />
-
-                <PartsContainer 
-                backgroundColors = 'rgba(42, 77, 12, 0.35)'
-                borderColors = {ColorsGreen.green700}
-                />
-
-            </View>
-            </ScrollView>
             </ImageBackground>
         </LinearGradient>
     </View>
@@ -99,7 +118,5 @@ const styles = StyleSheet.create({
 
     outerContainer: {
         flex: 1,
-        borderTopColor: ColorsBlue.blue900,
-        borderTopWidth: 1,
     }
 })

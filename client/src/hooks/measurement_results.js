@@ -1,7 +1,7 @@
 import axios from 'axios'
+import { ipAddressComputer } from '../data/ipaddresses.data';
 
-const url = `http://10.7.191.114:3000/api/v1/measurement-results`; //passesessese
-// const url = `http://172.20.10.2:3000/api/v1/measurement-results`; //Iphone
+const url = ipAddressComputer + '/api/v1/measurement-results'
 
 export async function getAllMeasurementResults(user_profile_id) {
     try{
@@ -26,9 +26,9 @@ export async function getLatestMeasurementResult(user_profile_id) {
 }
 
 
-export async function getSpecificMeasurementResult(user_profile_id, title, assignment_number) {
+export async function getSpecificMeasurementResult(user_profile_id, title, assignment_number, subject) {
     try{
-        const response = await axios.get(url + `?user_profile_id=${user_profile_id}&assignment_number=${assignment_number}&title=${title}`);
+        const response = await axios.get(url + `?user_profile_id=${user_profile_id}&assignment_number=${assignment_number}&title=${title}&subject=${subject}`);
         return response.data;
     }
     catch (error){

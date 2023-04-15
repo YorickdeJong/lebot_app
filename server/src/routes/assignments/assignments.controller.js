@@ -96,7 +96,7 @@ const createAssignment = async (req, res) => {
     const {assignment_number, subject, title, question, answer, image_file_path, currency} = req.body;
     
     try {
-        const {rows} = await client.query(checkIfAssignmentExistsQuery, [assignment_number, title]);
+        const {rows} = await client.query(checkIfAssignmentExistsQuery, [assignment_number, title, subject]);
         console.log(`rows is: ${rows}`)
         if (rows.length > 0){
             return res.status(400).json({message: `Assignment with assignment number ${assignment_number} already exists`})
@@ -126,9 +126,9 @@ const createAssignment = async (req, res) => {
 
 const updateAssignment = async (req, res) => { //Could be used for users that want to add their own assignment
     const client = await pool.connect();
+    const assignment_id = req.params.id;
     
     try {
-        const assignment_id = req.params.id;
         const {assignment_number, subject, title, question, answer, image_file_path, currency} = req.body;
         const values = [assignment_number, subject, title, question, answer, image_file_path, currency, assignment_id];
 
@@ -144,7 +144,7 @@ const updateAssignment = async (req, res) => { //Could be used for users that wa
     }
     catch (error){
         console.log(error)
-        return res.status(500).json({error: 'Failed to update assignment'});
+        return res.status(500).json({error: `Failed to update assignment with id ${assignment_id}`});
     }
 
     finally {
@@ -158,8 +158,7 @@ const deleteAssignment = async (req, res) => {
 
     try {
         const assignment_id = req.params.id;
-        const title = req.query.title
-        const {rows} = await client.query(deleteAssignmentQuery, [assignment_id, title]);
+        const {rows} = await client.query(deleteAssignmentQuery, [assignment_id,]);
 
         if (rows.length === 0){
             return res.status(404).json({message: `Assignment with id ${assignment_id} not found`})

@@ -59,17 +59,12 @@ function AssignmentDetailsContextProvider({ children }) {
     }
 
     function getCompletionStatusAssignment(assignment_number, title){
-        const filteredAssignments = assignmentDetails.filter((item) => 
-            item.assignment_number === assignment_number && item.title === title
-        )
-        return filteredAssignments.length > 0;
+        return false;
     }
 
     function getTotalCompletedAssignmentsPerTopic(title){
-        const filteredAssignments = assignmentDetails.filter((item) => 
-            item.title === title
-        )
-        return filteredAssignments.length
+        const filteredAssignments = 0; 
+        return filteredAssignments;
     }
 
     const value = {

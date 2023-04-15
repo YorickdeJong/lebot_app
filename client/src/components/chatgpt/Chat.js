@@ -15,7 +15,7 @@ const marginBottomTextInput = 10;
 const marginTopTextInput = 10;
 const paddingChat = heightTextInput + marginBottomTextInput + marginTopTextInput; 
 
-const Chat = ({keyboardHeight, nextSlideHandler, prevSlideHandler, slideCount}) => {  
+const Chat = ({keyboardHeight}) => {  
     const chatCtx = useContext(ChatContext)
     const userprofileCtx = useContext(UserProfileContext)
     const [inputValue, setInputValue] = useState('');
@@ -91,16 +91,6 @@ const Chat = ({keyboardHeight, nextSlideHandler, prevSlideHandler, slideCount}) 
             <LoadingChat message="Waiting on chatgpt's response..." />
             )
             )}
-            {
-              // show next button only for the first item for assignment explanations
-              index === 0 && thread_id > 5 && !typing && (
-                <SwitchScreens 
-                prevSlideHandler={prevSlideHandler}
-                nextSlideHandler={nextSlideHandler}
-                slideCount={slideCount}
-                />
-              )
-            }
         </>
       );
     };

@@ -8,17 +8,17 @@ import { UserProfileContext } from "./userProfile-context";
 
 export const CarContext = createContext({
     carProperties: {
-        speed: 0,
+        speed: 20,
         acceleration: 0,
         wheels: 0,
         handling: 0,
-        money: 1000,
+        money: 700,
     },
     upgradeLog: {
-        Speed: [],
-        Acc: [],
-        Handling:  [],
-        Wheels: [],
+        Speed: [false, false, false, false, false],
+        Acc: [false, false, false, false, false],
+        Handling:  [false, false, false, false, false],
+        Wheels: [false, false, false, false, false],
     },
 
     editSpeed: (speedIncrease) => {},
@@ -35,15 +35,15 @@ export const CarContext = createContext({
 function CarContextProvider({children}) {
     const userCtx = useContext(UserProfileContext)
     const [upgradeLog, setUpgradeLog] = useState({
-        Speed: [],
-        Acc: [],
-        Handling:  [],
-        Wheels: [],
+        Speed: [false, false, false, false, false],
+        Acc: [false, false, false, false, false],
+        Handling:  [false, false, false, false, false],
+        Wheels: [false, false, false, false, false],
     })
 
     const [carProperties, setCarProperties] = useState({
-        money: 1000,
-        speed: 0,
+        money: 7000,
+        speed: 20,
         acceleration: 0,
         wheels: 0,
         handling: 0,
@@ -187,8 +187,9 @@ function CarContextProvider({children}) {
         let index = 0;
         console.log(id)
         switch(upgradeType){
-            case 'Speed':
+            case 'Snelheid':
                 index = upgradeLog.Speed.findIndex((value) => value === false);
+                console.log(`index ${index}`)
                 if (index === id - 1)
                 {
                     console.log('purchased')
@@ -203,7 +204,7 @@ function CarContextProvider({children}) {
                     return true;
                 }
                 break;
-            case 'Acc': 
+            case 'Versnelling': 
                 index = upgradeLog.Acc.findIndex((value) => value === false);
                 if (index === id - 1) {
                     const newAcc = [...upgradeLog.Acc];
@@ -218,7 +219,7 @@ function CarContextProvider({children}) {
                 }
                 break;
 
-            case 'Handling':
+            case 'Afstand':
                 index = upgradeLog.Handling.findIndex((value) => value === false);
                 if (index === id - 1) {
                     const newHandling = [...upgradeLog.Handling];

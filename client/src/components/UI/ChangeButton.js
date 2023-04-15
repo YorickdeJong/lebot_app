@@ -7,15 +7,15 @@ import { ColorContext } from "../../store/color-context";
 function ChangeButton({children, onPress}) {
     const colorCtx = useContext(ColorContext);
 
-    const button = [styles.button, {backgroundColor: colorCtx.isBlue ? ColorsGreen.green700 : ColorsBlue.blue900,
-     shadowColor: colorCtx.isBlue ? ColorsGreen.green1200 : ColorsBlue.blue1200}]
+    const button = [styles.button, {backgroundColor: ColorsBlue.blue1150,
+     shadowColor: ColorsBlue.blue1200}]
 
     return(
         <View>
             <Pressable
             onPress = {onPress}
             style = {({pressed}) => [button, pressed && styles.pressed]}>
-                <Text style={[styles.text, {color: colorCtx.isBlue ? ColorsGreen.green200 : ColorsBlue.blue200}]}>{children}</Text>
+                <Text style={[styles.text, {color: ColorsBlue.blue100}]}>{children}</Text>
             </Pressable>
         </View>
     ) 
@@ -32,13 +32,16 @@ const styles = StyleSheet.create({
         shadowOffset: {height:1, width:0 },
         shadowRadius: 3,
         shadowOpacity: 0.5,
-        marginTop: 25,
+        marginTop: 15,
         marginHorizontal: 60,
-        height: 25,
+        height: 35,
         justifyContent: 'center',
+        borderColor: ColorsBlue.blue700,
+        borderWidth: 0.9,
     },
     text: {
         textAlign: 'center',
-        fontSize: 15
+        fontSize: 18,
+        fontWeight: '400'
     }
 })

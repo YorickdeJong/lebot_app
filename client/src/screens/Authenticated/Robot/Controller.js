@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState, useCallback
+import React, { useEffect, useRef, useContext, useState, useCallback
  } from 'react'
 import {Alert} from 'react-native'
 import DriveLayout from '../../../components/robot/driving_on_command/DriveLayout';
@@ -6,6 +6,7 @@ import { AssignmentContext } from '../../../store/assignment-context';
 import { CarContext } from '../../../store/car-context';
 import { SocketContext } from '../../../store/socket-context';
 import { UserProfileContext } from '../../../store/userProfile-context';
+import { throttle } from 'lodash';
 
 function Controller({ navigation, route }) {
     const socketCtx = useContext(SocketContext);
@@ -14,8 +15,8 @@ function Controller({ navigation, route }) {
     const assignmentCtx = useContext(AssignmentContext);
     const [keyStroke, setKeyStroke] = useState('');
     const [alertShown, setAlertShown] = useState(false);
-    const [moveXReceived, setMoveXReceived] = useState(0);
-    const [moveYReceived, setMoveYReceived] = useState(0);
+    const moveXReceived = useRef(0);
+    const moveYReceived = useRef(0);
     const { displayNumber } = route.params;
 
     console.log(`Controller`)
@@ -23,16 +24,27 @@ function Controller({ navigation, route }) {
     const powerHandler = useCallback(() => {
         socketCtx.setPower((prevPower) => !prevPower);
         if (!socketCtx.power) {
-        const command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:=${assignmentCtx.assignmentImage.title}`;
-        socketCtx.Command('', command);
+            console.log(`====================`)
+            console.log(`ASSIGNMENT NUMBER: ${assignmentCtx.assignmentImage.assignment_number}`)
+            console.log(`ASSIGNMENT TITLE: ${assignmentCtx.assignmentImage.title}`)
+            console.log(`ASSIGNMENT SUBJECT: ${assignmentCtx.assignmentImage.subject}`)
+            const command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
+            socketCtx.Command('', command);
         } else {
-        socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
+            socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
         }
     }, [socketCtx, carCtx, userprofileCtx, assignmentCtx, displayNumber]);
 
+    const throttledEmitDriveCommand = useCallback(
+        throttle((command) => {
+            socketCtx.socket.current.emit('driveCommand', { command });
+        }, 50), // Adjust the delay (in ms) according to your requirements
+        [socketCtx.socket]
+    );
+
     const moveHandler = useCallback((moveX, moveY) => {
-        setMoveXReceived(moveX);
-        setMoveYReceived(moveY);
+        moveXReceived.current = moveX;
+        moveYReceived.current = moveY;
 
         if (socketCtx.power) {
             let newKeyStroke = '';
@@ -53,9 +65,8 @@ function Controller({ navigation, route }) {
                 newKeyStroke = Math.abs(moveY.toFixed(2)) + ' x';
             }
 
-            // setKeyStroke(newKeyStroke);
             if (newKeyStroke) {
-                socketCtx.socket.current.emit('driveCommand', { command: newKeyStroke });
+                throttledEmitDriveCommand(newKeyStroke);
             }
         } 
         
@@ -75,7 +86,7 @@ function Controller({ navigation, route }) {
             );
             setAlertShown(true);
             }
-    }, [socketCtx.power, alertShown]);
+    }, [socketCtx.power, alertShown, throttledEmitDriveCommand]);
 
     const disconnectHandle = useCallback(() => {
         console.log('disconnected');
