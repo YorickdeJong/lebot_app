@@ -51,9 +51,9 @@ function Settings() {
     return (
         <View style = {styles.modalContainer}> 
             <ImageBackground
-                source={require('./../../../../assets/carBluePrint2.jpg')} 
+                source={require('./../../../../assets/planets/user_screen11-3.png')} 
                 style={styles.backgroundImage}
-                imageStyle={{opacity: 0.09}}
+                imageStyle={{opacity: 0.8}}
             >
                 <FlatList 
                 data = {settingsData}
@@ -75,13 +75,10 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1, 
-        backgroundColor: ColorsBlue.blue1300
+        backgroundColor: ColorsBlue.blue1200
     },
     backgroundImage: {
         flex: 1,
-        resizeMode: 'contain',
-        borderTopColor: ColorsBlue.blue100,
-        borderTopWidth: 0.2,
-        paddingTop: 50,
+        justifyContent: 'center',
     }
 })

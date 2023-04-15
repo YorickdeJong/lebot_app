@@ -1,7 +1,7 @@
 import axios from 'axios';
+import { ipAddressComputer } from '../data/ipaddresses.data';
 
-const url = `http://10.7.191.114:3000/api/v1/`; //Passessese
-// const url = `http://172.20.10.2:3000/api/v1/`; //Iphone
+const url = ipAddressComputer + '/api/v1/'; //Passessese
 
 
 export async function createUser({email, password, username, name, lastName, DOB, school, classSchool, level}) {
@@ -28,6 +28,7 @@ export async function login(email, password) {
         returnSecureToken: true,
     });
 
+    console.log(`response ${JSON.stringify(response.id)}`)
   return response.data;
 }
 

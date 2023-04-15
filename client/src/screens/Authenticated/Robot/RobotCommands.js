@@ -38,28 +38,6 @@ function RobotCommands() {
                     setShowAssignmentDetailsModal(true);
                     break;
 
-                case 'Lidar':
-                    if (!socketCtx.isConnected) {
-                        Alert.alert('You must connect first!');
-                        return;
-                    }
-                    navigation.replace('AutonomousDrivingLidar');
-                    break;
-
-                case 'Sonar':
-                    if (!socketCtx.isConnected) {
-                        Alert.alert('You must connect first!');
-                        return;
-                    }
-                    break;
-                
-                case 'Autonomous Driving':
-                    if (!socketCtx.isConnected) {
-                        Alert.alert('You must connect first!');
-                        return;
-                    }
-                    break;
-
                 case 'Robot Store':
                     navigation.replace('RobotStore')
                     break;
@@ -70,6 +48,7 @@ function RobotCommands() {
             <SettingsTile 
             {...itemData.item}
             onPress = {onPressHandler}
+            blurFactor = {8}
             />
             )
     }
@@ -83,49 +62,48 @@ function RobotCommands() {
     }
 
     return (
-        <View style = {styles.backgroundColor}>
-            <ImageBackground 
-                source={require('./../../../../assets/chatbackground.png')} 
-                style={styles.backgroundImage}
-                imageStyle={{opacity: 0.15}}
-                >
-                <View style={styles.content}>
-                    <FlatList 
-                    data = {robotData}
-                    keyExtractor = {item => item.id}
-                    renderItem = {settingsGrid}
-                    numColumns = {2}
-                    />
-                </View>
-            </ImageBackground>
+        <View style={styles.backgroundColor}>
+          <ImageBackground
+            source={require("./../../../../assets/planets/robot_screen3.png")}
+            style={styles.backgroundImage}
+            imageStyle={{ opacity: 1 }}
+          >
+            <View style={styles.content}>
+              <FlatList
+                data={robotData}
+                keyExtractor={(item) => item.id}
+                renderItem={settingsGrid}
+                numColumns={2}
+              />
+            </View>
+          </ImageBackground>
         </View>
-    )
-}
-
-
-export default React.memo(RobotCommands)
+      );
+    }
+    
+    // Rest of the code
+export default RobotCommands;
 
 const styles = StyleSheet.create({
-    iconContainer: {
-        flex: 1
-    },
-    modalContainer: {
-        marginTop: 50,
-    },
-    content: {
-        justifyContent: 'center',
+      iconContainer: {
         flex: 1,
-        marginTop: 13
-
-    },
-    backgroundImage: {
+      },
+      modalContainer: {
+        marginTop: 70,
+      },
+      content: {
+        justifyContent: "center",
         flex: 1,
-        resizeMode: 'contain',
-        borderTopColor: ColorsBlue.blue700,
-        borderTopWidth: 0.8,
-    },
-    backgroundColor: {
+        marginTop: 20,
+      },
+      backgroundImage: {
         flex: 1,
-        backgroundColor: ColorsBlue.blue1300
-    }
-})
+        resizeMode: "contain",
+        justifyContent: "center",
+      },
+      backgroundColor: {
+        flex: 1,
+        backgroundColor: ColorsBlue.blue1300,
+        justifyContent: "center",
+      },
+});

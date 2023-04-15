@@ -1,11 +1,10 @@
 import { StyleSheet, View} from "react-native"
 import React, { useContext, useState } from "react";
-import QuestionsTile from "../../../components/assignments/questions/QuestionsTile";
-import QuestionSelection from "../../../components/assignments/questions/QuestionSelection";
 import { AssignmentContext } from "../../../store/assignment-context";
 import { AssignmentDetailsContext } from "../../../store/assignment-Details-context";
-import { useIsFocused } from "@react-navigation/native";
-import InformationQuestionsScreen from "../../../components/assignments/questions/InformationQuestionsScreen";
+import InformationQuestionsScreenOne from "../../../components/assignments/screens/assignment_one/InformationQuestionsScreenOne";
+import InformationQuestionsScreenTwo from "../../../components/assignments/screens/assignment_two/InformationQuestionsScreenTwo";
+import InformationQuestionsScreenThree from "../../../components/assignments/screens/assignment_three/InformationQuestionsScreenThree";
 
 function getFirstCompletedAssignment(assignmentDetailsCtx, title, length) {
     for (let i = 1; i < length; i++){
@@ -16,7 +15,9 @@ function getFirstCompletedAssignment(assignmentDetailsCtx, title, length) {
     return 1;
 }
 
-function Assignment({title, tabIndex, currentIndex }) {
+
+// DISPLAYS INDIVIDUAL ASSIGNMENTS
+function Assignment({title, tabIndex, currentIndex, subject}) {
     const assignmentCtx = useContext(AssignmentContext); //how to now the subject here?
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext)
     const assignmentTopic = assignmentCtx.filterSpecificTitle(title);
@@ -27,10 +28,20 @@ function Assignment({title, tabIndex, currentIndex }) {
     
 
     return (
-        <InformationQuestionsScreen 
-        assignmentTopic={assignmentTopic} 
-        assignmentNumber={assignmentNumber}
-        isFocused={isFocused}/>
+        <>
+            {subject === 'MOTOR' && <InformationQuestionsScreenOne 
+            assignmentTopic={assignmentTopic} 
+            assignmentNumber={assignmentNumber}
+            isFocused={isFocused}/>}
+            {subject === 'LED' && <InformationQuestionsScreenTwo
+            assignmentTopic={assignmentTopic} 
+            assignmentNumber={assignmentNumber}
+            isFocused={isFocused}/>}
+            {subject === 'CAR' && <InformationQuestionsScreenThree
+            assignmentTopic={assignmentTopic} 
+            assignmentNumber={assignmentNumber}
+            isFocused={isFocused}/>}
+        </>
     )
 }
 

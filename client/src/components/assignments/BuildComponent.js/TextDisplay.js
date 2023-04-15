@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { BlurView } from 'expo-blur';
 import Icon from '../../Icon';
 
-function TextDisplay({title, description, showIcon, setCloseHandler}){
+function TextDisplay({title, description, showIcon, differentIcon, setCloseHandler, iconSize}){
     const [showDescription, setShowDescription] = useState(false);
 
     function expandDescriptionHandler(){
@@ -14,7 +14,7 @@ function TextDisplay({title, description, showIcon, setCloseHandler}){
     const displayDescription = showDescription ? description : description.substring(0, 33);
     return (
         <>
-        <BlurView intensity={7} style = {{width: "100%"}}>
+        <BlurView intensity={10} tint = "dark" style = {{width: "100%"}}>
             <View style = {styles.textContainer}>
                     <Text style={styles.text}>{title}</Text>
                     <View style={styles.descriptionContainer}>
@@ -34,8 +34,8 @@ function TextDisplay({title, description, showIcon, setCloseHandler}){
             </View> 
             {showIcon && <View style = {styles.closeIcon}>
                 <Icon 
-                size={36}
-                icon="md-close-circle-outline"
+                size={iconSize ? iconSize : 36}
+                icon= { differentIcon ? differentIcon : "md-close-circle-outline" }
                 color={ColorsBlue.blue200}
                 onPress={setCloseHandler}/>
             </View>}

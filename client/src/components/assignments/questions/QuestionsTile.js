@@ -12,6 +12,7 @@ import { SocketContext } from "../../../store/socket-context";
 import PressableButton from "../../robot/robot_commands/PressableButton";
 import ImageContainer from "./ImageContainer";
 import QuestionContainer from "./QuestionContainer";
+import { ipAddressRaspberryPi } from "../../../data/ipaddresses.data";
 
 
 
@@ -66,14 +67,14 @@ function QuestionsTile({assignmentNumber, assignmentTopic}) {
             keyboardWillHideSub.remove();
         }
     }, []);
-    
+
     function redirectToMeasurementHandler(){
         if (chartCtx.chartData.length >= 8){
             Alert.alert('You have reached the maximum number of images for this assignment, delete image to continue');
             return
         }
         const config = { //TODO make these values statewide
-                host: "10.7.191.113",
+                host: ipAddressRaspberryPi,
                 port: 22,
                 username: "ubuntu",
                 password: "password",
@@ -108,7 +109,12 @@ function QuestionsTile({assignmentNumber, assignmentTopic}) {
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={{ flexGrow: 1 }}                 
                         >
+                            {/* Add container with 3 options */}
                         <View style = {{chartflex: 1}}>
+                        <QuestionContainer
+                            questionData={questionData}
+                            redirectToMeasurementHandler={redirectToMeasurementHandler}
+                        />
                         <ImageContainer 
                             imageHeight={imageHeight}
                             title={questionData.title}
@@ -116,10 +122,6 @@ function QuestionsTile({assignmentNumber, assignmentTopic}) {
                             tokens = {questionData.currency}
                             keyboardHeight={keyboardHeight}
                         />
-                            <QuestionContainer
-                                questionData={questionData}
-                                redirectToMeasurementHandler={redirectToMeasurementHandler}
-                            />
                         </View>
                         <PressableButton 
                         text="Press to Produce Data"

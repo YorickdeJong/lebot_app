@@ -5,26 +5,36 @@ import { ColorsBlue } from "../../../../constants/palet";
 
 
 export const Legend = ({ items }) => {
-    return (
-        <View>
-            {items.map((item, index) => (
-                <View key={index} style={styles.legendItem}>
-                    <View style={[styles.legendIcon, { backgroundColor: item.color }]} />
-                    <Text style={styles.legendText}>{item.label}</Text>
-                </View>
-            ))}
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <View style={styles.legendItems}>
+        {items.map((item, index) => (
+          <View key={index} style={styles.legendItem}>
+            <View style={[styles.legendIcon, { backgroundColor: item.color }]} />
+            <Text style={styles.legendText}>{item.label}</Text>
+          </View>
+        ))}
+      </View>
+    </View>
+  );
 };
 
 
-
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 4,
+    paddingHorizontal: 8,
+  },
+  legendItems: {
+    alignItems: 'center',
+  },
   legendItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginRight: 16,
-    marginTop: 4,
+    marginBottom: 4,
   },
   legendIcon: {
     width: 12,
@@ -33,9 +43,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
   },
   legendText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: ColorsBlue.blue200,
-    // textAlign: 'center'
-},
-})
+    fontSize: 11,
+    color: 'white',
+  },
+});

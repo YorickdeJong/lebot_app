@@ -13,7 +13,7 @@ function MoneyContainer() {
             <Icon 
             icon = "cash-multiple"
             differentDir={true}
-            size = {36}
+            size = {30}
             color={ColorsLighterGold.gold800}/>
             <Text style = {styles.textGold} > :  € {carCtx.carProperties.money}</Text>
         </View>
@@ -25,14 +25,15 @@ export default MoneyContainer
 const styles = StyleSheet.create({
     moneyContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        position: 'absolute',
+        top: 43,
+        left: "42%",
         backgroundColor: 'transparent',
-        marginBottom: 15
+        marginBottom: 10
     },
     textGold: {
         color: "white",
-        fontSize: 24,
-        marginTop: 2
+        fontSize: 20,
+        marginTop: 5
     },
 })

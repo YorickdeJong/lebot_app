@@ -5,7 +5,7 @@ import { ColorsBlue, ColorsDarkerBlue, ColorsLighterGold, ColorsTile, StoreColor
 import { CarContext } from "../../../store/car-context";
 
 
-function UpgradeTab({upgradeType, colorsUpgrade, setColorsUpgrade}){
+function UpgradeTab({upgradeType, colorsUpgrade, setColorsUpgrade, textColor}){
     const carCtx = useContext(CarContext);
 
     function convertColorObjectToArray(colorObject) {
@@ -22,7 +22,7 @@ function UpgradeTab({upgradeType, colorsUpgrade, setColorsUpgrade}){
         console.log(upgradeType)
 
         switch(upgradeType){
-            case 'Speed':
+            case 'Snelheid':
                 carCtx.upgradeLog.Speed.map((item, index) => {
                     if (item === true){
                         newColors[index] = colorsGold
@@ -30,14 +30,14 @@ function UpgradeTab({upgradeType, colorsUpgrade, setColorsUpgrade}){
                     
                 })
                 break;
-            case 'Acc':
+            case 'Versnelling':
                 carCtx.upgradeLog.Acc.map((item, index) => {
                     if (item === true){
                         newColors[index] = colorsGold;
                     }
                 })
                 break;
-            case 'Handling':
+            case 'Afstand':
                 carCtx.upgradeLog.Handling.map((item, index) => {
                     if (item === true){
                         newColors[index] = colorsGold
@@ -60,7 +60,7 @@ function UpgradeTab({upgradeType, colorsUpgrade, setColorsUpgrade}){
     
     return (
             <View style = {styles.upgrade}>
-                <Text style ={styles.text}>{upgradeType}</Text>
+                <Text style ={[styles.text, {color: textColor}]}>{upgradeType}</Text>
                 <View style={styles.progressBar}>
                     <LinearGradient 
                         style = {styles.tile}
@@ -123,14 +123,22 @@ const styles = StyleSheet.create({
         borderColor: ColorsBlue.blue100,
         borderWidth: 2,
         marginRight: 5,
-        borderRadius: 3
+        borderRadius: 3,
+        shadowColor: 'black',
+        shadowOffset: {width: 1, height: 3},
+        shadowOpacity: 1,
+        shadowRadius: 4,
     },
     text: {
         color: "white",
         fontSize: 24,
         fontWeight: 'italic',
         marginLeft: 15,
-        textAlign: 'center'
+        textAlign: 'center',
+        shadowColor: 'black',
+        shadowOffset: {width: 1, height: 3},
+        shadowOpacity: 1,
+        shadowRadius: 2,
     },
     outerContainer: {
         justifyContent: 'center',

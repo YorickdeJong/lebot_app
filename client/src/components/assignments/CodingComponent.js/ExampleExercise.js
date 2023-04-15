@@ -5,13 +5,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import TextDisplay from '../BuildComponent.js/TextDisplay';
 import SwitchScreens from '../BuildComponent.js/SwitchScreens';
 import LightBulbAnimation from './LightBulbAnimation';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import DragBlocksAnimation from './DragBlocksAnnimation';
 
 
 function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, isFocused, title}) {
     const [focused, setFocused] = useState(isFocused && slideCount === 3); 
-
+    const scrollViewRef = useRef(null);
     const extraStyle = {
         marginLeft: 8,
         paddingLeft: 3,
@@ -34,7 +34,10 @@ function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyp
                 >
                     <DragBlocksAnimation />
                     <View style={styles.border}/>                    
-                    <ScrollView style = {{flex: 1}}>
+                    <ScrollView style = {{flex: 1}}
+                    ref={scrollViewRef}
+                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                    >
                                 <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
                                     <ChatBoxGPT 
                                     answer={message.answer}

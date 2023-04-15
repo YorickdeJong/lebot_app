@@ -11,6 +11,7 @@ import { SocketContext } from "../../../store/socket-context"
 import WaitingForMeasurementContainer from "./WaitingForMeasurementContainer"
 import PowerOffContianer from "./PowerOffContainer"
 import { ChartContext } from "../../../store/chart-context"
+import { BlurView } from "expo-blur"
 
 
 function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumber}) {
@@ -20,9 +21,9 @@ function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumb
     return (
         <View style={styles.container}>
         <ImageBackground
-            source={require('./../../../../assets/grid.jpg')} 
+            source={require('./../../../../assets/planets/control_screen9.png')} 
             style= {styles.background}
-            imageStyle={{opacity: 0.4}}
+            imageStyle={{opacity: 0.8}}
             >
                 <OptionsBar
                     disconnectHandle = {rightIconHandler}
@@ -33,19 +34,17 @@ function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumb
                 {socketCtx.power ? (
                     //Display charts if first data is send, otherwise loading screen
                     socketCtx.isMeasurementStarted && 
-                    chartCtx.chartData.distance.length !== 0 ? (
-                        <LinearGradient 
-                        colors={[ColorsBlue.blue1300, ColorsBlue.blue1100]} //ColorsBlue.blue1200, ColorsBlue.blue1100]}
-                        start={{ x: 1, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style = {styles.loadingContainer}>
+                    chartCtx.chartData.speed[0].length !== undefined ? (
+                    <View style={styles.shadowContainer}>
+                        <BlurView style = {styles.loadingContainer} intensity={15} tint="dark">
                                 <ChartDisplay 
                                 chartData = {chartCtx.chartData}
                                 chartToggle = {chartCtx.chartToggle}
                                 trueCount = {chartCtx.trueCount}
-                                displayChart = {460}
+                                displayChart = {450}
                                 />
-                        </LinearGradient>
+                        </BlurView>
+                    </View>
                     ) : (
                         <WaitingForMeasurementContainer />
                     )
@@ -74,14 +73,32 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: ColorsBlue.blue1100, 
         flex: 1,
-        borderTopColor: ColorsBlue.blue700,
-        borderTopWidth: 0.2,
     },
     loadingContainer: {
-        height: 460,
+        flex: 1,
         margin: 2,
         borderRadius: 5,
-        borderColor: ColorsBlue.blue700,
-        borderWidth: 1,
+    },
+    loadingContainer: {
+        flex: 1,
+        borderRadius: 5,
+        overflow: 'hidden',
+    },
+    shadowContainer: {
+        margin: 2,
+        marginHorizontal: 5,
+        borderRadius: 5,
+        ...Platform.select({
+            ios: {
+                shadowOffset: { height: 2, width: 2},
+                shadowRadius: 3,
+                shadowOpacity: 1,
+                shadowColor: ColorsBlue.blue1400,
+            },
+            android: {
+                elevation: 5,
+            },
+        }),
+        height: 460,
     },
 })

@@ -1,23 +1,23 @@
 import { useContext } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native"
-import {ColorsBlue, ColorsGreen } from "../../constants/palet"
+import {ColorsBlue, ColorsGray, ColorsGreen } from "../../constants/palet"
 import { ColorContext } from "../../store/color-context";
 
-function TextContainer({textContent, setUserDetails, value, isValid, addStyle, secure}) {
-    const colorCtx = useContext(ColorContext);
-    
-    const backgroundChoice = colorCtx.isBlue ? ColorsGreen.green400 : ColorsBlue.blue200
-    const shadow = colorCtx.isBlue ? ColorsGreen.green1200: ColorsBlue.blue1200
+function TextContainer({placeholder, setUserDetails, value, isValid, addStyle, secure}) {
+ 
+    const backgroundChoice = ColorsBlue.blue200
+    const shadow = ColorsBlue.blue1200
     const textInput = [styles.textInput, {backgroundColor: backgroundChoice,  shadowColor: shadow}]
 
     return(
     <View style = {addStyle}>
-        <Text style={[styles.text, {color: colorCtx.isBlue ? ColorsGreen.green200 : ColorsBlue.blue100}]}>{textContent}</Text>
         <TextInput 
         style= {[textInput, isValid && {backgroundColor: ColorsGreen.error300}]}
         onChangeText = {setUserDetails}
         value={value}
         secureTextEntry={secure}
+        placeholder={placeholder}
+        placeholderTextColor={ColorsGray.gray700}
         />
     </View>
     )
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     },
     textInput: {
-        marginTop: 5,
+        marginTop: 20,
         marginHorizontal: 20,
         height: 30,
         borderRadius: 5, 

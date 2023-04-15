@@ -6,13 +6,9 @@ import {ColorsBlue, ColorsGreen, ColorsOrange } from "../../constants/palet";
 import TextForm from "../../components/Login/TextForm";
 import { AuthContext } from "../../store/auth-context";
 import { getUserProfileDetails, login } from "../../hooks/auth";
-import LoadingOverlay from "../../components/UI/LoadingOverlay";
-import { ColorContext } from "../../store/color-context";
 import { UserProfileContext } from "../../store/userProfile-context";
 import { AssignmentContext } from "../../store/assignment-context";
 import { getAllAssignments } from "../../hooks/assignments";
-import { ImagesContext } from "../../store/images-context";
-import { getAllImages } from "../../hooks/measurement_results";
 import { AssignmentDetailsContext } from "../../store/assignment-Details-context";
 import { getAllAssignmentDetails} from "../../hooks/assignmentDetails";
 import { CarContext } from "../../store/car-context";
@@ -20,30 +16,38 @@ import { getUserCarDetails } from "../../hooks/carDetails";
 import { ChatContext } from "../../store/chat-context";
 import { getChatHistory } from "../../hooks/chatgpt";
 
-function Login() {
+function Login({route}) {
     const authCtx = useContext(AuthContext);
     const userCtx = useContext(UserProfileContext)
     const assignmentCtx = useContext(AssignmentContext);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
     const carCtx = useContext(CarContext);
     const chatCtx = useContext(ChatContext);
+    const authenticateType = route.params.type
 
     async function loginHandler({ email, password }) {
-        setIsAuthenticating(true);
         try {
             const userData = await login(email, password);
-            const userProfile = await getUserProfileDetails(userData.id);
-            const assignments = await getAllAssignments();
-            const assignmentDetails = await getAllAssignmentDetails(userData.id)
-            const carDetails = await getUserCarDetails(userData.id);
-            const chatHistory = await getChatHistory(userData.id);
-
+            console.log(`token ${userData.token}`)
+            console.log(`userData id ${userData.id}`)
             authCtx.authenticate(userData.token);
+            
+            const userProfile = await getUserProfileDetails(userData.id);
             userCtx.editUserProfile(userProfile);
+            
+            const assignments = await getAllAssignments();
             assignmentCtx.initializeAssignments(assignments)
-            assignmentDetailsCtx.initializeAssignmentDetails(assignmentDetails)
+            
+            const carDetails = await getUserCarDetails(userData.id);
+            console.log(carDetails)
             carCtx.initializeCarDetails(carDetails)
+            
+            const chatHistory = await getChatHistory(userData.id);
             chatCtx.initializeChatHistory(chatHistory)
+            
+            const assignmentDetails = await getAllAssignmentDetails(userData.id)
+            assignmentDetailsCtx.initializeAssignmentDetails(assignmentDetails)
+            
         } 
 
         catch (error) {
@@ -52,22 +56,21 @@ function Login() {
                 'Authentication failed!',
                 'Could not log you in. Please check your credentials or try again later!'
             );
-            setIsAuthenticating(false);
         }
     }
 
 
     return (
-        <LinearGradient colors = {[ColorsBlue.blue1200, ColorsBlue.blue1200]} style = {styles.outerContainer}>
             <ImageBackground
-                source={require('./../../../assets/highway(1).png')} 
+                source={require('./../../../assets/planets/login_page.png')} 
                 style={styles.backgroundImage}
-                imageStyle={{opacity: 0.25}}
+                imageStyle={{opacity: 0.75}}
                 >
                 <TextForm LoginVariable 
-                onAuthenticate = {loginHandler} />
+                onAuthenticate = {loginHandler} 
+                authenticateType = {authenticateType}
+                />
             </ImageBackground>
-        </LinearGradient>
     )
 
 
@@ -85,8 +88,6 @@ const styles = StyleSheet.create({
     backgroundImage: {
         flex: 1,
         resizeMode: 'contain',
-        borderTopColor: ColorsBlue.blue100,
-        borderTopWidth: 0.2,
         paddingTop: 50,
     }
 })

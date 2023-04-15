@@ -2,6 +2,7 @@ import { createContext, useState, useEffect, useRef } from "react";
 import {Alert} from 'react-native'
 
 import io from 'socket.io-client';
+import { ipAddressComputer } from "../data/ipaddresses.data";
 export const SocketContext = createContext({
     socket: null,
     output: '',
@@ -28,14 +29,14 @@ function SocketContextProvider({children}) {
     // const [socket, setSocket] = useState(null);
     const socket = useRef(null); //use useRef to not trigger a rerender
     const [isConnected, setIsConnected] = useState(false);
-    const [output, setOutput] = useState('');
-    const [dir, setDir] = useState('');
+    const output = useRef('');
+    const dir = useRef('');
     const [os, setOs] = useState('')
     const [isLoading, setIsLoading] = useState(false);
     const [power, setPower] = useState(false); 
     const [isMeasurementStarted, setIsMeasurementStarted] = useState(false);
 
-    const SOCKET_SERVER_URL = 'http://10.7.191.114:3000' // iphone: 'http://172.20.10.2:3000'
+    const SOCKET_SERVER_URL = ipAddressComputer;
     
 
     // Call CreateConnection on mount
@@ -46,7 +47,7 @@ function SocketContextProvider({children}) {
     
     useEffect( () => {
         console.log(`check connection 1`)
-        setDir('')
+        dir.current = '';
         setIsConnected(false);
     }, [])
 
@@ -59,6 +60,7 @@ function SocketContextProvider({children}) {
     }, [isConnected])
 
     const renderCount = useRef(0);
+
     useEffect(() => {
         renderCount.current += 1;
         console.log(`SocketContextProvider has rendered ${renderCount.current} times`);
@@ -102,7 +104,7 @@ function SocketContextProvider({children}) {
         }
         catch(error) {
             console.log(error);
-            setOutput('Connection Failed')
+            output.current = 'Connection Failed'
             
         }
 
@@ -120,7 +122,7 @@ function SocketContextProvider({children}) {
             }
             catch(error) {
                 console.log(error);
-                setOutput('Failed to disconnect')
+                output.current = 'Failed to disconnect'
                 
             }
         }
@@ -148,12 +150,12 @@ function SocketContextProvider({children}) {
                             if (data.data.includes('@') && 
                                 data.data.includes(':') && 
                                 data.data.includes(':')){
-                                setDir(data.data);
+                                dir.current = data.data;
                             }
                             break;
 
                         case 'mkdir':
-                            setOutput('new directory created');
+                            output.current ='new directory created';
                             break;
 
                         case 'dir' || 'roslaunch':
@@ -163,7 +165,7 @@ function SocketContextProvider({children}) {
                                 !data.data.includes('cd ')&&
                                 !data.data.includes('dir') &&
                                 data.data){
-                                setOutput(data.data) 
+                                output.current = data.data 
                             }
                             break;
                     }
@@ -186,11 +188,11 @@ function SocketContextProvider({children}) {
 
 
     function responseOutput(response){
-        setOutput(response);
+        output.current = response;
     }
 
     function responseDir(dir){
-        setDir(dir);
+        dir.current = dir;
     }
 
     function OS(os) {

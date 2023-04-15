@@ -2,29 +2,34 @@ import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
 import { ColorsBlue } from '../../../constants/palet'
 import { AssignmentContext } from '../../../store/assignment-context'
 import { ChartContext } from '../../../store/chart-context'
 import { SocketContext } from '../../../store/socket-context'
-import ChatBoxGPT from '../../chatgpt/ChatBoxGPT'
 import Icon from '../../Icon'
-import ChartDisplay from '../../robot/driving_on_command/chartDisplay'
-import SwitchScreens from '../BuildComponent.js/SwitchScreens'
 import TextDisplay from '../BuildComponent.js/TextDisplay'
 import ImageContainer from './ImageContainer'
 import QuestionContainer from './QuestionContainer'
+import { ipAddressRaspberryPi } from '../../../data/ipaddresses.data'
 
 
 
-function Questions({title, description, assignmentNumber, assignmentTopic, question, isFocused}){
+function Questions({title, description, questions, assignmentNumber, isFocused, setSlideCount}){
     const chartCtx = useContext(ChartContext);
     const socketCtx = useContext(SocketContext);
     const assignmentCtx = useContext(AssignmentContext);
     const navigation = useNavigation(); 
     const keyboardHeight = useRef(new Animated.Value(0)).current;
-    const imageHeight = useRef(new Animated.Value(480)).current; //Change these values when changing the image size
-    const questionData = assignmentTopic[assignmentNumber - 1];
+    const imageHeight = useRef(new Animated.Value(chartCtx.trueCount > 1 ? 480 : 320)).current; //Change these values when changing the image size
+    const [chartAvailable, setChartAvailable] = useState(false);
+    const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+
+
+    //filter out assignment∂
+    const questionData = questions[assignmentNumber - 1]; //Filter for correct subject
+
+    //check if screen is focused
     const isFocussedDiffScreen = useIsFocused()
     const [close, setClose] = useState(false);
 
@@ -36,25 +41,34 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
             keyboardWillShowSub.remove();
             keyboardWillHideSub.remove();
         }
-    }, []);
+    }, [isFocused, chartCtx.trueCount]);
 
+    useEffect(() => {
+        Animated.timing(imageHeight, {
+            duration: 250, // You can adjust the duration as needed
+            toValue: (chartCtx.trueCount > 1 && !isKeyboardOpen) ? 480 : 320,
+            useNativeDriver: false,
+        }).start();
+    }, [isFocused, chartCtx.trueCount]);
     
     const keyboardWillShow = (event) => {
+        setIsKeyboardOpen(true);
         Animated.parallel([
         Animated.timing(keyboardHeight, {
             duration: event.duration,
-            toValue: event.endCoordinates.height / 1.3,
+            toValue: 0, 
             useNativeDriver: false
         }),
         Animated.timing(imageHeight, {
             duration: event.duration,
-            toValue: 40,
+            toValue: 5,
             useNativeDriver: false
         }),
         ]).start();
     };
 
     const keyboardWillHide = (event) => {
+        setIsKeyboardOpen(false);
         Animated.parallel([
         Animated.timing(keyboardHeight, {
             duration: event.duration,
@@ -63,7 +77,7 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
         }),
         Animated.timing(imageHeight, {
             duration: event.duration,
-            toValue: 480, //Change these values when changing the image size
+            toValue: chartCtx.trueCount > 1 ? 480 : 320, //Change these values when changing the image size
             useNativeDriver: false
         }),
         ]).start();
@@ -79,7 +93,7 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
             return
         }
         const config = { //TODO make these values statewide
-                host: "10.7.191.113",
+                host: ipAddressRaspberryPi,
                 port: 22,
                 username: "ubuntu",
                 password: "password",
@@ -88,7 +102,8 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
         socketCtx.Connect(config); //set assignment number and title
         assignmentCtx.setTitleImageHandler(questionData.title);
         assignmentCtx.setAssignmentImageHandler(questionData.assignment_number);
-        navigation.navigate('Robot', 
+        assignmentCtx.setSubjectImageHandler(questionData.subject);
+        navigation.navigate('Assignments', 
                     { screen: 'Controller',    
                       params: {
                           displayNumber: 1,
@@ -106,7 +121,7 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
                 <ImageBackground
                 source={require('./../../../../assets/chatbackground.png')} 
                 style={
-                {flex: 1, borderTopColor: ColorsBlue.blue900, borderTopWidth: 0.8,}
+                {flex: 1,}
                 }
                 imageStyle={{opacity: 0.10}}
                 >
@@ -116,24 +131,26 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
                             assignment_number={questionData.assignment_number}
                             tokens={questionData.tokens}
                             title={questionData.title}
+                            subject={questionData.subject}
                             imageHeight={imageHeight}
                             keyboardHeight={keyboardHeight}
-                            isFocused2={isFocused}
+                            setChartAvailable={setChartAvailable}
+                            chartAvailable={chartAvailable}
+                            redirectToMeasurementHandler={redirectToMeasurementHandler}
                             />}
+                           
                             {!close ? 
                             <>
-                            <View style = {{backgroundColor: `rgba(11,11,44,0.3)`}}>
+                            <View style = {styles.descriptionContainer}>
                                 <TextDisplay
                                 title = {title}
                                 description= {description}
                                 showIcon
-                                setCloseHandler={setCloseHandler}
+                                differentIcon="home-outline"
+                                iconSize={30}
+                                setCloseHandler={() => setSlideCount(0)}
                                 />
                             </View>
-                            <QuestionContainer 
-                            questionData={questionData}
-                            question={question}
-                            />
                             </>: 
                             <View style = {styles.compress}>
                                 <Icon
@@ -142,12 +159,18 @@ function Questions({title, description, assignmentNumber, assignmentTopic, quest
                                 icon="lock-open-outline"
                                 onPress={setCloseHandler}/>
                             </View> }
-                            <BlurView style = {styles.button} intensity = {7}>
+                            <QuestionContainer 
+                            questionData={questionData}
+                            assignmentNumber={assignmentNumber}
+                            />
+                            
+                            
+                            {!chartAvailable && <BlurView style = {styles.button } intensity = {7}>
                                 <TouchableOpacity
                                 onPress = {redirectToMeasurementHandler}>
                                     <Text style = {styles.text}>Druk hier om data te verzamelen</Text>
                                 </TouchableOpacity>
-                            </BlurView>
+                            </BlurView>}
                     </ScrollView>  
             </ImageBackground>
         </LinearGradient>
@@ -169,11 +192,30 @@ const styles = StyleSheet.create({
     button: {
         height: 60,
         justifyContent: 'center',
+        marginHorizontal: 8,
+        borderWidth: 1,
+        borderColor: `rgba(77, 77, 77, 0.5)`,
+        shadowColor: `rgba(11, 11, 11)`,
+        shadowOffset: {height: 1, width: 0},
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        marginBottom: 6
     },
     text: {
         color: ColorsBlue.blue200,
         fontSize: 22,
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    descriptionContainer: {
+        // marginVertical: 8,
+        marginTop: 8,
+        marginHorizontal: 8,
+        borderWidth: 1,
+        borderColor: `rgba(77, 77, 77, 0.5)`,
+        shadowColor: `rgba(11, 11, 11)`,
+        shadowOffset: {height: 1, width: 0},
+        shadowOpacity: 1,
+        shadowRadius: 3,
     }
 })

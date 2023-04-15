@@ -1,5 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import { ImageBackground, ScrollView, StyleSheet, View } from 'react-native'
+import {useRef} from 'react'
 import { ColorsBlue } from '../../../constants/palet'
 import { ASSIGNMENT_EXPLANATION } from '../../../data/InitialAssignmentExplanation'
 import Chat from '../../chatgpt/Chat'
@@ -9,7 +10,8 @@ import TextDisplay from '../BuildComponent.js/TextDisplay'
 import VideoDisplay from '../BuildComponent.js/VideoDisplay'
 
     
-function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, answer, thread_id, title, description, isFocused}){    
+function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, slideCount, setSlideCount, setTyping, typing, answer, thread_id, title, description, isFocused}){    
+    const scrollViewRef = useRef(null)
     const extraStyle = {
         marginLeft: 8,
         paddingLeft: 3,
@@ -33,8 +35,14 @@ function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, slideCount, s
                     <TextDisplay
                     title = {title}
                     description= {description}
+                    showIcon
+                    differentIcon="home-outline"
+                    setCloseHandler={() => setSlideCount(0)}
+                    iconSize = {30}
                     />
-                    <ScrollView style = {{flex: 1}}>
+                    <ScrollView style = {{flex: 1}}
+                    ref={scrollViewRef}
+                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
                             <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
                                 {isFocused && <ChatBoxGPT 
                                 answer={answer}

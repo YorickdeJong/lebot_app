@@ -2,7 +2,7 @@
 
 export const ASSIGNMENT_EXPLANATION = {
     BUILDSCREEN_1: {
-        answer: `Graag wil ik je welkom heten als engineer bij LeBot. Als nieuwe aanwinst van ons bedrijf is het jou taak om met slimme, technische oplossingen te komen voor onze klanten. Hiervoor zal je een aantal belangrijke vaardigheden moeten ontwikkelen. Zo ga je zowel het product voor de klant bouwen, het product werkende krijgen door te coderen en het product testen door data te analyseren. Ons eerste klant is een windmolenpark. Het is aan jou de taak om deze windmolens te bouwen en werkende te krijgen. Heb je vragen voordat we gaan beginnnen? Zo niet, druk dan op de onderstaande knop`,
+        answer: `Welkom engineer! We willen je graag feliciteren met je nieuwe functie als project leider bij ons ruimtevaart bedrijf. Het is een tijdje geleden dat we elkaar hebben gesproken, dus we geven je nog een keer een kleine introductie over jou opdracht. Ons doel is om een mars rover te bouwen. Jij maakt deel uit van het engineering team dat zich bezig houd met de beweging van de rover. Het is jou en je team taak om de mars rover in elkaar te zetten en rijdende te krijgen. Er zijn al wat voorbereidingen getroffen zodat jij zo snel mogelijk aan het werk kan. Zo moeten in totaal 3 projecten voltooid worden: Testen van de motoren, installeren van de lichten en het testen van de rover. In deze opdracht beginnen we met het testen van de motoren. Daarover krijg je later in deze opdracht meer informatie. We gaan nu eerst onze test setup bouwen.`,
         thread_id: 6,
     },
     BUILDSCREEN_2: {
@@ -33,12 +33,50 @@ export const ASSIGNMENT_EXPLANATION = {
         answer: `Nu je jouw introductie hebt gehad met coderen, gaan we jouw kennis toepassen om de motoren werkende te krijgen. We hebben weer een schakelaar, als deze naar links staat, willen we dat de motoren uitstaan. Staat deze naar rechts, dan gaan de motoren aan. Dit kunnen we bereiken door weer gebruik te maken van een if else statement. Het is aan jou om de juiste conditie en actie te vinden. Succes!`,
         thread_id: 13
     },
-    ASSIGNMENTQUESTIONS_1: {
-        answer: 'De windmolen fabrikant is erg tevreden met het tot nu toe door jou geleverde werk. Echter, ze merkte op dat de windmolens niet goed gecalibreerd zijn en ze hebben jou gevraagd om uit te zoeken welke dat is. Verder zouden ze ook graag een lijst ontvangen van best tot slechts functionerende windmolens. Op het volgende scherm wordt uitgelegd aan welke eisen de windmolen fabrikant wil dat de windmolens voldoen.',
-        thread_id: 14,
+    ASSIGNMENTQUESTIONSINTRO_11: {
+        answer: `Heel goed gedaan! Je hebt de motoren aan de praat gekregen! We
+        gaan nu een paar tests doen met een goed werkende motor, om zo accurate data
+        te verzamelen. Die data kunnen we gebruiken als test, om te kijken of andere
+        motoren ook goed functioneren. Op het volgende scherm kun je data verzame-
+        len door op ’Druk hier om data te verzamelen’ te klikken. Dit zal een meeting
+        starten, de motoren laten draaien en s,t en v,t grafieken produceren. Je kan de
+        data live zien, zodat je een beter begrip krijgt van s,t en v,t grafieken. Laten
+        we gelijk beginnen!`,
+        thread_id: 14
     },
-    ASSIGNMENTQUESTIONS_1: {
-        answer: 'In het bovenstaande menu vind je de eisen waaraan een windmolen moet voldoen. De fabrikant wilt dat een windmolen aan minimaal 3 van deze eisen voldoet, anders is het niet mogelijk om de windmolen te gebruiken. Om deze vragen te kunnen beantwoorden, moeten we data verzamelen over de windmolen. Om de milieu impact te berekenen kan je internet of chatgpt in de app gebruiken. Probeer je vraag zo duidelijk mogelijk te stellen. Op het volgende scherm kan je een meeting starten.',
+    ASSIGNMENTQUESTIONSINTRO_12: {
+        answer: `We hebben helaas net te horen gekregen dat onze leverancier 6 motoren heeft geleverd, waarvan er 2 kapot zijn. Echter weten we niet welke dat zijn. Gelukkig heb jij net een aantal tests gedaan aan een goed werkende motor. Hierdoor waren we instaat om een aantal criteria op te stellen waaraan de motor moet voldoen: 
+        
+1. De snelheid is groter dan, of gelijk aan 0.3 en kleiner dan, of gelijk aan 0.4 (0.3 m/s $\leq$ v $\leq$ 0.4 m/s)
+        
+2. De snelheid is constant na 1 seconden (t $\geq$ 1s, v = constant)
+        
+3. De maximale verselling is niet lager dan 0.3 m/s$^2$ (v $\geq$ 0.3 m/s$^2$)
+        
+4. De afgelegde afstand na 5 seconde is hoger dan 2 meter (s > 5 meter)
+        
+5. De motor staat na dan 1 seconden still (t < 1 seconden)
+        `,
         thread_id: 15,
     },
+    ASSIGNMENTQUESTIONSINTRO_21: {
+        answer: `Top! Nu we weten hoe we met programmeren het energieverbruik
+        van de batterij kunnen visualiseren, is het tijd om te gaan rekenen. Zoals eerder
+        gezegd gaan we ons in deze opdracht bezig houden met circuits. Het is jou taak
+        om er voor te zorgen dat zolang mogelijk kan blijven branden op 1 accu. Om
+        dit te bereiken gaan we berekeningen doen aan schakelingen, laten we beginnen.`,
+        thread_id: 16,
+    },
+    ASSIGNMENTQUESTIONSINTRO_22: {
+        answer: `We kunnen nu de weerstand in de schakeling plaatsen om de LED te laten branden.`,
+        thread_id: 17,
+    },
+    ASSIGNMENTQUESTIONSINTRO_31: {
+        answer: `In dit project ga jij de optimale snelheid bepalen van de auto. Om tot een conclusie te komen ga je 4 snelheden bekijken. Bij elke snelheid bereken je de efficiëntie van de auto. Je krijgt hier uiteindelijk 4 punten uit die je kan gaan plotten. Zo kan je een uitspraak doen over de optimale snelheid van de auto. Ik heb een stappenplan voor jou gemaakt die je kan uitwerken om tot het antwoord te komen, succes!`,
+        thread_id: 18,
+    },
+    ASSIGNMENTQUESTIONSINTRO_32: {
+        answer: `Fantastisch werk engineer! Je hebt alle opdrachten voltooid. We zijn overtuigd van jou capaciteiten om de race te winnen. Kies de beste bestuurder(s) uit in jouw groepje, bouw het parcours en start de race, succes!`,
+        thread_id: 19,
+    }
 };

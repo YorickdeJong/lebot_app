@@ -4,6 +4,7 @@ import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { ColorsBlue } from '../../../constants/palet';
 import { SocketContext } from '../../../store/socket-context';
 import ChartToggle from '../../robot/driving_on_command/chartToggle';
+import { ipAddressRaspberryPi } from '../../../data/ipaddresses.data';
 
 function CodeEditorScreen({close}){
     const socketCtx = useContext(SocketContext);
@@ -48,7 +49,7 @@ else{
 
     function sshConnection(motorOne, motorTwo, motorThree, motorFour) {
         const config = { //TODO make these values statewide
-                host: "10.7.191.113",
+                host: ipAddressRaspberryPi,
                 port: 22,
                 username: "ubuntu",
                 password: "password",

@@ -73,7 +73,7 @@ function CarPad({moveHandler}){
 }
 
 
-export default CarPad
+export default React.memo(CarPad)
 
 const styles = StyleSheet.create({
     container: {
@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
         borderRadius: 60,
         borderWidth: 2,
         left: "10%",
-        borderColor: ColorsBlue.blue700,
-        backgroundColor: 'rgba(14, 14, 44, 0.95)',
+        borderColor: ColorsBlue.blue900,
+        backgroundColor: 'rgba(14, 14, 44, 0)',
         elevation: 2, 
-        shadowColor: ColorsBlue.blue1000,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.7,
-        shadowRadius: 6,
+        shadowColor: ColorsBlue.blue1400,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 1,
+        shadowRadius: 4,
     },
     pad: {
         position: 'absolute',
@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
         top: '50%',
         left: '50%',
         transform: [{ translateX: -40 }, { translateY: -40 }],
-        backgroundColor: 'rgba(65, 65, 141, 0.4)',
+        backgroundColor: 'rgba(65, 65, 141, 0.2)',
     },
     stick: {
         position: 'absolute',
@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
         top: '30%',
         left: '28%',
         transform: [{ translateX: 0 }, { translateY: 0 }],
-        backgroundColor: ColorsBlue.blue700,
+        backgroundColor: ColorsBlue.blue1000,
     },
     speedIndicator: {
         position: 'absolute',
@@ -123,9 +123,9 @@ const styles = StyleSheet.create({
         fontSize: 14,
         textAlign: 'center',
         marginLeft: 40,
-        textShadowColor: ColorsBlue.blue500, 
-        textShadowOffset: { width: 0, height: 0 },
-        textShadowRadius: 8
+        textShadowColor: ColorsBlue.blue1400, 
+        textShadowOffset: { width: 1, height: 2 },
+        textShadowRadius: 2
     },  
     speedContainer: {
         alignItems: 'center', 
@@ -135,10 +135,11 @@ const styles = StyleSheet.create({
         borderColor: ColorsBlue.blue700,
         borderWidth: 1,
         borderRadius: 6,
-        backgroundColor: 'rgba(14, 14, 44, 0.95)',
-        shadowColor: ColorsBlue.blue1000,
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.7,
+        backgroundColor: 'rgba(14, 14, 44, 0.56)',
+        elevation: 2, 
+        shadowColor: ColorsBlue.blue1400,
+        shadowOffset: { width: 2, height: 2 },
+        shadowOpacity: 1,
         shadowRadius: 4,
     },  
 })

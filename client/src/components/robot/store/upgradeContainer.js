@@ -10,7 +10,7 @@ import React from "react"
 import { CarContext } from "../../../store/car-context"
 import { changeUserCarDetails } from "../../../hooks/carDetails"
 
-const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundColors, borderColors}) => {
+const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundColors, borderColors, textColor}) => {
     const carCtx = useContext(CarContext);
 
     // Set colors for upgradeTab, once an item is bot the sqaure becomes 
@@ -43,17 +43,17 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
                     onPress: () => {
                         try{
                             switch(upgradeType){
-                                case 'Speed':
+                                case 'Snelheid':
                                     if (carCtx.editUnlock(upgradeType, itemData.item.id, itemData.item.title)) {
                                         carCtx.editSpeed(itemData.item.levelUp, -itemData.item.status[0]);
                                     }
                                     break;
-                                case 'Acc': 
+                                case 'Versnelling': 
                                     if(carCtx.editUnlock(upgradeType, itemData.item.id, itemData.item.title)){
                                         carCtx.editAcceleration(itemData.item.levelUp, -itemData.item.status[0]);
                                     }
                                     break;
-                                case 'Handling':
+                                case 'Afstand':
                                     if (carCtx.editUnlock(upgradeType, itemData.item.id, itemData.item.title)){
                                         carCtx.editHandling(itemData.item.levelUp, -itemData.item.status[0]);
                                     }
@@ -89,9 +89,10 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
     }, [carCtx.carProperties, carCtx.upgradeLog])
 
     return (
-            <BlurView intensity={3} style={[styles.upgradeContainer, {backgroundColor: backgroundColors, borderColor: borderColors}]}>
+            <BlurView intensity={2} style={[styles.upgradeContainer, {backgroundColor: backgroundColors, borderColor: borderColors}]}>
                 <View style ={styles.outerContainer}>
                     <UpgradeTab
+                    textColor={textColor}
                     upgradeType={upgradeType}
                     Completed = {Completed}
                     colorsUpgrade={colorsUpgrade}

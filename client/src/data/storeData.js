@@ -1,7 +1,8 @@
 import { ColorsGreen,  ColorsTile, 
      ColorsOrange, ColorsRed, ColorsPurple, 
     ColorsDarkerBlue, ColorsLightBlue, ColorsDarkerOrange, ColorsDarkerRed, 
-    ColorsDarkerPurple } from "../constants/palet";
+    ColorsDarkerPurple, 
+    ColorsBlue} from "../constants/palet";
 
 
 function convertColorObjectToArray(colorObject) {
@@ -26,8 +27,8 @@ const ColorGreen = convertColorObjectToArray(ColorsGreen);
 export const speedData = 
 [
         {
-            iconColor: ColorsTile.blue400,
-            textColor: ColorsTile.blue400,
+            iconColor: ColorsRed.red200,
+            textColor: ColorsRed.red200,
             title: "Car Engine",
             icon: 'engine',
             id: 1,
@@ -38,51 +39,51 @@ export const speedData =
             subject: "Speed"
         }, 
         {
-            iconColor: ColorsTile.blue400,
-            textColor: ColorsTile.blue400,
+            iconColor: ColorsRed.red300,
+            textColor: ColorsRed.red300,
             title: "Turbo",
             icon: 'car-turbocharger',
             id: 2,
             colorLight: ColorBlue, 
             colorDark: ColorDarkerBlue,
             status: [60, "Purchased"],
-            levelUp: 8,
+            levelUp: 10,
             subject: "Speed"
         }, 
         {
-            iconColor: ColorsTile.blue400,
-            textColor: ColorsTile.blue400,
+            iconColor: ColorsRed.red400,
+            textColor: ColorsRed.red400,
             title: "Charge",
             icon: 'car-electric',
             id: 3,
             colorLight: ColorBlue, 
             colorDark: ColorDarkerBlue, 
             status: [120, "Purchased"],
-            levelUp: 12,
+            levelUp: 15,
             subject: "Speed"
         },
         {
-            iconColor: ColorsTile.blue400,
-            textColor: ColorsTile.blue400,
+            iconColor: ColorsRed.red500,
+            textColor: ColorsRed.red500,
             title: "Capacity",
             icon: 'battery-arrow-up',
             id: 4,
             colorLight: ColorBlue, 
             colorDark: ColorDarkerBlue, 
             status: [190, "Purchased"],
-            levelUp: 16,
+            levelUp: 20,
             subject: "Speed"
         },
         {
-            iconColor: ColorsTile.blue400,
-            textColor: ColorsTile.blue400,
+            iconColor: ColorsRed.red600,
+            textColor: ColorsRed.red600,
             title: "AI Engine",
             icon: 'integrated-circuit-chip',
             id: 5,
             colorLight: ColorBlue,
             colorDark: ColorDarkerBlue,
             status: [300, "Purchased"],
-            levelUp: 19,
+            levelUp: 25,
             subject: "Speed"
         },
 ]
@@ -90,8 +91,8 @@ export const speedData =
 export const accelData = 
 [
         {
-            iconColor: ColorsPurple.purple300,
-            textColor: ColorsPurple.purple300,
+            iconColor: ColorsPurple.purple200,
+            textColor: ColorsPurple.purple200,
             title: "+100 Pk",
             icon: 'horse-variant-fast',
             id: 1,
@@ -114,8 +115,8 @@ export const accelData =
             subject: "Acc"
         },
         {
-            iconColor: ColorsPurple.purple300,
-            textColor: ColorsPurple.purple300,
+            iconColor: ColorsPurple.purple400,
+            textColor: ColorsPurple.purple400,
             title: "-100 kg",
             icon: 'weight-kilogram',
             id: 3,
@@ -126,8 +127,8 @@ export const accelData =
             subject: "Acc"
         }, 
         {
-            iconColor: ColorsPurple.purple300,
-            textColor: ColorsPurple.purple300,
+            iconColor: ColorsPurple.purple500,
+            textColor: ColorsPurple.purple500,
             title: "Power",
             icon: 'power',
             id: 4,
@@ -138,8 +139,8 @@ export const accelData =
             subject: "Acc"
         },
         {
-            iconColor: ColorsPurple.purple300,
-            textColor: ColorsPurple.purple300,
+            iconColor: ColorsPurple.purple600,
+            textColor: ColorsPurple.purple600,
             title: "+3 Fdrag",
             icon: 'tailwind',
             id: 5,
@@ -155,8 +156,8 @@ export const accelData =
 export const wheelsData = 
 [
         {
-            iconColor: ColorsOrange.orange400,
-            textColor: ColorsOrange.orange400,
+            iconColor: ColorsOrange.orange200,
+            textColor: ColorsOrange.orange200,
             title: "Tires",
             icon: 'tire',
             id: 1,
@@ -167,8 +168,8 @@ export const wheelsData =
             subject: "Wheels"
         }, 
         {
-            iconColor: ColorsOrange.orange400,
-            textColor: ColorsOrange.orange400,
+            iconColor: ColorsOrange.orange300,
+            textColor: ColorsOrange.orange300,
             title: "Alignment",
             icon: 'format-horizontal-align-center',
             id: 2,
@@ -191,8 +192,8 @@ export const wheelsData =
             subject: "Wheels"
         },
         {
-            iconColor: ColorsOrange.orange400,
-            textColor: ColorsOrange.orange400,
+            iconColor: ColorsOrange.orange500,
+            textColor: ColorsOrange.orange500,
             title: "Fabric",
             icon: 'flask-plus-outline',
             id: 4,
@@ -203,8 +204,8 @@ export const wheelsData =
             subject: "Wheels"
         },
         {
-            iconColor: ColorsOrange.orange400,
-            textColor: ColorsOrange.orange400,
+            iconColor: ColorsOrange.orange600,
+            textColor: ColorsOrange.orange600,
             title: "Anti Nail",
             icon: 'nail',
             id: 5,
@@ -218,66 +219,66 @@ export const wheelsData =
 
 export const handlingData = 
 [
-        {
-            iconColor: "#F59F99",
-            textColor: "#F59F99",
-            title: "+2 Steering",
-            icon: 'ship-wheel',
-            id: 1,
-            colorLight: ColorRed, 
-            colorDark: ColorDarkerRed,
-            status: [10, "Purchased"],
-            levelUp: 1,
-            subject: "Handling"
-        }, 
-        {
-            iconColor: "#F59F99",
-            textColor: "#F59F99",
-            title: "Car Wheel",
-            icon: 'steering',
-            id: 2,
-            colorLight: ColorRed, 
-            colorDark: ColorDarkerRed,
-            status: [40, "Purchased"],
-            levelUp: 1,
-            subject: "Handling"
-        }, 
-        {
-            iconColor: "#F59F99",
-            textColor: "#F59F99",
-            title: "Cruise Ctrl",
-            icon: 'car-cruise-control',
-            id: 3,
-            colorLight: ColorRed, 
-            colorDark: ColorDarkerRed,
-            status: [70, "Purchased"],
-            levelUp: 1,
-            subject: "Handling"
-        },
-        {
-            iconColor: "#F59F99",
-            textColor: "#F59F99",
-            title: "Seat",
-            icon: 'car-seat',
-            id: 4,
-            colorLight: ColorRed, 
-            colorDark: ColorDarkerRed,
-            status: [110, "Purchased"],
-            levelUp: 1,
-            subject: "Handling"
-        },
-        {
-            iconColor: "#F59F99",
-            textColor: "#F59F99",
-            title: "Strut Bar",
-            icon: 'car-wrench',
-            id: 5,
-            colorLight: ColorRed, 
-            colorDark: ColorDarkerRed,
-            status: [150, "Purchased"],
-            levelUp: 1,
-            subject: "Handling"
-        },
+    {
+        iconColor: ColorsOrange.orange200,
+        textColor: ColorsOrange.orange200,
+        title: "Tires",
+        icon: 'tire',
+        id: 1,
+        colorLight: ColorOrange, 
+        colorDark: ColorDarkerOrange,
+        status: [30, "Purchased"],
+        levelUp: 1,
+        subject: "Afstand"
+    }, 
+    {
+        iconColor: ColorsOrange.orange300,
+        textColor: ColorsOrange.orange300,
+        title: "Alignment",
+        icon: 'format-horizontal-align-center',
+        id: 2,
+        colorLight: ColorOrange,
+        colorDark: ColorDarkerOrange, 
+        status: [60, "Purchased"],
+        levelUp: 1,
+        subject: "Afstand"
+    }, 
+    {
+        iconColor: ColorsOrange.orange400,
+        textColor: ColorsOrange.orange400,
+        title: "Highway",
+        icon: 'road-variant',
+        id: 3,
+        colorLight: ColorOrange, 
+        colorDark: ColorDarkerOrange,
+        status: [110, "Purchased"],
+        levelUp: 1,
+        subject: "Afstand"
+    },
+    {
+        iconColor: ColorsOrange.orange500,
+        textColor: ColorsOrange.orange500,
+        title: "Fabric",
+        icon: 'flask-plus-outline',
+        id: 4,
+        colorLight: ColorOrange, 
+        colorDark: ColorDarkerOrange,
+        status: [160, "Purchased"],
+        levelUp: 1,
+        subject: "Afstand"
+    },
+    {
+        iconColor: ColorsOrange.orange600,
+        textColor: ColorsOrange.orange600,
+        title: "Anti Nail",
+        icon: 'nail',
+        id: 5,
+        colorLight: ColorOrange, 
+        colorDark: ColorDarkerOrange,
+        status: [200, "Purchased"],
+        levelUp: 1,
+        subject: "Afstand"
+    },
 ]
 
 export const parts = [    

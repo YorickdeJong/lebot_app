@@ -1,7 +1,7 @@
 import axios from 'axios'
+import { ipAddressComputer } from '../data/ipaddresses.data';
 
-const url = `http://10.7.191.114:3000/api/v1/carProperties`; //Passessese
-// const url = `http://172.20.10.2:3000/api/v1/carProperties`; //Iphone
+const url = ipAddressComputer + '/api/v1/carProperties'; //Passessese
 
 export async function getUserCarDetails(user_id) { // add to login
     console.log(user_id)

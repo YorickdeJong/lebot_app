@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Alert } from "react-native"
+import { View, StyleSheet, Alert, Text } from "react-native"
 import ChangeButton from "../UI/ChangeButton";
 import TextContainer from "../../components/Login/TextContainer";
 import { ColorsBlue, ColorsGreen } from "../../constants/palet";
@@ -8,7 +8,7 @@ import { ColorContext } from "../../store/color-context";
 import { LinearGradient } from "expo-linear-gradient"
 import { BlurView } from "expo-blur";
 
-function TextForm({LoginVariable, onAuthenticate, onCreateUser}) {
+function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType}) {
     const navigation = useNavigation()
 
     const [credentialsInvalid, setCredentialsInvalid] = useState({
@@ -104,11 +104,16 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser}) {
         
 
     function onSwitchScreenHandler(){
+        console.log(authenticateType)
         if (LoginVariable){
-         navigation.replace('Signup')
+         navigation.replace('Signup', {
+            authenticateType: {authenticateType}
+         })
         }
         else {
-            navigation.replace('Login')
+            navigation.replace('Login', {
+                authenticateType: {authenticateType}
+            })
         }    
     }
 
@@ -161,119 +166,138 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser}) {
     }
 
     return(
-    <BlurView intensity={1} style={[styles.box, {backgroundColor: 'rgba(30, 50, 87, 0.4)',}]}>     
-        <TextContainer 
-        textContent = "Email"
-        setUserDetails={onUserInputHandler.bind(this, 'email')}
-        value = {enteredEmail}
-        isValid = {credentialsInvalid.email}
-        keyboardType="email-address"
-        />
-        {!LoginVariable && <TextContainer 
-        textContent = "Username"
-        setUserDetails={onUserInputHandler.bind(this, 'username')}
-        value = {username}
-        isValid = {credentialsInvalid.checkUsername}
-        />}
-        <TextContainer 
-        textContent = "Password"
-        setUserDetails={onUserInputHandler.bind(this, 'password')}
-        value = {enteredPassword}
-        isValid = {credentialsInvalid.password}
-        secure
-        />
-        {!LoginVariable && <TextContainer 
-        textContent = "Confirm Password"
-        setUserDetails={onUserInputHandler.bind(this, 'confirmPassword')}
-        value = {confirmPassword}
-        isValid = {credentialsInvalid.confirmPassword}
-        secure
-        />}
-        {
-        !LoginVariable && 
-        <View style = {styles.textContainer}>
-            <TextContainer  
-            textContent = "Name"
-            setUserDetails={onUserInputHandler.bind(this, 'name')}
-            value = {name}
-            isValid = {credentialsInvalid.checkName} 
-            addStyle = {{flex: 1}}/>
-            
-            <TextContainer 
-            textContent = "Last Name"
-            setUserDetails={onUserInputHandler.bind(this, 'lastName')}
-            value = {lastname}
-            isValid = {credentialsInvalid.checkLastName}
-            addStyle = {{flex: 1}}
-            />
-        </View>
-        }
-        {!LoginVariable && <TextContainer 
-        textContent = "Date of Birth"
-        setUserDetails={onUserInputHandler.bind(this, 'dob')}
-        value = {dob}
-        isValid = {credentialsInvalid.checkDOB}
-        />}
-        {!LoginVariable && <TextContainer 
-        textContent = "School"
-        setUserDetails={onUserInputHandler.bind(this, 'school')}
-        value = {school}
-        isValid = {credentialsInvalid.checkSchool}
-        />}
-        {
-        !LoginVariable && 
-        <View style = {styles.textContainer}>
-            <TextContainer  
-            textContent = "Class"
-            setUserDetails={onUserInputHandler.bind(this, 'classSchool')}
-            value = {classschool}
-            isValid = {credentialsInvalid.checkClassSchool} 
-            addStyle = {{flex: 1}}/>
-            
-            <TextContainer 
-            textContent = "Level"
-            setUserDetails={onUserInputHandler.bind(this, 'level')}
-            value = {level}
-            isValid = {credentialsInvalid.checkLevel}
-            addStyle = {{flex: 1}}
-            />
-        </View>
-        }
-        <View style={styles.buttonContainer}>
-            <ChangeButton 
-            onPress={onSubmitHandler}>
-            {LoginVariable ? "Login" :  "Create Account"}
-            </ChangeButton>
+        <View style = {styles.boxContainer}>
+            <BlurView intensity={15} tint = "dark" style={[styles.box, ]}>
+                <Text style  = {styles.userTypeText}>{authenticateType}</Text>    
+                <TextContainer 
+                placeholder = "Email"
+                setUserDetails={onUserInputHandler.bind(this, 'email')}
+                value = {enteredEmail}
+                isValid = {credentialsInvalid.email}
+                keyboardType="email-address"
+                />
+                {!LoginVariable && 
+                    <TextContainer 
+                    placeholder = "Username"
+                    setUserDetails={onUserInputHandler.bind(this, 'username')}
+                    value = {username}
+                    isValid = {credentialsInvalid.checkUsername}
+                />
+                }
+                <TextContainer 
+                placeholder = "Password"
+                setUserDetails={onUserInputHandler.bind(this, 'password')}
+                value = {enteredPassword}
+                isValid = {credentialsInvalid.password}
+                secure
+                />
+                {!LoginVariable && 
+                    <TextContainer 
+                    placeholder = "Confirm Password"
+                    setUserDetails={onUserInputHandler.bind(this, 'confirmPassword')}
+                    value = {confirmPassword}
+                    isValid = {credentialsInvalid.confirmPassword}
+                    secure
+                    />
+                }
+                {!LoginVariable && 
+                    <TextContainer  
+                    placeholder = "Name"
+                    setUserDetails={onUserInputHandler.bind(this, 'name')}
+                    value = {name}
+                    isValid = {credentialsInvalid.checkName} 
+                    addStyle = {{flex: 1}}/>
+                }  
+                {!LoginVariable && 
+                    <TextContainer 
+                    placeholder = "Last Name"
+                    setUserDetails={onUserInputHandler.bind(this, 'lastName')}
+                    value = {lastname}
+                    isValid = {credentialsInvalid.checkLastName}
+                    addStyle = {{flex: 1}}
+                    />
+                }
+                {!LoginVariable && 
+                    <TextContainer 
+                    placeholder = "Date of Birth"
+                    setUserDetails={onUserInputHandler.bind(this, 'dob')}
+                    value = {dob}
+                    isValid = {credentialsInvalid.checkDOB}
+                />
+                }
+                {!LoginVariable && 
+                    <TextContainer 
+                    placeholder = "School"
+                    setUserDetails={onUserInputHandler.bind(this, 'school')}
+                    value = {school}
+                    isValid = {credentialsInvalid.checkSchool}
+                    />
+                }
+                {!LoginVariable && 
+                    <TextContainer  
+                    placeholder = "Class"
+                    setUserDetails={onUserInputHandler.bind(this, 'classSchool')}
+                    value = {classschool}
+                    isValid = {credentialsInvalid.checkClassSchool} 
+                    addStyle = {{flex: 1}}/>
+                }
+                {!LoginVariable && 
+                    <TextContainer 
+                    placeholder = "Level"
+                    setUserDetails={onUserInputHandler.bind(this, 'level')}
+                    value = {level}
+                    isValid = {credentialsInvalid.checkLevel}
+                    addStyle = {{flex: 1}}
+                    />
+                }
+                <View style={styles.buttonContainer}>
+                    <ChangeButton 
+                    onPress={onSubmitHandler}>
+                    {LoginVariable ? "Login" :  "Create Account"}
+                    </ChangeButton>
 
-            <ChangeButton 
-            onPress = {onSwitchScreenHandler}>
-            {LoginVariable ? "Create Account Instead" : "Login Instead"} 
-            </ChangeButton>
+                    <ChangeButton 
+                    onPress = {onSwitchScreenHandler}>
+                    {LoginVariable ? "Create Account" : "Login Instead"} 
+                    </ChangeButton>
+                </View>
+            </BlurView>
         </View>
-     </BlurView>
     )
 }
 
 export default TextForm
 
 const styles = StyleSheet.create({
+    boxContainer: {
+        shadowOffset: {height: 2, width:0 },
+        shadowRadius: 5,
+        shadowColor: ColorsBlue.blue1300,
+        shadowOpacity: 0.8,
+    },
     box: {
-        marginTop: 10,
+        marginTop: 20,
         marginHorizontal: 15,
+        paddingTop: 20,
         elevation: 2,
         borderRadius: 10,
-        shadowOffset: {height:1, width:0 },
-        shadowRadius: 5,
-        shadowColor: ColorsBlue.blue600,
-        shadowOpacity: 0.5,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        borderWidth: 1,
+        borderColor: ColorsBlue.blue1200,
     },
     buttonContainer: { 
-        marginTop: 20,
+        marginTop: 15,
         marginBottom: 20
     },
     textContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
+    },
+    userTypeText: {
+        fontSize: 20,
+        fontWeight: '400',
+        color: ColorsBlue.blue100,
+        textAlign: 'center',
+        marginBottom: 0,
     }
 })

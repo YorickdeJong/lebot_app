@@ -271,6 +271,19 @@ export const ColorsRed = {
   red200: '#f3d3d3',
 }
 
+export const ColorsSun = {
+  yellow1000: '#2C2905',
+  yellow900: '#413D0C',
+  yellow700: '#705927',
+  yellow600: '#886B37',
+  yellow500: '#A38F4C',
+  yellow400: '#B8A562',
+  yellow300: '#D1BF78',
+  yellow200: '#E5D59E',
+  yellow100: '#FFF4CC',
+  yellow50: '#FFFDE7',
+}
+
 export const ColorsDarkerRed = {
     red1000: '#2C0505',
     red900: '#410C0C',
