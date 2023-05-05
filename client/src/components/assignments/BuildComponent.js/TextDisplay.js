@@ -1,10 +1,11 @@
 import { StyleSheet, Text,  TouchableOpacity,  View } from 'react-native';
-import { ColorsBlue} from '../../../constants/palet';
+import { ColorsBlue, ColorsGray} from '../../../constants/palet';
 import { useState } from 'react';
 import { BlurView } from 'expo-blur';
 import Icon from '../../Icon';
+import BlurWrapper from '../../UI/BlurViewWrapper';
 
-function TextDisplay({title, description, showIcon, differentIcon, setCloseHandler, iconSize}){
+function TextDisplay({title, description, showIcon, differentIcon, setCloseHandler, iconSize, showBorder}){
     const [showDescription, setShowDescription] = useState(false);
 
     function expandDescriptionHandler(){
@@ -14,9 +15,19 @@ function TextDisplay({title, description, showIcon, differentIcon, setCloseHandl
     const displayDescription = showDescription ? description : description.substring(0, 33);
     return (
         <>
-        <BlurView intensity={10} tint = "dark" style = {{width: "100%"}}>
+        {!showBorder && <View style={styles.border}/>}
+        <BlurWrapper intensity={10} tint = "dark" style = {{width: "100%",}}>
+            <View style = {styles.header}> 
+                <Text style={styles.text}>{title}</Text>
+                {showIcon && <View style = {[styles.closeIcon, {top: !iconSize ? 5 : 7}]}>
+                    <Icon 
+                    size={iconSize ? iconSize : 34}
+                    icon= { differentIcon ? differentIcon : "md-close-circle-outline" }
+                    color={ColorsBlue.blue200}
+                    onPress={setCloseHandler}/>
+                </View>}
+            </View>
             <View style = {styles.textContainer}>
-                    <Text style={styles.text}>{title}</Text>
                     <View style={styles.descriptionContainer}>
                         <Text style = {styles.description}>{displayDescription}</Text>
                         {!showDescription && 
@@ -32,15 +43,8 @@ function TextDisplay({title, description, showIcon, differentIcon, setCloseHandl
                     </TouchableOpacity>
                     }
             </View> 
-            {showIcon && <View style = {styles.closeIcon}>
-                <Icon 
-                size={iconSize ? iconSize : 36}
-                icon= { differentIcon ? differentIcon : "md-close-circle-outline" }
-                color={ColorsBlue.blue200}
-                onPress={setCloseHandler}/>
-            </View>}
-        </BlurView>
-        <View style={styles.border}/>
+        </BlurWrapper>
+        {!showBorder && <View style={styles.border}/>}
         </>
     )
 }
@@ -50,18 +54,30 @@ export default TextDisplay;
 
 
 const styles = StyleSheet.create({
+    header: {
+        height: 45,
+        backgroundColor: `rgba(25, 25, 85, 0.6)`, //`rgba(45, 45, 85, 0.6)`, //`rgba(25, 25, 60, 0.6)`
+        shadowColor: `rgba(11, 11, 11)`,
+        shadowOffset: {height: 2, width: 0},
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 2,
+    },
     textContainer: {
-        minHeight: 80,
+        minHeight: 50,
         justifyContent: 'center',
         padding: 5,
-        paddingRight: 30,
+        paddingRight: 10,
         paddingTop: 8
     },
     text: {
-        fontSize: 28,
-        fontWeight: 'bold',
+        fontSize: 25,
+        fontWeight: '300',
         marginLeft: 15,
         color: ColorsBlue.blue50,
+        textAlign: 'center',
+        paddingRight: 10,
+        paddingTop: 8
     },
     descriptionContainer: {
         flexDirection: 'row',
@@ -70,10 +86,11 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 16,
-        color: ColorsBlue.gray100,
+        color: ColorsGray.gray300,
+        lineHeight: 21
     },
     border: {
-        borderBottomColor: `rgba(77, 77, 77, 0.5)`,
+        borderBottomColor: `rgba(77, 77, 77, 0.6)`,
         borderBottomWidth: 0.6,
         shadowColor: `rgba(33, 33, 33)`,
         shadowOffset: {height: 1, width: 0},
@@ -83,7 +100,7 @@ const styles = StyleSheet.create({
     },
     closeIcon: { // Style for the close icon
         position: 'absolute',
-        top: 10,
-        right: 10,
+        top: 7,
+        left: 18,
     },
 })

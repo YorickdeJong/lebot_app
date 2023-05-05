@@ -31,7 +31,7 @@ export default LandingPageThree;
 
 const styles = StyleSheet.create({
     backgroundImage: {
-        height: Dimensions.get('window').height * 0.905,//0.8925, // Set the height greater than the screen height
+        flex: 1,
         justifyContent: 'flex-end',
     },    
     title: {

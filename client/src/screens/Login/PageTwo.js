@@ -7,7 +7,7 @@ import { BlurView } from 'expo-blur';
 import { useFonts } from 'expo-font';
 import Icon from '../../components/Icon';
 import LandingPageOne from './PageOne';
-
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 function Subject({ title, topics }) {
@@ -66,20 +66,20 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: ColorsBlue.blue100,
         marginHorizontal: 14,
-        marginBottom: 8
+        marginBottom: verticalScale(5)
     },
     topic: {
         fontSize: 11,
         color: ColorsGray.gray500,
         marginLeft: 16,
-        marginBottom: 5
+        marginBottom: verticalScale(5)
     },
     titleContainer: {
         flexDirection: 'row',
-        marginBottom: 25,
+        marginBottom: verticalScale(35),
     },
     backgroundImage: {
-        height: Dimensions.get('window').height * 0.905, //0.8925, // Set the height greater than the screen height
+        flex:1,
         alignItems: 'center',
         justifyContent: 'flex-end',
     },

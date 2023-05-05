@@ -1,11 +1,8 @@
-import { StyleSheet, View,  Modal, Text, ImageBackground, Pressable, FlatList, } from "react-native"
-import Icon from "../../Icon"
+import { StyleSheet, View,  Modal, Text, ImageBackground, FlatList, } from "react-native"
 import { ColorsBlue } from "../../../constants/palet"
 import { LinearGradient } from "expo-linear-gradient"
 import { BlurView } from 'expo-blur';
-import { useContext, useEffect, useState } from "react";
-import { ChartContext } from "../../../store/chart-context";
-import { useNavigation } from "@react-navigation/native";
+import { useContext, useEffect } from "react";
 import { AssignmentContext } from "../../../store/assignment-context";
 import PressableButton from "./PressableButton";
 

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, ImageBackground, Dimensions, Animated } from 'react-native';
+import { StyleSheet, Text, View, ImageBackground, Animated, Dimensions, Platform, TouchableOpacity } from 'react-native';
 import { ColorsBlue, ColorsGray } from '../../constants/palet';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { BlurView } from 'expo-blur';
 import Icon from '../../components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import ModalCredentials from './ModalCredentials';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
 function LandingPageOne({blinkOpacity}){
+
     const navigation = useNavigation();
     const [isStopActive, setIsStopActive] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
@@ -35,35 +36,65 @@ function LandingPageOne({blinkOpacity}){
         <View style={styles.buttonOuterContainer}>
             <View style={styles.button}>
 
-            <TouchableOpacity 
-            style={styles.buttonContainer}
-            onPress = {loginHandler}>
-                <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+            { Platform.OS === 'ios'  ? 
+            (<>
+                <TouchableOpacity 
+                style={styles.buttonContainer}
+                onPress = {loginHandler}>
+                    <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                        
+                        <Text style={styles.buttonText}>Login</Text>
+                    </BlurView>
+                </TouchableOpacity>
                     
-                    <Text style={styles.buttonText}>Login</Text>
-                </BlurView>
-            </TouchableOpacity>
-                
-            <TouchableOpacity 
-            style={styles.buttonContainer}
-            onPress = {registerHandler}>
-                <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                <TouchableOpacity 
+                style={styles.buttonContainer}
+                onPress = {registerHandler}>
+                    <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                        
+                        <Text style={styles.buttonText}>Register</Text>
+                    </BlurView>
+                </TouchableOpacity>
                     
-                    <Text style={styles.buttonText}>Register</Text>
-                </BlurView>
-            </TouchableOpacity>
-                
-            <TouchableOpacity style={styles.buttonContainer}>
-                <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                <TouchableOpacity style={styles.buttonContainer}>
+                    <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                        
+                        <Text style={styles.buttonText}>Contact</Text>
+                    </BlurView>
+                </TouchableOpacity>
+            </>) : 
+            (
+            <>
+                <TouchableOpacity 
+                style={styles.buttonContainer}
+                onPress = {loginHandler}>
+                    <View style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center', backgroundColor: 'rgba(50,50,50,0.12)' }}>
+                        <Text style={styles.buttonText}>Login</Text>
+                    </View>
+                </TouchableOpacity>
                     
-                    <Text style={styles.buttonText}>Contact</Text>
-                </BlurView>
-            </TouchableOpacity>
-                
+                <TouchableOpacity 
+                style={styles.buttonContainer}
+                onPress = {registerHandler}>
+                    <View  style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center', backgroundColor: 'rgba(50,50,50,0.12)' }}>
+                        
+                        <Text style={styles.buttonText}>Register</Text>
+                    </View>
+                </TouchableOpacity>
+                    
+                <TouchableOpacity style={styles.buttonContainer}>
+                    <View style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center', backgroundColor: 'rgba(50,50,50,0.12)' }}>
+                        
+                        <Text style={styles.buttonText}>Contact</Text>
+                    </View>
+                </TouchableOpacity>
+            </>
+            )
+            }  
                 
             </View>
         </View>
-        <View style = {{marginBottom: 35}}>
+        <View style = {{marginBottom: verticalScale(50)}}>
             <Icon
                 size = {50}
                 icon = "robot"
@@ -73,7 +104,7 @@ function LandingPageOne({blinkOpacity}){
             />
         </View>
 
-        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: 10, left: 50 }}>
+        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: verticalScale(30), left: 50 }}>
             <Icon
                 size={25}
                 icon="arrow-down-bold-circle-outline"
@@ -83,7 +114,7 @@ function LandingPageOne({blinkOpacity}){
             />
         </Animated.View>
 
-        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: 10, right: 50 }}>
+        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: verticalScale(30), right: 50 }}>
             <Icon
                 size={25}
                 icon="arrow-down-bold-circle-outline"
@@ -107,7 +138,8 @@ export default LandingPageOne;
 
 const styles = StyleSheet.create({
     backgroundImage: {
-        height: Dimensions.get('window').height * 0.905,//0.8925, // Set the height greater than the screen height
+        // height: verticalScale(614),//0.8925, // Set the height greater than the screen height  Dimensions.get('window').height *
+        flex:1,
         alignItems: 'center',
     },
     title: {
@@ -126,7 +158,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginHorizontal: 30,
-        marginBottom: 50,
+        marginBottom: verticalScale(50),
 
     },
     buttonContainer: {
@@ -137,11 +169,17 @@ const styles = StyleSheet.create({
             borderColor: ColorsBlue.blue700,
             borderWidth: 0.6,
             justifyContent: 'center',
-            shadowColor: 'black', // Change shadow color to 'black' for better visibility
-            shadowOffset: { width: 0, height: 2 }, // Increase the height offset
-            shadowOpacity: 1, // Lower the shadow opacity to make it more subtle
-            shadowRadius: 4,
-            elevation: 2,
+            ...Platform.select({
+                ios: {
+                  shadowColor: 'black',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 1,
+                  shadowRadius: 4,
+                },
+                android: {
+                  elevation: 8,
+                },
+              }),
     },
     buttonText: {
         color: ColorsBlue.blue50,

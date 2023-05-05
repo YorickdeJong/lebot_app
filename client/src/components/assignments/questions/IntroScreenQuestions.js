@@ -10,7 +10,7 @@ import TextDisplay from '../BuildComponent.js/TextDisplay'
 import VideoDisplay from '../BuildComponent.js/VideoDisplay'
 
     
-function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, slideCount, setSlideCount, setTyping, typing, answer, thread_id, title, description, isFocused}){    
+function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, slideCount, setSlideCount, setTyping, typing, answer, thread_id, title, description, isFocused, video, slideCountEnd}){    
     const scrollViewRef = useRef(null)
     const extraStyle = {
         marginLeft: 8,
@@ -32,14 +32,21 @@ function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, slideCount, s
                 }
                 imageStyle={{opacity: slideCount >= 0 ? 0.10 : 0.15}}
                 >
+                {video && (
+                    <VideoDisplay
+                    video={video}
+                    />                
+                )}
+                <View style = {styles.textContainer}>
                     <TextDisplay
                     title = {title}
                     description= {description}
                     showIcon
                     differentIcon="home-outline"
                     setCloseHandler={() => setSlideCount(0)}
-                    iconSize = {30}
+                    iconSize = {28}
                     />
+                </View>
                     <ScrollView style = {{flex: 1}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}>
@@ -58,6 +65,7 @@ function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, slideCount, s
                                     prevSlideHandler={prevSlideHandler}
                                     nextSlideHandler={nextSlideHandler}
                                     slideCount={slideCount}
+                                    slideCountEnd={slideCountEnd}
                                     />
                                 )}
                     </ScrollView>  
@@ -74,4 +82,7 @@ const styles = StyleSheet.create({
         flex: 1, 
         paddingBottom: 5
     },
+    textContainer: {
+        backgroundColor: 'rgba(0, 0, 20, 0.75)',
+    }
 })

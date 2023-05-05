@@ -9,7 +9,10 @@ import ChangePassword from '../../screens/Authenticated/UserProfile/ChangePasswo
 import ChangeEmail from '../../screens/Authenticated/UserProfile/ChangeEmail';
 import { ColorsBlue } from '../../constants/palet';
 import BottomMenu from './BottomMenu.navigator';
-
+import Groups from '../../screens/Authenticated/Groups/ClassesStudents.screens';
+import IndividualGroup from '../../components/groups/IndividualGroup.groups';
+import CustomHeader from './CustomNavigator.main';
+import StudentClassroomNavigator from './StudentClassRoomNavigator';
 //test
 const Stack = createNativeStackNavigator()
 
@@ -20,11 +23,25 @@ function Authorized() {
     return (
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: ColorsBlue.blue1300 },
           headerTintColor: 'white',
-          backgroundColor: 'transparent',
-        }}
-      >
+
+          header: ({ route }) => {
+              const showChatPlus = route.name === 'Chats';
+              const showChatBubbles = route.name === 'Chat';
+              return (
+                <CustomHeader
+                  height = {Platform.OS === 'ios' ? 45 : 60}
+                  goBack
+                />
+
+              );
+          },
+          headerStyle: {
+            backgroundColor: 'transparent',
+            elevation: 0,
+          },
+          }}
+          >
   
         <Stack.Screen 
         component={BottomMenu}
@@ -33,6 +50,16 @@ function Authorized() {
           headerShown: false,
         }}
         />
+
+
+      <Stack.Screen 
+        name = 'groups'
+        component = {StudentClassroomNavigator}
+        options = {{
+          headerShown: false,
+        }}
+          />
+        
         
         <Stack.Screen 
           name = "Settings"
@@ -73,6 +100,7 @@ function Authorized() {
             }
           }}/>
   
+
           <Stack.Screen 
           name = "userProfile"
           component = {UserProfile}

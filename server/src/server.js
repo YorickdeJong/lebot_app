@@ -4,6 +4,12 @@ const http = require('http');
 const app = require('./app');
 const path = require('path');
 const socketsSSH = require('./routes/ssh/ssh.sockets')
+const socketMeasurementResults = require('./routes/measurement_results/measurementResults.socket')
+const socketPowerMeasurement = require('./routes/power_measurement/powerMeasurement.socket')
+const socketGroups = require('./routes/groups/groups.socket')
+const socketClasses = require('./routes/classes/classes.socket')
+const socketUsers = require('./routes/user_profile/user_profile.socket')
+
 const io = require('socket.io')
 const Client = require('ssh2').Client;
 let sshClient = new Client();
@@ -40,3 +46,8 @@ async function startServer() {
 
 startServer()
 socketsSSH.listenToClientSSH(ioConnect, sshClient); 
+socketPowerMeasurement.listenToClientPower(ioConnect);
+socketMeasurementResults.listenToClientMeasurementResults(ioConnect);
+socketGroups.listenToClientGroups(ioConnect);
+socketClasses.listenToClientClasses(ioConnect);
+socketUsers.listenToClientUser(ioConnect);

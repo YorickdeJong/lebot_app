@@ -125,7 +125,6 @@ else{
                     /> 
                 </View>
             </View>
-            {!close && <View style={styles.border}/>}
         </>
     )
 }
@@ -134,8 +133,6 @@ export default React.memo(CodeEditorScreen);
 
 const styles  = StyleSheet.create({
     border: {
-        borderBottomColor: `rgba(77, 77, 77, 0.5)`,
-        borderBottomWidth: 0.6,
         shadowColor: `rgba(33, 33, 33`,
         shadowOffset: {height: 1, width: 0},
         shadowOpacity: 1,

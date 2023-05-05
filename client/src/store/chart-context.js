@@ -3,6 +3,7 @@ import { getLatestMeasurementResult } from "../hooks/measurement_results";
 import { SocketContext } from "./socket-context";
 import { UserProfileContext } from "./userProfile-context";
 import CircularBuffer from "../algorithms/CircularBuffer";
+import { AssignmentContext } from "./assignment-context";
 
 export const ChartContext = createContext({
     chartData: {},
@@ -11,6 +12,7 @@ export const ChartContext = createContext({
     trueCount: null,
     setTrueCount: (data) => {},
     setChartData: (data) => {},
+    setChartDataHandler: (data) => {},
     setFinalChartData: (data) => {},
     setChartToggleHandler: () => {},
     setChartIndividualDataHandler: () => {},
@@ -19,14 +21,25 @@ export const ChartContext = createContext({
 })
 
 function ChartContextProvider({children}) {
-    const userprofileCtx = useContext(UserProfileContext); 
     const socketCtx = useContext(SocketContext);
-    const [prevMeasurementResultLength, setPrevMeasurementResultLength] = useState(null);
-    const [isCurrentMeasurement, setIsCurrentMeasurement] = useState(false);
+
+    const [chartToggle, setChartToggle] = useState({
+        "s_t": true,
+        "v_t": false,
+        "p_t": false,
+        "u_t": false,
+        "i_t": false,   
+        "time": true, //always true
+    });
+
+    const [trueCount, setTrueCount] = useState(Object.values(chartToggle).filter(value => value === true).length - 1);
 
     const bufferSize = 300;
 
     const timeBuffer = new CircularBuffer(bufferSize + 1); // 81 elements for time
+    const voltageBuffer = new CircularBuffer(bufferSize + 1);
+    const currentBuffer = new CircularBuffer(bufferSize + 1);
+    const powerBuffer = new CircularBuffer(bufferSize + 1);
 
     const distanceBuffer = Array(4) // 4 is the number of motors
       .fill(null)
@@ -40,6 +53,9 @@ function ChartContextProvider({children}) {
     const [finalChartData, setFinalChartData] = useState({
         distance: [[], [], [], []],
         speed: [[], [], [], []],
+        power: [],
+        voltage: [],
+        current: [],
         time: [],
         motorNumber: [],
         recordNumber: 0,
@@ -49,69 +65,14 @@ function ChartContextProvider({children}) {
     const [chartData, setChartData] = useState({
         distance: [[], [], [], []],
         speed: [[], [], [], []],
+        power: [],
+        voltage: [],
+        current: [],
         time: [],
         motorNumber: [],
         recordNumber: 0,
     });
-
-    const [chartToggle, setChartToggle] = useState({
-        "s_t": true,
-        "v_t": false,
-        "F_s": false,
-        "E_t": false,
-        "time": true, //always true
-        "time_velocity": true, 
-        "time_energy": true,
-        "distance_force": true
-    });
-
-    const [trueCount, setTrueCount] = useState(Object.values(chartToggle).filter(value => value === true).length - 4);
-
-    // Fetch the latest measurement result when the power is turned on and save it such that it can be plotted in the assignments/imageContainer
-    useEffect(() => {
-         //empty chart data before startingß
-        if(socketCtx.power && socketCtx.isMeasurementStarted){
-            let prevResults = 0
-            let count = 0;
-            const interval = setInterval(async () => {
-                //fetch when power is turned on
-                    const measurementResults = await getLatestMeasurementResult(userprofileCtx.userprofile.id); //TODO CHANGE TO DIFFERENT FETCH
-                    count += 1;
-                    //checks for prev data which doesn't belong to the current measurement
-                    if (!isCurrentMeasurement){
-                        if (count < 12 && measurementResults.velocity[0].length > 0){ //adjust count depending on measurement
-                                console.log(`no data set`)
-                                setIsCurrentMeasurement(true)
-                                return
-                        }
-                    }
-
-                    //check if velocity is not empty
-                    if (measurementResults.velocity[0] === undefined){
-                        console.log('velocity empty')
-                        return
-                    }
-                    if (prevResults !== measurementResults.distance[0].length){
-                        console.log(`executed`)
-                        setChartDataHandler(measurementResults)
-                        prevResults = measurementResults.distance[0].length;
-                    }
-            }, 100); // update the chart every second
-
-            setIsCurrentMeasurement(false);
-            return () => clearInterval(interval);
-        }   
-        else {
-            emptyChartData();
-            socketCtx.setIsMeasurementStarted(false);
-            setPrevMeasurementResultLength(0);
-        }
-        emptyChartData();
-
-    }, [socketCtx.power, socketCtx.isMeasurementStarted]);
-
     
-
     // select which charts to display
     function setChartToggleHandler(physicalQuantity) {
         setChartToggle(prevState => {
@@ -136,19 +97,36 @@ function ChartContextProvider({children}) {
                 return {
                     distance: [[], [], [], []],
                     speed: [[], [], [], []],
+                    power: [],
+                    voltage: [],
+                    current: [],
                     time: [],
                     motorNumber: [],
                     recordNumber: 0,
                 };
             }
-
-            return {
-                distance: chartData.distance || [[], [], [], []],
-                speed: chartData.velocity || [[], [], [], []],
-                time: chartData.time || [],
-                motorNumber: chartData.motor_number || [],
-                recordNumber: chartData.record_number || 0,
-            };
+            if (chartData.distance){
+                setChartData
+                return {
+                    distance: chartData.distance || [[], [], [], []],
+                    speed: chartData.velocity || [[], [], [], []],
+                    time: chartData.time || [],
+                    motorNumber: chartData.motor_number || [],
+                    recordNumber: chartData.record_number || 0,
+                };
+            }
+            if (chartData.voltage_array){
+                return {
+                    distance: [[], [], [], []],
+                    speed: [[], [], [], []],
+                    power: chartData.power_array || [],
+                    voltage: chartData.voltage_array || [],
+                    current: chartData.current_array || [],
+                    time: chartData.time_array || [],
+                    motorNumber: chartData.motor_number || [],
+                    recordNumber: chartData.record_number || 0,
+                };
+            }
         }));
     }, []);
 
@@ -163,81 +141,159 @@ function ChartContextProvider({children}) {
         })
     }
 
-    const setChartDataHandler = useCallback((newDataArray) => {
+    const setChartDataHandler = useCallback((newDataArray) => { 
         setChartData((prevState) => {
+            console.log('prevState', prevState)
+            console.log('newDataArray', newDataArray)
 
             if (prevState.recordNumber === 0) {
-                console.log(`executed 1`);
+                if (!socketCtx.power) {
+                    console.log('cleared chart data')
+                    return {
+                        distance: [[], [], [], []],
+                        speed: [[], [], [], []],
+                        power: [],
+                        voltage: [],
+                        current: [],
+                        time: [],
+                        motorNumber: [],
+                        recordNumber: 0,
+                    };
+                }
+                // Initialize circular buffers and adds check if it exists
+                
+                //Movement measurement case
+                if (newDataArray.distance){
+                    newDataArray.distance.forEach((points, idx) => {
+                        distanceBuffer[idx] = new CircularBuffer(bufferSize + 1);
+                        points.forEach(point => distanceBuffer[idx].push(point));
+                    });
+                    
+                    newDataArray.velocity.forEach((points, idx) => {
+                        speedBuffer[idx] = new CircularBuffer(bufferSize);
+                        points.forEach(point => speedBuffer[idx].push(point));
+                    });
+                    
+                    
+                    newDataArray.time.forEach(point => timeBuffer.push(point));
 
-                // Initialize circular buffers
-                newDataArray.distance.forEach((points, idx) => {
-                    distanceBuffer[idx] = new CircularBuffer(bufferSize + 1);
-                    points.forEach(point => distanceBuffer[idx].push(point));
-                });
+                    return {
+                        distance: distanceBuffer.map(buffer => buffer.toArray()),
+                        speed: speedBuffer.map(buffer => buffer.toArray()),
+                        time: timeBuffer.toArray(),
+                        motorNumber: newDataArray.motor_number,
+                        recordNumber: newDataArray.record_number,
+                    };
+                }
 
-                newDataArray.velocity.forEach((points, idx) => {
-                    speedBuffer[idx] = new CircularBuffer(bufferSize);
-                    points.forEach(point => speedBuffer[idx].push(point));
-                });
+                //Voltage Measurement Case
+                if (newDataArray.voltage_array){
+                    console.log('check Voltage')
+                    newDataArray.voltage_array.forEach(point => voltageBuffer.push(point));
+                    newDataArray.current_array.forEach(point => currentBuffer.push(point));
+                    newDataArray.power_array.forEach(point => powerBuffer.push(point));
+                    newDataArray.time_array.forEach(point => timeBuffer.push(point));
 
-                newDataArray.time.forEach(point => timeBuffer.push(point));
-
+                    return {
+                        distance: [[], [], [], []],
+                        speed: [[], [], [], []],
+                        power: powerBuffer.toArray(),
+                        voltage: voltageBuffer.toArray(),
+                        current: currentBuffer.toArray(),
+                        time: timeBuffer.toArray(),
+                        motorNumber: newDataArray.motor_number,
+                        recordNumber: newDataArray.record_number,
+                    };
+                }
+            }
+            if (newDataArray.distance){
                 return {
-                    distance: distanceBuffer.map(buffer => buffer.toArray()),
-                    speed: speedBuffer.map(buffer => buffer.toArray()),
-                    time: timeBuffer.toArray(),
-                    motorNumber: newDataArray.motor_number,
-                    recordNumber: newDataArray.record_number,
+                    distance: prevState.distance.map((distances, idx) => { //add conditional check here
+                        const newData = newDataArray.distance[idx];
+                        if (!newData) return distances;
+
+                        const newElements = newData.slice(distances.length);
+                        newElements.forEach(point => distanceBuffer[idx].push(point));
+                        return distanceBuffer[idx].toArray();
+                    }),
+                    speed: prevState.speed.map((speeds, idx) => {
+                        const newData = newDataArray.velocity[idx];
+                        if (!newData) return speeds;
+
+                        const newElements = newData.slice(speeds.length);
+                        newElements.forEach(point => speedBuffer[idx].push(point));
+                        return speedBuffer[idx].toArray();
+                    }),
+                    time: (() => {
+                        const newData = newDataArray.time;
+                        const newElements = newData.slice(prevState.time.length);
+                        newElements.forEach(point => timeBuffer.push(point));
+                        return timeBuffer.toArray();
+                    })(),
+                    motorNumber: prevState.motorNumber,
+                    recordNumber: prevState.recordNumber,
                 };
             }
-            console.log(`EXECUTED 2`);
-
-            return {
-                distance: prevState.distance.map((distances, idx) => {
-                    const newData = newDataArray.distance[idx];
-                    if (!newData) return distances;
-
-                    const newElements = newData.slice(distances.length);
-                    newElements.forEach(point => distanceBuffer[idx].push(point));
-                    return distanceBuffer[idx].toArray();
-                }),
-                speed: prevState.speed.map((speeds, idx) => {
-                    const newData = newDataArray.velocity[idx];
-                    if (!newData) return speeds;
-
-                    const newElements = newData.slice(speeds.length);
-                    newElements.forEach(point => speedBuffer[idx].push(point));
-                    return speedBuffer[idx].toArray();
-                }),
-                time: (() => {
-                    const newData = newDataArray.time;
-                    const newElements = newData.slice(prevState.time.length);
-                    newElements.forEach(point => timeBuffer.push(point));
-                    return timeBuffer.toArray();
-                })(),
-                motorNumber: prevState.motorNumber,
-                recordNumber: prevState.recordNumber,
-            };
+            if (newDataArray.voltage_array){
+                console.log('check SET VOLTAGE')
+                return {
+                    distance: [[], [], [], []],
+                    speed: [[], [], [], []],
+                    power: (() => {
+                        const newData = newDataArray.power_array;
+                        const newElements = newData.slice(prevState.power.length);
+                        newElements.forEach(point => powerBuffer.push(point));
+                        return powerBuffer.toArray();
+                    })(),
+                    voltage: (() => {
+                        const newData = newDataArray.voltage_array;
+                        const newElements = newData.slice(prevState.voltage.length);
+                        newElements.forEach(point => voltageBuffer.push(point));
+                        return voltageBuffer.toArray();
+                    })(),
+                    current: (() => {
+                        const newData = newDataArray.current_array;
+                        const newElements = newData.slice(prevState.current.length);
+                        newElements.forEach(point => currentBuffer.push(point));
+                        return currentBuffer.toArray();
+                    })(),
+                    time: (() => {
+                        const newData = newDataArray.time_array;
+                        const newElements = newData.slice(prevState.time.length);
+                        newElements.forEach(point => timeBuffer.push(point));
+                        return timeBuffer.toArray();
+                    })(),
+                    motorNumber: prevState.motorNumber,
+                    recordNumber: prevState.recordNumber,
+                };
+            }
         });
-    }, []);
+    }, [socketCtx.power]);
 
     function emptyChartData(){
+        console.log('emptied chart data')
         setChartData({
-                distance: [[], [], [], []],
-                speed: [[], [], [], []],
-                time: [],
-                motorNumber: [],
-                recordNumber: 0,
+            distance: [[], [], [], []],
+            speed: [[], [], [], []],
+            power: [],
+            voltage: [],
+            current: [],
+            time: [],
+            motorNumber: [],
+            recordNumber: 0,
         });
     }
     
     function emptyFinalChartData(){
         setFinalChartData({
-                distance: [[], [], [], []],
-                speed: [[], [], [], []],
-                time: [],
-                motorNumber: [],
-                recordNumber: 0,
+            distance: [[], [], [], []],
+            speed: [[], [], [], []],
+            power: [],
+            voltage: [],
+            current: [],
+            time: [],
+            motorNumber: [],
+            recordNumber: 0,
         });
     }
 
@@ -249,6 +305,7 @@ function ChartContextProvider({children}) {
         chartToggle,
         trueCount,
         setChartData,
+        setChartDataHandler,
         setFinalChartData,
         setTrueCount,
         setChartToggleHandler,

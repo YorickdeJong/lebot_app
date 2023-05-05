@@ -1,13 +1,15 @@
 import { StyleSheet,  View } from 'react-native';
-import { ColorsBlue, ColorsRed,  } from '../../../constants/palet';
+import { ColorsBlue, ColorsGray, ColorsRed,  } from '../../../constants/palet';
 import {Video} from 'expo-av';
 import { useState } from 'react';
+import Icon from '../../Icon';
 
 
 
 
 function VideoDisplay({video}){
     const [playbackProgress, setPlaybackProgress] = useState(0);
+    const [height, setHeight] = useState(221);
 
     const handlePlaybackStatusUpdate = (playbackStatus) => {
         if (playbackStatus.isPlaying) {
@@ -16,27 +18,38 @@ function VideoDisplay({video}){
         }
     };
 
+    function closeIconHandler(){
+        console.log('closeIconHandler called');
+        if (height === 221){
+            setHeight(40)
+        }
+        else {
+            setHeight(221)
+        }
+    }
+
     return(
         <>
-            <View style = {styles.imageContainer}>
+            <View style = {[styles.imageContainer, {height: height}]}>
+                <View style = {{position: 'absolute', top: 5, left: 5, zIndex: 1}}>
+                    <Icon 
+                        icon={height === 221 ? 'close' : 'open'}
+                        size = {25}
+                        color = {ColorsGray.gray400}
+                        onPress={() => {closeIconHandler()}}
+                    />
+                </View>
+                {height === 221 &&
                 <Video
                     source= {video} // You can use a remote or local video file
                     style={{width: "100%", height: "100%", alignSelf: 'center'}}
-                    resizeMode={Video.RESIZE_MODE_COVER} // Set the resizeMode
+                    resizeMode={'cover'} // Set the resizeMode
                     shouldPlay={true} // Set the video to play
                     isLooping={true} // Set the video to loop
                     useNativeControls={true} // Show the video controls
                     onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
                 />
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', zIndex: 1 }}>
-                <View style={{ backgroundColor: 'gray', width: '100%', height: 2 }} />
-                <View
-                    style={[styles.videoProgressIndicator, {width: `${playbackProgress * 100}%`,}]}
-                    />
-                    <View
-                        style={[styles.playbackBall, {left: `${playbackProgress * 100}%`,}]}
-                    />
+                }
             </View>
         </>
     )
@@ -47,13 +60,12 @@ export default VideoDisplay;
 
 const styles = StyleSheet.create({
     imageContainer: {
-        height: 221,
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: ColorsBlue.blue700,
+        shadowColor: ColorsGray.gray900,//ColorsBlue.blue1200,
         shadowOffset: {height: 1, width: 0},
-        shadowRadius: 6,
-        shadowOpacity: 0.5,
+        shadowRadius: 1,
+        shadowOpacity: 1,
         elevation: 4,
     },
     videoProgressIndicator: {

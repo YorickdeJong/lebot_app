@@ -43,14 +43,30 @@ async function runCommandOnRemoteDeviceInternal(command, sshClient, socket) {
             let checkOutputReceived = false;
             stream.on('data', (data) => {
                 output += data.toString();
-
+                console.log(`Command '${command}' output: ${output}`);
+                //check either if measurement has started or if the robot connected to the wifi
                 if (!checkOutputReceived){
+                    checkWifiConnected = output.includes("reboot system")
+                    checkWifiAvailable = output.includes("ssid not found")
+                    checkPasswordCorrect = output.includes("password incorrect")
                     checkOutputReceived = output.includes("MEASUREMENT STARTED CONNECTION DATABASE ACTIVE")
+                    
                     if (checkOutputReceived){
                         console.log('check')
                         socket.emit('measurementStarted', { message: 'Measurement started' });
                     }
-
+                    if (checkWifiConnected){
+                        console.log('Wifi connected')
+                        socket.emit('robotConnected', { message: 'Robot connected'})
+                    }
+                    if (checkWifiAvailable){
+                        console.log('Wifi NOT connected')
+                        socket.emit('robotConnected', { message: 'Wifi incorrect'})
+                    }
+                    if (checkPasswordCorrect){
+                        console.log('Password incorrect')
+                        socket.emit('robotConnected', { message: 'Password incorrect'})
+                    }
                 }
                 
                 socket.emit('terminalOutput', { data: data.toString()});

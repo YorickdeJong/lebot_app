@@ -43,7 +43,7 @@ function InformationBuildScreenThree({isFocused}) {
             message={ASSIGNMENT_EXPLANATION.BUILDSCREEN_1}
             title = "Windmolen Project"
             description = "In dit project ga jij een windmolen bouwen. Hier worden jouw technische skills op de proef gesteld. We krijgen eerst een beschrijving over het inelkaar zetten van de windmolen. Waarna we onze eerste code gaan schrijven om de motoren van de windmolen aan te sturen. Als laatste worden jouw engineers skills getest om een defecte windmolen op te sporen."
-            video = {require('./../../../../../assets/windmolen1.mp4')}
+            video = {require('./../../../../../assets/batterijFilm.mp4')}
             isFocused={isFocused}
             />
             )          

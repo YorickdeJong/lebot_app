@@ -19,7 +19,7 @@ function ChatSelectionTile({thread_id, navigateToChatHandler}) {
         style = {styles.chatBox}
         onPress={navigateToChatHandler}>
             <LinearGradient 
-                colors={[ColorsBlue.blue1200, ColorsBlue.blue900]}
+                colors={[ColorsBlue.blue1300, ColorsBlue.blue1000]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style = {styles.colorGradient}
@@ -46,18 +46,18 @@ export default ChatSelectionTile;
 
 const styles = StyleSheet.create({
     chatBox: {
-        borderColor: ColorsBlue.blue700,
-        borderWidth: 1,
+        borderColor: ColorsBlue.blue900,
+        borderWidth: 0.9,
         flex: 1,
         marginTop: 20, 
         margin: 10,
         height: 140,
         borderRadius: 6, 
         elevation: 4, 
-        shadowColor: ColorsBlue.blue900,
-        shadowOffset: {height: 2, width: 3},
-        shadowRadius: 4,
-        shadowOpacity: 0.7,
+        shadowColor: ColorsBlue.blue1150,
+        shadowOffset: {height: 3, width: 2},
+        shadowRadius: 2,
+        shadowOpacity: 1,
     },
     colorGradient: {
         borderRadius: 6, 
@@ -88,4 +88,4 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    })
+})

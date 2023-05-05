@@ -8,6 +8,7 @@ import UpgradeContainer from "../../../components/robot/store/upgradeContainer";
 import { ColorsBlue, ColorsDarkerBlue, ColorsDarkestBlue, ColorsGreen, ColorsLighterGold, ColorsOrange, ColorsPurple, ColorsRed, ColorsTile} from "../../../constants/palet"
 import { accelData, handlingData, speedData, wheelsData } from "../../../data/storeData";
 import ButtonList from "../../../components/UI/ButtonList.UI";
+import ConnectRobotModal from "../../../components/robot/ConnectRobotModal.robot";
 
 function RobotStore() {
     const [type, setType] = useState("afstand")
@@ -82,15 +83,6 @@ function RobotStore() {
                             />
                         }
 
-                        {/* {type === 
-                            <UpgradeContainer 
-                            upgradeType = "Wheels"
-                            data = {wheelsData}
-                            Completed = {false}
-                            backgroundColors = 'rgba(140, 75, 45, 0.45)'
-                            borderColors = {ColorsOrange.orange700}
-                            />
-                        } */}
                     </View>
                 </ScrollView>
                 <ButtonList 
@@ -103,6 +95,7 @@ function RobotStore() {
                 />
             </ImageBackground>
         </LinearGradient>
+        <ConnectRobotModal />
     </View>
     )
 }

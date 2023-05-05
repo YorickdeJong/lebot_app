@@ -12,6 +12,7 @@ export const SocketContext = createContext({
     isLoading: false, 
     power: false,
     isMeasurementStarted: false,
+    robotConnectedToWifi: false,
     CreateSocketConnection: (socket) => {},
     Connect: () => {},
     Disconnect: () => {},
@@ -140,39 +141,13 @@ function SocketContextProvider({children}) {
         }
     }
 
+
     function Command(inputType, command) {
         try {
             socket.current.emit('command', {command: command}) //TODOProblem
             socket.current.on('terminalOutput', (data) => {
-                if (data) {
-                    switch(inputType) {
-                        case 'cd' || 'cdBack':
-                            if (data.data.includes('@') && 
-                                data.data.includes(':') && 
-                                data.data.includes(':')){
-                                dir.current = data.data;
-                            }
-                            break;
-
-                        case 'mkdir':
-                            output.current ='new directory created';
-                            break;
-
-                        case 'dir' || 'roslaunch':
-                            if ((!data.data.includes('@') && 
-                                !data.data.includes(':') && 
-                                !data.data.includes(':')) &&
-                                !data.data.includes('cd ')&&
-                                !data.data.includes('dir') &&
-                                data.data){
-                                output.current = data.data 
-                            }
-                            break;
-                    }
-                }
-                else {
-                    Alert.alert('Incorrect command, Please try again');
-                    return;
+                if (data && data.output) {
+                    responseOutput(data.output)
                 }
             })
         }

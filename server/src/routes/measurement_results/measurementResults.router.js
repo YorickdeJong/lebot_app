@@ -4,7 +4,6 @@ const {
     getAllMeasurementResults,
     getSpecificMeasurementResult,
     getLatestMeasurementResult,
-    createMeasurementResult,
     updateMeasurementResult,
     deleteMeasurementResult
 } = require('./measurementResults.controller')
@@ -16,7 +15,6 @@ const router = Router()
 router.get('/all/:id', getAllMeasurementResults);
 router.get('/', getSpecificMeasurementResult);
 router.get('/latest/:id', getLatestMeasurementResult);
-router.post('/', createMeasurementResult);
 router.put('/:record_number', updateMeasurementResult);
 router.delete('/', deleteMeasurementResult);
 

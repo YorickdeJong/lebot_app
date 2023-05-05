@@ -1,35 +1,37 @@
 
 const getSpecificPowerMeasurementResultQuery = `
-  SELECT * FROM power_data pd
-  INNER JOIN user_profile u ON u.id = pd.user_id
-  WHERE pd.assignment_number = $1 AND u.id = $2 AND pd.title = $3 AND pd.subject = $4;
+  SELECT * FROM power_data WHERE assignment_number = $1 AND title = $2 AND subject = $3 AND school_id = $4 AND class_id = $5 AND group_id = $6;
 `;
 
 const getLatestPowerMeasurementResultQuery = `
-  SELECT * FROM power_data pd
-  INNER JOIN user_profile u ON u.id = pd.user_id
-  WHERE u.id = $1
-  ORDER BY pd.created_at DESC
-  LIMIT 1;
-  `;
-
+    SELECT * 
+    FROM power_data 
+    WHERE user_id = $1
+    ORDER BY created_at DESC
+    LIMIT 1;
+`;
 
 const createPowerMeasurementResultQuery = `
-    INSERT INTO power_data (assignment_number, power, time, user_id, title, subject, record_number)
-    VALUES ($1, $2, $3, $4, $5, $6, $7)
+    INSERT INTO power_data (school_id, class_id, group_id, assignment_number, power_array, time_array, current_array, voltage_array, user_id, title, subject, record_number)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING *;
 `;
 
 
 const updatePowerMeasurementResultQuery = `
   UPDATE power_data SET
-    assignment_number=$1,
-    power=$2,
-    time=$3,
-    user_id=$4,
-    title=$5,
-    subject=$6
-    WHERE record_number=$7
+    school_id = $1, 
+    class_id = $2, 
+    group_id = $3,
+    assignment_number=$4,
+    power_array=$5,
+    time_array=$6,
+    current_array=$7,
+    voltage_array=$8,
+    user_id=$9,
+    title=$10,
+    subject=$11
+    WHERE record_number=$12
     RETURNING *;
 `;
 

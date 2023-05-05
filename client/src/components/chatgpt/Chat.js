@@ -41,8 +41,7 @@ const Chat = ({keyboardHeight}) => {
           thread_id: thread_id
         }
         chatCtx.addChat(chatQuestion);
-        console.log(currentChatData)
-        console.log(`chat question ${JSON.stringify(chatQuestion)}`)
+
         //posting message to database
         let answeredMessage = await postMessage(userprofileCtx.userprofile.id, tempInput, thread_id);
 
@@ -57,8 +56,7 @@ const Chat = ({keyboardHeight}) => {
             answer: botMessage,
             thread_id: thread_id
         }
-
-        console.log(`chat answer ${JSON.stringify(chatAnswer)}`)
+        
         chatCtx.addChat(chatAnswer);
         
         setIsLoading(false);

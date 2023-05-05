@@ -1,13 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import { useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AppLoading from 'expo-app-loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContextProvider, { AuthContext } from './src/store/auth-context';
 import ColorContextProvider, { ColorContext } from './src/store/color-context';
 import {  ColorsBlue } from './src/constants/palet';
-import UserProfileContextProvider from './src/store/userProfile-context';
+import UserProfileContextProvider, { UserProfileContext } from './src/store/userProfile-context';
 import SocketContextProvider from './src/store/socket-context';
 import CarContextProvider from './src/store/car-context';
 import AssignmentContextProvider from './src/store/assignment-context';
@@ -18,12 +18,17 @@ import ChartOptionsContextProvider from './src/store/chartOptions-context';
 import BlinkContextProvider from './src/store/animation-context';
 import Authenticate from './src/navigators/authenticate/Authenticate.navigator';
 import Authorized from './src/navigators/main/Authorized.navigator';
-
-
+import AdminNavigator from './src/navigators/Admin/Admin.navigator';
+import TeacherNavigator from './src/navigators/Teacher/Teacher.navigator';
+import GroupTeacherContextProvider from './src/store/group-teacher-context';
+import { SocketProviderGroups } from './src/store/group-socket-context';
+import { SocketProviderClasses } from './src/store/classes-socket-context';
+import { SocketProviderUser } from './src/store/userprofile-socket-context';
+import WifiContextProvider from './src/store/robot-connect-context';
 
 // UPON LOGIN TOKEN GETS SET
 function Navigation() {
- 
+  const userprofileCtx = useContext(UserProfileContext);
   const authCtx = useContext(AuthContext);
 
     const colors= [
@@ -40,14 +45,18 @@ function Navigation() {
     },
   };
 
+  console.log('user_role', userprofileCtx.userprofile.user_role)
+
   return (
       <NavigationContainer theme = {MyTheme}>
           {!authCtx.isAuthenticated && <Authenticate />}
-          {/* TODO add beggining screen here, keep the isAuthenticated, but move Athenticate into this screen.  */}
-          {authCtx.isAuthenticated && <Authorized />}
+          {authCtx.isAuthenticated  && userprofileCtx.userprofile.user_role === "admin" && <AdminNavigator />} 
+          {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "student" &&  <Authorized />} 
+          {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "teacher" &&  <TeacherNavigator />}               
       </NavigationContainer>
   );
 }
+
 
 
 //CONTAINS ALL SCREENS, DISTINGUISHES BETWEEN LOGIN AND AUTHORIZED
@@ -95,26 +104,36 @@ export default function App() {
     <StatusBar style="light" />
     <UserProfileContextProvider>
       <SocketContextProvider>
-      <ChatContextProvider>
-        <AssignmentDetailsContextProvider>
-          <ChartContextProvider>
-            <ChartOptionsContextProvider>
-              <AssignmentContextProvider>
-                  <CarContextProvider>
-                    <ColorContextProvider>
-                      <AuthContextProvider>
-                        <BlinkContextProvider>
-                          <Root />
-                        </BlinkContextProvider>
-                      </AuthContextProvider>
-                    </ColorContextProvider>
-                  </CarContextProvider>
-              </AssignmentContextProvider>
-            </ChartOptionsContextProvider>
-          </ChartContextProvider>
-        </AssignmentDetailsContextProvider>
-      </ChatContextProvider>
-    </SocketContextProvider>
+        <SocketProviderClasses namespace = "/api/v1/classes">
+          <SocketProviderGroups namespace = "/api/v1/groups">
+            <SocketProviderUser namespace = "/api/v1/user/users-in-group">
+              <WifiContextProvider>
+                <ChatContextProvider>
+                  <AssignmentDetailsContextProvider>
+                    <ChartContextProvider>
+                      <ChartOptionsContextProvider>
+                        <AssignmentContextProvider>
+                        <GroupTeacherContextProvider>
+                            <CarContextProvider>
+                              <ColorContextProvider>
+                                <AuthContextProvider>
+                                  <BlinkContextProvider>
+                                    <Root />
+                                  </BlinkContextProvider>
+                                </AuthContextProvider>
+                              </ColorContextProvider>
+                            </CarContextProvider>
+                        </GroupTeacherContextProvider>
+                        </AssignmentContextProvider>
+                      </ChartOptionsContextProvider>
+                    </ChartContextProvider>
+                  </AssignmentDetailsContextProvider>
+                </ChatContextProvider>
+              </WifiContextProvider>
+            </SocketProviderUser>
+          </SocketProviderGroups>
+        </SocketProviderClasses>
+      </SocketContextProvider>
     </UserProfileContextProvider>
     </>
   );

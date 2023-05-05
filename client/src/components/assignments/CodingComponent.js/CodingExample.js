@@ -54,10 +54,11 @@ function CodingExample({nextSlideHandler, prevSlideHandler, slideCount, setTypin
                 >
                 <LightBulbAnimation />
                     <View style={styles.border}/>
-                    <TextDisplay 
-                    title={title}
-                    description={description}/>
-                    
+                    <View style = {styles.textContainer}>
+                        <TextDisplay 
+                        title={title}
+                        description={description}/>
+                    </View>
                     <ScrollView 
                     style = {{flex: 1}}
                     ref={scrollViewRef}
@@ -101,4 +102,7 @@ const styles = StyleSheet.create({
         borderBottomColor: `rgba(77, 77, 77, 0.5)`,
         borderBottomWidth: 0.6,
     },
+    textContainer: {
+        backgroundColor: 'rgba(0, 0, 20, 0.75)',
+    }
 })

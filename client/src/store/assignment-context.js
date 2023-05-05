@@ -6,6 +6,8 @@ import { createContext, useState, useEffect } from "react";
 export const AssignmentContext = createContext({
     assignments: [],
     assignmentImage: {},
+    currentAssignment: '',
+    setCurrentAssignment: (assignment) => {},
     initializeAssignments: (assignments) => {},
     addAssignment: (assignment) => {},
     separateSubject: (subject) => {},
@@ -18,6 +20,7 @@ export const AssignmentContext = createContext({
 
 function AssignmentContextProvider({children}) {
     const [assignments, setAssignments] = useState([]);
+    const [currentAssignment, setCurrentAssignment] = useState('');
     const [assignmentImage, setAssignmentImage] = useState({
         title: '',
         assignment_number: 0,
@@ -71,6 +74,7 @@ function AssignmentContextProvider({children}) {
         return assignments.filter((item) => item.title === title);
     }
 
+    //Used to set the assignment image in the ImageContainer component
     function setAssignmentImageHandler(assignmentImage) {
         setAssignmentImage(prevState => ({...prevState, assignment_number: assignmentImage}));
     }
@@ -86,6 +90,8 @@ function AssignmentContextProvider({children}) {
     const value = {
         assignments,
         assignmentImage,
+        currentAssignment,
+        setCurrentAssignment,
         initializeAssignments,
         addAssignment,
         separateSubject,

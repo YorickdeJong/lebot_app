@@ -1,38 +1,48 @@
 
 const checkIfAssignmentDetailsExistsQuery = `
-    SELECT * FROM assignment_details WHERE user_id = $1 AND assignment_id = $2
+    SELECT * FROM assignment_details
+    WHERE school_id = $1 AND class_id = $2 AND group_id = $3 AND assignment_id = $4 AND subject = $5;
     `
 
 const getSpecificAssignmentDetailsQuery = `
-    SELECT a.assignment_number AS assignment_number, a.assignment_id AS assignment_id, a.title AS title, u.id AS user_id
-    FROM assignments a
-    INNER JOIN assignment_details c ON a.assignment_id = c.assignment_id
-    INNER JOIN user_profile u ON u.id = c.user_id
-    WHERE u.id = $1 AND a.assignment_id = $2
+    SELECT * FROM assignment_details
+    WHERE school_id = $1 AND class_id = $2 AND group_id = $3 AND assignment_id = $4 AND subject = $5;
     `
 
-const getUserAssignmentDetailsQuery = `
-    SELECT a.assignment_id, a.assignment_number, a.title
-    FROM assignments a
-    INNER JOIN assignment_details c ON a.assignment_id = c.assignment_id
-    INNER JOIN user_profile u ON u.id = c.user_id
-    WHERE u.id = $1;
+const getGroupAssignmentDetailsQuery = `
+    SELECT * FROM assignment_details
+    WHERE school_id = $1 AND class_id = $2 AND group_id = $3;
     `
 
-const createAssignmentDetailsQuery = `
-    INSERT INTO assignment_details (user_id, assignment_id)
-    VALUES ($1, $2)
+    const createAssignmentDetailsQuery = `
+    INSERT INTO assignment_details (school_id, class_id, group_id, assignment_id, subject, answers_multiple_choice, answers_open_questions)
+    VALUES ($1, $2, $3, $4, $5, 
+            COALESCE(ARRAY[$6]::jsonb[], '{}'::jsonb[]),
+            COALESCE(ARRAY[$7]::jsonb[], '{}'::jsonb[]))
     RETURNING *;
-    `;
+`;
 
-  const deleteAssignmentDetailsQuery = `
-    DELETE FROM assignment_details WHERE user_id = $1 AND assignment_id=$2 RETURNING *
+const updateAssignmentDetailsQuery = `
+    UPDATE assignment_details
+    SET 
+      subject = $1,
+      answers_open_questions = answers_open_questions || COALESCE(ARRAY[$2]::jsonb[], '{}'::jsonb[]),
+      answers_multiple_choice = answers_multiple_choice || COALESCE(ARRAY[$3]::jsonb[], '{}'::jsonb[])
+    WHERE school_id = $4 AND class_id = $5 AND group_id = $6 AND assignment_id = $7
+    RETURNING *;
+`;
+
+const deleteAssignmentDetailsQuery = `
+    DELETE FROM assignment_details
+    WHERE school_id = $1 AND class_id = $2 AND group_id = $3 AND assignment_id = $4 AND subject = $5
+    RETURNING *;
     `;
 
   module.exports = {
     checkIfAssignmentDetailsExistsQuery,
     getSpecificAssignmentDetailsQuery,
-    getUserAssignmentDetailsQuery,
+    getGroupAssignmentDetailsQuery,
     createAssignmentDetailsQuery,
-    deleteAssignmentDetailsQuery
+    deleteAssignmentDetailsQuery,
+    updateAssignmentDetailsQuery
   }

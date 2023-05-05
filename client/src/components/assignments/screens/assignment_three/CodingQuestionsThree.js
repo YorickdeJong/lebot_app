@@ -137,8 +137,6 @@ export default React.memo(CodingQuestionsThree)
 
 const styles  = StyleSheet.create({
     container: {
-        borderTopColor: ColorsBlue.blue700,
-        borderTopWidth: 0.8,
         flex: 1,
         resizeMode: 'contain'
     },

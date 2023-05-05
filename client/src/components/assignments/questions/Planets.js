@@ -92,7 +92,7 @@ const Planets = ({ tileNumber, size, x, y, onPress }) => {
                 source={require('../../../../assets/planets/jupiter.jpg')}
                 style={{ width: size, height: size, borderRadius: size, opacity: 0.1}}
                 imageStyle={{opacity: 0.10}}
-                resizeMode="auto"
+                resizeMode="cover"
             />
             <Circle
                 cx={size / 2}

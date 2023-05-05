@@ -3,6 +3,7 @@ import { BlurView } from 'expo-blur';
 import React, { useEffect, useState } from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../constants/palet'
+import BlurWrapper from '../UI/BlurViewWrapper';
 
 function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraStyle}) {
     const [displayText, setDisplayText] = useState('');
@@ -44,11 +45,11 @@ function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraSt
     };
 
     return (
-        <View style = {[styles.outerContainer, extraStyle && { marginLeft: extraStyle.marginLeft, backgroundColor: 'rgba(10,10,60,0.2)', }]}>
+        <View style = {[styles.outerContainer, extraStyle && { marginLeft: extraStyle.marginLeft, backgroundColor: 'rgba(10, 13, 60, 0.8)'}]}>
             <View style={styles.blurContainer}>
-                <BlurView style={[styles.textBox, 
+                <View style={[styles.textBox, 
                     ]} 
-                    intensity={extraStyle ? 18 : 0}  //backgroundColor={ColorsBlue.blue1300}
+                    //intensity={extraStyle ? 10 : 0}  //backgroundColor={ColorsBlue.blue1300}
                     >
                         <Image
                         style={[styles.profilePicture, extraStyle && { marginLeft: extraStyle.marginLeft }]}
@@ -60,18 +61,18 @@ function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraSt
                         resizeMode="cover"
                         />
                         <View style = {{flex: 1, borderRadius: 10, overflow: 'hidden'}}>
-                            <BlurView  
+                            <BlurWrapper  
                                 intensity={extraStyle ? 0 : 20}// tint = 'dark'//backgroundColor={ColorsBlue.blue1300}
-                                style={{backgroundColor: 'rgba(10,10,60,0.2)',paddingLeft: !extraStyle && 10}}
+                                style={{backgroundColor: 'rgba(10,10,60,0.2)', paddingLeft: !extraStyle ? 10 : 0}}
                             >
                                 <TouchableOpacity onPress={showFullText}>
                                     <View style={[styles.chatGPTTextBox, extraStyle && { paddingLeft: extraStyle.paddingLeft, backgroundColor: extraStyle.backgroundColor }]}>
                                         <Text style={styles.chatGPTText}>{isLastItem ? displayText : answer}</Text>
                                     </View>
                                 </TouchableOpacity>
-                            </BlurView>
+                            </BlurWrapper>
                         </View> 
-                </BlurView>
+                </View>
             </View>
         </View>
     );
@@ -96,6 +97,8 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'flex-start',
+        backgroundColor: 'rgba(10, 13, 40, 0.75)'
+        
     },
     profilePicture: {
         width: 30,
@@ -107,6 +110,10 @@ const styles = StyleSheet.create({
         width: 355,
         borderRadius: 10,
         marginVertical: 10,
+        shadowColor: ColorsBlue.blue1400,
+        shadowOffset: { width: 1, height: 2 },
+        shadowOpacity: 1,
+        shadowRadius: 4,
     },
     blurContainer: {
         borderRadius: 10,

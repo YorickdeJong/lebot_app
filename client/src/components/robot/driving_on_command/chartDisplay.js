@@ -3,13 +3,33 @@ import { StyleSheet, View } from "react-native"
 import { ChartContext } from "../../../store/chart-context"
 import GraphDisplay from "./graphDisplay"
 
-function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChart}) {
-    console.log(`chartdisaply CHECK`)
+function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChart, subject, isConstant}) {
+
+    let toggleOptionsCount;
+    let chartHeight;
+
+    if (subject === "MOTOR"){
+        toggleOptionsCount = 1
+    }
+
+    if (subject === "CAR"){
+        toggleOptionsCount = 4
+    }
 
     if (displayChart){
-        chartHeight = trueCount == 1 ? displayChart - 15: displayChart - 48 //adjust ratios to fit graphs
+      //adjust ratios to fit graphs
+        if (trueCount === 1){
+            chartHeight = displayChart - 5 
+        }
+        if (trueCount === 2){
+            chartHeight = displayChart - 50
+        }
+        if (trueCount === 3){
+            chartHeight = displayChart - 70
+        }
     }
     
+
     let doubleChartHeight;
     let firstDataType, secondDataType, thirdDataType, fourthDataType
     let firstYData, secondYData, thirdYData, fourthYData;
@@ -19,18 +39,19 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
 
     const filteredData = useCallback(() => {
         return Object.entries(chartToggle)
-                .reduce((acc, [key, value], index) => {
-                    if (index > 1){
-                        return acc; 
-                    }
-                    if (value === true) {
-                        const chartDataKey = Object.keys(chartData)[index];
-                        acc[chartDataKey] = chartData[chartDataKey]; //returns array with 1, 2, 3, 4 arrays
-                    }
+            .reduce((acc, [key, value], index) => {
+                if (index > toggleOptionsCount) { //Change this need to change starting position 
                     return acc;
-                }, {});
-
-    }, [chartToggle, chartData]) 
+                }
+                if (value === true) {
+                    const chartDataKey = Object.keys(chartData)[index];
+                    if (chartDataKey in chartData) { // Check if the key exists in the chartData
+                        acc[chartDataKey] = chartData[chartDataKey]; //returns array with 1, 2
+                    }
+                }
+                return acc;
+            }, {});
+    }, [chartToggle, chartData]);
 
 
     const selectXdata = useCallback((dataType, chartData) => {
@@ -38,29 +59,39 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             case 'distance':
                 return chartData.time; 
             case 'speed':
-                    return chartData.time.slice(1);
+                return chartData.time.slice(1);
+            case 'power':
+                return chartData.time;
+            case 'current':
+                return chartData.time;
+            case 'voltage':
+                return chartData.time;
         }
     }, [chartData])
 
-    if (chartData.distance.length === 0) {
-        console.log('data is empty');
-        return;
+    if (subject === "MOTOR"){
+        if (chartData.distance.length === 0) {
+            console.log('distance data is empty');
+            return;
+        }
     }
 
-    
-    
     switch(trueCount){
         case 1:
             filteredChartData = filteredData();
             motorNumber  = chartData.motorNumber;
-            //TODO handle 2D arrays + handle distance array
-            [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
-            firstXData = selectXdata(firstDataType, chartData);
+            try {
+                [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
+                firstXData = selectXdata(firstDataType, chartData);
+            }
+            catch(error){
+                console.log(error)
+                return;
+            }
 
             const padding = displayChart? 0 : 20; 
-
             return (
-                <View style = {{height: displayChart ? displayChart : chartHeight}}>
+                <View style = {{height: displayChart }}>
                     {!(firstYData[0] === undefined) && <GraphDisplay 
                     dataType={firstDataType}
                     data={{ xData: firstXData, yData: firstYData }}
@@ -68,90 +99,106 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                     finalPlot = {finalPlot}
                     trueCount = {trueCount}
                     padding = {padding}
-                    motorNumber = {motorNumber}
+                    motorNumber = {subject === "MOTOR" ? motorNumber : false}
                     legend
+                    isConstant = {isConstant}
                     />}
                 </View>
             )
 
         case 2:
+            console.log('check 2')
             filteredChartData = filteredData();
             motorNumber = chartData.motorNumber;
-            const entries = Object.entries(filteredChartData);
-            [firstDataType, firstYData] = entries[0];
-            [secondDataType, secondYData] = entries.length > 1 ? entries[1] : [null, []];
+            
+            const entriesTwo = Object.entries(filteredChartData);
+            [firstDataType, firstYData] = entriesTwo[0];
+            [secondDataType, secondYData] = entriesTwo.length > 1 ? entriesTwo[1] : [null, []];
         
             firstXData = selectXdata(firstDataType, chartData);
             secondXData = secondDataType
               ? selectXdata(secondDataType, chartData)
               : [];
         
-            
             doubleChartHeight = chartHeight / 2
 
             return (
-                <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
-                    {!(firstYData[0] === undefined) && <GraphDisplay 
-                    dataType={firstDataType}
-                    data={{ xData: firstXData, yData: firstYData }}
-                    chartHeight = {doubleChartHeight}
-                    finalPlot = {finalPlot}
-                    trueCount = {trueCount}
-                    motorNumber = {motorNumber}
-                    legend
-                    />}
-                    {!(secondYData[0] === undefined) && <GraphDisplay 
-                    dataType={secondDataType}
-                    data={{ xData:secondXData, yData: secondYData }}
-                    chartHeight = {doubleChartHeight}
-                    finalPlot = {finalPlot}
-                    trueCount = {trueCount}
-                    motorNumber = {motorNumber}
-                    />}
+                <View style = {{height: displayChart}}>
+                    <View>
+                            {!(firstYData[0] === undefined) && <GraphDisplay 
+                            dataType={firstDataType}
+                            data={{ xData: firstXData, yData: firstYData }}
+                            chartHeight = {doubleChartHeight}
+                            finalPlot = {finalPlot}
+                            trueCount = {trueCount}
+                            motorNumber = {subject === "MOTOR" ? motorNumber : false}
+                            legend
+                            isConstant = {isConstant}
+                            />}
+                    </View>
+                    <View style = {{marginTop: displayChart / 1.65}}>
+                        {!(secondYData[0] === undefined) && <GraphDisplay 
+                        dataType={secondDataType}
+                        data={{ xData:secondXData, yData: secondYData }}
+                        chartHeight = {doubleChartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
+                        />}
+                    </View>
                 </View>
             )
 
         case 3:
+            console.log('check 3')
             filteredChartData = filteredData();
             motorNumber  = chartData.motorNumber;
-            [firstDataType, firstYData] = Object.entries(filteredChartData)[0];
-            [secondDataType, secondYData] = Object.entries(filteredChartData)[1];
-            [thirdDataType, thirdYData] = Object.entries(filteredChartData)[2];
+
+            const entriesThree = Object.entries(filteredChartData);
+            [firstDataType, firstYData] = entriesThree[0];
+            [secondDataType, secondYData] = entriesThree[1];
+            [thirdDataType, thirdYData] = entriesThree.length > 1 ? entriesThree[1] : [null, []];
+
             
             firstXData = selectXdata(firstDataType, chartData);
-            secondXData = selectXdata(secondDataType, chartData);
-            thirdXData = selectXdata(thirdDataType, chartData);
-            
-            doubleChartHeight = displayChart ? chartHeight / 2 : chartHeight / 2.3;
+            secondXData = selectXdata(secondDataType, chartData)
+            thirdXData = thirdDataType
+              ? selectXdata(thirdDataType, chartData)
+              : [];
+        
+
+            doubleChartHeight = chartHeight / 2;
+
             return (
-                <View style = {{height: displayChart ? displayChart : chartHeight * 2}}>
+                <View style = {{height: displayChart}}>
                     <View style = {{flex: 1}}>
                         {!(firstYData[0] === undefined) && <GraphDisplay 
                         dataType={firstDataType}
                         data={{ xData: firstXData, yData: firstYData }}
-                        chartHeight = {chartHeight}
+                        chartHeight = {doubleChartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
-                        motorNumber = {motorNumber}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
                         legend
+                        isConstant = {isConstant}
                         />}
                     </View>
-                    <View style = {styles.twoCharts}>
+                    <View style = {[styles.twoCharts, {marginTop: displayChart / 1.6}]}>
                         {!(secondYData[0] === undefined) && <GraphDisplay 
                         dataType={secondDataType}
                         data={{ xData:secondXData, yData: secondYData }}
-                        chartHeight = {chartHeight}
+                        chartHeight = {doubleChartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
-                        motorNumber = {motorNumber}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
                         />}
                         {!(thirdYData[0] === undefined) && <GraphDisplay 
                         dataType={thirdDataType}
                         data={{ xData:thirdXData, yData: thirdYData }}
-                        chartHeight = {chartHeight}
+                        chartHeight = {doubleChartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
-                        motorNumber = {motorNumber}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
                         />}
                     </View>
                 </View>
@@ -181,7 +228,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
-                        motorNumber = {motorNumber}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
                         legend
                         />}
                         {!(secondYData[0] === undefined) && <GraphDisplay 
@@ -190,7 +237,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
-                        motorNumber = {motorNumber}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
                         />}
                     </View>
                     <View style = {styles.twoCharts}>
@@ -200,7 +247,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
-                        motorNumber = {motorNumber}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
                         />}
                         {!(fourthYData[0]=== undefined) && <GraphDisplay 
                         dataType={fourthDataType}
@@ -208,7 +255,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                         chartHeight = {chartHeight}
                         finalPlot = {finalPlot}
                         trueCount = {trueCount}
-                        motorNumber = {motorNumber}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
                         />}
                     </View>
                 </View>

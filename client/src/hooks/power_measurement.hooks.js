@@ -1,40 +1,98 @@
 
 import axios from 'axios'
 import { ipAddressComputer } from '../data/ipaddresses.data';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
-import { useRef } from 'react';
+import { ChartContext } from '../store/chart-context';
+import { SocketContext } from '../store/socket-context';
 
-const url = ipAddressComputer + 'power-data'
+const url = ipAddressComputer + '/api/v1/power-measurement-results'
 
 
-export const useSocketPower = () => {
-    const [powerData, setPowerData] = useState(null);
-    const [socket, setSocket] = useRef(null);
+export const useSocketPower = (shouldConnect, user_id) => {
+    const chartCtx = useContext(ChartContext);
+    const sshSocketCtx = useContext(SocketContext);
+    const socket = useRef(null);
 
     useEffect(() => {
-        const newSocket = io(ipAddressComputer);
-        setSocket(newSocket);
+        //return if socket doesn't need to be called
+        if (!shouldConnect) {
+            return;
+        }        
+        
+        if (!sshSocketCtx.power){
+            chartCtx.emptyChartData();
+        }
+        if (sshSocketCtx.power) {
+            sshSocketCtx.setIsMeasurementStarted(false);
+            chartCtx.emptyChartData();
+            // Emit the 'request-latest-data' event when a new measurement is started
+        }
+        const newSocket = io(url);
 
+        //Client successfully connected to the server
+
+        newSocket.on('connect', () => {
+            newSocket.emit('user-profile-id', user_id);
+            console.log('Connected to socket');
+        });
+    
+        newSocket.on('connect_error', (error) => {
+            //console.error('Connection error:', error);
+        });
+    
+        newSocket.on('disconnect', (reason) => {
+            console.log('Disconnected:', reason);
+            if (reason === 'io server disconnect') {
+                // The disconnection was initiated by the server, you need to reconnect manually.
+                newSocket.connect();
+            }
+            // Else, the socket will automatically try to reconnect.
+        });
+    
+        newSocket.on('reconnect', (attemptNumber) => {
+            console.log('Reconnected after', attemptNumber, 'attempts');
+        });
+    
+        newSocket.on('reconnect_failed', () => {
+            console.error('Reconnection failed');
+        });
+    
         newSocket.on('power-data-update', (data) => {
-        setPowerData(data);
+            console.log('data', data.data[0])
+            chartCtx.setChartDataHandler(data.data[0]);
         });
 
-        return () => {
-        newSocket.disconnect();
-        };
-    }, []);
+        
+        socket.current = newSocket;
 
-    return { powerData, socket };
+        return () => {
+            chartCtx.emptyChartData();
+            newSocket.disconnect();
+        }
+    }, [sshSocketCtx.power]);
+
+    return socket;
 };
 
 
-export async function getSpecificPowerMeasurementResult(user_profile_id, title, assignment_number, subject) {
+export async function getSpecificPowerMeasurementResult(school_id, class_id, group_id, title, assignment_number, subject) {
     try{
-        const response = await axios.get(url + `?user_profile_id=${user_profile_id}&assignment_number=${assignment_number}&title=${title}&subject=${subject}`);
+        const response = await axios.get(url,  {
+            params: {
+                school_id,
+                class_id,
+                group_id,
+                title, 
+                assignment_number,
+                subject
+            }
+        });
+        console.log('fetched data Power', response.data)
         return response.data;
     }
     catch (error){
+        console.log('Failed to fetch data from server')
         console.log(error);
     }
 

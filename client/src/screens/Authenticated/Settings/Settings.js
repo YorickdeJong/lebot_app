@@ -25,9 +25,9 @@ function Settings() {
                     navigation.replace('userProfile');
                     break;
 
-                case 'Change Color':
-                    colorCtx.setColor();
-                    setIsLoading(false)
+                case 'Groepen':
+                    navigation.goBack();
+                    navigation.navigate('groups')
                     break;
                 
                 case 'Results':
@@ -45,13 +45,12 @@ function Settings() {
             onPress = {onPressHandler}
             />
             )
-        
-       
     }
+    
     return (
         <View style = {styles.modalContainer}> 
             <ImageBackground
-                source={require('./../../../../assets/planets/user_screen11-3.png')} 
+                source={require('./../../../../assets/planets/user_screen16.png')} 
                 style={styles.backgroundImage}
                 imageStyle={{opacity: 0.8}}
             >

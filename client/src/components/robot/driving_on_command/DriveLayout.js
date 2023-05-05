@@ -14,7 +14,7 @@ import { ChartContext } from "../../../store/chart-context"
 import { BlurView } from "expo-blur"
 
 
-function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumber}) {
+function DriveLayout({moveHandler, midIconHandler,  displayNumber, subject}) {
     const socketCtx = useContext(SocketContext)
     const chartCtx = useContext(ChartContext)
 
@@ -26,10 +26,10 @@ function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumb
             imageStyle={{opacity: 0.8}}
             >
                 <OptionsBar
-                    disconnectHandle = {rightIconHandler}
                     midIconHandler = {midIconHandler}
                     moveHandler = {moveHandler}
                     displayNumber = {displayNumber}
+                    subject={subject}
                 />
                 {socketCtx.power ? (
                     //Display charts if first data is send, otherwise loading screen
@@ -42,6 +42,7 @@ function DriveLayout({moveHandler, midIconHandler, rightIconHandler, displayNumb
                                 chartToggle = {chartCtx.chartToggle}
                                 trueCount = {chartCtx.trueCount}
                                 displayChart = {450}
+                                subject = {subject}
                                 />
                         </BlurView>
                     </View>

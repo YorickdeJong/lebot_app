@@ -9,7 +9,7 @@ import { useState, useRef } from 'react';
 import DragBlocksAnimation from './DragBlocksAnnimation';
 
 
-function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, isFocused, title}) {
+function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, isFocused, title, slideCountEnd}) {
     const [focused, setFocused] = useState(isFocused && slideCount === 3); 
     const scrollViewRef = useRef(null);
     const extraStyle = {
@@ -53,6 +53,7 @@ function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyp
                                         prevSlideHandler={prevSlideHandler}
                                         nextSlideHandler={nextSlideHandler}
                                         slideCount={slideCount}
+                                        slideCountEnd={slideCountEnd}
                                         />
                                     )}
                         </ScrollView>   

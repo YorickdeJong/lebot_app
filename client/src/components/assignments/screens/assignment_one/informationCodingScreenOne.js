@@ -93,6 +93,7 @@ function InformationCodingScreenOne({isFocused}) {
                 title = "Test Je Kennis"
                 description = "Sleep de juiste blokken naar de juiste plek om de lamp aan te laten gaan als het donker is. Hou er rekening mee welk blok geld als een uitspraak en wel blok geld als een actie"
                 isFocused={isFocused}
+                slideCountEnd={true}
             />
         }
         </>

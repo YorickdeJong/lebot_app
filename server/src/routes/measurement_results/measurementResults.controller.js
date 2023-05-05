@@ -43,10 +43,10 @@ const getSpecificMeasurementResult = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const {user_profile_id, assignment_number, title, subject} = req.query;
-        const {rows} = await client.query(getSpecificMeasurementResultQuery, [assignment_number, user_profile_id, title, subject]);
+        const {school_id, class_id, group_id, assignment_number, title, subject} = req.query;
+        console.log(school_id, class_id, group_id, assignment_number, title, subject)
+        const {rows} = await client.query(getSpecificMeasurementResultQuery, [assignment_number, title, subject, school_id, class_id, group_id]);
         console.log(rows);
-        console.log(user_profile_id + " " + assignment_number + " " + title);
 
         if (rows.length === 0) {
             return res.status(400).json({error: 'results for specific assignment do not exits'})
@@ -65,66 +65,41 @@ const getSpecificMeasurementResult = async (req, res) => {
 }
 
 
-const getLatestMeasurementResult = async (req, res) => {
+const getLatestMeasurementResult = async (user_profile_id) => {
     //supply both user_id and assignment_id
     const client = await pool.connect();
 
     try {
-        const user_profile_id = req.params.id;
         const {rows} = await client.query(getLatestMeasurementResultQuery, [user_profile_id]);
 
         if (rows.length === 0) {
-            return res.status(400).json({error: 'No results found'})
+            // return an error object instead of using res.status
+            return { error: 'No results found' };
         }
         else {
-            return res.status(200).json(rows)
+            // return the rows directly instead of using res.status
+            return rows;
         }
     } 
     catch (error){
         console.log(error)
-        return res.status(500).json({error: 'Error trying to get results data'})
+        // return an error object instead of using res.status
+        return { error: 'Error trying to get results data' };
     }
 
     finally {
         client.release(); 
     }
-}
-
-const createMeasurementResult = async (req, res) => {
-    const {assignment_number, distance, force, energy, 
-        velocity, time, user_id, title, type, record_number, motor_number, subject} = req.body;
-    const client = await pool.connect();
-
-    // don't want to check if measurement for a specific assignment exists since 
-    // it is possible to have multiple measurements for the same assignment
-
-    try {
-        const values = [assignment_number, distance, force, energy, 
-        velocity, time, user_id, title, type, motor_number, subject, record_number, subject]
-        const {rows} = await client.query(createMeasurementResultQuery, values)
-        console.log(rows)
-        return res.status(200).json(rows)
-    }
-    catch (error){
-        console.log(error)
-        return res.status(500, {
-            error: 'Failed to add the result to the database'
-        });
-    }
-
-    finally {
-        client.release(); 
-    }
-}
+};
 
 // creates/ updates measurement
 const updateMeasurementResult = async (req, res) => {
     const client = await pool.connect();
 
     const record_number = req.params.record_number;
-    const { assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number, subject } = req.body;
+    const { school_id, class_id, group_id, assignment_number, distance, velocity, time, user_id, title, type, motor_number, subject } = req.body;
 
-    const values = [assignment_number, distance, force, energy, velocity, time, user_id, title, type, motor_number, subject, record_number];
+    const values = [school_id, class_id, group_id, assignment_number, distance, velocity, time, user_id, title, type, motor_number, subject, record_number];
 
     // Check if the measurement result exists in the database
     const checkExistsQuery = existInDatabaseQuery;
@@ -188,7 +163,6 @@ module.exports = {
     getAllMeasurementResults,
     getSpecificMeasurementResult,
     getLatestMeasurementResult,
-    createMeasurementResult,
     updateMeasurementResult,
     deleteMeasurementResult
 }

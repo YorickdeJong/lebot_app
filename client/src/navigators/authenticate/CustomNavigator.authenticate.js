@@ -4,7 +4,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ColorsBlue } from '../../constants/palet';
 import Icon from '../../components/Icon';
 import { AuthContext } from '../../store/auth-context';
-
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 const CustomHeader = ({ title }) => {
 const authCtx = useContext(AuthContext);
@@ -25,7 +25,7 @@ const authCtx = useContext(AuthContext);
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
       >
-            <View style={{ marginLeft: 10, marginTop: 35
+            <View style={{ marginLeft: 10, marginTop: verticalScale(27)
                 }}>
                 <Icon
                     icon="menu"
@@ -34,7 +34,7 @@ const authCtx = useContext(AuthContext);
                     onPress={() => console.log(`pressed`)}
                 />
             </View>
-            <View style={{ marginLeft: 10, marginTop: 35
+            <View style={{ marginLeft: 10, marginTop: verticalScale(27)
                 }}>
                 <Icon
                     icon="robot"
@@ -46,7 +46,7 @@ const authCtx = useContext(AuthContext);
                 />
             </View>
 
-            <View style={{ right: 15, top: 48, position: 'absolute'
+            <View style={{ right: 15, top: verticalScale(32), position: 'absolute'
                 }}>
                 <Icon
                     icon="rocket"
@@ -64,7 +64,7 @@ const authCtx = useContext(AuthContext);
 
 const styles = StyleSheet.create({
   header: {
-    height: 80,
+    height: verticalScale(58),
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,

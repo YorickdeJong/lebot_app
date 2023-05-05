@@ -1,39 +1,39 @@
 import { BlurView } from 'expo-blur';
-import {View, Text, StyleSheet } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import {View, Text, StyleSheet, TouchableOpacity, Platform} from 'react-native';
 import { ColorsBlue } from '../../constants/palet';
+import BlurWrapper from './BlurViewWrapper';
 
 
-function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler, textButtonOne, textButtonTwo, textButtonThree}) {
+function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler, textButtonOne, textButtonTwo, textButtonThree, addStyle}) {
     return (
-        <View style={styles.buttonOuterContainer}>
+        <View style = {[styles.buttonOuterContainer, addStyle]}>
             <View style={styles.button}>
 
                 <TouchableOpacity 
                 style={styles.buttonContainer}
                 onPress = {firstButtonHandler}>
-                    <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
                         
                         <Text style={styles.buttonText}>{textButtonOne}</Text>
-                    </BlurView>
+                    </BlurWrapper>
                 </TouchableOpacity>
                     
                 <TouchableOpacity 
                 style={styles.buttonContainer}
                 onPress = {secondButtonHandler}>
-                    <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
                         
                         <Text style={styles.buttonText}>{textButtonTwo}</Text>
-                    </BlurView>
+                    </BlurWrapper>
                 </TouchableOpacity>
                     
                 <TouchableOpacity 
                 style={styles.buttonContainer}
                 onPress = {thirdButtonHandler}>
-                    <BlurView intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
                         
                         <Text style={styles.buttonText}>{textButtonThree}</Text>
-                    </BlurView>
+                    </BlurWrapper>
                 </TouchableOpacity>
             </View>
         </View>
@@ -57,6 +57,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 1, // Lower the shadow opacity to make it more subtle
         shadowRadius: 4,
         elevation: 2,
+        backgroundColor: Platform.OS === 'android' && 'rgba(0,0,0, 0.95)',
+
     },
     buttonText: {
         color: ColorsBlue.blue50,

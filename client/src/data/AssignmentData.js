@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { colorRGB, ColorsBlue, ColorsBronze, ColorsDarkerBlue, ColorsDarkerDiamond, ColorsDarkerGreen, ColorsGreen, ColorsLighterGold, ColorsOrange, ColorsPurple, ColorsRed, ColorsSun, ColorsTile, StoreColors } from "../constants/palet"
+import { useContext, useEffect } from "react";
+import { colorRGB, ColorsBlue, ColorsBronze, ColorsDarkerBlue, ColorsDarkerDiamond, ColorsDarkerGreen, ColorsDarkerOrange, ColorsDarkerRed, ColorsDarkerSilver, ColorsGreen, ColorsLighterGold, ColorsOrange, ColorsPurple, ColorsRed, ColorsSun, ColorsTile, StoreColors } from "../constants/palet"
 import { AssignmentContext } from "../store/assignment-context";
 import { AssignmentDetailsContext } from "../store/assignment-Details-context";
 
@@ -10,6 +10,7 @@ const darkColors = colorRGB(ColorsBlue.blue1100, ColorsBlue.blue900, 15);
 export const assignments = (subject) => {
     const assignmentCtx = useContext(AssignmentContext);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext)
+
     let assignmentData;
     let icons;
 
@@ -42,7 +43,6 @@ export const assignments = (subject) => {
     }, {});
     
     return Object.values(uniqueTitles).map((assignment, index) => {
-        console.log(`title ${assignment.title}`)
         const assignmentTopic = assignmentCtx.filterSpecificTitle(assignment.title)
         const totalCompletedAssignments = assignmentDetailsCtx.getTotalCompletedAssignmentsPerTopic(assignment.title)
         const totalAssignments = assignmentTopic.length;
@@ -85,6 +85,6 @@ export const assignmentPlanetImages = [
 ]
 
 export const planetColors = [
-    [ColorsLighterGold.gold600, ColorsRed.red400, ColorsBronze.bronze300, ColorsOrange.orange500, ColorsBlue.blue700,ColorsPurple.purple400, ColorsTile.blue500, ColorsDarkerDiamond.diamond500, ColorsDarkerGreen.green300], 
-    [StoreColors.gold800, ColorsRed.red1000, ColorsBronze.bronze1000,  ColorsOrange.orange900, ColorsBlue.blue1150, ColorsPurple.purple1000, ColorsTile.blue1000, ColorsDarkerDiamond.diamond1000, ColorsDarkerGreen.green900],
+    [ColorsLighterGold.gold600, ColorsRed.red400, ColorsBronze.bronze300, ColorsOrange.orange500, ColorsBlue.blue700,ColorsPurple.purple400, ColorsTile.blue500, ColorsDarkerDiamond.diamond500, ColorsDarkerGreen.green300, ColorsDarkerOrange.orange300, ColorsDarkerRed.red300, ColorsDarkerSilver.silver300], 
+    [StoreColors.gold800, ColorsRed.red1000, ColorsBronze.bronze1000,  ColorsOrange.orange900, ColorsBlue.blue1150, ColorsPurple.purple1000, ColorsTile.blue1000, ColorsDarkerDiamond.diamond1000, ColorsDarkerGreen.green900, ColorsDarkerOrange.orange900, ColorsDarkerRed.red900, ColorsDarkerSilver.silver900],
 ]

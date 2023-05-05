@@ -5,8 +5,9 @@ import { LinearGradient } from "expo-linear-gradient"
 import Icon from "../../Icon";
 import { CarContext } from "../../../store/car-context";
 import { AssignmentDetailsContext } from "../../../store/assignment-Details-context";
-import { ColorsBlue, ColorsBronze, ColorsGreen, ColorsLighterGold, ColorsOrange, ColorsPurple, ColorsRed, ColorsTile, StoreColors} from "../../../constants/palet";
+import { ColorsBlue, ColorsOrange} from "../../../constants/palet";
 import { BlurView } from "expo-blur";
+import BlurWrapper from "../../UI/BlurViewWrapper";
 
 
 function AssignmentTile ({onPress, title, subject, icon, 
@@ -28,6 +29,8 @@ function AssignmentTile ({onPress, title, subject, icon,
     let shadowColor;
     let tint;
     let intensity;
+    let customColor;
+
 
     switch(subject){
         case 'Speed':
@@ -41,6 +44,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light' 
             intensity = completionStatus ? 60 : 12
+            customColor = 'rgba(40,40,70,0.9)'
             break;
 
         case 'Acc':
@@ -54,6 +58,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light'
             intensity = completionStatus ? 60 : 12
+            customColor = 'rgba(40,40,70,0.9)'
             break;
 
         case 'Afstand':
@@ -67,6 +72,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light'
             intensity = completionStatus ? 60 : 12
+            customColor = 'rgba(40,40,70,0.9)'
             break;
 
         case 'Wheels':
@@ -80,6 +86,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light'
             intensity = completionStatus ? 60 : 12
+            customColor = 'rgba(40,40,70,0.9)'
             break;
 
         case 'MOTOR':
@@ -95,6 +102,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
+            customColor = 'rgba(30,30,90,0.8)'
             break;
 
         case 'LED': 
@@ -110,6 +118,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
+            customColor = 'rgba(30,30,90,0.8)'
             break;
 
         case 'CAR':
@@ -125,11 +134,10 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
+            customColor = 'rgba(30,30,90,0.8)'
             break;
     }
 
-    const locations = colors.map((_, index) => index / (colors.length - 1));
-    // const colorIcon = iconColor ? iconColor : ColorsTile.mathematics;
     let index = 0;
 
     if (completion_status === true) {
@@ -143,6 +151,9 @@ function AssignmentTile ({onPress, title, subject, icon,
         shadowColor: 'black',
         elevation: 4
     }
+
+
+
     return ( 
         <Pressable
             onPress={onPress}
@@ -150,7 +161,12 @@ function AssignmentTile ({onPress, title, subject, icon,
                 pressed
             }) => [styles.tile, { shadowColor: shadowColor}, marginLeft && {marginLeft: 0}, pressed && styles.pressed]}
         >
-            <BlurView  intensity={intensity} tint = {tint} style = {[styles.colorGradient, {overflow: 'hidden'}]}>
+            <BlurWrapper  
+            intensity={intensity} 
+            tint = {tint} 
+            style = {[styles.colorGradient, {overflow: 'hidden'}]} 
+            customColor = {customColor}
+            >
 
                 <View style={[styles.titlecontainer, {marginTop: !completionData ? 20  : 5 }]}>
 
@@ -170,7 +186,7 @@ function AssignmentTile ({onPress, title, subject, icon,
                         addStyle = {addStyleIcon}
                     />
                 </View>
-                <View style = {{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                <View style = {{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', elevation: 4}}>
                     {/* Logic to display cash icon */}
                     {(!completionStatus) && 
                     <Icon 
@@ -191,7 +207,7 @@ function AssignmentTile ({onPress, title, subject, icon,
                         {status ? null : completedAssignments}
                     </Text>
 
-            </BlurView>
+            </BlurWrapper>
         </Pressable>
     )
 }
@@ -205,11 +221,11 @@ const styles = StyleSheet.create({
         flex: 1,
         borderColor: `rgba(10, 10, 10, 0.4)`,
         borderWidth: 0.4,
-        elevation: 1, 
         shadowOffset: {height: 2, width: 1},
         shadowRadius: 4,
         shadowOpacity: 1,
         shadowColor: 'black',
+        elevation: 5,
     },
     pressed: {
         opacity: 0.7,
@@ -227,7 +243,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginTop: 20,
         borderRadius: 8,
-        elevation: 1, 
         shadowOffset: {height: 2, width: 1},
         shadowRadius: 3,
         shadowOpacity: 0.8,
@@ -244,7 +259,6 @@ const styles = StyleSheet.create({
         shadowRadius: 1,
         shadowOpacity: 0.8,
         shadowColor: 'black',
-        elevation: 1
     },
     text:{
         textAlign: 'center',
@@ -254,7 +268,8 @@ const styles = StyleSheet.create({
     iconStyle:{
         alignItems: 'center',
         justifyContent: 'center',
-        margin: 12
+        margin: 12,
+        elevation: 4
     },
     completion: {
         marginTop: 2,

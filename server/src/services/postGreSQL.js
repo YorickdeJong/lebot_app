@@ -6,6 +6,7 @@ const config = {
     database: 'lebot',
     password: 'Opyorick1',
     port: 5432,
+    max: 5000,
 }
 
 const pool = new Pool(config);

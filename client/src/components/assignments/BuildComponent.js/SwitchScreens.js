@@ -3,7 +3,7 @@ import {  View } from 'react-native';
 import { ColorsBlue, } from '../../../constants/palet';
 import Icon from '../../Icon';
 
-function SwitchScreens({prevSlideHandler, nextSlideHandler, slideCount}){
+function SwitchScreens({prevSlideHandler, nextSlideHandler, slideCount, slideCountEnd}){
 
     return(
         <View style = {{flexDirection: 'row', flex: 1, justifyContent: 'center',  }}>
@@ -18,13 +18,14 @@ function SwitchScreens({prevSlideHandler, nextSlideHandler, slideCount}){
                     />
                 )}
 
-                    <Icon 
+                {!slideCountEnd && <Icon 
                     onPress = {nextSlideHandler}
                     size = {40}
                     color = {ColorsBlue.blue200}
                     icon = "play-forward-circle-outline"
                     addStyle={{marginHorizontal: 10, marginVertical: 2}}
                     />
+                }
         </View>
     )
 }

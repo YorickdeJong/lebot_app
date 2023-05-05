@@ -10,7 +10,7 @@ import ToggleMenu from "./ToggleMenu";
 import { SocketContext } from "../../../store/socket-context";
 import { useNavigation } from "@react-navigation/native";
 
-function OptionsBar({midIconHandler, rightIconHandler, midIcon, rightIcon, displayNumber}) {
+function OptionsBar({midIconHandler, rightIconHandler, midIcon, subject}) {
     const [isStopActive, setIsStopActive] = useState(false);
     const [headerHeight, setHeaderHeight] = useState(0);
     const socketCtx = useContext(SocketContext);
@@ -33,6 +33,16 @@ function OptionsBar({midIconHandler, rightIconHandler, midIcon, rightIcon, displ
         shadowColor: 'black',
         elevation: 4
     }
+
+    function chooseEqualityHandler(type) {
+        switch(type){
+            case "equals":
+                 
+        }
+
+    }
+
+
     return(    
         <View style={styles.shadowContainer}>
             <BlurView style = {styles.upperContainer} intensity={10} tint="dark">
@@ -74,6 +84,7 @@ function OptionsBar({midIconHandler, rightIconHandler, midIcon, rightIcon, displ
                 headerHeight = {headerHeight}
                 isStopActive = {isStopActive}
                 toggleModal = {toggleModal}
+                subject = {subject}
             />
         </View>
     )

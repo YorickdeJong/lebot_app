@@ -11,6 +11,10 @@ import MoneyContainer from '../../components/robot/store/moneyContainer';
 import { ColorsBlue } from '../../constants/palet';
 import { useNavigation } from '@react-navigation/native';
 import CustomHeader from './CustomNavigator.main';
+import { WifiContext } from '../../store/robot-connect-context';
+import { useContext } from 'react';
+import { SocketContext } from '../../store/socket-context';
+import { ipAddressRaspberryPi } from '../../data/ipaddresses.data';
 
 
 
@@ -23,13 +27,27 @@ const Stack = createNativeStackNavigator()
 // DISPLAYS SCREEN WITH ROBOT OPTIONS LIKE STORE AND SSH CONNECT
 function Robot () {
     const navigation = useNavigation();
-  
+    const WifiCtx = useContext(WifiContext)
+    const socketCtx = useContext(SocketContext)
+
+
+    function robotConnect() {
+        WifiCtx.showModalHandler(true)
+        const config = { //TODO make these values statewide
+          host: ipAddressRaspberryPi,
+          port: 22,
+          username: "ubuntu",
+          password: "password", 
+        }
+        socketCtx.Connect(config) 
+    }
+
     return (
       <Stack.Navigator
         screenOptions={{
           headerTintColor: 'white',
           header: ({ route }) => {
-            return <CustomHeader title={route.name} MoneyContainer={MoneyContainer} />;
+            return <CustomHeader MoneyContainer={MoneyContainer} />;
           },
           headerStyle: {
             backgroundColor: 'transparent',
@@ -45,8 +63,8 @@ function Robot () {
               const showMoneyContainer = route.name === "RobotStore";
               return (
                 <CustomHeader
-                  title={route.name}
                   MoneyContainer={showMoneyContainer ? MoneyContainer : null}
+                  robotConnect={robotConnect}
                 />
               );
             },
@@ -71,17 +89,7 @@ function Robot () {
             }
           }}/>
           
-          {/* <Stack.Screen 
-          component={RobotCommands}
-          name = "RobotCommands"
-          options= {{
-            title: 'Robot Commands',
-            
-          }}/>
-  
-          */
-          }
-  
+
       </Stack.Navigator>
     )
   }

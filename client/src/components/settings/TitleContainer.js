@@ -1,7 +1,7 @@
 
 import {View, Text, StyleSheet} from 'react-native'
 import { ColorsBlue } from '../../constants/palet'
-
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 function TitleContainer({text, style}) {
     return (
         <View style = {[styles.bar, style]}>
@@ -18,16 +18,16 @@ export default TitleContainer
 
 const styles = StyleSheet.create({
     bar: {
-        height: 55,
+        height: verticalScale(40),
         backgroundColor: ColorsBlue.blue500,
         justifyContent: 'flex-end',
-        borderBottomWidth: "1%",
+        borderBottomWidth: Platform.OS === 'ios' ? "1%" : 0.8,
         borderBottomColor: ColorsBlue.blue800,
         elevation: 2, 
-        shadowColor: ColorsBlue.blue1000,
+        shadowColor: ColorsBlue.blue1300,
         shadowOpacity: 0.7,
-        shadowRadius: 8,
-        shadowOffset: {height: 2, width: 3}
+        shadowRadius: 4,
+        shadowOffset: {height: 3, width: 1}
 
     },
     text: {

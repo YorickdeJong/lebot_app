@@ -1,9 +1,11 @@
 import React from 'react';
-import { StyleSheet, View, Modal, Text, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, Modal, Text, TouchableWithoutFeedback, Platform, TouchableOpacity} from 'react-native';
 import { BlurView } from 'expo-blur';
 import { ColorsBlue } from '../../constants/palet';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
+import PressableButton from '../../components/robot/robot_commands/PressableButton';
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 
 function ModalCredentials({ isStopActive, setIsStopActive, isLogin}) {
     const navigation = useNavigation();
@@ -11,17 +13,25 @@ function ModalCredentials({ isStopActive, setIsStopActive, isLogin}) {
 
     function redirectLoginHandler(type){
         setIsStopActive(false);
+        console.log('pressed')
         switch(type){
             case 'teacher':
                 navigation.navigate('Login', {
-                    type: 'Docent'
+                    type: 'teacher'
                 })
                 break;
             case 'student':
                 navigation.navigate('Login', {
-                    type: 'Leerling'
+                    type: 'student'
                 })
                 break;
+
+            case 'admin':
+                navigation.navigate('Login', {
+                    type: 'admin'
+                })
+                break;
+
         }
     }
 
@@ -30,12 +40,12 @@ function ModalCredentials({ isStopActive, setIsStopActive, isLogin}) {
         switch(type){
             case 'teacher':
                 navigation.navigate('Signup', {
-                    type: 'Docent'
+                    type: 'teacher'
                 })
                 break;
             case 'student':
                 navigation.navigate('Signup', {
-                    type: 'Leerling'
+                    type: 'student'
                 })
                 break;
         }
@@ -43,25 +53,69 @@ function ModalCredentials({ isStopActive, setIsStopActive, isLogin}) {
     
     
     return (
-        <Modal visible={isStopActive} animationType="fade" transparent>
+        <>
+
+        {Platform.OS === 'ios' ?
+        (<Modal visible={isStopActive} animationType="fade" transparent>
             <TouchableWithoutFeedback onPress={() => setIsStopActive(false)}>
                 <View style={styles.outerContainer}>
                 <TouchableWithoutFeedback onPress={() => {}}>
-                    <BlurView intensity={20} tint="dark" style={styles.modalBackground}>
-                    <Text style={[styles.text, {marginBottom: 10, fontWeight: '500'}]}>{isLogin ? 'Login' : 'Register'}</Text>
+                    <BlurView intensity={20} tint="dark" style={[styles.modalBackground, {height: isLogin ? 250 : 220}]}>
+                        <Text style={[styles.text, {marginBottom: 10, fontWeight: '500'}]}>{isLogin ? 'Login' : 'Register'}</Text>
 
-                    <TouchableOpacity style={styles.button} onPress = {isLogin ? redirectLoginHandler.bind(this, 'teacher') : redirectRegisterHandler.bind(this, 'teacher')}>
-                        <Text style={styles.text}>Docent</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress = {isLogin ? redirectLoginHandler.bind(this, 'teacher') : redirectRegisterHandler.bind(this, 'teacher')}>
+                            <Text style={styles.text}>Docent</Text>
+                        </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.button} onPress = {isLogin ? redirectLoginHandler.bind(this, 'student') : redirectRegisterHandler.bind(this, 'student')}>
-                        <Text style={styles.text}>Leerling</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.button} onPress = {isLogin ? redirectLoginHandler.bind(this, 'student') : redirectRegisterHandler.bind(this, 'student')}>
+                            <Text style={styles.text}>Leerling</Text>
+                        </TouchableOpacity>
+
+                        {isLogin && 
+                        <>
+                            <TouchableOpacity style={styles.button} onPress = {redirectLoginHandler.bind(this, 'admin')}>
+                                <Text style={styles.text}>Admin</Text>
+                            </TouchableOpacity>
+                        </>
+                        }
+
                     </BlurView>
                 </TouchableWithoutFeedback>
                 </View>
             </TouchableWithoutFeedback>
-        </Modal>
+        </Modal>) : 
+        (
+            <Modal visible={isStopActive} animationType="fade" transparent>
+                <TouchableWithoutFeedback onPress={() => setIsStopActive(false)}>
+                    <View style={styles.outerContainer}>
+                    <TouchableWithoutFeedback onPress={() => {}}>
+                        <View tint="dark" style={[styles.modalBackground, {height: isLogin ? 250 : 195, backgroundColor: 'rgba(100, 100, 100, 0.3)'}]}>
+                            <Text style={[styles.text, {marginBottom: 10, fontWeight: '500'}]}>{isLogin ? 'Login' : 'Register'}</Text>
+    
+                            <TouchableOpacity style={styles.button} onPress = {isLogin ? redirectLoginHandler.bind(this, 'teacher') : redirectRegisterHandler.bind(this, 'teacher')}>
+                                <Text style={styles.text}>Docent</Text>
+                            </TouchableOpacity>
+    
+                            <TouchableOpacity style={styles.button} onPress = {isLogin ? redirectLoginHandler.bind(this, 'student') : redirectRegisterHandler.bind(this, 'student')}>
+                                <Text style={styles.text}>Leerling</Text>
+                            </TouchableOpacity>
+    
+                            {isLogin && 
+                            <>
+                                <TouchableOpacity style={styles.button} onPress = {redirectLoginHandler.bind(this, 'admin')}>
+                                    <Text style={styles.text}>Admin</Text>
+                                </TouchableOpacity>
+                            </>
+                            }
+    
+                        </View>
+                    </TouchableWithoutFeedback>
+                    </View>
+                </TouchableWithoutFeedback>
+            </Modal>
+            )
+        }
+        </>
     );
 }
 
@@ -76,10 +130,10 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         shadowColor: ColorsBlue.blue1300,
         shadowOpacity: 0.8,
-        marginTop: 55,
+        marginTop: verticalScale(30),
     },
     modalBackground: {
-        height: 195,
+        height: 250,
         width: 250,
         borderRadius: 10,
         overflow: 'hidden',

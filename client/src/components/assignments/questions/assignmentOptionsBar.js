@@ -1,18 +1,18 @@
 
-import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedback } from "react-native"
+import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedback, TouchableOpacity } from "react-native"
 import Icon from "../../Icon";
 import ToggleMenu from "../../robot/driving_on_command/ToggleMenu";
 import { ColorsBlue, ColorsGray, ColorsLighterGold, ColorsTile } from "../../../constants/palet";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { useContext, useEffect, useState, useRef } from "react";
 import {  Header } from 'react-navigation-stack';
 import { BlurView } from "expo-blur";
 import { Colors } from "react-native/Libraries/NewAppScreen";
+import BlurWrapper from "../../UI/BlurViewWrapper";
 
 
 
 
-function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, currentIndex, redirectToMeasurementHandler, onMetingPressed}){
+function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, currentIndex, redirectToMeasurementHandler, onMetingPressed, subject}){
     const [isStopActive, setIsStopActive] = useState(false);
     const [headerHeight, setHeaderHeight] = useState(0);
     const [optionsVisible, setOptionsVisible] = useState(false);
@@ -33,13 +33,14 @@ function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, 
             <TouchableWithoutFeedback onPress={() => setOptionsVisible(false)}>
                 <View style={styles.modalBackground}>
                     <TouchableWithoutFeedback onPress={() => {}}>
-                        <BlurView
+                        <BlurWrapper
                             intensity={50}
                             tint="dark"
                             style={[
                             styles.optionsBox,
                             { top: metingPosition.y + 5, right: metingPosition.y - 25 },
                             ]}
+                            customColor= 'rgba(30, 30, 80, 0.95)'
                         >
                             {Array.from({ length: chartLength }).map((_, i) => (
                                 <TouchableOpacity
@@ -62,7 +63,7 @@ function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, 
                                         Start Meting
                                     </Text>
                                 </TouchableOpacity>
-                        </BlurView>
+                        </BlurWrapper>
                     </TouchableWithoutFeedback>
                 </View>
             </TouchableWithoutFeedback>
@@ -85,55 +86,56 @@ function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, 
     };
 
     return(
-            <BlurView intensity={10} tint = "dark" style = {styles.upperIcons}>
-                <TouchableOpacity onPress={toggleModal}>
-                    <View style={styles.stopContainer}>
-                        <View
-                        style={[
-                            styles.stopCircle,
-                            isStopActive ? styles.stopCircleActive : {},
-                        ]}
-                        />
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={toggleOptions}>
-                    <View ref={metingRef} style = {{flexDirection: 'row', alignItems: 'center', marginLeft: 33 }}>
-                            <Text  style = {styles.text}>
-                                METING {currentIndex + 1}
-                            </Text>
-                        <Icon 
-                        icon = {rightIcon} 
-                        size={23}
-                        color={ ColorsBlue.blue50 }//ColorsLighterGold.gold400}
-                        onPress = {toggleOptions}
-                        differentDir={true}
-                        />
-                    </View>
-                </TouchableOpacity>
-                <View style = {{marginLeft: 25}}>
-                    <Icon 
-                    icon = {midIcon}
-                    size={26}
-                    color={ColorsBlue.error300}
-                    onPress = {midIconHandler}
-                    differentDir={true}/>
+        <View intensity={10} tint = "dark" style = {styles.upperIcons}>
+            <TouchableOpacity onPress={toggleModal}>
+                <View style={styles.stopContainer}>
+                    <View
+                    style={[
+                        styles.stopCircle,
+                        isStopActive ? styles.stopCircleActive : {},
+                    ]}
+                    />
                 </View>
-                <ToggleMenu
-                headerHeight = {headerHeight}
-                isStopActive = {isStopActive}
-                toggleModal = {toggleModal}
-                />
-                {/* Options Box */}
-                <Modal
-                    transparent={true}
-                    visible={optionsVisible}
-                    onRequestClose={() => {
-                        setOptionsVisible(false);
-                    }}
-                >
-                    <OptionsBox />
-                </Modal>
-            </BlurView>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={toggleOptions}>
+                <View ref={metingRef} style = {{flexDirection: 'row', alignItems: 'center', marginLeft: 33 }}>
+                        <Text  style = {styles.text}>
+                            METING {currentIndex + 1}
+                        </Text>
+                    <Icon 
+                    icon = {rightIcon} 
+                    size={23}
+                    color={ ColorsBlue.blue50 }//ColorsLighterGold.gold400}
+                    onPress = {toggleOptions}
+                    differentDir={true}
+                    />
+                </View>
+            </TouchableOpacity>
+            <View style = {{marginLeft: 25}}>
+                <Icon 
+                icon = {midIcon}
+                size={26}
+                color={ColorsBlue.error300}
+                onPress = {midIconHandler}
+                differentDir={true}/>
+            </View>
+            <ToggleMenu
+            headerHeight = {headerHeight}
+            isStopActive = {isStopActive}
+            toggleModal = {toggleModal}
+            subject = {subject}
+            />
+            {/* Options Box */}
+            <Modal
+                transparent={true}
+                visible={optionsVisible}
+                onRequestClose={() => {
+                    setOptionsVisible(false);
+                }}
+            >
+                <OptionsBox />
+            </Modal>
+        </View>
     )
 }
 
@@ -144,11 +146,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 5,
         width: "101%",
         paddingHorizontal: 15,
         alignSelf: 'center',
-        paddingVertical: 15
+        paddingVertical: 15,
+        backgroundColor: 'rgba(5, 5, 30, 0.6)',
     },
     stopContainer: {
         width: 30,

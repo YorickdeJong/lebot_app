@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useContext, useState, useCallback
+import React, { useEffect, useRef, useContext, useState, useCallback, useMemo
  } from 'react'
 import {Alert} from 'react-native'
 import DriveLayout from '../../../components/robot/driving_on_command/DriveLayout';
@@ -7,40 +7,57 @@ import { CarContext } from '../../../store/car-context';
 import { SocketContext } from '../../../store/socket-context';
 import { UserProfileContext } from '../../../store/userProfile-context';
 import { throttle } from 'lodash';
+import { useSocketPower } from '../../../hooks/power_measurement.hooks';
+import { useSocketMeasurementResults } from '../../../hooks/measurement_results';
 
 function Controller({ navigation, route }) {
     const socketCtx = useContext(SocketContext);
     const carCtx = useContext(CarContext);
     const userprofileCtx = useContext(UserProfileContext);
     const assignmentCtx = useContext(AssignmentContext);
-    const [keyStroke, setKeyStroke] = useState('');
     const [alertShown, setAlertShown] = useState(false);
     const moveXReceived = useRef(0);
     const moveYReceived = useRef(0);
-    const { displayNumber } = route.params;
+    const { displayNumber, motorStand, command } = route.params;
+    
+    //connect power measurement socket to database if subject is CAR
+    const shouldConnectPower = useMemo(() => assignmentCtx.assignmentImage.subject === "CAR", [assignmentCtx.assignmentImage.subject]);
+    const socketPower = useSocketPower(shouldConnectPower, userprofileCtx.userprofile.id);
 
-    console.log(`Controller`)
+    const shouldConnectMeasurement = useMemo(() => assignmentCtx.assignmentImage.subject === "MOTOR", [assignmentCtx.assignmentImage.subject]);
+    const socketMeasurement = useSocketMeasurementResults(shouldConnectMeasurement, userprofileCtx.userprofile.id);
 
     const powerHandler = useCallback(() => {
         socketCtx.setPower((prevPower) => !prevPower);
         if (!socketCtx.power) {
-            console.log(`====================`)
-            console.log(`ASSIGNMENT NUMBER: ${assignmentCtx.assignmentImage.assignment_number}`)
-            console.log(`ASSIGNMENT TITLE: ${assignmentCtx.assignmentImage.title}`)
-            console.log(`ASSIGNMENT SUBJECT: ${assignmentCtx.assignmentImage.subject}`)
-            const command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
+            const { subject } = assignmentCtx.assignmentImage;
+            let command;
+
+            //start up specific script on the robot, using the sshSocket
+            if (subject === "MOTOR" && !motorStand){
+                command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
+            }
+            else if (subject === "CAR" && !motorStand){
+                command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
+            }
+            else if (subject === "CAR" && motorStand){
+                command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${motorStand} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
+            }
+            else{
+                console.log('ERROR: subject is not defined')
+            }
             socketCtx.Command('', command);
+
         } else {
             socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
         }
-    }, [socketCtx, carCtx, userprofileCtx, assignmentCtx, displayNumber]);
+    }, [socketCtx, carCtx, userprofileCtx, assignmentCtx, displayNumber, socketPower, socketMeasurement]);
 
     const throttledEmitDriveCommand = useCallback(
         throttle((command) => {
             socketCtx.socket.current.emit('driveCommand', { command });
         }, 50), // Adjust the delay (in ms) according to your requirements
-        [socketCtx.socket]
-    );
+    [socketCtx.socket]);
 
     const moveHandler = useCallback((moveX, moveY) => {
         moveXReceived.current = moveX;
@@ -88,18 +105,13 @@ function Controller({ navigation, route }) {
             }
     }, [socketCtx.power, alertShown, throttledEmitDriveCommand]);
 
-    const disconnectHandle = useCallback(() => {
-        console.log('disconnected');
-        socketCtx.Disconnect();
-        navigation.replace('RobotCommands');
-    }, [socketCtx, navigation]);
 
     return (
         <DriveLayout 
         moveHandler={moveHandler}
         midIconHandler={powerHandler}
-        rightIconHandler={disconnectHandle}
         displayNumber={displayNumber}
+        subject={assignmentCtx.assignmentImage.subject}
         />
         )
 }

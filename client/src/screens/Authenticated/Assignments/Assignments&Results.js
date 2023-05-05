@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, FlatList, StyleSheet, ImageBackground, View } from "react-native";
+import { Text, FlatList, StyleSheet, ImageBackground, View, Dimensions } from "react-native";
 import {assignments} from "../../../data/AssignmentData";
 import AssignmentTile from "../../../components/assignments/questions/AssignmentTile";
 import { ColorsBlue } from "../../../constants/palet";
@@ -7,7 +7,10 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { BlurView } from "expo-blur";
 import ButtonList from "../../../components/UI/ButtonList.UI";
 import { useEffect, useState } from "react";
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
+
+const { width, height } = Dimensions.get('window');
 
 function chooseKey(title){
     switch(title){
@@ -121,26 +124,31 @@ function AssignmentsResults() {
 
 export default AssignmentsResults
 
+
+console.log('height', height)
+console.log('width', width)
+
 const styles = StyleSheet.create({
     outercontainer: {
         marginTop: 20,
         flex: 1
     },
     text: {
-        color: ColorsBlue.blue100,
+        color:  ColorsBlue.blue50,
         fontSize: 30,
         shadowColor: 'rgba(1, 1, 1, 1)',
-        shadowOffset: { width: 1, height: 2 },
+        shadowOffset: { width: 1, height: 3 },
         shadowOpacity: 1,
-        shadowRadius: 2,
+        shadowRadius: 4,
+        elevation: 5,
         textAlign: 'center',
-        marginTop: 17,
+        marginTop: Platform.OS === 'ios' ? verticalScale(120) : (height > 750 ? verticalScale(130) : verticalScale(80)),
         fontWeight: '450',
 
     },
     backgroundImage: {
         flex: 1,
-        resizeMode: 'contain',
+        resizeMode: 'cover',
     },
     backgroundColor: {
         flex: 1,
@@ -148,11 +156,11 @@ const styles = StyleSheet.create({
     },
     tileContainer: {
         position: 'absolute',
-        top: "16%",
-        marginHorizontal: "3.6%",
-        borderRadius: "200%",
+        top: height > 750 ? "16%" : "13%",
+        marginHorizontal: height > 750 ? "2.30%" : "3.7%",
+        borderRadius: Platform.OS === 'ios' ? "200%" : (height > 750 ? scale(200) : scale(135)) ,
         overflow: 'hidden',
-        height: "56%",
+        height: height > 750 ? "56%" : '58%',
     },
     buttonContainer: {
         width: 100,

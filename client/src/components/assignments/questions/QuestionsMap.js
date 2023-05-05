@@ -3,18 +3,18 @@ import {
   StyleSheet,
   ImageBackground,
   ScrollView,
-  View,
   Animated,
-  Pressable,
   Easing,
-  Image
+  Dimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import Svg, { Circle, Defs, Ellipse, RadialGradient,  Stop, Text as SvgText } from 'react-native-svg';
+import Svg, {  Ellipse,  } from 'react-native-svg';
 import { ColorsBlue } from '../../../constants/palet';
-import { planetColors } from '../../../data/AssignmentData';
-import { useSharedValue, withRepeat, withTiming, useAnimatedStyle, Easing as EasingReanimated} from 'react-native-reanimated';
 import Planets from './Planets';
+import { useContext } from 'react';
+
+
+const { width, height } = Dimensions.get('window');
 
 
 function QuestionsMap({ numTiles, onPress }) {
@@ -42,9 +42,9 @@ function QuestionsMap({ numTiles, onPress }) {
     }, [orbitAnimation]);
 
     const tileSize = 50 * 7 / numTiles > 50 ? 50 : 50 * 7 / numTiles;
-    const centerX = 195;
-    const centerY = 340;
-    const maxOrbitRadius = 180;
+    const centerX = width / 2;
+    const centerY = 0.82 * height / 2 ;
+    const maxOrbitRadius = height > 750 ? 180 : 140;
     const strokeWidth = 1
     const ellipticalFactor = 1.7;
 
@@ -164,8 +164,6 @@ export default React.memo(QuestionsMap)
 
 const styles = StyleSheet.create({
     container: {
-        borderTopWidth: 0.6,
-        borderTopColor: ColorsBlue.blue900,
         flex: 1,
     },
     scrollView: {

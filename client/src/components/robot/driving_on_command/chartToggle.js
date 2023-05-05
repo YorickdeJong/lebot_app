@@ -1,5 +1,4 @@
-import { StyleSheet, View, Text, } from "react-native"
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { StyleSheet, View, Text, TouchableOpacity} from "react-native"
 import { ColorsBlue } from "../../../constants/palet";
 
 
@@ -36,16 +35,16 @@ const styles = StyleSheet.create({
         marginLeft: 5,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
     },
     stopContainer: {
         width: 40,
         height: 20,
         borderRadius: 20,
         borderWidth: 2,
-        marginLeft: 20,
+        marginLeft: 30,
         borderColor: ColorsBlue.blue100,
-        justifyContent: "center",
-        alignItems: "flex-start",
+        
     },
     stopCircle: {
         width: 16,

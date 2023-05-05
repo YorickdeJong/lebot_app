@@ -1,11 +1,10 @@
 import { View, StyleSheet, Alert, ImageBackground } from "react-native";
 import { useState, useContext, useEffect } from "react";
-import { LinearGradient } from "expo-linear-gradient";
 
 import {ColorsBlue, ColorsGreen, ColorsOrange } from "../../constants/palet";
 import TextForm from "../../components/Login/TextForm";
 import { AuthContext } from "../../store/auth-context";
-import { getUserProfileDetails, login } from "../../hooks/auth";
+import { getAdminProfileDetails, getUserProfileDetails, login, loginAdmin } from "../../hooks/auth";
 import { UserProfileContext } from "../../store/userProfile-context";
 import { AssignmentContext } from "../../store/assignment-context";
 import { getAllAssignments } from "../../hooks/assignments";
@@ -25,28 +24,39 @@ function Login({route}) {
     const chatCtx = useContext(ChatContext);
     const authenticateType = route.params.type
 
+    console.log('auth type', authenticateType)
+
     async function loginHandler({ email, password }) {
         try {
             const userData = await login(email, password);
-            console.log(`token ${userData.token}`)
-            console.log(`userData id ${userData.id}`)
+            const user_role = userData.user_role
+            if (authenticateType !== user_role) {
+                Alert.alert(
+                    'Authenticatie mislukt!',
+                    'Je hebt de verkeerde inlog rol!'
+                );
+                return;
+            }
+            
             authCtx.authenticate(userData.token);
             
+
             const userProfile = await getUserProfileDetails(userData.id);
+            console.log(userProfile)
             userCtx.editUserProfile(userProfile);
             
             const assignments = await getAllAssignments();
             assignmentCtx.initializeAssignments(assignments)
             
-            const carDetails = await getUserCarDetails(userData.id);
-            console.log(carDetails)
-            carCtx.initializeCarDetails(carDetails)
-            
-            const chatHistory = await getChatHistory(userData.id);
-            chatCtx.initializeChatHistory(chatHistory)
-            
-            const assignmentDetails = await getAllAssignmentDetails(userData.id)
-            assignmentDetailsCtx.initializeAssignmentDetails(assignmentDetails)
+            if (user_role === 'student') {
+                const carDetails = await getUserCarDetails(userData.id);
+                console.log(carDetails)
+                carCtx.initializeCarDetails(carDetails)
+                
+                const chatHistory = await getChatHistory(userData.id);
+                chatCtx.initializeChatHistory(chatHistory)
+                
+            }
             
         } 
 
@@ -59,6 +69,31 @@ function Login({route}) {
         }
     }
 
+    async function adminLoginHandler({email, password}) {
+        try {
+            const userData = await loginAdmin(email, password);
+            console.log(authenticateType)
+            console.log('userData', userData)
+            if (authenticateType !== userData.user_role) {
+                Alert.alert(
+                    'Authenticatie mislukt!',
+                    'Je hebt de verkeerde inlog rol!'
+                );
+                return;
+            }
+            //ADD edit adminProfile
+            const userProfile = await getAdminProfileDetails(userData.id);
+            userCtx.editAdminProfile(userProfile);
+            authCtx.authenticate(userData.token);
+        }
+        catch(error) {
+            console.log(error)
+            Alert.alert( 
+                'Authentication failed!',
+                'Could not log you in. Please check your credentials or try again later!'
+            );
+        } 
+    }
 
     return (
             <ImageBackground
@@ -68,6 +103,7 @@ function Login({route}) {
                 >
                 <TextForm LoginVariable 
                 onAuthenticate = {loginHandler} 
+                onAuthenticateAdmin = {adminLoginHandler}
                 authenticateType = {authenticateType}
                 />
             </ImageBackground>

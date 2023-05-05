@@ -1,14 +1,17 @@
 import { useNavigation } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Alert, Text } from "react-native"
+import {  useEffect, useState } from "react";
+import { View, StyleSheet, Alert, Text, Platform, Dimensions } from "react-native"
 import ChangeButton from "../UI/ChangeButton";
 import TextContainer from "../../components/Login/TextContainer";
 import { ColorsBlue, ColorsGreen } from "../../constants/palet";
-import { ColorContext } from "../../store/color-context";
-import { LinearGradient } from "expo-linear-gradient"
-import { BlurView } from "expo-blur";
+import { deleteSpecificKey, getSpecificKey } from "../../hooks/keys.hooks";
+import BlurWrapper from "../UI/BlurViewWrapper";
 
-function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType}) {
+
+
+const screenHeight  = Dimensions.get('window').height;
+
+function TextForm({LoginVariable, onAuthenticate, onAuthenticateAdmin, onCreateUser, authenticateType}) {
     const navigation = useNavigation()
 
     const [credentialsInvalid, setCredentialsInvalid] = useState({
@@ -16,6 +19,7 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
         password: false,
         confirmEmail: false,
         confirmPassword: false,
+        checkType: false,
         checkUsername: false,
         checkName: false,
         checkLastName: false,
@@ -32,35 +36,30 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
     const [name, setName] = useState('');
     const [lastname, setLastName] = useState('');
     const [dob, setDOB] = useState('');
-    const [school, setSchool] = useState('');
-    const [classschool, setClassSchool] = useState('');
-    const [level, setLevel] = useState('');
-    
+    const [code, setCode] = useState('');
+
     useEffect(() => {
         setCredentialsInvalid({
             email: false,
             password: false,
-            checkUsername: false,
             confirmEmail: false,
             confirmPassword: false,
+            checkType: false,
+            checkUsername: false,
             username: false,
             checkName: false,
             checkLastName: false,
             checkDOB: false,
-            checkSchool: false,
-            checkClassSchool: false,
-            checkLevel: false,
+            checkCode: false,
         });
         setEnteredEmail(enteredEmail)
     }, [enteredEmail]
     )
-
-
     
-    function onSubmitHandler(){
+    async function onSubmitHandler(){
         let email= enteredEmail.trim();
         let password = enteredPassword.trim(); 
-
+        
         let checkEmail = email.includes('@');
         let checkPassword  = password.length > 6;
         let checkPasswords = password === confirmPassword;
@@ -69,50 +68,89 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
         let checkName = name.length > 2;
         let checkLastName = lastname.length > 2;
         let checkDOB = dob.includes('-') && dob.length === 10
-        let checkSchool = school.length > 2;
-        let checkClassSchool = classschool.length === 1;
-        let checkLevel = level.length > 2
-    
+        
+        //TODO: add check for type from received key
+        let checkCode;
+        let checkType; 
+        
+        if (!LoginVariable) {
+            try{
+                checkCode =  await getSpecificKey(code) //contains available key, school id, school name, user type -> if data received, key exists
+                console.log(checkCode)
+                if (checkCode.uuid_key !== code) {
+                    Alert.alert('You did not provide the correct code')
+                    return;
+                }
+                //check if user logs in as the correct user role -> admins cannot create an account this way
+                checkType = authenticateType === checkCode.user_role;
+                console.log('checkType: ', checkType)
+            }
+            catch(error) {
+                console.log('code failed')
+                return Alert.alert('Error while logging in')
+            }
+        }
 
+        //check if all the credentials are valid, default is false
         if (!checkEmail || !checkPassword || (!LoginVariable && (
-            !checkPasswords || ! checkUsername || !checkName 
-            || !checkLastName || !checkDOB || !checkSchool
-            || !checkClassSchool || !checkLevel))) {
+            !checkType || !checkPasswords || !checkUsername || !checkName 
+            || !checkLastName || !checkDOB))) {
                 Alert.alert('You did not provide the correct credentials')
                 setCredentialsInvalid({
                     email: !checkEmail,
                     password: !checkPassword,
                     confirmPassword: !checkPassword || !checkPasswords,
+                    checkType: !checkType,
                     checkUsername: !checkUsername,
                     checkName: !checkName,
                     checkLastName: !checkLastName,
                     checkDOB: !checkDOB,
-                    checkSchool: !checkSchool,
-                    checkClassSchool: !checkClassSchool,
-                    checkLevel: !checkLevel,
+                    checkCode: !checkCode,
                 });
                 return;
             }
-
+            
+            //Data for login
             if (LoginVariable) {
-                onAuthenticate({email, password})
+                if (authenticateType === 'student' || authenticateType === 'teacher') {
+                    onAuthenticate({email, password})
+                }
+                else {
+                    console.log('auth type', authenticateType)
+                    onAuthenticateAdmin({email, password})
+                }
             }
+
+            //data for create account
             else {       
-                onCreateUser({email, password, username, name, lastname, dob, school, classschool, level})
+                const {uuid_key, school_id, school_name, user_role} = checkCode
+                console.log(uuid_key, ' ',school_id, ' ', school_name, ' ', user_role)
+                try{
+                    await onCreateUser({email, password, username, name, lastname, dob, school_name, school_id, user_role})
+                }
+                catch(error){
+                    console.log(error)
+                    Alert.alert('Error while creating account')
+                    return
+                }
+                const isDeleted = await deleteSpecificKey(uuid_key)
+                if (!isDeleted) {
+                    Alert.alert('Key not valid or already used')
+                    return
+                }
             }
         }
         
-
     function onSwitchScreenHandler(){
         console.log(authenticateType)
         if (LoginVariable){
-         navigation.replace('Signup', {
-            authenticateType: {authenticateType}
-         })
+            navigation.replace('Signup', {
+                type: authenticateType
+            })
         }
         else {
             navigation.replace('Login', {
-                authenticateType: {authenticateType}
+                type: authenticateType
             })
         }    
     }
@@ -140,16 +178,11 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
             case 'dob':
                 setDOB(enteredValue);
                 break;
-            case 'school':
-                setSchool(enteredValue);
-                break;
-            case 'classSchool':
-                setClassSchool(enteredValue);
-                break;
-            case 'level':
-                setLevel(enteredValue);
+            case 'code':
+                setCode(enteredValue);
                 break;
         }
+
         setCredentialsInvalid({
             email: false,
             password: false,
@@ -159,16 +192,31 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
             checkName: false,
             checkLastName: false,
             checkDOB: false,
-            checkSchool: false,
-            checkClassSchool: false,
-            checkLevel: false,
+            checkCode: false,
         });
     }
 
+    let title;
+
+    if (authenticateType === "student") {
+        title = "Leerling"
+    }
+    else if (authenticateType === "teacher") {
+        title = "Docent"
+    }
+    else if (authenticateType === "admin") {
+        title = "Admin"
+    }
+    else {
+        return
+    }
+
     return(
+        <>
         <View style = {styles.boxContainer}>
-            <BlurView intensity={15} tint = "dark" style={[styles.box, ]}>
-                <Text style  = {styles.userTypeText}>{authenticateType}</Text>    
+           <BlurWrapper intensity={15} tint = "dark" style={[styles.box, ]}
+           customColor={'rgba(90,90,150, 0.45)'}>
+                <Text style  = {styles.userTypeText}>{title}</Text>    
                 <TextContainer 
                 placeholder = "Email"
                 setUserDetails={onUserInputHandler.bind(this, 'email')}
@@ -178,14 +226,14 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
                 />
                 {!LoginVariable && 
                     <TextContainer 
-                    placeholder = "Username"
+                    placeholder = "Gebruikersnaam"
                     setUserDetails={onUserInputHandler.bind(this, 'username')}
                     value = {username}
                     isValid = {credentialsInvalid.checkUsername}
                 />
                 }
                 <TextContainer 
-                placeholder = "Password"
+                placeholder = "Wachtwoord"
                 setUserDetails={onUserInputHandler.bind(this, 'password')}
                 value = {enteredPassword}
                 isValid = {credentialsInvalid.password}
@@ -193,7 +241,7 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
                 />
                 {!LoginVariable && 
                     <TextContainer 
-                    placeholder = "Confirm Password"
+                    placeholder = "Bevestig Wachtwoord"
                     setUserDetails={onUserInputHandler.bind(this, 'confirmPassword')}
                     value = {confirmPassword}
                     isValid = {credentialsInvalid.confirmPassword}
@@ -202,7 +250,7 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
                 }
                 {!LoginVariable && 
                     <TextContainer  
-                    placeholder = "Name"
+                    placeholder = "Naam"
                     setUserDetails={onUserInputHandler.bind(this, 'name')}
                     value = {name}
                     isValid = {credentialsInvalid.checkName} 
@@ -210,7 +258,7 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
                 }  
                 {!LoginVariable && 
                     <TextContainer 
-                    placeholder = "Last Name"
+                    placeholder = "Achternaam"
                     setUserDetails={onUserInputHandler.bind(this, 'lastName')}
                     value = {lastname}
                     isValid = {credentialsInvalid.checkLastName}
@@ -219,7 +267,7 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
                 }
                 {!LoginVariable && 
                     <TextContainer 
-                    placeholder = "Date of Birth"
+                    placeholder = "Geboortedatum"
                     setUserDetails={onUserInputHandler.bind(this, 'dob')}
                     value = {dob}
                     isValid = {credentialsInvalid.checkDOB}
@@ -227,27 +275,10 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
                 }
                 {!LoginVariable && 
                     <TextContainer 
-                    placeholder = "School"
-                    setUserDetails={onUserInputHandler.bind(this, 'school')}
-                    value = {school}
-                    isValid = {credentialsInvalid.checkSchool}
-                    />
-                }
-                {!LoginVariable && 
-                    <TextContainer  
-                    placeholder = "Class"
-                    setUserDetails={onUserInputHandler.bind(this, 'classSchool')}
-                    value = {classschool}
-                    isValid = {credentialsInvalid.checkClassSchool} 
-                    addStyle = {{flex: 1}}/>
-                }
-                {!LoginVariable && 
-                    <TextContainer 
-                    placeholder = "Level"
-                    setUserDetails={onUserInputHandler.bind(this, 'level')}
-                    value = {level}
-                    isValid = {credentialsInvalid.checkLevel}
-                    addStyle = {{flex: 1}}
+                    placeholder = "Code"
+                    setUserDetails={onUserInputHandler.bind(this, 'code')}
+                    value = {code}
+                    isValid = {credentialsInvalid.checkCode}
                     />
                 }
                 <View style={styles.buttonContainer}>
@@ -261,8 +292,11 @@ function TextForm({LoginVariable, onAuthenticate, onCreateUser, authenticateType
                     {LoginVariable ? "Create Account" : "Login Instead"} 
                     </ChangeButton>
                 </View>
-            </BlurView>
+            </BlurWrapper>
         </View>
+            
+         
+        </>
     )
 }
 
@@ -270,20 +304,27 @@ export default TextForm
 
 const styles = StyleSheet.create({
     boxContainer: {
-        shadowOffset: {height: 2, width:0 },
-        shadowRadius: 5,
-        shadowColor: ColorsBlue.blue1300,
-        shadowOpacity: 0.8,
+        ...Platform.select({
+            ios: {
+              shadowColor: 'black',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 1,
+              shadowRadius: 4,
+            },
+            android: {
+              elevation: 0,
+            },
+          }),
     },
     box: {
         marginTop: 20,
         marginHorizontal: 15,
         paddingTop: 20,
-        elevation: 2,
         borderRadius: 10,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: ColorsBlue.blue1200,
+        
     },
     buttonContainer: { 
         marginTop: 15,

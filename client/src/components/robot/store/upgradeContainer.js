@@ -9,6 +9,7 @@ import { useCallback, useContext, useEffect, useState} from "react"
 import React from "react"
 import { CarContext } from "../../../store/car-context"
 import { changeUserCarDetails } from "../../../hooks/carDetails"
+import BlurWrapper from "../../UI/BlurViewWrapper"
 
 const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundColors, borderColors, textColor}) => {
     const carCtx = useContext(CarContext);
@@ -89,7 +90,10 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
     }, [carCtx.carProperties, carCtx.upgradeLog])
 
     return (
-            <BlurView intensity={2} style={[styles.upgradeContainer, {backgroundColor: backgroundColors, borderColor: borderColors}]}>
+            <BlurWrapper 
+            intensity={2} 
+            style={[styles.upgradeContainer, {backgroundColor: backgroundColors, borderColor: borderColors}]}
+            customColor={'rgba(60,60,90,0.4)'}>
                 <View style ={styles.outerContainer}>
                     <UpgradeTab
                     textColor={textColor}
@@ -111,7 +115,7 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
                     />
                     </View>
                 </View>
-            </BlurView>
+            </BlurWrapper>
     )
 },  (prevProps, nextProps) => {
   return prevProps.upgradeType === nextProps.upgradeType && 
@@ -135,6 +139,12 @@ const styles= StyleSheet.create({
         margin: 10,
         borderRadius: 5,
         borderWidth: 1,
+        elevation: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.3,
+        shadowOffset: {width: 0, height: 2},
+        shadowRadius: 1,
+
     },
     outerContainer: {
         justifyContent: 'center',

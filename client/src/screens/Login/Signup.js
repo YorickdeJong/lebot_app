@@ -1,4 +1,4 @@
-import { View, KeyboardAvoidingView, StyleSheet, ScrollView, Alert, ImageBackground } from "react-native";
+import { View, KeyboardAvoidingView, StyleSheet, ScrollView, Alert, ImageBackground, Text } from "react-native";
 import {useContext, useState} from 'react'
 
 import { ColorsGreen, ColorsBlue } from "../../constants/palet";
@@ -12,7 +12,8 @@ import { AssignmentContext } from "../../store/assignment-context";
 import { getAllAssignments } from "../../hooks/assignments";
 import { CarContext } from "../../store/car-context";
 import { createUserCarDetails } from "../../hooks/carDetails";
-import { LinearGradient } from "expo-linear-gradient";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 
 function Signup({route}) {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -23,58 +24,61 @@ function Signup({route}) {
     const carCtx = useContext(CarContext)
     const authenticateType = route.params.type
 
-    async function signUpHandler({email, password, username, name, lastname, dob, school, classschool, level}) {
+    async function signUpHandler({email, password, username, name, lastname, dob, school_name, school_id, user_role}) {
         setIsAuthenticating(true);
         const userProfile = {
             email: email,
             password: password,
             username: username,
             name: name,
-            lastName: lastname,
-            DOB: dob,
-            school: school,
-            classSchool: classschool,
-            level: level,
-            id: ''
+            lastname: lastname,
+            dob: dob,
+            school_name: school_name,
+            school_id: school_id,
+            user_role: user_role,
         }
         try {
             const userData = await createUser(userProfile);
             const assignments = await getAllAssignments();
             userProfile.id = userData.id
-            const carDetails = createUserCarDetails(userData.id);
+            const carDetails = await createUserCarDetails(userData.id);
+
+            userCtx.editUserProfile(userProfile);
+            {user_role === "student" ? assignmentCtx.initializeAssignments(assignments) : null}
+            {user_role === "student" ? carCtx.initializeAssignments(carDetails) : null}
 
             authCtx.authenticate(userData.token);
-            userCtx.editUserProfile(userProfile);
-            assignmentCtx.initializeAssignments(assignments);
-            carCtx.initializeAssignments(carDetails);
         }
         catch (error) {
+            console.log(error)
             Alert.alert('failed to create user, please check your credentials')
             setIsAuthenticating(false);
         }
     }
 
-    if (isAuthenticating) {
-        return <LoadingOverlay message= "Logging you in..." />;
-    }
 
+ 
     return (
-        <KeyboardAvoidingView behavior = "padding" keyboardVerticalOffset={64}
-        style = {[styles.outerContainer, {borderTopColor: [colorCtx.isBlue ? ColorsGreen.green700 : ColorsBlue.blue700]}]}>
-                <LinearGradient colors = {[ColorsBlue.blue1200, ColorsBlue.blue1200]} style = {styles.outerContainer}>
-                    <ImageBackground
-                        source={require('./../../../assets/planets/login_page.png')} 
-                        style={styles.backgroundImage}
-                        imageStyle={{opacity: 0.25}}>
-                        <ScrollView >
-                            <TextForm 
-                            onCreateUser = {signUpHandler} 
-                            authenticateType={authenticateType}
-                            />
-                        </ScrollView>
-                    </ImageBackground>
-                </LinearGradient>
-        </KeyboardAvoidingView>
+        <KeyboardAwareScrollView
+        style={[
+          styles.outerContainer,
+          { borderTopColor: [colorCtx.isBlue ? ColorsGreen.green700 : ColorsBlue.blue700] },
+        ]}
+        extraHeight={64}
+        enableOnAndroid
+      >
+            <ImageBackground
+                source={require('./../../../assets/planets/login_page.png')} 
+                style={styles.backgroundImage}
+                imageStyle={{opacity: 0.8}}>
+                <ScrollView >
+                    <TextForm 
+                    onCreateUser = {signUpHandler} 
+                    authenticateType={authenticateType}
+                    />
+                </ScrollView>
+            </ImageBackground>
+         </KeyboardAwareScrollView>
     )
 }
 
@@ -85,7 +89,6 @@ export default Signup
 const styles = StyleSheet.create({
     outerContainer: {
         flex: 1,
-        borderWidth: "1%",
     },
     backgroundImage: {
         flex: 1,

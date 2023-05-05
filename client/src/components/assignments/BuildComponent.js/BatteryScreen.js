@@ -9,7 +9,7 @@ import VideoDisplay from './VideoDisplay';
 import SwitchScreens from './SwitchScreens';
 
 
-function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, video, title, description, isFocused}){
+function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, video, title, description, isFocused, slideCountEnd}){
     const scrollViewRef = useRef(null);
     const extraStyle = {
         marginLeft: 8,
@@ -34,10 +34,16 @@ function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTypin
                 >
                 <VideoDisplay 
                 video = {video}/>
+              <View style = {styles.textContainer}>
+ 
+                </View>
+            
+                <View style = {styles.textContainer}>
                     <TextDisplay 
                     title={title}
                     description={description}/>
-                    <ScrollView 
+                </View>
+                  <ScrollView 
                     style = {{flex: 1}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
@@ -58,9 +64,10 @@ function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTypin
                                         prevSlideHandler={prevSlideHandler}
                                         nextSlideHandler={nextSlideHandler}
                                         slideCount={slideCount}
+                                        slideCountEnd={slideCountEnd}
                                         />
                                     )}
-                        </ScrollView>   
+                        </ScrollView>    
                 </ImageBackground>
             </LinearGradient>
     )
@@ -73,9 +80,11 @@ const styles = StyleSheet.create({
         flex: 1, 
         paddingBottom: 5
     },
-    imageBackground: {
+    imageBackground: { 
         flex: 1, 
         resizeMode: 'contain',
     },
-
+    textContainer: {
+        backgroundColor: 'rgba(0, 0, 20, 0.75)',
+    }
 })

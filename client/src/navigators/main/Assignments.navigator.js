@@ -21,7 +21,7 @@ function Assignments() {
         screenOptions={{
           headerTintColor: 'white',
           header: ({ route }) => {
-            return <CustomHeader title={route.name} />;
+            return <CustomHeader  />;
           },
           headerStyle: {
             backgroundColor: 'transparent',

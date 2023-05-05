@@ -14,8 +14,8 @@ export const settingsData =
         {
             iconColor: [ColorsGreen.green700,  ColorsBlue.blue1000],
             textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
-            type: "Change Color",
-            icon: 'flashlight',
+            type: "Groepen",
+            icon: 'account-group-outline',
             id: 2,
         }, 
         {

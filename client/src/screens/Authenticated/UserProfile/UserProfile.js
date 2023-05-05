@@ -8,6 +8,7 @@ import { UserProfileContext } from '../../../store/userProfile-context';
 import Icon from '../../../components/Icon';
 import { ColorsBlue } from '../../../constants/palet';
 import { AuthContext } from '../../../store/auth-context';
+import { ScrollView } from 'react-native-gesture-handler';
 
 function UserProfile() {
     const userCtx = useContext(UserProfileContext);
@@ -41,7 +42,13 @@ function UserProfile() {
             case 'school': 
                 console.log('navigate to change school page');
                 break;
-            case 'class': 
+            case 'klas': 
+                console.log('navigate to change klas page');
+                break;
+            case 'groep': 
+                console.log('navigate to change groep page');
+                break;
+            case 'gebruiker': 
                 console.log('navigate to change class page');
                 break;
             case 'level': 
@@ -58,36 +65,39 @@ function UserProfile() {
     }
     
     return (
-        <View>
+        <ScrollView style = {{flex: 1, marginBottom: 50}}>
             <View style = {styles.container}>
-                <TitleContainer text = "Account Details" style = {{borderTopLeftRadius: 10, borderTopRightRadius: 10}}
-                />
-                <UserProfileBar text = "Username" isBorder={true} onPress = {onPressHandler.bind(this, "username")}
+                 <TitleContainer text = "Account Details" style = {{borderTopLeftRadius: 10, borderTopRightRadius: 10}}
+                /> 
+                
+                <UserProfileBar text = "Gebruikers naam" isBorder={true} onPress = {onPressHandler.bind(this, "username")}
                 userInfo = {userCtx.userprofile.username}
                 />
                 
-                <UserProfileBar text = "Email" isBorder={true} onPress = {onPressHandler.bind(this,  "email")}
+                <UserProfileBar text = "Email address" isBorder={true} onPress = {onPressHandler.bind(this,  "email")}
                 userInfo = {userCtx.userprofile.email}/>
-                <UserProfileBar text = "Password" 
+                <UserProfileBar text = "Wachtwoord" 
                 isBorder={false}
                 style = {{height: 50}}
                 onPress = {onPressHandler.bind(this, "password")}/>
 
-                <TitleContainer text = "Personal Information" isBorder={true} />
-                <UserProfileBar text = "Name" isBorder={true} onPress = {onPressHandler.bind(this, "name")}
+                <TitleContainer text = "Personal Information" isBorder={true} /> 
+                <UserProfileBar text = "Naam" isBorder={true} onPress = {onPressHandler.bind(this, "name")}
                 userInfo = {userCtx.userprofile.name}/>
-                <UserProfileBar text = "Last Name" isBorder={true} onPress = {onPressHandler.bind(this, "lastName")}
+                <UserProfileBar text = "Achternaam" isBorder={true} onPress = {onPressHandler.bind(this, "lastName")}
                 userInfo = {userCtx.userprofile.lastname}/>
-                <UserProfileBar text = "Date of Birth" isBorder={true} onPress = {onPressHandler.bind(this, "DOB")}
+                <UserProfileBar text = "Geboorte datum" isBorder={true} onPress = {onPressHandler.bind(this, "DOB")}
                 userInfo = {userCtx.userprofile.dob}/>
                 <UserProfileBar text = "School" isBorder={true} onPress = {onPressHandler.bind(this, "school")}
-                userInfo = {userCtx.userprofile.school}/>
-                <UserProfileBar text = "class" isBorder={true} onPress = {onPressHandler.bind(this, "class")}
-                userInfo = {userCtx.userprofile.classschool}/>
-                <UserProfileBar text = "level" isBorder={false} style = {{height: 50, borderBottomLeftRadius: 10,
+                userInfo = {userCtx.userprofile.school_name}/>
+                <UserProfileBar text = "Klas" isBorder={true} onPress = {onPressHandler.bind(this, "klas")}
+                userInfo = {userCtx.userprofile.class_name}/>
+                <UserProfileBar text = "Groep" isBorder={true} onPress = {onPressHandler.bind(this, "groep")}
+                userInfo = {userCtx.userprofile.group_name}/>
+                <UserProfileBar text = "Gebruiker" isBorder={false} style = {{height: 50, borderBottomLeftRadius: 10,
                 borderBottomRightRadius: 10}}
                 onPress = {onPressHandler.bind(this, "level")}
-                userInfo = {userCtx.userprofile.level}/>
+                userInfo = {userCtx.userprofile.user_role}/> 
             </View>
             <View style = {styles.delete}>
                 <Icon 
@@ -95,10 +105,11 @@ function UserProfile() {
                 size = {35}
                 color = {ColorsBlue.error300}
                 onPress = {deleteAccountHandler}/>
-            </View>
+        
+            </View> 
 
                 <Text style={styles.text}>Delete Account</Text>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -106,12 +117,13 @@ export default UserProfile
 
 const styles = StyleSheet.create({
     container: {
-        margin: 20,
-        marginTop: 50,
+        margin: 10,
+        marginTop: 30,
         borderRadius: 10,
     },
     delete: {
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 20
     },
     text: {
         marginTop: 5,

@@ -1,5 +1,5 @@
 
-import { StyleSheet, Animated } from 'react-native';
+import { StyleSheet, Animated, Platform, View, Text } from 'react-native';
 import {  useNavigation, } from '@react-navigation/native';
 import { useContext } from 'react';
 import { createBottomTabNavigator,} from '@react-navigation/bottom-tabs';
@@ -10,7 +10,7 @@ import { ColorsBlue  } from '../../constants/palet';
 import Assignments from './Assignments.navigator';
 import Robot from './Robot.navigator';
 import ChatScreen from './ChatScreen.navigator';
-
+import {scale, verticalScale} from 'react-native-size-matters';
 //test
 const Bottom = createBottomTabNavigator();
 
@@ -30,6 +30,7 @@ function BottomMenu() {
             borderTopWidth: 0, // Remove the border on top, if any
             elevation: 0, // Remove the elevation (shadow) for Android
             shadowOpacity: 0, // Remove the shadow for iOS
+            height: Platform.OS === 'ios'? 78 : 60
           },
           tabBarBackground: () => {
             return (
@@ -71,16 +72,36 @@ function BottomMenu() {
         component={Assignments}
         name = "Assignments"
         options={{
-            title: 'Assignments',
+            title: '',
            
             tabBarIcon: ({color}) => {
               return (
+
+              
+              <View style={{ opacity: blinkCtx.shouldBlink ? blinkCtx.blinkAnimation : 1, 
+              justifyContent: 'center', 
+              alignItems: 'center',
+              paddingTop: verticalScale(16) }}
+              >
                 <Icon 
                 size = {24}
                 icon = "list"
                 color = {color}
-                addStyle = {{marginRight: 0}}
+                addStyle = {{marginRight: 0, marginBottom: Platform.OS === 'android' ? 3: 0}}
                 onPress={() => navigation.navigate('AssignmentsResults')}/>
+
+                <Text
+                style={{
+                  color: blinkCtx.shouldBlink ? goldColor : color,
+                  fontSize: 10,
+                  paddingTop: Platform.OS === 'ios' ?  8  : 0,
+                  // paddingBottom: 2,
+                  textAlign: 'center',
+                }}
+              > 
+              Assignments
+              </Text>
+              </View>
               )
             },
             headerShown: false
@@ -91,9 +112,15 @@ function BottomMenu() {
         component={Robot}
         name = "Rover" 
         options={{
-            title: 'Rover',
+            title: '',
             tabBarIcon: ({color}) => {
               return (
+
+              <View style={{ opacity: blinkCtx.shouldBlink ? blinkCtx.blinkAnimation : 1, 
+              justifyContent: 'center', 
+              alignItems: 'center',
+              paddingTop: verticalScale(16) }}
+              >
                 <Icon 
                 size = {24}
                 icon = "space-station"
@@ -102,6 +129,19 @@ function BottomMenu() {
                 onPress={() => navigation.navigate('RobotStore')}
                 differentDir={true}
                 />
+                <Text
+                style={{
+                  color: blinkCtx.shouldBlink ? goldColor : color,
+                  fontSize: 10,
+                  paddingTop: Platform.OS === 'ios' ?  8  : 5,
+                  // paddingBottom: 2,
+                  textAlign: 'center',
+                }}
+              > 
+              Rover
+              </Text>
+              </View>
+
               )
             },
             headerShown: false
@@ -120,7 +160,7 @@ function BottomMenu() {
               <Animated.View style={{ opacity: blinkCtx.shouldBlink ? blinkCtx.blinkAnimation : 1, 
               justifyContent: 'center', 
               alignItems: 'center',
-              paddingTop: 20 }}
+              paddingTop: verticalScale(16) }}
               >
                 <Icon
                   size={24}
@@ -134,7 +174,8 @@ function BottomMenu() {
                 style={{
                   color: blinkCtx.shouldBlink ? goldColor : color,
                   fontSize: 10,
-                  paddingTop: 10,
+                  paddingTop: Platform.OS === 'ios' ?  8  : 5,
+                  // paddingBottom: 2,
                   textAlign: 'center',
                 }}
               > 

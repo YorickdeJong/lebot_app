@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native"
 import { ColorsLighterGold } from "../../../constants/palet"
 import { CarContext } from "../../../store/car-context"
 import Icon from "../../Icon"
-
+import {scale , verticalScale} from 'react-native-size-matters'
 
 
 function MoneyContainer() {
@@ -26,10 +26,10 @@ const styles = StyleSheet.create({
     moneyContainer: {
         flexDirection: 'row',
         position: 'absolute',
-        top: 43,
+        top: Platform.OS === 'ios' ? verticalScale(36) : verticalScale(32),
         left: "42%",
         backgroundColor: 'transparent',
-        marginBottom: 10
+        marginBottom: Platform.OS === 'ios' ? verticalScale(8) : verticalScale(3),
     },
     textGold: {
         color: "white",

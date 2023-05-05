@@ -20,12 +20,10 @@ function getFirstCompletedAssignment(assignmentDetailsCtx, title, length) {
 function Assignment({title, tabIndex, currentIndex, subject}) {
     const assignmentCtx = useContext(AssignmentContext); //how to now the subject here?
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext)
-    const assignmentTopic = assignmentCtx.filterSpecificTitle(title);
+    const assignmentTopic = assignmentCtx.filterSpecificTitle("Vragen Opdracht");
     const assignmentStartingNumber = getFirstCompletedAssignment(assignmentDetailsCtx, title, assignmentTopic.length)
     const [assignmentNumber, setAssignmentNumber] = useState(assignmentStartingNumber) //TODO make default to be the first not yet completed assignment
     const isFocused = tabIndex === currentIndex;
-
-    
 
     return (
         <>

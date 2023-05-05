@@ -1,8 +1,8 @@
-import {Ionicons, MaterialCommunityIcons} from '@expo/vector-icons'
+import {Ionicons, MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons'
 import { Pressable, StyleSheet, View, Text } from 'react-native'
 
 
-function Icon ({icon, size, color, onPress, addStyle, differentDir}) {
+function Icon ({icon, size, color, onPress, addStyle, differentDir, MaterialIconsDir}) {
     return (
     <Pressable
         onPress = {onPress}
@@ -11,17 +11,29 @@ function Icon ({icon, size, color, onPress, addStyle, differentDir}) {
         }}
         >
             <View>
-                {differentDir ? (
-                <MaterialCommunityIcons
-                name = {icon} 
-                color= {color}
-                size = {size} />) : 
-                (
-                <Ionicons
-                name = {icon} 
-                color= {color}
-                size = {size}/>
-                )}
+                
+                {
+                    !MaterialIconsDir ? (   
+                        differentDir ? (
+                        <MaterialCommunityIcons
+                        name = {icon} 
+                        color= {color}
+                        size = {size} />) : 
+                        (
+                        <Ionicons
+                        name = {icon} 
+                        color= {color}
+                        size = {size}/>
+                        )
+                    ) : (
+                        console.log('check'),
+                        <MaterialIcons 
+                        name = {icon} 
+                        color= {color}
+                        size = {size}
+                        />
+                    )
+                }
             </View>
   
     </Pressable>

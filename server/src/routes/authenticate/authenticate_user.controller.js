@@ -4,7 +4,8 @@ const pool = require('../../services/postGreSQL')
 const bcrypt = require('bcrypt');
 
 const {
-authenticateUserQuery
+    authenticateUserQuery,
+    authenticateAdminQuery
  } = require('../../services/queries/queryUserProfile')
 
 // Function to generate JWT
@@ -24,24 +25,26 @@ const authenticateUser = async (req, res) => {
     try {
         const { rows } = await client.query(authenticateUserQuery, [email]);
         if (rows.length === 0) {
-            return res.status(401).send({ error: 'Email or password is incorrect' });
+            return res.status(401).send({ error: 'Email incorrect' });
         }
 
         const user = rows[0];
         const isMatch = await bcrypt.compare(password, user.password);
 
         if (!isMatch) {
-            return res.status(401).send({ error: 'Email or password is incorrect' });
+            return res.status(401).send({ error: 'Password is incorrect' });
         }
 
         const id = user.id
         const token = generateToken(user.id);
+        const user_role = user.user_role
 
         console.log(`user token: ${token}`)
         res.json({ 
             message: 'User authenticated',
             token,
-            id
+            id,
+            user_role
         });
     } 
     catch (error) {
@@ -51,7 +54,48 @@ const authenticateUser = async (req, res) => {
     finally {
         client.release();
     }
-  }
+}
+
+const authenticateAdmin = async (req, res) => {
+    const { email, password } = req.body;
+    const client = await pool.connect();
+
+    console.log(email + " " + password) 
+    try {
+        const { rows } = await client.query(authenticateAdminQuery, [email]);
+        if (rows.length === 0) {
+            console.log('incorrect email')
+            return res.status(401).send({ error: 'Email is incorrect' });
+        }
+
+        const user = rows[0];
+        const isMatch = await bcrypt.compare(password, user.password);
+
+        console.log('ismatch', isMatch)
+        if (!isMatch) {
+            return res.status(401).send({ error: 'Password is incorrect' });
+        }
+
+        const id = user.id
+        const token = generateToken(user.id);
+        const user_role = user.user_role
+
+        console.log(`user token: ${token}`)
+        res.json({ 
+            message: 'User authenticated',
+            token,
+            id,
+            user_role
+        });
+    } 
+    catch (error) {
+        console.error(error);
+        return res.status(500).send({ error: 'An error occurred while logging in' });
+    } 
+    finally {
+        client.release();
+    }
+}
 
 // Middleware to verify JWT
 function authenticate(req, res, next) {
@@ -69,5 +113,6 @@ function authenticate(req, res, next) {
 
 module.exports = {
       authenticateUser,
-      authenticate
+      authenticate,
+      authenticateAdmin
 }

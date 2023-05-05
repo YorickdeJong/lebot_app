@@ -63,7 +63,7 @@ function AssignmentTab({title, initialIndex, subject}){
           case 'third' :
             return <CodeAnswerScreen 
             title = {route.title}
-            tabIndex={2} 
+            tabIndex={2}         
             currentIndex={index}
             subject={subject}
             />;

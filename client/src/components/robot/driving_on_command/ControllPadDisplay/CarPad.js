@@ -12,8 +12,8 @@ function CarPad({moveHandler}){
     const [speed, setSpeed] = useState(0);
 
     const handleMove = (dx, dy) => {
-        const maxX = padWidth ;
-        const maxY = padHeight ;
+        const maxX = padWidth / 2.5 ;
+        const maxY = padHeight / 2.5;
 
         // Calculate new position of stick based on previous position
         const newMoveX = Math.max(-maxX, Math.min(maxX, moveX + dx));
@@ -23,6 +23,23 @@ function CarPad({moveHandler}){
         setMoveY(newMoveY);
 
         setSpeed(Math.pow(Math.max(Math.abs(newMoveX), Math.abs(newMoveY)) / maxX, 2));
+
+        if (-1 <= newMoveX && newMoveX <= 1 && -1 < newMoveY && newMoveY <= -0.1) {
+            setSpeed(Math.abs(newMoveY.toFixed(2)));
+        } 
+        else if (newMoveX === 1 && -1 <= newMoveY && newMoveY <= 1) {
+            setSpeed( Math.abs(newMoveX.toFixed(2)));
+        } 
+        else if (newMoveX === -1 && -1 <= newMoveY && newMoveY <= 1) {
+            setSpeed(Math.abs(newMoveY.toFixed(2)));
+        } 
+        else if (-1 <= newMoveX && newMoveX <= 1 && 0.1 < newMoveY && newMoveY <= 1) {
+            setSpeed(Math.abs(newMoveY.toFixed(2)));
+        } 
+        else if (newMoveX === 0 && newMoveY === 0) {
+            setSpeed(0);
+        }
+
         moveHandler(newMoveX / maxX, newMoveY / maxY) 
 
     };

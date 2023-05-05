@@ -6,6 +6,11 @@ import Questions from "../../questions/Questions";
 import QuestionsMap from "../../questions/QuestionsMap";
 import {View, StyleSheet} from 'react-native';
 import { ColorsBlue } from "../../../../constants/palet";
+import Explanation from "../../Explanation/Explanation";
+import ExplanationAnimation from "../../Explanation/ExplanationAnimation";
+import { TheoryExplanation } from "../../../../data/TheoryExplanation";
+import BatteryScreen from "../../BuildComponent.js/BatteryScreen";
+import SolarEvent from "../../../solar_events/SolarEvent";
 
 function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFocused}){
     const [slideCount, setSlideCount] = useState(0);
@@ -13,7 +18,7 @@ function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFoc
 
     //Filter out assignments for the correct subject
     const questions = assignmentTopic.filter(item => item.subject === "LED");
-    
+    const sortedQuestions = questions.sort((a, b) => a.assignment_number - b.assignment_number);
     //upon changing to this screen, set the thread id to the first thread id
 
     console.log(`check CodingScreen`)
@@ -36,7 +41,7 @@ function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFoc
     return (
         <View style = {styles.topBorder}>
         {slideCount === 0 && <QuestionsMap 
-        numTiles = {7}
+        numTiles = {12}
         onPress={setSlideCount}
         /> } 
         {slideCount === 1 &&
@@ -45,77 +50,174 @@ function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFoc
             prevSlideHandler={prevSlideHandler}
             typing={typing}
             setTyping={setTyping}
-            answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_21.answer.replace(/\s+/g, ' ')}
+            answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_21.answer}
             thread_id = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_21.thread_id}
-            title = "Lampen Rover"
-            description = "In dit deel gaan we werken aan het elektrisch netwerk van de rover. We gaan lampen installeren zodat de auto ook 's nachts kan rond rijden."
+            title = "Zonnestormen"
+            description = "In dit deel moet jij ervoor zorgen dat de rover beschermd is tegen zonnestormen. "
             isFocused={isFocused}
             setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            video= {require('./../../../../../assets/planets/solar_flare.mp4')}
             /> 
         }
-        {  
-        slideCount === 2 &&
-          <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
-          title = "Juiste Weerstand"
-          description = "kies de juiste weerstand die bij de lamp past"
-          questions={questions}
-          assignmentNumber={slideCount - 1} //set slide count to -1 per previous introscreen, this indicates the assingment number
-          isFocused={isFocused}
-          setSlideCount={setSlideCount}
-          />
-        }
-        {slideCount === 3 &&
-            <IntroScreenQuestions 
+        {slideCount === 2 &&
+          <Explanation 
             nextSlideHandler={nextSlideHandler}
             prevSlideHandler={prevSlideHandler}
             typing={typing}
             setTyping={setTyping}
-            answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_22.answer.replace(/\s+/g, ' ')}
-            thread_id = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_22.thread_id}
-            title = "Bouw de Schakeling"
-            description = "Volg de video om de weerstand in de schakeling te bouwen."
+            answer = {TheoryExplanation.ProjectTwoOhm}
+            thread_id = {7}
+            topic = "Wet van Ohm"
             isFocused={isFocused}
             setSlideCount={setSlideCount}
-            /> 
-        }
-        {  
-        slideCount === 4 &&
-          <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
-          title = "Weerstand in Draad"
-          description = "Hier leer je hoe je de weerstand berekend van een draad. Dit gaat op een net iets andere manier dan de weerstanden die jij gewend bent van een schakeling"
-          questions={questions}
-          assignmentTopic={assignmentTopic}
-          assignmentNumber={slideCount - 2}
-          isFocused={isFocused}
-          setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
           />
         }
-
-        {  
-        slideCount === 5 &&
-          <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
-          title = "Verwaarlozen of niet?"
-          description = "Bedenk met je groepje of je de weerstand van de draad moet verwaarlozen of niet. Onderbouw je antwoord met een berekening."
-          questions={questions}
-          assignmentTopic={assignmentTopic}
-          assignmentNumber={slideCount - 2}
-          isFocused={isFocused}
-          setSlideCount={setSlideCount}
+        {slideCount === 3 &&
+          <Explanation 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {TheoryExplanation.ProjectTwoOhmTwo}
+            thread_id = {7}
+            topic = "Ohm en snelwegen"
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
+          />
+        }
+        {slideCount === 4 &&
+          <Explanation 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {TheoryExplanation.ProjectTwoOhmTwo}
+            thread_id = {7}
+            topic = "Serie schakelingen"
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
+          />
+        }
+        {slideCount === 5 &&
+          <Explanation 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {TheoryExplanation.ProjectTwoOhmThree}
+            thread_id = {7}
+            topic = "Parallel schakelingen"
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
           />
         }
         {  
         slideCount === 6 &&
           <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
-          title = "Kwadratische Vergelijkingen"
-          description = "Je leert hier functies herkennen, kwadratische vergelijkingen oplossen en de oplossingen van een vergelijking vinden. Deze kennis gebruiken we om te bepalen hoe lang de lamp kan branden op de accu van de rover"
-          questions={questions}
-          assignmentTopic={assignmentTopic}
-          assignmentNumber={slideCount - 2}
+          title = "Voltage bepalen                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         "
+          description = "In serie schakelingen is de spanning verdeeld over de weerstanden."
+          questions={sortedQuestions}
+          assignmentNumber={slideCount - 5} //set slide count to -1 per previous introscreen, this indicates the assingment number
+          nextSlideHandler={nextSlideHandler}
+          prevSlideHandler={prevSlideHandler}
           isFocused={isFocused}
           setSlideCount={setSlideCount}
+          slideCount={slideCount}
           />
         }
-        
+        {  
+        slideCount === 7 &&
+          <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
+          title = "Weerstand berekenen"
+          description = "In serie schakelingen is de totale weerstand de som van alle weerstanden."
+          questions={sortedQuestions}
+          assignmentTopic={assignmentTopic}
+          assignmentNumber={slideCount - 5}
+          isFocused={isFocused}
+          setSlideCount={setSlideCount}
+          nextSlideHandler={nextSlideHandler}
+          prevSlideHandler={prevSlideHandler}
+          slideCount={slideCount}
+          />
+        }
+
+        {  
+        slideCount === 8 &&
+          <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
+          title = "Spanning in serie"
+          description = "Spanning in serie schakelingen is over de hele schakeling gelijk."
+          questions={sortedQuestions}
+          assignmentTopic={assignmentTopic}
+          assignmentNumber={slideCount - 5}
+          isFocused={isFocused}
+          setSlideCount={setSlideCount}
+          nextSlideHandler={nextSlideHandler}
+          prevSlideHandler={prevSlideHandler}
+          slideCount={slideCount}
+          />
+        }
+        {slideCount === 9 &&
+            <IntroScreenQuestions 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_22.answer}
+            thread_id = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_22.thread_id}
+            title = "Bouw de Schakeling"
+            description = "Volg de video om de weerstand in de schakeling te bouwen."
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            /> 
+        }
+        {  
+        slideCount === 10 &&
+          <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
+          title = "Kwadratische Vergelijkingen"
+          description = "Je leert hier functies herkennen, kwadratische vergelijkingen oplossen en de oplossingen van een vergelijking vinden. Deze kennis gebruiken we om te bepalen hoe lang de lamp kan branden op de accu van de rover"
+          questions={sortedQuestions}
+          assignmentTopic={assignmentTopic}
+          assignmentNumber={slideCount - 6}
+          isFocused={isFocused}
+          setSlideCount={setSlideCount}
+          nextSlideHandler={nextSlideHandler}
+          prevSlideHandler={prevSlideHandler}  
+          slideCount={slideCount}       
+          performedMeasurement
+          />
+        }
+        {slideCount === 11 &&
+            <IntroScreenQuestions 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_23.answer}
+            thread_id = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_23.thread_id}
+            title = "Test je setup"
+            description = "Hoe beter jouw setup is, desde meer reactie tijd je krijgt om je te beschermen tegen de magnetische storemen."
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            slideCountEnd={true}  
+            /> 
+        }
+        {slideCount === 12 &&
+          <SolarEvent 
+            isFocused={isFocused}
+            prevSlideHandler={prevSlideHandler}
+          />
+        }
     </View>
     )
 
@@ -125,45 +227,6 @@ export default InformationQuestionsScreenTwo
 const styles = StyleSheet.create({
     topBorder: {
       flex: 1,
-      borderTopColor: ColorsBlue.blue900,
-      borderTopWidth: 0.6,
     }
   })
   
-    // <>
-    // {slideCount === 0  && (
-    //     <IntroScreenQuestions 
-    //     nextSlideHandler={nextSlideHandler}
-    //     prevSlideHandler={prevSlideHandler}
-    //     typing={typing}
-    //     setTyping={setTyping}
-    //     answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONS_1.answer}
-    //     thread_id = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONS_1.thread_id}
-    //     title = "Vragen Opdracht"
-    //     description = "In dit deel worden jouw engineering skills getest. Wees creatief en denk goed na over de opdracht."
-    //     isFocused={isFocused}
-    //     /> //Add intro screen here
-    // )}
-    // {slideCount === 1  && (
-    //     <IntroScreenQuestions 
-    //     nextSlideHandler={nextSlideHandler}
-    //     prevSlideHandler={prevSlideHandler}
-    //     typing={typing}
-    //     setTyping={setTyping}
-    //     answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONS_2.answer}
-    //     thread_id = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONS_2.thread_id}
-    //     title = "Eisen Windmolen"
-    //     description = {`De eisen voor het goed functioneren van een windmolen zijn:\n\n1. De maximum snelheid ligt tussen de 0.3 en 0.4 m/s\n\n2. De snelheid is constant na 1 seconden\n\n3. De efficientie ligt boven de 60%.\n\n4. De afgelegde afstand per rotatie is 2 meter.\n\n5. De milieu impact is niet hoger dan 2.`}
-    //     isFocused={isFocused} />
-    // )}
-    // {slideCount === 2  && isFoccusedScreen && (
-    //     <Questions
-    //     title = "Eisen Windmolen"
-    //     description = {`De eisen voor het goed functioneren van een windmolen zijn:\n\n1. De maximum snelheid ligt tussen de 0.3 en 0.4 m/s\n\n2. De snelheid is constant na 1 seconden\n\n3. De efficientie ligt boven de 60%.\n\n4. De afgelegde afstand per rotatie is 2 meter.\n\n5. De milieu impact is niet hoger dan 2.`} 
-    //     question={questionOne}
-    //     assignmentTopic={assignmentTopic}
-    //     assignmentNumber={assignmentNumber}
-    //     isFocused={isFocused}
-    //     />
-    // )} 
-    // </>

@@ -95,11 +95,13 @@ function CodingQuestionsOne({isFocused}){
                     <CodeEditorScreen close = {close}/>
                     {!close ? 
                     <>
-                    <TextDisplay 
-                    title="Codeer Vragen"
-                    description="In dit onderdeel wordt jouw kennis getest"
-                    showIcon
-                    setCloseHandler={setCloseHandler}/>
+                    <View style = {styles.textContainer}>
+                        <TextDisplay 
+                        title="Codeer Vragen"
+                        description="In dit onderdeel wordt jouw kennis getest"
+                        showIcon
+                        setCloseHandler={setCloseHandler}/>
+                    </View>
                 
                     <ScrollView 
                     style = {{flex: 1}}
@@ -121,6 +123,7 @@ function CodingQuestionsOne({isFocused}){
                                     prevSlideHandler={prevSlideHandler}
                                     nextSlideHandler={nextSlideHandler}
                                     slideCount={slideCount}
+                                    slideCountEnd={true}
                                     />
                                 )}
                 </ScrollView> 
@@ -157,5 +160,8 @@ const styles  = StyleSheet.create({
         position: 'absolute',
         top: "93%",
         left: 10,
+    },
+    textContainer: {
+        backgroundColor: 'rgba(0, 0, 20, 0.75)',
     }
 })

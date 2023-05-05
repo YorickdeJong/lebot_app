@@ -93,7 +93,7 @@ const getAssignmentIdByNumber = async (req, res) => {
 
 const createAssignment = async (req, res) => {
     const client = await pool.connect();
-    const {assignment_number, subject, title, question, answer, image_file_path, currency} = req.body;
+    const {assignment_number, subject, title, question, answer, currency, options, multiple_choice, answers_multiple_choice} = req.body;
     
     try {
         const {rows} = await client.query(checkIfAssignmentExistsQuery, [assignment_number, title, subject]);
@@ -108,9 +108,10 @@ const createAssignment = async (req, res) => {
     }
 
     try {
-        const values = [assignment_number, subject, title, question, answer, image_file_path, currency]
+        const values = [assignment_number, subject, title, question, answer, currency, options, multiple_choice, answers_multiple_choice]
+        console.log(values)
         const result = await client.query(createAssignmentQuery, values);
-
+        
         console.log(result);
         return res.status(200).json('Succesfully added assignment')
     }
@@ -129,9 +130,9 @@ const updateAssignment = async (req, res) => { //Could be used for users that wa
     const assignment_id = req.params.id;
     
     try {
-        const {assignment_number, subject, title, question, answer, image_file_path, currency} = req.body;
-        const values = [assignment_number, subject, title, question, answer, image_file_path, currency, assignment_id];
-
+        const {assignment_number, subject, title, question, answer, currency, options, multiple_choice, answers_multiple_choice} = req.body;
+        const values = [assignment_number, subject, title, question, answer, currency, options, multiple_choice, answers_multiple_choice, assignment_id];
+        console.log('values', values)
         const {rows} = await client.query(updateAssignmentQuery, values);
 
         if (rows.length === 0){
