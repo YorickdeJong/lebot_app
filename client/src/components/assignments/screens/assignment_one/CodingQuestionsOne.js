@@ -10,6 +10,7 @@ import SwitchScreens from '../../BuildComponent.js/SwitchScreens';
 import TextDisplay from '../../BuildComponent.js/TextDisplay';
 import CodeEditorScreen from '../../CodingQuestions/CodeEditor';
 import Icon from '../../../Icon';
+import AssignmentOptionsBar from '../../questions/assignmentOptionsBar';
 
 function CodingQuestionsOne({isFocused}){
     const keyboardHeight = useRef(new Animated.Value(0)).current;
@@ -82,7 +83,7 @@ function CodingQuestionsOne({isFocused}){
 
     return (
     <LinearGradient
-            colors={[ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1300, ColorsBlue.blue1400]}
+            colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}
             style={{ flex: 1 }}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -90,51 +91,52 @@ function CodingQuestionsOne({isFocused}){
             <ImageBackground
                 source={require('./../../../../../assets/chatbackground.png')} 
                 style={styles.container}
-                imageStyle={{opacity: 0.15}}
+                imageStyle={{opacity: 0.05}}
             >
+                    <AssignmentOptionsBar 
+                        slideCount = {slideCount}
+                        nextSlideHandler = {nextSlideHandler}
+                        prevSlideHandler = {prevSlideHandler}
+                        setSlideCount = {setSlideCount}
+                        text = {{text: 'Uitleg', left: '44%' }}
+                        noForwardArrow = {true}
+                    />
+
                     <CodeEditorScreen close = {close}/>
                     {!close ? 
                     <>
-                    <View style = {styles.textContainer}>
-                        <TextDisplay 
-                        title="Codeer Vragen"
-                        description="In dit onderdeel wordt jouw kennis getest"
-                        showIcon
-                        setCloseHandler={setCloseHandler}/>
-                    </View>
+                    
+                    <TextDisplay 
+                    title="Codeer Vragen"
+                    description="In dit onderdeel wordt jouw kennis getest"
+                    showIcon
+                    setCloseHandler={setCloseHandler}/>
                 
                     <ScrollView 
-                    style = {{flex: 1}}
+                    style = {{flex: 1, marginTop: 15}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                     >
-                            <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
-                                {isFocused && <ChatBoxGPT 
-                                answer={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.answer}
-                                isLastItem={true}
-                                thread_id={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.thread_id}
-                                setTyping={setTyping}
-                                typing={typing}
-                                extraStyle={extraStyle}
-                                />}
-                            </View>
-                                {!typing && (
-                                    <SwitchScreens 
-                                    prevSlideHandler={prevSlideHandler}
-                                    nextSlideHandler={nextSlideHandler}
-                                    slideCount={slideCount}
-                                    slideCountEnd={true}
-                                    />
-                                )}
-                </ScrollView> 
-                </>: 
-                <View style = {styles.compress}>
-                    <Icon
-                    size = {30 }
-                    color = {ColorsBlue.blue200}
-                    icon="lock-open-outline"
-                    onPress={setCloseHandler}/>
-                </View> }
+
+                        {isFocused && <ChatBoxGPT 
+                        answer={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.answer}
+                        isLastItem={true}
+                        thread_id={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.thread_id}
+                        setTyping={setTyping}
+                        typing={typing}
+                        extraStyle={extraStyle}
+                        />}
+    
+                    </ScrollView> 
+                    </>: 
+
+                    <View style = {styles.compress}>
+                        <Icon
+                        size = {30 }
+                        color = {ColorsBlue.blue200}
+                        icon="lock-open-outline"
+                        onPress={setCloseHandler}/>
+                    </View> }
             </ImageBackground>
         </LinearGradient>
     );

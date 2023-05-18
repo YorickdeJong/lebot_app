@@ -3,7 +3,7 @@ import { ipAddressComputer } from '../data/ipaddresses.data';
 import { ChartContext } from '../store/chart-context';
 import { SocketContext } from '../store/socket-context';
 import io from 'socket.io-client';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 
 const url = ipAddressComputer + '/api/v1/measurement-results'
 
@@ -23,6 +23,7 @@ export const useSocketMeasurementResults = (shouldConnect, user_id) => {
     const chartCtx = useContext(ChartContext);
     const sshSocketCtx = useContext(SocketContext);
     const socket = useRef(null);
+    const [dataCount, setDataCount] = useState(0);
 
     useEffect(() => {
         //return if socket doesn't need to be called

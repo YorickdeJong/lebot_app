@@ -217,13 +217,23 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 10,
         width: 180,
-        color: ColorsBlue.blue50
+        color: ColorsBlue.blue50,
+        shadowColor: ColorsBlue.blue1400,
+        shadowOffset: { height: 2, width: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 1,
+        elevation: 4
       },
     createButton: {
         backgroundColor: '#4a90e2',
         borderRadius: 5,
         padding: 10,
-        width: 180
+        width: 180,
+        shadowColor: ColorsBlue.blue1400,
+        shadowOffset: { height: 2, width: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 1,
+        elevation: 4
     },
     buttonText: {
         color: 'white',

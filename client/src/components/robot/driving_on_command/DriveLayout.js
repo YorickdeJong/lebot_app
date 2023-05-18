@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, View, Text } from "react-native"
+import { ImageBackground, StyleSheet, View, Alert } from "react-native"
 import Icon from "../../Icon"
 import { ColorsBlue } from "../../../constants/palet"
 import { LinearGradient } from "expo-linear-gradient"
@@ -6,15 +6,17 @@ import GraphDisplay from "./graphDisplay"
 import OptionsBar from "./optionsBar"
 import ChartDisplay from "./chartDisplay"
 import ControlPad from "./ControllPadDisplay/ControlPad"
-import React, { useContext } from "react"
+import React, { useContext, useEffect, useRef } from "react"
 import { SocketContext } from "../../../store/socket-context"
 import WaitingForMeasurementContainer from "./WaitingForMeasurementContainer"
 import PowerOffContianer from "./PowerOffContainer"
 import { ChartContext } from "../../../store/chart-context"
 import { BlurView } from "expo-blur"
+import { useIsFocused } from "@react-navigation/native"
+import { BlinkContext } from "../../../store/animation-context"
 
 
-function DriveLayout({moveHandler, midIconHandler,  displayNumber, subject}) {
+function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assignmentNumber}) {
     const socketCtx = useContext(SocketContext)
     const chartCtx = useContext(ChartContext)
 
@@ -30,18 +32,19 @@ function DriveLayout({moveHandler, midIconHandler,  displayNumber, subject}) {
                     moveHandler = {moveHandler}
                     displayNumber = {displayNumber}
                     subject={subject}
+                    assignmentNumber = {assignmentNumber}
                 />
-                {socketCtx.power ? (
+                {socketCtx.power && socketCtx.isConnected ? (
                     //Display charts if first data is send, otherwise loading screen
                     socketCtx.isMeasurementStarted && 
-                    chartCtx.chartData.speed[0].length !== undefined ? (
+                    chartCtx.chartData.distance_time[0].length !== undefined ? (
                     <View style={styles.shadowContainer}>
                         <BlurView style = {styles.loadingContainer} intensity={15} tint="dark">
                                 <ChartDisplay 
                                 chartData = {chartCtx.chartData}
                                 chartToggle = {chartCtx.chartToggle}
                                 trueCount = {chartCtx.trueCount}
-                                displayChart = {450}
+                                displayChart = {390}
                                 subject = {subject}
                                 />
                         </BlurView>

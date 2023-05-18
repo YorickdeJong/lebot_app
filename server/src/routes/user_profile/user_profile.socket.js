@@ -2,74 +2,77 @@
 const pool = require('../../services/postGreSQL');
 const { getUsersInGroup } = require('./user_profile.controller');
  
-function listenToClientUser(io) {
-    const userNamespace = io.of('/api/v1/user/users-in-group');
+async function listenToClientUser(io) {
+    const userNamespace = io.of("/api/v1/user/users-in-group");
     let connectionCount = 0;
-
-    userNamespace.on('connection', (socket) => {
-        console.log('Client connected to USER');
+    
+    
+    userNamespace.on("connection", async (socket) => {
+        console.log("Client connected to USER");
+        const client = await pool.connect(); // Create a single client connection for all requests
         
         let group_ids;
-
-        async function setupNotificationListener() {
-            const client = await pool.connect();
-            await client.query('LISTEN user_profile_channel');
-
-            client.on('notification', async (msg) => {
+        let cleanupNotificationListener = await setupNotificationListener(client);
+        
+        async function setupNotificationListener(client) {
+            await client.query("LISTEN user_profile_channel");
+    
+            client.on("notification", async (msg) => {
                 if (!group_ids) {
-                    console.log('Releasing client');
-                    client.release();
-                    return
+                    return;
                 }
-                const results = await Promise.all(group_ids.map(async (group_id) => {
-                    const result = await getUsersInGroup(group_id);
-                    console.log('users in group', result)
+
+                const results = await Promise.all(
+                    group_ids.map(async (group_id) => {
+                        const result = await getUsersInGroup(client, group_id); // Pass the client connection to the getUsersInGroup function
+                        console.log("users in group", result);
+                        if (result.status === 200) {
+                            const names = result.data.map((user) => user.name);
+                            return { group_id, names };
+                        }
+                        else {
+                            return { group_id, names: [] };
+                        }
+                    })
+                );
+        
+                userNamespace.emit("fetch-data-update", results);
+            });
+    
+            return () => {
+                console.log("Releasing client");
+                client.release();
+            };
+        }
+    
+        socket.on("initialize", async ({ group_ids: groupIds }) => {
+            console.log('=====================')
+            console.log('GROUP IDS', groupIds)
+            group_ids = groupIds;
+            if (!group_ids) {
+                return;
+            }
+            const results = await Promise.all(
+                group_ids.map(async (group_id) => {
+                    const result = await getUsersInGroup(client, group_id); // Pass the client connection to the getUsersInGroup function
+                    console.log("users in group", result);
                     if (result.status === 200) {
-                        const names = result.data.map(user => user.name);
+                        const names = result.data.map((user) => user.name);
                         return { group_id, names };
                     } 
                     else {
                         return { group_id, names: [] };
                     }
-                }));
+                })
+            );
+            userNamespace.emit("fetch-data-update", results);  
+        });
 
-                userNamespace.emit('fetch-data-update', results);
-            });
-
-            return () => {
-                console.log('Releasing client');
-                client.release();
-            };
-        }
-
-        socket.on('initialize', async ({ group_ids: groupIds }) => {
-            const group_ids = groupIds;
-            if (!group_ids) {
-                console.log('Releasing client');
-                client.release();
-                return
-            }
-            const results = await Promise.all(group_ids.map(async (group_id) => {
-                const result = await getUsersInGroup(group_id);
-                console.log('users in group', result)
-                if (result.status === 200) {
-                    const names = result.data.map(user => user.name);
-                    return { group_id, names };
-                } 
-                else {
-                    return { group_id, names: [] };
-                }
-            }));
-
-            userNamespace.emit('fetch-data-update', results);
-
-            const cleanupNotificationListener = await setupNotificationListener();
-
-            socket.on('disconnect', () => {
-                console.log('Client disconnected from user');
+        socket.on('disconnect', () => {
+            console.log('Client disconnected from groups');
+            if (cleanupNotificationListener) {
                 cleanupNotificationListener();
-                connectionCount--;
-            });
+            }
         });
     });
 }

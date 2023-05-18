@@ -12,7 +12,7 @@ function TeacherDashboard() {
         function navigationHandler() {
             switch(item){
                 case 'Klassen':
-                    navigation.navigate('Classroom')
+                    navigation.navigate('groups')
                     break;
                 case 'Antwoorden':
                     navigation.navigate('Answers')

@@ -16,6 +16,8 @@ const groupRouter = require('./routes/groups/groups.router')
 const groupInfoRouter = require('./routes/groups/groupsInfo.router')
 const classRouter = require('./routes/classes/classes.router')
 const classInfoRouter = require('./routes/classes/classesInfo.router')
+const lessonsTimeRouter = require('./routes/time_lessons/time_lessons.router')
+
 app.use(cors());
 app.use(express.json()); //allows us to get json from end points
 
@@ -33,4 +35,5 @@ app.use('/api/v1/groups', groupRouter);
 app.use('/api/v1/groups-info', groupInfoRouter);
 app.use('/api/v1/classes', classRouter);
 app.use('/api/v1/classes-info', classInfoRouter);
+app.use('/api/v1/time-lessons', lessonsTimeRouter);
 module.exports = app

@@ -62,41 +62,55 @@ function UpgradeTab({upgradeType, colorsUpgrade, setColorsUpgrade, textColor}){
             <View style = {styles.upgrade}>
                 <Text style ={[styles.text, {color: textColor}]}>{upgradeType}</Text>
                 <View style={styles.progressBar}>
-                    <LinearGradient 
-                        style = {styles.tile}
-                        colors={colorsUpgrade[0]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        locations={locations}
-                        />
-                    <LinearGradient 
-                        style = {styles.tile}
-                        colors={colorsUpgrade[1]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        locations={locations}
-                        />
-                    <LinearGradient 
-                        style = {styles.tile}
-                        colors={colorsUpgrade[2]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        locations={locations}
-                        />
-                    <LinearGradient 
-                        style = {styles.tile}
-                        colors={colorsUpgrade[3]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        locations={locations}
-                        />
-                    <LinearGradient 
-                        style = {styles.tile}
-                        colors={colorsUpgrade[4]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        locations={locations}
-                        />
+                    <View style = {styles.shadow}>
+                        <LinearGradient 
+                            style = {styles.tile}
+                            colors={colorsUpgrade[0]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            locations={locations}
+                            />
+                    </View>
+                    
+                    <View style = {styles.shadow}>
+                        <LinearGradient 
+                            style = {styles.tile}
+                            colors={colorsUpgrade[1]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            locations={locations}
+                            />
+                    </View>
+
+                    <View style = {styles.shadow}>
+                        <LinearGradient 
+                            style = {styles.tile}
+                            colors={colorsUpgrade[2]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            locations={locations}
+                            />
+                    </View>
+                   
+                    <View style = {styles.shadow}>
+                        <LinearGradient 
+                            style = {styles.tile}
+                            colors={colorsUpgrade[3]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            locations={locations}
+                            />
+                    </View>
+                    
+                    <View style = {styles.shadow}>
+                        <LinearGradient 
+                            style = {styles.tile}
+                            colors={colorsUpgrade[4]}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            locations={locations}
+                            />
+                    </View>
                 </View>
             </View>
            
@@ -107,6 +121,13 @@ export default UpgradeTab
 
 
 const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: 'black',
+        shadowOffset: {width: 1, height: 2},
+        shadowOpacity: 1,
+        shadowRadius: 2,
+        elevation: 5,
+    },
     upgrade: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -123,7 +144,7 @@ const styles = StyleSheet.create({
         borderColor: ColorsBlue.blue100,
         borderWidth: 2,
         marginRight: 5,
-        borderRadius: 3,
+        borderRadius: 20,
         shadowColor: 'black',
         shadowOffset: {width: 1, height: 3},
         shadowOpacity: 1,
@@ -139,6 +160,7 @@ const styles = StyleSheet.create({
         shadowOffset: {width: 1, height: 3},
         shadowOpacity: 1,
         shadowRadius: 2,
+        elevation: 5,
     },
     outerContainer: {
         justifyContent: 'center',

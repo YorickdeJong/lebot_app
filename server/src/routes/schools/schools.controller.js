@@ -11,8 +11,8 @@ const {
 
 
 const getSpecificSchool = async (req, res) => {
-    const school_name = req.query.school_name;
-    const values = [school_name];
+    const {school_id, lesson_number, class_id} = req.query;
+    const values = [school_id, lesson_number, class_id];
     const client = await pool.connect();
 
     try {

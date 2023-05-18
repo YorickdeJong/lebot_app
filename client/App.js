@@ -1,14 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Alert, AppState } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import AppLoading from 'expo-app-loading';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthContextProvider, { AuthContext } from './src/store/auth-context';
 import ColorContextProvider, { ColorContext } from './src/store/color-context';
 import {  ColorsBlue } from './src/constants/palet';
 import UserProfileContextProvider, { UserProfileContext } from './src/store/userProfile-context';
-import SocketContextProvider from './src/store/socket-context';
+import SocketContextProvider, { SocketContext } from './src/store/socket-context';
 import CarContextProvider from './src/store/car-context';
 import AssignmentContextProvider from './src/store/assignment-context';
 import ChartContextProvider from './src/store/chart-context';
@@ -25,6 +25,9 @@ import { SocketProviderGroups } from './src/store/group-socket-context';
 import { SocketProviderClasses } from './src/store/classes-socket-context';
 import { SocketProviderUser } from './src/store/userprofile-socket-context';
 import WifiContextProvider from './src/store/robot-connect-context';
+import { ShowIconContextProvider } from './src/store/show-icons-context';
+import { TimeContextProvider } from './src/store/time-context';
+import { InformationContextProvider } from './src/store/information-context';
 
 // UPON LOGIN TOKEN GETS SET
 function Navigation() {
@@ -52,7 +55,7 @@ function Navigation() {
           {!authCtx.isAuthenticated && <Authenticate />}
           {authCtx.isAuthenticated  && userprofileCtx.userprofile.user_role === "admin" && <AdminNavigator />} 
           {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "student" &&  <Authorized />} 
-          {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "teacher" &&  <TeacherNavigator />}               
+          {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "teacher" &&  <TeacherNavigator />}              
       </NavigationContainer>
   );
 }
@@ -60,12 +63,59 @@ function Navigation() {
 
 
 //CONTAINS ALL SCREENS, DISTINGUISHES BETWEEN LOGIN AND AUTHORIZED
-function Root() {
-    const [isTryingLogin, setIsTryingLogin] = useState(true);
-    const authCtx = useContext(AuthContext);
-    const colorCtx = useContext(ColorContext)
+function Root({}) {
+  const [isTryingLogin, setIsTryingLogin] = useState(true);
+  const authCtx = useContext(AuthContext);
+  const colorCtx = useContext(ColorContext)
+  const { socket, isConnected, Disconnect, CreateSocketConnection, EstablishSocketConnection } = useContext(SocketContext);
+  const [connectionAttempted, setConnectionAttempted] = useState(false); //add connection atempt to not immidiately show first alert
+  const userprofileCtx = useContext(UserProfileContext);
+  const {user_role} = userprofileCtx.userprofile;
+  const [isAlertShown, setIsAlertShown] = useState(false);
 
-    console.log(`isAuthenticated: ${authCtx.isAuthenticated}`)
+
+
+  // Call CreateConnection on mount
+  useEffect(() => {
+        if (user_role === 'teacher' || user_role === 'admin') {
+            return
+        }
+        // Create socket connection on component mount
+        CreateSocketConnection();
+        return () => {
+          Disconnect();
+          // subscription.remove();
+        };
+    }, []);
+
+    
+      useEffect(() => {
+        if (user_role === 'teacher' || user_role === 'admin') {
+          return
+        }
+        if (!isConnected && connectionAttempted) {
+          showAlert(
+                'Niet verbonden met de robot',
+                'Kan geen meting starten. Ik verbind je opnieuw',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                          EstablishSocketConnection()
+                          setIsAlertShown(false) 
+                        }
+                    }
+                ]
+            );
+        } 
+        else if (isConnected) {
+            setConnectionAttempted(true);
+            showAlert(
+                'Je bent nu verbonden met de robot.',
+            );
+        }
+    }, [isConnected, connectionAttempted]);
+
     // move to auth context
     useEffect(() => {
       async function fetchToken() {
@@ -89,6 +139,21 @@ function Root() {
     }, []);
 
 
+    function showAlert(message) {
+        if (!isAlertShown) {
+          setIsAlertShown(true);
+          Alert.alert(
+            "Alert",
+            message,
+            [
+              {
+                text: "OK",
+                onPress: () => setIsAlertShown(false)
+              }
+            ]
+          );
+        }
+      }
 
     if (isTryingLogin) {
       return <AppLoading />;
@@ -99,6 +164,7 @@ function Root() {
 
 // CONTAINS ALL CHAT CONTEXTS WRAPPED AROUND THE ROOT SCREEN
 export default function App() {
+
   return (
     <>
     <StatusBar style="light" />
@@ -113,17 +179,23 @@ export default function App() {
                     <ChartContextProvider>
                       <ChartOptionsContextProvider>
                         <AssignmentContextProvider>
-                        <GroupTeacherContextProvider>
-                            <CarContextProvider>
-                              <ColorContextProvider>
-                                <AuthContextProvider>
-                                  <BlinkContextProvider>
-                                    <Root />
-                                  </BlinkContextProvider>
-                                </AuthContextProvider>
-                              </ColorContextProvider>
-                            </CarContextProvider>
-                        </GroupTeacherContextProvider>
+                          <GroupTeacherContextProvider>
+                              <CarContextProvider>
+                                <ColorContextProvider>
+                                  <AuthContextProvider>
+                                    <BlinkContextProvider>
+                                      <ShowIconContextProvider>
+                                        <TimeContextProvider namespace="/time-lessons">
+                                          <InformationContextProvider>
+                                            <Root />
+                                          </InformationContextProvider>
+                                        </TimeContextProvider>
+                                      </ShowIconContextProvider>
+                                    </BlinkContextProvider>
+                                  </AuthContextProvider>
+                                </ColorContextProvider>
+                              </CarContextProvider>
+                          </GroupTeacherContextProvider>
                         </AssignmentContextProvider>
                       </ChartOptionsContextProvider>
                     </ChartContextProvider>

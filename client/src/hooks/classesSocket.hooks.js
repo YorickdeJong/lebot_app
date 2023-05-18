@@ -10,7 +10,6 @@ export const useFetchClassesDataSocket = (shouldConnect, user_id, school_id) => 
 
     const initialize = useCallback(() => {
       if (socket) {
-        console.log('user_id: ' + user_id, 'school_id ' + school_id);
         socket.emit('initialize', {
           user_id,
           school_id,
@@ -47,7 +46,6 @@ export const useFetchClassesDataSocket = (shouldConnect, user_id, school_id) => 
       });
   
       socket.on('fetch-data-update', async (fetchedData) => {
-        console.log('fetched data', fetchedData)
         groupTeacherCtx.addClassArrayHandler(fetchedData);
         setData(fetchedData);
       });

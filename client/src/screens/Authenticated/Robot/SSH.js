@@ -11,19 +11,13 @@ const SSHConnectionScreen = () => {
     const handleConnect = (inputType, input) => {
         switch(inputType) {
             case 'disconnect': 
-                socketCtx.Disconnect(() => {
-                    socketCtx.Loading(false)
-                })
                 break;
             case 'connect': 
                 socketCtx.Connect(input);
                 break;
         }
     
-    }
-
-
-    const inputBind = socketCtx.isConnected ? 'disconnect' : 'connect' 
+    } 
 
     return (
         <SSHCredentials

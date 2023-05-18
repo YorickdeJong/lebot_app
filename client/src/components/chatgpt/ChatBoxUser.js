@@ -24,7 +24,7 @@ export default ChatBoxUser;
 const styles = StyleSheet.create({
     userTextBox: {
         backgroundColor: ColorsBlue.blue1100,
-        borderRadius: 10,
+        borderRadius: 20,
         padding: 10,
     },
     userText: {
@@ -38,7 +38,13 @@ const styles = StyleSheet.create({
         marginVertical: 10,
         maxWidth: 300,
         alignItems: 'center',
-        justifyContent: 'flex-end'
+        justifyContent: 'flex-end',
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 2, width: 1 },
+        shadowRadius: 3,
+        shadowOpacity: 1,
+        elevation: 4,
+        marginTop: 20
     },
     profilePicture: {
         width: 30,

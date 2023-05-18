@@ -38,48 +38,48 @@ function DragBlocksAnimation() {
     }, []); // Pass an empty dependency array
     
     return (
-        <ScrollView style={{ maxHeight: 360 }}>
+      <>
         <LightBulbAnimation exercise />
-        <View style={styles.conditions}>
-            <View>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-                <Text style={styles.text}>if</Text>
-                <Border 
-                text = "Conditie = rechts"
-                extraStyle={{marginRight: 0, marginLeft: 10}}/>
-            </View>
+          <View style={[styles.conditions, {paddingVertical: 20}]}>
+              <View>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <Text style={styles.text}>if</Text>
+                  <Border 
+                  text = "Conditie = rechts"
+                  extraStyle={{marginRight: 0, marginLeft: 10}}/>
+              </View>
 
-            <Border 
-            text = "Actie"
-            />
+              <Border 
+              text = "Actie"
+              />
 
-            <Text style={[styles.text, { marginTop: 5 }]}>else</Text>
-            <Border 
-            text = "Actie"
-            />
-            </View>
+              <Text style={[styles.text, { marginTop: 5 }]}>else</Text>
+              <Border 
+              text = "Actie"
+              />
+              </View>
 
 
-            <View>
-            <DragableBlock
-            text="rechts"
-            onDrop={(dropData) => handleDrop(dropData, borderRef)}
-            />
-            <DragableBlock
-            text="links"
-            onDrop={(dropData) => handleDrop(dropData, borderRef)}
-            />
-            <DragableBlock
-            text="motor aan"
-            onDrop={(dropData) => handleDrop(dropData, borderRef)}
-            />
-            <DragableBlock
-            text="motor uit"
-            onDrop={(dropData) => handleDrop(dropData, borderRef)}
-            />
-            </View>
-        </View>
-        </ScrollView>
+              <View>
+              <DragableBlock
+              text="rechts"
+              onDrop={(dropData) => handleDrop(dropData, borderRef)}
+              />
+              <DragableBlock
+              text="links"
+              onDrop={(dropData) => handleDrop(dropData, borderRef)}
+              />
+              <DragableBlock
+              text="motor aan"
+              onDrop={(dropData) => handleDrop(dropData, borderRef)}
+              />
+              <DragableBlock
+              text="motor uit"
+              onDrop={(dropData) => handleDrop(dropData, borderRef)}
+              />
+              </View>
+          </View>
+      </>
     );
 }
 
@@ -89,6 +89,17 @@ const styles = StyleSheet.create({
   conditions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    backgroundColor: ColorsBlue.blue1390,
+    marginTop: 8,
+    marginHorizontal: 8,
+    borderWidth: 1,
+    borderColor: `rgba(77, 77, 77, 0.2)`,
+    borderRadius: 20,
+    shadowColor: `rgba(0, 0, 0, 1)`,
+    shadowOffset: { height: 3, width: 1 },
+    shadowRadius: 3,
+    shadowOpacity: 1,
+    elevation: 4,
   },
   text: {
     fontSize: 18,

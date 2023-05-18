@@ -6,12 +6,15 @@ import {
   Animated,
   Easing,
   Dimensions,
+  View
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Svg, {  Ellipse,  } from 'react-native-svg';
 import { ColorsBlue } from '../../../constants/palet';
 import Planets from './Planets';
 import { useContext } from 'react';
+import Icon from '../../Icon';
+import { useNavigation } from '@react-navigation/native';
 
 
 const { width, height } = Dimensions.get('window');
@@ -19,7 +22,8 @@ const { width, height } = Dimensions.get('window');
 
 function QuestionsMap({ numTiles, onPress }) {
     const [orbitAnimation] = useState(new Animated.Value(0)); //state that holds instance of orbits
-    const loopTime = 15000
+    const loopTime = 30000
+    const navigation = useNavigation();
 
     //updates orbits when orbitAnimation changes
     useEffect(() => {
@@ -41,11 +45,10 @@ function QuestionsMap({ numTiles, onPress }) {
         animate();
     }, [orbitAnimation]);
 
-    const tileSize = 50 * 7 / numTiles > 50 ? 50 : 50 * 7 / numTiles;
+    const tileSize = 38
     const centerX = width / 2;
     const centerY = 0.82 * height / 2 ;
     const maxOrbitRadius = height > 750 ? 180 : 140;
-    const strokeWidth = 1
     const ellipticalFactor = 1.7;
 
 
@@ -122,9 +125,13 @@ function QuestionsMap({ numTiles, onPress }) {
         }
     }
 
+    function homeNavigatorHandler(){
+        navigation.navigate('Assignments', {screen: 'AssignmentsResults'})
+    }
+
     return (
         <LinearGradient
-            colors={[ColorsBlue.blue1400, ColorsBlue.blue1300, ColorsBlue.blue1400]}
+            colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}  
             style={styles.container}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -132,8 +139,16 @@ function QuestionsMap({ numTiles, onPress }) {
             <ImageBackground
             source={require('./../../../../assets/chatbackground.png')}
             style={styles.container}
-            imageStyle={{ opacity: 0.15 }}
+            imageStyle={{ opacity: 0.07 }}
             >
+            <View style = {{position: 'absolute', top: '2%', left: '3%', zIndex: 10}}>
+                <Icon 
+                    icon = 'home'
+                    onPress = {homeNavigatorHandler}
+                    size = {26}
+                    color = {ColorsBlue.blue500}
+                />
+            </View>
             <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
                 {/* Draws orbits */}
                 {Array.from({ length: numTiles - 1 }, (_, i) => i + 1).map((_, i) => {
@@ -171,7 +186,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
-        paddingTop: 20,
+        paddingTop: 15,
     },
     pressed: {
         opacity: 0.3,

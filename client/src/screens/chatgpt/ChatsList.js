@@ -8,6 +8,7 @@ import ChatSelectionTile from '../../components/chatgpt/ChatSelectionTile'
 import Icon from '../../components/Icon'
 import { ColorsBlue } from '../../constants/palet'
 import { ChatContext } from '../../store/chat-context'
+import { LinearGradient } from 'expo-linear-gradient'
 
 function Chats({navigation, route}) {
     const chatCtx = useContext(ChatContext)
@@ -33,23 +34,28 @@ function Chats({navigation, route}) {
     }
 
     return (
-        <View style = {styles.container}>
+        <LinearGradient 
+            colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}  
+            style = {styles.container}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            >            
             <ImageBackground
-            source={require('./../../../assets/chatbackground.png')} 
-            style={
-            {flex: 1, resizeMode: 'contain'}
-            }
-            imageStyle={{opacity: 0.15}}
-            >
-            <View style = {{flex: 7}}>
-                <FlatList 
-                KeyExtractor = {(item) => item}
-                data = {chatCtx.thread_ids}
-                renderItem = {renderChats}
-                />
-            </View>
-        </ImageBackground>
-        </View>
+                source={require('./../../../assets/chatbackground.png')} 
+                style={
+                {flex: 1, resizeMode: 'contain'}
+                }
+                imageStyle={{opacity: 0.05}}
+                >
+                <View style = {{flex: 7}}>
+                    <FlatList 
+                    KeyExtractor = {(item) => item}
+                    data = {chatCtx.thread_ids}
+                    renderItem = {renderChats}
+                    />
+                </View>
+            </ImageBackground>
+        </LinearGradient>
     )
 }
 
@@ -64,6 +70,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: ColorsBlue.blue1300,
+        backgroundColor: ColorsBlue.blue1400,
     }
 })

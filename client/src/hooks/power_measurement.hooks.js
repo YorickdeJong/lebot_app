@@ -1,7 +1,7 @@
 
 import axios from 'axios'
 import { ipAddressComputer } from '../data/ipaddresses.data';
-import { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import { ChartContext } from '../store/chart-context';
 import { SocketContext } from '../store/socket-context';
@@ -13,6 +13,7 @@ export const useSocketPower = (shouldConnect, user_id) => {
     const chartCtx = useContext(ChartContext);
     const sshSocketCtx = useContext(SocketContext);
     const socket = useRef(null);
+    const [dataCount, setDataCount] = useState(0);
 
     useEffect(() => {
         //return if socket doesn't need to be called
@@ -59,7 +60,6 @@ export const useSocketPower = (shouldConnect, user_id) => {
         });
     
         newSocket.on('power-data-update', (data) => {
-            console.log('data', data.data[0])
             chartCtx.setChartDataHandler(data.data[0]);
         });
 

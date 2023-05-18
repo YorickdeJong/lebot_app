@@ -48,9 +48,7 @@ const getSpecificPowerMeasurementResult = async (req, res) => {
     }
 }
 
-const getLatestPowerMeasurementResult = async (user_profile_id) => {
-    const client = await pool.connect();
-  
+const getLatestPowerMeasurementResult = async (client, user_profile_id) => {
     try {
         const { rows } = await client.query(getLatestPowerMeasurementResultQuery, [user_profile_id]);
     
@@ -65,9 +63,7 @@ const getLatestPowerMeasurementResult = async (user_profile_id) => {
         console.log(error);
         return { error: 'Error trying to get results data', status: 500 };
     } 
-    finally {
-        client.release();
-    }
+
   };
 
 // creates/ updates measurement

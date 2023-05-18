@@ -9,13 +9,14 @@ const socketPowerMeasurement = require('./routes/power_measurement/powerMeasurem
 const socketGroups = require('./routes/groups/groups.socket')
 const socketClasses = require('./routes/classes/classes.socket')
 const socketUsers = require('./routes/user_profile/user_profile.socket')
+const socketTimer = require('./routes/time_lessons/time_lessons.socket')
+const socketLiveChat = require('./routes/liveChat/liveChat.socket')
 
 const io = require('socket.io')
 const Client = require('ssh2').Client;
-let sshClient = new Client();
 
 const PORT = 3001
-
+let sshClients = new Map();
 
 // const server = https.createServer({
 //     key: fs.readFileSync(__dirname + '/keys/key.pem'), //need a key to and a certificate
@@ -45,9 +46,11 @@ async function startServer() {
 }
 
 startServer()
-socketsSSH.listenToClientSSH(ioConnect, sshClient); 
+socketsSSH.listenToClientSSH(ioConnect, sshClients, Client); 
 socketPowerMeasurement.listenToClientPower(ioConnect);
 socketMeasurementResults.listenToClientMeasurementResults(ioConnect);
 socketGroups.listenToClientGroups(ioConnect);
 socketClasses.listenToClientClasses(ioConnect);
 socketUsers.listenToClientUser(ioConnect);
+socketTimer.listenToClientTimeLessons(ioConnect);
+socketLiveChat.listenToClientLiveChat(ioConnect);

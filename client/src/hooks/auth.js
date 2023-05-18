@@ -126,10 +126,14 @@ export async function updateGroupIDForClass(class_id) {
 
 
 export function useUserSocket(shouldConnect, group_ids) {
+    console.log('GROUP IDS: ' + group_ids)
     const [dataUser, setDataUser] = useState([]);
     const socket = useSocketUser();
 
     const initializeUser = useCallback(() => {
+        if (group_ids.length === 0) {
+            return;
+        }
         if (socket) {
             socket.emit('initialize', {
                 group_ids
@@ -144,6 +148,9 @@ export function useUserSocket(shouldConnect, group_ids) {
             return;
         }
 
+        if (group_ids.length === 0) {
+            return;
+        }
         socket.on('connect', initializeUser);
 
         socket.on('connect_error', (error) => {
@@ -166,7 +173,7 @@ export function useUserSocket(shouldConnect, group_ids) {
         });
 
         socket.on('fetch-data-update', (updatedData) => {
-            console.log('Updated data received:', updatedData);
+            console.log('UPDATED DATA', updatedData)
             setDataUser(updatedData);
         });
 

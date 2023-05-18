@@ -20,7 +20,7 @@ const authCtx = useContext(AuthContext);
       }}
     >
       <LinearGradient
-        colors={[ColorsBlue.blue1400, ColorsBlue.blue1100]}
+        colors={[ColorsBlue.blue1400, ColorsBlue.blue1400]}
         style={styles.header}
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}

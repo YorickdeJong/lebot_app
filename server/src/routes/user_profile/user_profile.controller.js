@@ -109,11 +109,9 @@ const getAdminProfileById = async (req, res) => {
     }
 }
 
-const getUsersInGroup = async (group_id) => {
+const getUsersInGroup = async (client, group_id) => {
     console.log('group_id', group_id)
     const values = [group_id];
-
-    const client = await pool.connect();
 
     try {
         const { rows } = await client.query(getUsersInGroupQuery, values);
@@ -132,9 +130,6 @@ const getUsersInGroup = async (group_id) => {
         return {data: null, status: 500};
     }
 
-    finally {
-        client.release();
-    }
 }
 
 // Function to create a new user profile in the database

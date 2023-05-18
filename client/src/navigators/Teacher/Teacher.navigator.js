@@ -36,7 +36,7 @@ function TeacherNavigator() {
             <Stack.Screen name="Teacher" component={TeacherDashboard} 
             />
 
-            <Stack.Screen name="Classroom" component={CreateClassroomNavigator} 
+            <Stack.Screen name="groups" component={CreateClassroomNavigator} 
                 options={{
                 headerShown:false,
                 title: 'Create Users',

@@ -1,14 +1,15 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {Alert, View, FlatList, StyleSheet, Text, SectionList} from 'react-native';
 import { BlurView } from "expo-blur";
-import { ColorsBlue, ColorsGreen } from "../../../constants/palet";
+import { ColorsBlue, ColorsDarkerRed, ColorsGreen, ColorsLighterGold } from "../../../constants/palet";
 import { useContext, useEffect, useState } from "react";
 import { UserProfileContext } from "../../../store/userProfile-context";
 import { AssignmentDetailsContext } from "../../../store/assignment-Details-context";
 import { createAssignmentsDetail, getSpecificAssignmentsDetail } from "../../../hooks/assignmentDetails";
+import { LinearGradient } from "expo-linear-gradient";
 
 
-function MultipleChoiceContainer({multipleChoiceOptions, multipleChoiceAnswers, subject, assignment_number, assignment_id, title, sendData}) {
+function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multipleChoiceAnswers, subject, assignment_number, assignment_id, title, sendData, currency}) {
     const boolArray = Array.from({length: multipleChoiceOptions.length }, () => false);
     const [tileColor,  setTileColor] = useState(boolArray);
     const userprofileCtx = useContext(UserProfileContext);
@@ -68,6 +69,9 @@ function MultipleChoiceContainer({multipleChoiceOptions, multipleChoiceAnswers, 
             if (!school_id || !class_id || !group_id) {
                 Alert.alert('Voeg eerst een klas en group toe om vragen te kunnen beantwoorden')
             }
+            if (!checkTimerActive()) {
+                return 
+            }
             if (tileColor[index]) {
                 Alert.alert('Deze vraag is al beantwoord')
                 return
@@ -122,20 +126,31 @@ function MultipleChoiceContainer({multipleChoiceOptions, multipleChoiceAnswers, 
 
 
         return (
-            <TouchableOpacity onPress = {() => !tileColor[index] ? checkAnswerHandler() : Alert.alert('Deze vraag is al beantwoord')} 
-                style = {[styles.tile, tileColor[index] && {backgroundColor: multipleChoiceAnswers[index] === 'true' ? 'rgba(10,100,10, 0.2)' : 'rgba(100,10,10,0.3)'}]}>
-                <BlurView intensity={tileColor[index] ? 15 : 40} tint = {tileColor[index] ? 'light' : 'dark'} style = {styles.blurView}>
-                    <View style = {styles.textContainer}>
-                        <Text style = {styles.text}>{item}</Text>
-                    </View>
-                </BlurView>
-            </TouchableOpacity>
+            <View style = {styles.shadow}>
+                <LinearGradient 
+                    colors = {[tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? 'rgba(8, 30, 8, 1)' : ColorsDarkerRed.red1000) : ColorsBlue.blue1400, 
+                    tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? 'rgba(25, 130, 25, 1)' : 'rgba(150, 70, 51, 1)') : ColorsBlue.blue1200, 
+                    tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? 'rgba(8, 30, 8, 1)' : ColorsDarkerRed.red1000) : ColorsBlue.blue1400]} 
+                    style = {styles.tile}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}>
+                    <TouchableOpacity onPress = {() => !tileColor[index] ? checkAnswerHandler() : Alert.alert('Deze vraag is al beantwoord')} 
+                    >
+                            <View style = {styles.textContainer}>
+                                <Text style = {styles.text}>{item}</Text>
+                            </View>
+                    </TouchableOpacity>
+                </LinearGradient>
+            </View>
         )
     }
     
     return (
         <View style = {{marginTop: 12}}>
-            <Text style = {styles.tries}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 40}}>
+                <Text style = {[styles.tries, {marginTop: 5, color: ColorsBlue.blue50}]}>Credits: €{currency}</Text>
+                <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>
+            </View>
             
             <FlatList
                 data={multipleChoiceOptions}
@@ -152,18 +167,22 @@ export default MultipleChoiceContainer;
 
 
 const styles = StyleSheet.create({ 
+    shadow: {
+        shadowColor: `rgba(1, 1, 1, 1)`,
+        shadowOffset: {height: 2, width: 1},
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 4,
+    },
     tile: {
         marginHorizontal: 10,
         marginVertical: 5,
-        height: 55,
+        paddingVertical: 5,
+        minHeight: 55,
         borderWidth: 0.8,
         borderColor: `rgba(77, 77, 77, 0.5)`,
-        shadowColor: `rgba(11, 11, 11)`,
-        shadowOffset: {height: 2, width: 1},
-        shadowOpacity: 1,
-        shadowRadius: 2,
-        elevation: 2,
-        backgroundColor: 'rgba(10,10,100, 0.15)'
+        justifyContent: 'center',
+        borderRadius: 20,
     },
     blurView: {
         flex: 1,
@@ -175,11 +194,11 @@ const styles = StyleSheet.create({
     textContainer: {
         justifyContent: 'center',
         alignItems: 'center', 
-        paddingHorizontal: 5
+        paddingHorizontal: 10
     },
     text: {
-        color: ColorsBlue.blue50,
-        fontSize: 19,
+        color: ColorsBlue.blue100,
+        fontSize: 18,
         fontWeight: '200',
         textAlign: 'center',
         lineHeight: 23,

@@ -48,19 +48,8 @@ else{
     }
 
     function sshConnection(motorOne, motorTwo, motorThree, motorFour) {
-        const config = { //TODO make these values statewide
-                host: ipAddressRaspberryPi,
-                port: 22,
-                username: "ubuntu",
-                password: "password",
-        }
-        socketCtx.Connect(config); //set assignment number and title
-        setTimeout(() => {
-            socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && ./devel/lib/driver_bot_cpp/controll_motor ${motorOne ? 1 : 0} ${motorTwo ? 1 : 0} ${motorThree ? 1 : 0} ${motorFour ? 1 : 0}`); 
-        }, 1000);
+        socketCtx.Command('', `cd Documents/lebot_robot_code/catkin_work && ./devel/lib/driver_bot_cpp/controll_motor ${motorOne ? 1 : 0} ${motorTwo ? 1 : 0} ${motorThree ? 1 : 0} ${motorFour ? 1 : 0}`); 
     }
-
-
 
     const checkCode = () => {
         console.log('Code:', code);
@@ -108,20 +97,21 @@ else{
     return (
         <>
             <View style={[styles.outerContainer, {height: close? "100%" : 250}]}>
-                <CodeEditor
-                    style={styles.codeEditor}
-                    language="javascript"
-                    syntaxStyle={CodeEditorSyntaxStyles.atomOneDark}
-                    showLineNumbers
-                    initialValue={code}
-                    onChange={setCode}
-                    
-                />
-                <View style = {[styles.buttonContainer, {height: close? "100%" : 250 }]}>
+                <View style = {{overflow: 'hidden', borderRadius: 20}}>
+                    <CodeEditor
+                        style={styles.codeEditor}
+                        language="javascript"
+                        syntaxStyle={CodeEditorSyntaxStyles.atomOneDark}
+                        showLineNumbers
+                        initialValue={code}
+                        onChange={setCode}
+                    />
+                </View>
+                <View style = {[styles.buttonContainer]}>
                     <ChartToggle
                     toggleChart = {toggle}
                     toggleChartSettings = {checkCode}
-                    
+                    notShowBorder={true}
                     /> 
                 </View>
             </View>
@@ -142,7 +132,19 @@ const styles  = StyleSheet.create({
     outerContainer: {
         flexDirection: 'row',
         paddingVertical: 3,
-        backgroundColor: ColorsBlue.blue1300,
+        backgroundColor: ColorsBlue.blue1390,
+        marginTop: 8,
+        marginHorizontal: 8,
+        borderWidth: 1,
+        borderColor: `rgba(77, 77, 77, 0.2)`,
+        borderRadius: 20,
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 3, width: 1 },
+        shadowRadius: 3,
+        shadowOpacity: 1,
+        elevation: 4,
+        
+        
     },
     text: {
         fontSize: 18,
@@ -158,17 +160,20 @@ const styles  = StyleSheet.create({
         paddingHorizontal: 5
     },
     buttonContainer: {        
-        backgroundColor: ColorsBlue.blue1300,
-        width: "18%",
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        paddingRight: 15
+        backgroundColor: ColorsBlue.blue1390,
+        position: 'absolute',
+        right: 0,
+        bottom: 0, 
+        zIndex: 10,
+        overflow: 'hidden',
+        borderRadius: 20,
     },
     codeEditor: {
         fontSize: 14,
         inputLineHeight: 23,
         highlighterLineHeight: 23,
-        backgroundColor: ColorsBlue.blue1300,
-        width: "82%",
+        backgroundColor: ColorsBlue.blue1390,
+        overflow: 'hidden',
+        borderRadius: 20,
     }
 })

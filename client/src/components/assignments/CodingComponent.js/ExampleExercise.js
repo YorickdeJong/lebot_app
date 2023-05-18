@@ -7,9 +7,10 @@ import SwitchScreens from '../BuildComponent.js/SwitchScreens';
 import LightBulbAnimation from './LightBulbAnimation';
 import { useState, useRef } from 'react';
 import DragBlocksAnimation from './DragBlocksAnnimation';
+import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
 
 
-function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, isFocused, title, slideCountEnd}) {
+function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, isFocused, title, setSlideCount, slideCountEnd}) {
     const [focused, setFocused] = useState(isFocused && slideCount === 3); 
     const scrollViewRef = useRef(null);
     const extraStyle = {
@@ -20,7 +21,7 @@ function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyp
 
     return(
         <LinearGradient 
-                colors={[ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1300, ColorsBlue.blue1400]} 
+                colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}  
                 style = {styles.container}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -32,30 +33,31 @@ function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyp
                 }
                 imageStyle={{opacity: slideCount >= 0 ? 0.10 : 0.15}}
                 >
-                    <DragBlocksAnimation />
-                    <View style={styles.border}/>                    
-                    <ScrollView style = {{flex: 1}}
+                    <AssignmentOptionsBar 
+                        slideCount = {slideCount}
+                        nextSlideHandler = {nextSlideHandler}
+                        prevSlideHandler = {prevSlideHandler}
+                        slideCountEnd = {slideCountEnd}
+                        setSlideCount = {setSlideCount}
+                        text = {{text: 'Uitleg', left: '44%' }}
+                    />
+
+                    <ScrollView style = {{flex: 1, marginTop: 0}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                     >
-                                <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
-                                    <ChatBoxGPT 
-                                    answer={message.answer}
-                                    isLastItem={true}
-                                    thread_id={message.thread_id}
-                                    setTyping={setTyping}
-                                    typing={typing}
-                                    extraStyle={extraStyle}
-                                    />
-                                </View>
-                                    {!typing && (
-                                        <SwitchScreens 
-                                        prevSlideHandler={prevSlideHandler}
-                                        nextSlideHandler={nextSlideHandler}
-                                        slideCount={slideCount}
-                                        slideCountEnd={slideCountEnd}
-                                        />
-                                    )}
+                            <DragBlocksAnimation />               
+                            <View style = {{marginTop: 15}}>
+                                <ChatBoxGPT 
+                                answer={message.answer}
+                                isLastItem={true}
+                                thread_id={message.thread_id}
+                                setTyping={setTyping}
+                                typing={typing}
+                                extraStyle={extraStyle}
+                                />
+                            </View>
+
                         </ScrollView>   
                 </ImageBackground>
             </LinearGradient>
@@ -68,7 +70,6 @@ export default ExampleExercise
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
-        paddingBottom: 5
     },
     imageBackground: {
         flex: 1, 

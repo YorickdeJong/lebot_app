@@ -8,7 +8,7 @@ import { SocketContext } from "../../store/socket-context";
 import BlurWrapper from "../UI/BlurViewWrapper";
 
 
-function ConnectRobotModal() {
+function ConnectRobotModal({}) {
     const WifiCtx = useContext(WifiContext)
     const socketCtx = useContext(SocketContext)
     const [wifiName, setWifiName] = useState('')
@@ -84,12 +84,12 @@ function ConnectRobotModal() {
             intensity={20}
             customColor={'rgba(40,40,72, 0.95)'}>
                 {
-                    loading && (
-                        <View style={{ position: 'absolute', top: "65%", left: "32%", zIndex: 100}}>
-                            <ActivityIndicator size="large" color={ColorsBlue.blue50} />
-                            <Text style = {{fontSize: 18, marginTop: 15, color: ColorsBlue.blue50, textAlign: 'center'}}>Even geduld aub...</Text>
-                        </View>
-                        )
+                loading && (
+                    <View style={{ position: 'absolute', top: "65%", left: "32%", zIndex: 100}}>
+                        <ActivityIndicator size="large" color={ColorsBlue.blue50} />
+                        <Text style = {{fontSize: 18, marginTop: 15, color: ColorsBlue.blue50, textAlign: 'center'}}>Even geduld aub...</Text>
+                    </View>
+                    )
                 }
                 <View style={styles.modal}>
                     <Text style={{fontSize: 21, marginBottom: 15, color: ColorsBlue.blue50}}>Connect Wifi Robot</Text>

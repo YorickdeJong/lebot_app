@@ -10,10 +10,7 @@ const {
     getAllClassesQuery
 } = require('./../../services/queries/queryClasses');
 
-const getClassesPerSchool = async (school_id) => {
-    console.log('getClassesPerSchool - school_id: ', school_id)
-    const client = await pool.connect();
-    console.log('getClassesPerSchool - client connected')
+const getClassesPerSchool = async (client, school_id) => {
     const values = [school_id];
     console.log('getClassesPerSchool - values', values)
     
@@ -33,10 +30,6 @@ const getClassesPerSchool = async (school_id) => {
         console.log(error);
         return { error: 'Failed to get all classes', status: 500 }
     } 
-    finally {
-        console.log('getClassesPerSchool - released client classes per school')
-        client.release();
-    }
 };
 
 

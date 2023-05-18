@@ -20,7 +20,7 @@ function CreateClassroomNavigator(){
                 header: ({ route }) => {
                 return (
                     <CustomHeader
-                    title={route.name}
+                    title={route.name} 
                     addHandler={"group-add"}
                     goBack
                     />

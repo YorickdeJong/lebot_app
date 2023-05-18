@@ -12,7 +12,7 @@ function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler
                 <TouchableOpacity 
                 style={styles.buttonContainer}
                 onPress = {firstButtonHandler}>
-                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 20, overflow: 'hidden', justifyContent: 'center' }}>
                         
                         <Text style={styles.buttonText}>{textButtonOne}</Text>
                     </BlurWrapper>
@@ -21,7 +21,7 @@ function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler
                 <TouchableOpacity 
                 style={styles.buttonContainer}
                 onPress = {secondButtonHandler}>
-                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 20, overflow: 'hidden', justifyContent: 'center' }}>
                         
                         <Text style={styles.buttonText}>{textButtonTwo}</Text>
                     </BlurWrapper>
@@ -30,7 +30,7 @@ function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler
                 <TouchableOpacity 
                 style={styles.buttonContainer}
                 onPress = {thirdButtonHandler}>
-                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 5, overflow: 'hidden', justifyContent: 'center' }}>
+                    <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 20, overflow: 'hidden', justifyContent: 'center' }}>
                         
                         <Text style={styles.buttonText}>{textButtonThree}</Text>
                     </BlurWrapper>
@@ -48,17 +48,17 @@ const styles = StyleSheet.create({
         width: 100,
         height: 55,
         paddingVertical: 0.4,
-        borderRadius: 5,
+        borderRadius: 20,
         borderColor: ColorsBlue.blue700,
+        backgroundColor: ColorsBlue.blue1390,
         borderWidth: 0.6,
         justifyContent: 'center',
-        shadowColor: 'black', // Change shadow color to 'black' for better visibility
-        shadowOffset: { width: 0, height: 2 }, // Increase the height offset
+        shadowColor:  'rgba(0, 0, 0, 1)', // Change shadow color to 'black' for better visibility
+        shadowOffset: { width: 1, height: 3 }, // Increase the height offset
         shadowOpacity: 1, // Lower the shadow opacity to make it more subtle
         shadowRadius: 4,
         elevation: 2,
         backgroundColor: Platform.OS === 'android' && 'rgba(0,0,0, 0.95)',
-
     },
     buttonText: {
         color: ColorsBlue.blue50,
@@ -70,12 +70,13 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: '0%',
         width: "100%",
+        height: 65
     },
     button: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginHorizontal: 30,
         marginBottom: 10,
-
+        borderRadius: 20,
     },
 })

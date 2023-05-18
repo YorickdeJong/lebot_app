@@ -132,6 +132,7 @@ function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFoc
           isFocused={isFocused}
           setSlideCount={setSlideCount}
           slideCount={slideCount}
+          currentExerciseLesson = {4}
           />
         }
         {  
@@ -147,6 +148,7 @@ function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFoc
           nextSlideHandler={nextSlideHandler}
           prevSlideHandler={prevSlideHandler}
           slideCount={slideCount}
+          currentExerciseLesson = {4}
           />
         }
 
@@ -163,6 +165,7 @@ function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFoc
           nextSlideHandler={nextSlideHandler}
           prevSlideHandler={prevSlideHandler}
           slideCount={slideCount}
+          currentExerciseLesson = {4}
           />
         }
         {slideCount === 9 &&
@@ -194,6 +197,7 @@ function InformationQuestionsScreenTwo({assignmentTopic, assignmentNumber, isFoc
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}       
           performedMeasurement
+          currentExerciseLesson = {5}
           />
         }
         {slideCount === 11 &&

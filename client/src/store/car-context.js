@@ -20,7 +20,9 @@ export const CarContext = createContext({
         Handling:  [false, false, false, false, false],
         Wheels: [false, false, false, false, false],
     },
-
+    showModal: false,
+    setShowModal: (prop) => {},
+    setShowModalHandler: () => {},
     editSpeed: (speedIncrease) => {},
     editAcceleration: (accelerationIncrease) => {},
     editHandling: (wheelsIncrease) => {},
@@ -34,6 +36,7 @@ export const CarContext = createContext({
 
 function CarContextProvider({children}) {
     const userCtx = useContext(UserProfileContext)
+    const [showModal, setShowModal ] = useState(true);
     const [upgradeLog, setUpgradeLog] = useState({
         Speed: [false, false, false, false, false],
         Acc: [false, false, false, false, false],
@@ -50,10 +53,23 @@ function CarContextProvider({children}) {
 
     })
 
+
     useEffect(() => {
         loadCarDataFromStorage();
          loadCarUnlockFromStorage();
+         loadShowModal();
     }, []);
+
+    async function loadShowModal() {
+        try {
+            const storedShowModal = await AsyncStorage.getItem('showModal');
+            if (storedShowModal !== null) {
+                setShowModal(JSON.parse(storedShowModal));
+            }
+        } catch (error) {
+            console.error('Error loading showModal value from AsyncStorage:', error);
+        }
+    }
 
 
     async function loadCarDataFromStorage() {
@@ -115,6 +131,18 @@ function CarContextProvider({children}) {
         console.log(`upgradelog: ${upgradeLog}`)
         setUpgradeLog(upgradeLog);
         loadCarUnlockInStorage(upgradeLog);
+    }
+    
+
+    //--------------------- Modal -------------------------//
+    async function setShowModalHandler() {
+        try {
+            await AsyncStorage.setItem('showModal', JSON.stringify(false));
+            setShowModal(false);
+        } 
+        catch (error) {
+            console.error('Error saving showModal value to AsyncStorage:', error);
+        }
     }
     
 
@@ -255,6 +283,9 @@ function CarContextProvider({children}) {
     const value = {
         carProperties: carProperties,
         upgradeLog: upgradeLog,
+        showModal,
+        setShowModal,
+        setShowModalHandler,
         editSpeed: editSpeed,
         editAcceleration: editAcceleration,
         editHandling: editHandling, 

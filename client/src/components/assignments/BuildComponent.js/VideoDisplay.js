@@ -28,45 +28,56 @@ function VideoDisplay({video}){
         }
     }
 
-    return(
-        <>
-            <View style = {[styles.imageContainer, {height: height}]}>
-                <View style = {{position: 'absolute', top: 5, left: 5, zIndex: 1}}>
-                    <Icon 
-                        icon={height === 221 ? 'close' : 'open'}
-                        size = {25}
-                        color = {ColorsGray.gray400}
-                        onPress={() => {closeIconHandler()}}
-                    />
+    return (
+
+        <View style={styles.shadowContainer}>
+            <View style={[styles.imageContainer, { height: height }]}>
+                <View style={{ position: 'absolute', top: 5, left: 5, zIndex: 1 }}>
+                <Icon
+                    icon={height === 221 ? 'close' : 'open'}
+                    size={25}
+                    color={ColorsGray.gray200}
+                    onPress={() => { closeIconHandler() }}
+                />
                 </View>
                 {height === 221 &&
                 <Video
-                    source= {video} // You can use a remote or local video file
-                    style={{width: "100%", height: "100%", alignSelf: 'center'}}
-                    resizeMode={'cover'} // Set the resizeMode
-                    shouldPlay={true} // Set the video to play
-                    isLooping={true} // Set the video to loop
-                    useNativeControls={true} // Show the video controls
+                    source={video}
+                    style={{ width: "100%", height: "100%", alignSelf: 'center', overflow: 'hidden', borderRadius: 20 }}
+                    resizeMode={'cover'}
+                    shouldPlay={true}
+                    isLooping={true}
+                    useNativeControls={true}
                     onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
                 />
                 }
             </View>
-        </>
-    )
+        </View>
+
+    );
 }
 
 export default VideoDisplay;
 
 
 const styles = StyleSheet.create({
+    shadowContainer: {
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 3, width: 1 },
+        shadowRadius: 4,
+        shadowOpacity: 1,
+        elevation: 4,
+        marginHorizontal: 8,
+        borderRadius: 20,
+        marginTop: 8,
+      },
     imageContainer: {
         alignItems: 'center',
         justifyContent: 'center',
-        shadowColor: ColorsGray.gray900,//ColorsBlue.blue1200,
-        shadowOffset: {height: 1, width: 0},
-        shadowRadius: 1,
-        shadowOpacity: 1,
-        elevation: 4,
+        borderRadius: 21,
+        borderColor: `rgba(77, 77, 77, 0.2)`,
+        borderWidth: 1,
+        overflow: 'hidden', // keep this here to make sure content respects the borderRadius
     },
     videoProgressIndicator: {
         position: 'absolute',

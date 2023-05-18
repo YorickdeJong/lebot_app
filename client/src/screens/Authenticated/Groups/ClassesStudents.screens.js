@@ -9,6 +9,7 @@ import { deleteGroupByID } from "../../../hooks/groups.hooks"
 import { deleteGroupUser } from "../../../hooks/groupsInfo.hooks"
 import { useFocusEffect } from '@react-navigation/native';
 import { useFetchClassesDataSocket } from "../../../hooks/classesSocket.hooks"
+import { useFetchTimeLessonsDataSocket } from "../../../hooks/time-lessons.hook"
 
 function ClassesStudent({tileType}) {
     // implement create user_group and user_classes here     
@@ -20,24 +21,23 @@ function ClassesStudent({tileType}) {
     const user_id = userprofileCtx.userprofile.id
 
     const [data, initialize] = useFetchClassesDataSocket(true, user_id, school_id);
+    const [dataTime, initializeTime] = useFetchTimeLessonsDataSocket(true, school_id)
 
     useFocusEffect(
         useCallback(() => {
             
             console.log('ClassesStudent component focused');
             initialize(); // Add this line to call initialize when the component is focused
-            
+            initializeTime();
             return () => {
                 console.log('ClassesStudent component blurred');
             };
-        }, [initialize, dbUpdated]) // Add initialize as a dependency
+        }, [initialize, initializeTime, dbUpdated]) // Add initialize as a dependency
     );
 
     async function joinClassHandler(class_id) {
-        console.log('CLASS ID: ', class_id) //PROBLEM: FETCHED CLASSES AREN'T ADDED TO LOCAL STORAGE -> ADD THEM 
         const user_id = userprofileCtx.userprofile.id
         const {name} = groupTeacherCtx.getClassInfoById(class_id)
-        console.log('filtered data', name)
         const userprofile = {
             ...userprofileCtx.userprofile,
             class_id,

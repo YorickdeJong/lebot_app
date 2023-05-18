@@ -5,6 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 import GroupCategoryTile from './GroupTile.groups';
 import TeacherModal from '../Teacher/TeacherModal.components';
 import GroupStudent from '../../screens/Authenticated/Groups/GroupStudents.screen';
+import TeacherTimeModal from '../Teacher/TeacherTimeModal';
+import { TimeContext } from '../../store/time-context';
+import { useContext } from 'react';
 
 function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandler, addUserHandler, classroom_id, className, data, setDbUpdate, dataUser, tabNav}){
     const navigation = useNavigation();
@@ -22,9 +25,9 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
               ...item,
               usernames: []
             };
-          }
+          } 
         });
-      }
+    }
 
     function renderGroups({item}) {   
         //Don't display tiles that do not have the selected classroom
@@ -62,7 +65,6 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
             }
         }
 
-        console.log(item.names)
         return (
             <GroupCategoryTile
                 navigationHandler={navigationHandler.bind(this, tileType)}
@@ -105,7 +107,7 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
         classroom_id={classroom_id}
         setDbUpdate={setDbUpdate}
         />
-        
+        <TeacherTimeModal />
         </View>
     )
 }

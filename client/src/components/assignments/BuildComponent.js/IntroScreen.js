@@ -21,7 +21,7 @@ function IntroScreen({nextSlideHandler, prevSlideHandler, slideCount, title, des
 
     return(
         <LinearGradient
-            colors={[ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1300, ColorsBlue.blue1400]} 
+            colors={[ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400]} 
             style = {styles.container}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -31,7 +31,7 @@ function IntroScreen({nextSlideHandler, prevSlideHandler, slideCount, title, des
                 style={
                 {flex: 1}
                 }
-                imageStyle={{opacity: slideCount >= 0 ? 0.10 : 0.15}}
+                imageStyle={{opacity: slideCount >= 0 ? 0.05 : 0.05}}
                 >
                     <VideoDisplay 
                     video = {video}/>
@@ -66,6 +66,5 @@ export default React.memo(IntroScreen)
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
-        paddingBottom: 5
     },
 })

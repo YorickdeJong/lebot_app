@@ -1,5 +1,6 @@
 import {  useState, createContext, useEffect } from 'react';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ColorsBlue, ColorsGray } from '../constants/palet';
 
 export const GroupTeacherContext = createContext({
     groupInfo: '',
@@ -8,6 +9,7 @@ export const GroupTeacherContext = createContext({
     currentGroup_id: '',
     currentClass_id: '',
     groupTypeData: [],
+    timerToggleModal: false,
     addHandlerFunction: () => {},
     addClassArrayHandler: (classrooms) => {},
     addClassHandler: (classroom) => {},
@@ -31,6 +33,7 @@ export const GroupTeacherContext = createContext({
 
 function GroupTeacherContextProvider({ children }) {
     const [toggleModal, setToggleModal] = useState({ isToggle: false, type: "" });
+    const [timerToggleModal, setTimerToggleModal] = useState(false);
     const [groupInfo, setGroupInfo] = useState([]);
     const [classInfo, setClassInfo] = useState([]);
     const [currentGroup_id, setCurrentGroup_id] = useState('');
@@ -52,7 +55,8 @@ function GroupTeacherContextProvider({ children }) {
                 if (storedClassInfo) {
                     setClassInfo(JSON.parse(storedClassInfo));
                 }
-            } catch (error) {
+            } 
+            catch (error) {
                 console.log('Error loading data from AsyncStorage:', error);
             }
         }
@@ -73,7 +77,12 @@ function GroupTeacherContextProvider({ children }) {
                 break;
             case "close":
                 console.log('check close')
-                setToggleModal({ isToggle: !toggleModal.isToggle, type: "" });
+                setToggleModal({ isToggle: false, type: "" });
+                setTimerToggleModal(false);
+                break;
+            case 'timer':
+                console.log('set timer')
+                setTimerToggleModal(true);
                 break;
             }
     }
@@ -162,7 +171,6 @@ function GroupTeacherContextProvider({ children }) {
 
     function getClassInfoById(class_id) {
         const classObject = classInfo.find((classItem) => classItem.class_id === class_id);
-        console.log('class object', classObject)
         return classObject;
     }
     
@@ -173,10 +181,7 @@ function GroupTeacherContextProvider({ children }) {
     }
 
     function getAllGroupsInClass(class_id) {
-        console.log(groupInfo)
-        console.log('CLASS ID', class_id)
         const groupObject = groupInfo.filter((groupItem) => groupItem.class_id === class_id);
-        console.log(groupObject)
         if (groupObject.length > 0) {
             return groupObject;
         }
@@ -185,7 +190,6 @@ function GroupTeacherContextProvider({ children }) {
 
     function checkIfGroupsAreEmpty(class_id) {
         const groupObject = groupInfo.filter((groupItem) => groupItem.class_id === class_id);
-        console.log('check if empty', groupObject.every(group => parseInt(group.current_count, 10) !== 0))
         return groupObject.every(group => parseInt(group.current_count, 10) !== 0)
     }
 
@@ -200,9 +204,7 @@ function GroupTeacherContextProvider({ children }) {
     }
 
     function checkIfClassIsEmpty(class_id){
-        console.log(class_id)
         const classObject = classInfo.filter((classItem) => classItem.class_id === class_id);
-        console.log(classObject.every(curClass => parseInt(curClass.current_count, 10) !== 0));
         return classObject.every(curClass => parseInt(curClass.current_count, 10) !== 0);
     }
 
@@ -213,6 +215,7 @@ function GroupTeacherContextProvider({ children }) {
         currentGroup_id,
         currentClass_id,
         groupTypeData,
+        timerToggleModal,
         addHandlerFunction,
         addClassHandler,
         addClassArrayHandler,

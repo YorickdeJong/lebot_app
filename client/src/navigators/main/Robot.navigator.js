@@ -28,18 +28,9 @@ const Stack = createNativeStackNavigator()
 function Robot () {
     const navigation = useNavigation();
     const WifiCtx = useContext(WifiContext)
-    const socketCtx = useContext(SocketContext)
-
 
     function robotConnect() {
         WifiCtx.showModalHandler(true)
-        const config = { //TODO make these values statewide
-          host: ipAddressRaspberryPi,
-          port: 22,
-          username: "ubuntu",
-          password: "password", 
-        }
-        socketCtx.Connect(config) 
     }
 
     return (

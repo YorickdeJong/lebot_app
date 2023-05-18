@@ -17,9 +17,7 @@ const getAllMeasurementResults = async (req, res) => {
 
     try {
         const user_profile_id = req.params.id;
-        console.log(user_profile_id);
         const {rows} = await client.query(getAllMeasurementResultsQuery, [user_profile_id]);
-        console.log(rows);
 
         if (rows.length === 0) {
             return res.status(400).json({error: 'No results found'})
@@ -44,9 +42,7 @@ const getSpecificMeasurementResult = async (req, res) => {
 
     try {
         const {school_id, class_id, group_id, assignment_number, title, subject} = req.query;
-        console.log(school_id, class_id, group_id, assignment_number, title, subject)
         const {rows} = await client.query(getSpecificMeasurementResultQuery, [assignment_number, title, subject, school_id, class_id, group_id]);
-        console.log(rows);
 
         if (rows.length === 0) {
             return res.status(400).json({error: 'results for specific assignment do not exits'})
@@ -65,9 +61,7 @@ const getSpecificMeasurementResult = async (req, res) => {
 }
 
 
-const getLatestMeasurementResult = async (user_profile_id) => {
-    //supply both user_id and assignment_id
-    const client = await pool.connect();
+const getLatestMeasurementResult = async (client, user_profile_id) => {
 
     try {
         const {rows} = await client.query(getLatestMeasurementResultQuery, [user_profile_id]);
@@ -87,9 +81,6 @@ const getLatestMeasurementResult = async (user_profile_id) => {
         return { error: 'Error trying to get results data' };
     }
 
-    finally {
-        client.release(); 
-    }
 };
 
 // creates/ updates measurement

@@ -6,6 +6,7 @@ import Chat from '../../components/chatgpt/Chat'
 import { ChatContext } from '../../store/chat-context';
 import { ColorsBlue } from '../../constants/palet';
 import { BlurView } from 'expo-blur';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 function ChatGPT() {
@@ -21,6 +22,17 @@ function ChatGPT() {
             chatCtx.setThreadId(lastSelectedThreadId);
         }
     }, [lastSelectedThreadId, isFocused]);
+    
+    useEffect(() => {
+
+        const keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', keyboardWillShow);
+        const keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', keyboardWillHide);
+
+        return () => {
+            keyboardWillShowSub.remove();
+            keyboardWillHideSub.remove();
+        }
+    }, []);
     
     const keyboardWillShow = (event) => {
         Animated.parallel([
@@ -43,33 +55,27 @@ function ChatGPT() {
         ]).start();
     };
     
-    useEffect(() => {
-
-        const keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', keyboardWillShow);
-        const keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', keyboardWillHide);
-
-        return () => {
-            keyboardWillShowSub.remove();
-            keyboardWillHideSub.remove();
-        }
-    }, []);
 
     return (
-        <View style = {styles.container}>
+        <LinearGradient 
+                colors={['rgba(2,2,15,1)', 'rgba(2,2,7,1)']}  
+                style = {styles.container}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                >
             <ImageBackground
             source={require('./../../../assets/chatbackground.png')} 
             style={
             {flex: 1, resizeMode: 'contain'}
             }
-            imageStyle={{opacity: 0.18}}
+            imageStyle={{opacity: 0.05}}
             >
-                <BlurView style = {{flex: 1}} intensity={ 3 } >
                     <Chat 
+                    customColor = 'rgba(15, 10, 50, 1)'
                     keyboardHeight={keyboardHeight}
                     />
-                </BlurView>
             </ImageBackground>
-        </View>
+        </LinearGradient>
     )
 }
 

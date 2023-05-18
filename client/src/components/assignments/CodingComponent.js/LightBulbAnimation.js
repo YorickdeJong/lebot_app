@@ -102,8 +102,14 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
         height: 180,
         paddingTop: 5,
-        backgroundColor: 'rgba(10, 10, 10, 0.2)'
-        
+        borderColor: `rgba(77, 77, 77, 0.2)`,
+        borderWidth: 1,
+        borderRadius: 20,
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 3, width: 1 },
+        shadowRadius: 3,
+        marginHorizontal: 8,
+        marginTop: 8,
     },
     textContainer: {
         marginTop: 20, 

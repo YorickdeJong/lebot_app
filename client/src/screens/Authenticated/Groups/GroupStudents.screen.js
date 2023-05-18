@@ -39,10 +39,11 @@ function GroupStudent({ navigation, route, tileType }) {
         }, [initialize, dbUpdated]) // Add initialize as a dependency
     );
 
+    console.log('data', data)
+    console.log('dataUser', dataUser)
+
     async function joinGroupHandler(group_id, class_id) {
         const user_id = userprofileCtx.userprofile.id //PROBLEM: FETCHED GROUPS AREN'T ADDED TO LOCAL STORAGE -> ADD THEM 
-        console.log('groupinfo', groupTeacherCtx.groupInfo)
-        console.log('group_id', group_id)
         const {name} = groupTeacherCtx.getGroupInfoById(group_id)
         
 

@@ -28,13 +28,8 @@ function ChatContextProvider({ children }) {
     const [thread_ids, setThreadIds] = useState([]);
     const [currentThreadId, setCurrentThreadId] = useState(null);
     const [descriptions, setDescriptions] = useState([
-        'Have a chat with your friend to generate a description!', 
-        'Have a chat with your friend to generate a description!', 
-        'Have a chat with your friend to generate a description!', 
-        'Have a chat with your friend to generate a description!', 
-        'Have a chat with your friend to generate a description!'
     ]);
-
+    console.log('description', descriptions)
     const userprofileCtx = useContext(UserProfileContext);
 
     const user_id = userprofileCtx.userprofile.id;
@@ -57,9 +52,11 @@ function ChatContextProvider({ children }) {
         try {
             const chatJSON = await AsyncStorage.getItem("chat");
             const thread_idsJSON = await AsyncStorage.getItem("thread_ids");
-            const uniqueThreadIds = JSON.parse(thread_idsJSON).filter((value, index, self) => {
+            const uniqueThreadIdsFiltered = JSON.parse(thread_idsJSON).filter((value, index, self) => {
                     return self.indexOf(value) === index;
             });
+            const uniqueThreadIds = uniqueThreadIdsFiltered.filter(thread => thread !== null)
+            console.log('uniqueThreadIds', uniqueThreadIds)
             const descriptionsJSON = await AsyncStorage.getItem("descriptions");
 
             if (chatJSON !== null) {
@@ -73,22 +70,17 @@ function ChatContextProvider({ children }) {
 
             if (descriptionsJSON !== null) {
                 const storedDescriptions = JSON.parse(descriptionsJSON);
-                const updatedDescriptions = descriptions.map((desc, index) => {
-                    // If the index exists in uniqueThreadIds, update the description
-                    if (uniqueThreadIds.includes(index)) {
-                        const storedDescriptionIndex = storedDescriptions.findIndex(sd => sd.thread_id === index);
-                        if (storedDescriptionIndex !== -1) {
-                            return storedDescriptions[storedDescriptionIndex].description;
-                        }
+                console.log('storedDescriptions', storedDescriptions)
+                console.log('unqiueThreadIds', uniqueThreadIds)
+                console.log('descriptionStorage', storedDescriptions)
+                storedDescriptions.map(description => {
+                    if (description.thread_id === undefined)
+                    {
+                        return;
                     }
-                    // Keep the current description if the index is not in uniqueThreadIds and is not a default description
-                    if (desc !== 'Have a chat with your friend to generate a description!') {
-                        return desc;
-                    }
-                    // Set the default description for all other cases
-                    return 'Have a chat with your friend to generate a description!';
-                });
-                setDescriptions(updatedDescriptions);
+                    return
+                })
+                setDescriptions(storedDescriptions);
             }
             console.log('LOADED DESCRIPTIONS FROM STORAGE')
         } 
@@ -122,6 +114,7 @@ function ChatContextProvider({ children }) {
     }
 
     async function saveDescriptionsInStorage(newDescriptions){
+        console.log('newDescriptions', newDescriptions)
         try {
             const descriptionsJSON = JSON.stringify(newDescriptions);
             await AsyncStorage.setItem("descriptions", descriptionsJSON);
@@ -222,9 +215,6 @@ function ChatContextProvider({ children }) {
 
     async function generateDescriptions(currentThreadId) {
         //don't set description if description is already set
-        console.log(currentThreadId)
-        console.log(descriptions[currentThreadId])
-        console.log(descriptions)
         if (descriptions[currentThreadId] !== 'Have a chat with your friend to generate a description!' && descriptions[currentThreadId] !== undefined){
             console.log('description already set')
             return
@@ -245,8 +235,8 @@ function ChatContextProvider({ children }) {
             answer: chat.answer 
         }))
         const chatParagraph = generateDescription(chatSummary)
-        const message = `Please create a description of this chat in no more than 15 words: ${JSON.stringify(chatParagraph)} `  
-        const titleRequest = `Please create a title for this chat in no more than 3 words, don't include punctuations: ${JSON.stringify(chatParagraph)}`
+        const message = `Please create a description in dutch of this chat in no more than 5 words: ${JSON.stringify(chatParagraph)} `  
+        const titleRequest = `Please create a title in dutch for this chat in no more than 3 words, don't include punctuations: ${JSON.stringify(chatParagraph)}`
 
         const description = await postDescriptionMessage(message);
         const title = await postDescriptionMessage(titleRequest);

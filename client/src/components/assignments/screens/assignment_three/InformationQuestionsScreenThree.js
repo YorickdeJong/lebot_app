@@ -85,6 +85,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}    
           showCarAnimation={true}
+          currentExerciseLesson = {7}
           />
         }
         {  
@@ -101,6 +102,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}    
           showCarAnimation={true}
+          currentExerciseLesson = {7}
           />
         }
         {  
@@ -116,6 +118,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           nextSlideHandler={nextSlideHandler}
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}    
+          currentExerciseLesson = {7}
           />
         }
 
@@ -136,6 +139,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           performedMeasurement
           CustomContainer = {MultipleAnswersContainer}
           customMeasurement = {true}
+          currentExerciseLesson = {7}
           />
         }
         {  
@@ -152,6 +156,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}   
           performedMeasurement 
+          currentExerciseLesson = {8}
           />
         }
         {  
@@ -167,6 +172,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           nextSlideHandler={nextSlideHandler}
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}    
+          currentExerciseLesson = {8}
           />
         }  
         {  
@@ -182,6 +188,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           nextSlideHandler={nextSlideHandler}
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}    
+          currentExerciseLesson = {8}
           />
         }  
         {  
@@ -197,6 +204,7 @@ function InformationQuestionsScreenThree({assignmentTopic, assignmentNumber, isF
           nextSlideHandler={nextSlideHandler}
           prevSlideHandler={prevSlideHandler}  
           slideCount={slideCount}    
+          currentExerciseLesson = {8}
           />
         }  
         {slideCount === 10 &&

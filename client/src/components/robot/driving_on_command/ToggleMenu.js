@@ -11,12 +11,12 @@ import { ChartOptionsContext } from "../../../store/chartOptions-context";
 
 
 
-function ToggleMenu({toggleModal, isStopActive, headerHeight, displayNumber, subject}) {
+function ToggleMenu({toggleModalClose, isStopActive, headerHeight, assignmentNumber, subject}) {
     const chartCtx = useContext(ChartContext)
     const chartOptionsCtx = useContext(ChartOptionsContext)
 
     useEffect(() => {
-        chartCtx.setTrueCount(Object.values(chartCtx.chartToggle).filter(value => value === true).length - 1); //minus 1 here since time is always true
+        chartCtx.setTrueCount(Object.values(chartCtx.chartToggle).filter(value => value === true).length); //minus 1 here since time is always true
         
     }, [chartCtx.chartToggle, subject])
 
@@ -46,28 +46,26 @@ function ToggleMenu({toggleModal, isStopActive, headerHeight, displayNumber, sub
         animationType="fade"
         transparent>
             <BlurView style={styles.modalContainer} intensity={20}>
-                <View style = {styles.shadow}>
+                <View style = {[styles.shadow, {marginBottom: assignmentNumber === 2 && subject === 'MOTOR' && 0}]}>
                     <LinearGradient 
                     style = {[styles.modal, { marginTop: headerHeight }]}
                     colors={[ColorsBlue.blue1200, ColorsBlue.blue1100]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                         >
-                            <View style = {styles.chartToggleContainer}>
                                 <View style = {styles.header}>
                                     <View style = {styles.icon}>
                                         <Icon 
                                         icon="close" 
                                         size={30} 
                                         color={ColorsBlue.blue200} 
-                                        onPress={toggleModal}
+                                        onPress={toggleModalClose}
                                         />
                                     </View>
-                                    <Text style = {styles.title}>Display Charts</Text>
+                                    <Text style = {styles.title}>Soorten Grafieken</Text>
                                     <Text />
                                 </View>
-                                <View style = {{justifyContent: 'center', alignItems: 'center'}}>
-                                <View style = {{alignItems: 'flex-start'}}>
+                                <View style = {{justifyContent: 'center'}}>
                                     {subject === "MOTOR" && <ChartToggle 
                                     graphName = "s-t graph:"
                                     toggleChart = {chartCtx.chartToggle.s_t}
@@ -103,16 +101,30 @@ function ToggleMenu({toggleModal, isStopActive, headerHeight, displayNumber, sub
                                     graphName = "show legend:"
                                     toggleChart = {chartOptionsCtx.showLegend}
                                     toggleChartSettings = {() => chartOptionsCtx.showLegendHandler()}
+                                    notShowBorder
                                     />
                                     }
-                                </View>
 
                                 </View>
-                            </View>
 
                         
                     </LinearGradient>
                 </View>
+                {assignmentNumber === 2 && subject === 'MOTOR' &&
+                <View style = {[styles.shadow, {height: 300, marginTop: 15 }]}>
+                    <LinearGradient 
+                        style = {styles.textContainer}
+                        colors={[ColorsBlue.blue1200, ColorsBlue.blue1100]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                            >
+                            <View style = {styles.header}>
+                                <Text style = {[styles.title, {marginBottom: 0}]}>Soorten Grafieken</Text>
+                            </View>
+                            <Text style = {[styles.title, {fontSize: 18, color: ColorsBlue.blue50, paddingHorizontal: 35, paddingVertical: 15}]}>Hier kan je de grafieken kiezen die je live wilt zien.{'\n\n'}- (s,t) geeft informatie over afstand, tijd en snelheid. {'\n\n'}- (v,t) geeft informatie over snelheid, tijd en versnelling. {'\n\n'}Druk op de aanknop om een meting te starten.</Text>
+                    </LinearGradient>
+                </View>
+                }
             </BlurView>
         </Modal>
     )
@@ -121,6 +133,13 @@ function ToggleMenu({toggleModal, isStopActive, headerHeight, displayNumber, sub
 export default React.memo(ToggleMenu)
 
 const styles = StyleSheet.create({
+    textContainer: {
+        marginBottom: 0, 
+        borderRadius: 5,
+        elevation: 3,
+        borderWidth: 0.7,
+        borderColor: ColorsBlue.blue700,
+    },
     shadow: {
         shadowColor: ColorsBlue.blue1400,
         shadowOffset: { width: 0, height: 2 },
@@ -166,8 +185,8 @@ const styles = StyleSheet.create({
         fontSize: 26,
         alignSelf: 'center',
         marginTop: 8,
-    },
-    chartToggleContainer: {
-        marginLeft: 0,
+        textShadowColor: ColorsBlue.blue1400,
+        textShadowOffset: { width: 1, height: 2 },
+        textShadowRadius: 2,
     },
 })

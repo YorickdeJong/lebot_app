@@ -74,10 +74,12 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1, 
-        backgroundColor: ColorsBlue.blue1200
+        backgroundColor: ColorsBlue.blue1200,
     },
     backgroundImage: {
         flex: 1,
         justifyContent: 'center',
+        paddingTop: 10,
+        paddingHorizontal: 5,
     }
 })

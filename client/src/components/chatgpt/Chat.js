@@ -15,13 +15,13 @@ const marginBottomTextInput = 10;
 const marginTopTextInput = 10;
 const paddingChat = heightTextInput + marginBottomTextInput + marginTopTextInput; 
 
-const Chat = ({keyboardHeight}) => {  
+const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {  
     const chatCtx = useContext(ChatContext)
     const userprofileCtx = useContext(UserProfileContext)
     const [inputValue, setInputValue] = useState('');
     const flatListRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
-    const thread_id = chatCtx.currentThreadId;
+    const thread_id = customThread_id ? customThread_id : chatCtx.currentThreadId;
     const currentChatData = chatCtx.getChatForThread(thread_id);
     const [typing, setTyping] = useState(true);
 
@@ -76,17 +76,18 @@ const Chat = ({keyboardHeight}) => {
             </View>
           )}
           {item.answer ? (
-            <View style={{ alignItems: 'flex-start', marginLeft: 10 }}>
+            <View style={{ alignItems: 'flex-start', marginLeft: 10, marginVertical: 10 }}>
               <ChatBoxGPT answer={item.answer} 
               isLastItem = {isLastItem}
               thread_id={thread_id}
               setTyping={setTyping}
+              customColor={customColor}
               typing={typing}/>
             </View>
           ) : (
             isLoading &&
             isLastItem && ( // show loading overlay only for the last item
-            <LoadingChat message="Waiting on chatgpt's response..." />
+            <LoadingChat message="Wachten op Chatgpt's antwoord..." />
             )
             )}
         </>
@@ -108,6 +109,7 @@ const Chat = ({keyboardHeight}) => {
               />
             </View>
             <InputContainer
+              placeholder={placeholder}
               setInputValue={setInputValue}
               inputValue={inputValue}
               sendMessage={sendMessage}

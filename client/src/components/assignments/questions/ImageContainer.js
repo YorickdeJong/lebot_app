@@ -21,7 +21,15 @@ function ImageContainer({
     chartAvailable,
     setChartAvailable,
     redirectToMeasurementHandler,
-    checkDataCorrectnessHandler
+    checkDataCorrectnessHandler,
+    blinkButton,
+    performedMeasurement,
+    opacityChange,
+    slideCount,
+    nextSlideHandler,
+    prevSlideHandler,
+    slideCountEnd,
+    setSlideCount
   }) {
     const chartCtx = useContext(ChartContext);
     const [isFetched, setIsFetched] = useState(false);
@@ -33,7 +41,7 @@ function ImageContainer({
     const userprofileCtx =  useContext(UserProfileContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
     const [alertShown, setAlertShown] = useState(false);
-
+    const [velocity, setVelocity] = useState([]);
     async function fetchData() {
       let specificAssignmentImages;
       try {
@@ -47,6 +55,7 @@ function ImageContainer({
                     assignment_number,
                     subject
                 );
+                setVelocity(specificAssignmentImages.map(data => data.velocity));
             } 
 
             if (subject === "CAR"){
@@ -60,7 +69,6 @@ function ImageContainer({
                 );
 
             }
-
             if (specificAssignmentImages.length === 0) {
                 console.log(
                   `failed to fetch or no images are present in the database`
@@ -70,7 +78,7 @@ function ImageContainer({
                 setChartAvailable(false);
                 return;
             }
-
+                // set final chart data
                 chartCtx.setAllChartsDataHandler(specificAssignmentImages);
                 //ADD setAllPowerCharsDataHandler
                 setChartAvailable(true);
@@ -84,6 +92,7 @@ function ImageContainer({
             setIsLoading(false);
         }
     }
+
 
     useEffect(() => {
         if (!isFocused || isFetched) {
@@ -114,11 +123,12 @@ function ImageContainer({
     }
   
     async function deleteImageHandler() {
-        const currentChartData = chartCtx.finalChartData[currentIndex];
-        const recordNumber = currentChartData.recordNumber;
+        const {recordNumber} = chartCtx.finalChartData[currentIndex];
+        console.log('CURRENTCHARTDATA: ', recordNumber);
+        // const recordNumber = currentChartData.recordNumber;
 
         if (subject === "MOTOR"){
-            if (!currentChartData?.distance) {
+            if (!recordNumber) {
               Alert.alert('Produce data before deleting an image');
               return;
             }
@@ -135,10 +145,11 @@ function ImageContainer({
               .catch((error) => {
                 console.log(error);
               });
+              setIsLoading(false);
         }
 
         if (subject === "CAR"){
-            if (!currentChartData?.power) {
+            if (!recordNumber) {
               Alert.alert('Produce data before deleting an image');
               return;
             }
@@ -155,14 +166,15 @@ function ImageContainer({
               .catch((error) => {
                 console.log(error);
             });
+            setIsLoading(false);
         }
     
     }
   
-    function renderImage({ item }) {
+    function renderImage({ item, index }) {
       let isConstant;
         if (checkDataCorrectnessHandler) {
-          isConstant = checkDataCorrectnessHandler(item);
+          isConstant = checkDataCorrectnessHandler(velocity[index]);
         }
         else {
           isConstant = 2;
@@ -174,8 +186,8 @@ function ImageContainer({
         }
 
         return (
-          <Animated.View style={[styles.image, { height: imageHeight, width: 372 }]}>
-            <BlurView style={[styles.graphContainer]} intensity={10} tint="dark">
+          <Animated.View style={[styles.image, { height: imageHeight, width: 372, borderRadius: 20 }]}>
+            <View style={[styles.graphContainer]}>
               {/* Add condition to check which subject we are looking at */}
               <ChartDisplay
                 chartData={item}
@@ -187,7 +199,7 @@ function ImageContainer({
                 isConstant={isConstant}
               />
 
-            </BlurView>
+            </View>
           </Animated.View>
         );
       }
@@ -200,25 +212,34 @@ function ImageContainer({
       return (
         <>
           {isLoading ? (
-            <LoadingChat size="large" color={ColorsBlue.blue900} />
+            <View style = {{marginBottom: 20}}>
+              <LoadingChat size="large" color={ColorsBlue.blue900} />
+            </View>
           ) : (
-            chartAvailable && (
               <>
-                <View style={styles.optionbar}>
-                  <AssignmentOptionsBar
-                    midIcon="trash-can-outline"
-                    rightIcon="menu-down"
-                    midIconHandler={deleteImageHandler}
-                    text={tokens}
-                    chartLength={chartLength}
-                    redirectToMeasurementHandler={redirectToMeasurementHandler}
-                    currentIndex={currentIndex}
-                    onMetingPressed={onMetingPressed}
-                    subject={subject}
-                  />
-                </View>
+              <View> 
+                    <AssignmentOptionsBar
+                      midIconHandler={deleteImageHandler}
+                      text={tokens}
+                      chartLength={chartLength}
+                      redirectToMeasurementHandler={redirectToMeasurementHandler}
+                      currentIndex={currentIndex}
+                      onMetingPressed={onMetingPressed}
+                      subject={subject}
+                      blinkButton = {blinkButton}
+                      chartAvailable={chartAvailable}
+                      performedMeasurement={performedMeasurement}
+                      opacityChange={opacityChange}
+                      slideCount = {slideCount}
+                      nextSlideHandler = {nextSlideHandler}
+                      prevSlideHandler = {prevSlideHandler}
+                      slideCountEnd = {slideCountEnd}
+                      setSlideCount = {setSlideCount}
+                    />
+              </View>
+            {chartAvailable && 
                 <View style={styles.container}>
-                  <Animated.View style={{ marginBottom: keyboardHeight }}>
+                  <Animated.View style={{ marginBottom: keyboardHeight,  }}>
                     <View style={styles.imageContainer}>
                       {isFetched && (
                         <FlatList
@@ -235,8 +256,8 @@ function ImageContainer({
                     </View>
                   </Animated.View>
                 </View>
-              </>
-            )
+            }
+            </>
           )}
         </>
       );
@@ -250,38 +271,33 @@ export default React.memo(ImageContainer)
 
 const styles= StyleSheet.create({
     graphContainer: {
-        flex: 1
-    },
-    imageContainer: {
+        flex: 1,
+        shadowColor: `rgba(77, 77, 77, 0.15)`,
+        shadowOffset: {height: 2, width: 1},
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 2,
+        backgroundColor: ColorsBlue.blue1390,
+      },
+      imageContainer: {
         justifyContent: 'center',
-    },  
-    image: {
+      },  
+      image: {
         alignSelf: 'center',
         justifyContent: 'center',
-        backgroundColor: 'rgba(0, 0, 20, 0.75)',
-    },
-    container: {
+        // backgroundColor: 'rgba(0, 0, 20, 0.75)',
+        overflow: 'hidden',
+      },
+      container: {
         marginHorizontal: 8,
         marginVertical: 8,
-        borderColor: `rgba(77, 77, 77, 0.5)`,
+        borderColor: `rgba(77, 77, 77, 0.17)`,
         borderWidth: 1,
-        // padding: 1.6,
-        shadowColor: `rgba(11, 11, 11)`,
-        shadowOffset: {height: 1, width: 0},
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: {height: 3, width: 1},
         shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 2
+        shadowRadius: 4,
+        elevation: 2,
+        borderRadius: 20,
     },
-    optionbar:{
-        marginHorizontal: 8,
-        marginTop: 17,
-        borderColor: `rgba(77, 77, 77, 0.5)`,
-        borderWidth: 1,
-        padding: 1.6,
-        shadowColor: `rgba(11, 11, 11)`,
-        shadowOffset: {height: 1, width: 0},
-        shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 2
-    }
 })

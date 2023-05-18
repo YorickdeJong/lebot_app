@@ -12,9 +12,8 @@ const {
     deleteGroupsinClassQuery
 } = require('./../../services/queries/queryGroups')
 
-const getGroupsPerClassRoom = async (class_id, school_id) => {
+const getGroupsPerClassRoom = async (client, class_id, school_id) => {
     console.log('class_id, school_id', class_id, school_id);
-    const client = await pool.connect();
     console.log('client connected')
     const values = [class_id, school_id];
 
@@ -36,10 +35,6 @@ const getGroupsPerClassRoom = async (class_id, school_id) => {
         return {error: 'Failed to get all groups', status: 500}
     }
     
-    finally {
-        console.log('released client groups per class')
-        client.release();
-    }
 }
 
 

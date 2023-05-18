@@ -1,11 +1,13 @@
 
 import { BlurView } from 'expo-blur';
 import React, { useEffect, useState } from 'react';
-import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
+import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../constants/palet'
 import BlurWrapper from '../UI/BlurViewWrapper';
 
-function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraStyle}) {
+
+const {width, height} = Dimensions.get('window');  
+function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraStyle, customColor}) {
     const [displayText, setDisplayText] = useState('');
 
     useEffect(() => {
@@ -44,36 +46,42 @@ function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraSt
         setDisplayText(answer);
     };
 
+    const shadowCustom = {
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 2, width: 1 },
+        shadowRadius: 3,
+        shadowOpacity: 1,
+        elevation: 4,
+        borderRadius: 20,
+    }
+
+    const shadowOuterContainer = {
+        shadowColor: customColor ? null: `rgba(0, 0, 0, 1)`, 
+        shadowOpacity: customColor ? 0 : 1, 
+        backgroundColor: customColor? null : ColorsBlue.blue1390, 
+        borderColor: customColor ? ColorsBlue.blue1390 : `rgba(77, 77, 77, 0.17)`,
+        marginRight: customColor ? 18 : 8,
+        paddingBottom: customColor ? 0 : 15,
+    }
+
     return (
-        <View style = {[styles.outerContainer, extraStyle && { marginLeft: extraStyle.marginLeft, backgroundColor: 'rgba(10, 13, 60, 0.8)'}]}>
-            <View style={styles.blurContainer}>
-                <View style={[styles.textBox, 
-                    ]} 
-                    //intensity={extraStyle ? 10 : 0}  //backgroundColor={ColorsBlue.blue1300}
-                    >
-                        <Image
-                        style={[styles.profilePicture, extraStyle && { marginLeft: extraStyle.marginLeft }]}
-                        source={thread_id > 5 ?
-                            require(
-                                "./../../../assets/robotIcon.png"
-                            ) :require("./../../../assets/chatgptLogo.png")
-                        }
-                        resizeMode="cover"
-                        />
-                        <View style = {{flex: 1, borderRadius: 10, overflow: 'hidden'}}>
-                            <BlurWrapper  
-                                intensity={extraStyle ? 0 : 20}// tint = 'dark'//backgroundColor={ColorsBlue.blue1300}
-                                style={{backgroundColor: 'rgba(10,10,60,0.2)', paddingLeft: !extraStyle ? 10 : 0}}
-                            >
-                                <TouchableOpacity onPress={showFullText}>
-                                    <View style={[styles.chatGPTTextBox, extraStyle && { paddingLeft: extraStyle.paddingLeft, backgroundColor: extraStyle.backgroundColor }]}>
-                                        <Text style={styles.chatGPTText}>{isLastItem ? displayText : answer}</Text>
-                                    </View>
-                                </TouchableOpacity>
-                            </BlurWrapper>
-                        </View> 
-                </View>
-            </View>
+        <View style = {[styles.outerContainer, shadowOuterContainer]}>
+            <Image
+            style={[styles.profilePicture, {left: customColor ? '1%' : '4.5%'}]}
+            source={thread_id > 5 ?
+                require(
+                    "./../../../assets/robotIcon.png"
+                ) :require("./../../../assets/chatgptLogo.png")
+            }
+            resizeMode="cover"
+            />
+            <View style = {[customColor && shadowCustom, {flex: 1, marginLeft: 50, backgroundColor: customColor}]}>
+                <TouchableOpacity onPress={showFullText}>
+                    <View style={[styles.chatGPTTextBox]}>
+                        <Text style={styles.chatGPTText}>{isLastItem ? displayText : answer}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View> 
         </View>
     );
 }
@@ -82,42 +90,32 @@ export default React.memo(ChatBoxGPT);
 
 const styles = StyleSheet.create({
     chatGPTTextBox: {
-        // backgroundColor: ColorsBlue.blue1100,
-        borderRadius: 10,
-        padding: 10,
+        borderRadius: 20,
+        padding: 15,
     },
     chatGPTText: {
-        color: ColorsBlue.blue50,
+        color: ColorsGray.gray300,
         fontSize: 16,
         fontWeight: '400',
-        lineHeight: 24,
-    },
-    textBox: {
-        flexDirection: "row",
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        backgroundColor: 'rgba(10, 13, 40, 0.75)'
-        
+        lineHeight: 30,
     },
     profilePicture: {
         width: 30,
         height: 30,
         borderRadius: 30,
-        marginRight: 10,
+        position: 'absolute',
+        left: '4.5%',
+        top: '45%',
     },
     outerContainer: {
-        width: 355,
-        borderRadius: 10,
-        marginVertical: 10,
-        shadowColor: ColorsBlue.blue1400,
-        shadowOffset: { width: 1, height: 2 },
+        borderWidth: 1,
+        marginHorizontal: 8,
+        borderRadius: 20,
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 2, width: 1 },
+        shadowRadius: 3,
         shadowOpacity: 1,
-        shadowRadius: 4,
+        elevation: 4,
+        flex: 1,
     },
-    blurContainer: {
-        borderRadius: 10,
-        overflow: 'hidden', // This ensures the borderRadius is applied correctly
-    },
-
 });

@@ -1,8 +1,9 @@
 import { createContext, useState, useEffect, useRef } from "react";
-import {Alert} from 'react-native'
+import {AppState, Alert} from 'react-native'
 
 import io from 'socket.io-client';
-import { ipAddressComputer } from "../data/ipaddresses.data";
+import { ipAddressComputer, ipAddressRaspberryPi } from "../data/ipaddresses.data";
+import { set } from "react-native-reanimated";
 export const SocketContext = createContext({
     socket: null,
     output: '',
@@ -22,6 +23,7 @@ export const SocketContext = createContext({
     OS: (os) => {},
     Loading: (loading) => {},
     setIsMeasurementStarted: (isMeasurementStarted) => {},
+    EstablishSocketConnection: () => {},
 })
 
 //N.B. EVERY COMPONENT THAT USES SOCKET WILL NEED TO BE WRAPPED IN A REACT.MEMO, OTHERWISE IT WILL CAUSE LARGE AMOUNTS OF UNNECESSARY RERENDERS
@@ -36,95 +38,125 @@ function SocketContextProvider({children}) {
     const [isLoading, setIsLoading] = useState(false);
     const [power, setPower] = useState(false); 
     const [isMeasurementStarted, setIsMeasurementStarted] = useState(false);
+    const [isAlertShown, setIsAlertShown] = useState(false);
+
 
     const SOCKET_SERVER_URL = ipAddressComputer;
     
-
-    // Call CreateConnection on mount
+    // This effect sets up event listeners when socket.current changes.
+    // It also cleans up these listeners when socket.current changes.
     useEffect(() => {
-        console.log(`check connection 1`)
-        CreateSocketConnection();
-    }, []);
-    
-    useEffect( () => {
-        console.log(`check connection 1`)
-        dir.current = '';
-        setIsConnected(false);
-    }, [])
-
-    useEffect(() => {
-        console.log(`check connection 1`)
-        if(isConnected) {
-            Command('dir', 'dir')
-        }
-
-    }, [isConnected])
-
-    const renderCount = useRef(0);
-
-    useEffect(() => {
-        renderCount.current += 1;
-        console.log(`SocketContextProvider has rendered ${renderCount.current} times`);
-    });
-
-    //Sockets have to be app state wide 
-    useEffect(() => {
-        console.log(`check connection 1`)
         if (socket.current) {
             socket.current.on('connection', () => {
                 console.log('Connected to server');
-                });
+            });
 
-                socket.current.on('sshConnectionStatus', (data) => {
-                    if (data && data.connected) {
-                        console.log('SSH connection established Frontend');
-                        if (socket.current.connected){
-                            setIsConnected(data.connected);
-                        }
-                    } 
-                    else {
-                        console.error('Failed to establish SSH connection');
-                        Disconnect();
+            socket.current.on('sshConnectionStatus', (data) => {
+                console.log('SSH Connection Status: ' + data.connected);
+                setIsConnected(data.connected);
+                if (data && !data.connected) {
+                    setPower(false);
+                    Disconnect();
+                    console.log('Connection message: ' + data.message);
+                } 
+            });
+
+            if (!isMeasurementStarted) {
+                socket.current.on('measurementStarted', (data) => {
+                    console.log(`DATA MESSAGE: ${data.message}`)
+                    if(data.message === 'Measurement started') {
+                        console.log('Measurement Started, DATA RECEIVED')
+                        setIsMeasurementStarted(true)
                     }
                 });
-            if (!isMeasurementStarted){
-                listenForStartScript();
             }
-        };
-        
-    }, []);
+
+            // Return a cleanup function to remove listeners when socket.current changes or the component unmounts.
+            return () => {
+                socket.current.off('connection');
+                socket.current.off('sshConnectionStatus');
+                if (!isMeasurementStarted) {
+                    socket.current.off('measurementStarted');
+                }
+                socket.current.off('terminalOutput');  // Remove the 'terminalOutput' listener
+            };
+        }
+    }, [socket.current, isMeasurementStarted, Disconnect]);
 
     function CreateSocketConnection() {
-        socket.current = (io(SOCKET_SERVER_URL))
+        try {
+            if (!socket.current) {
+                socket.current = io(SOCKET_SERVER_URL);
+                console.log('Socket created');
+    
+                // Connection successful
+                socket.current.once('connect', () => {
+                    console.log('Connected to server');
+                    setIsConnected(true);
+                    // Automatically attempt to reconnect
+                    EstablishSocketConnection();
+                });
+    
+                // Connection lost
+                socket.current.on('disconnect', () => {
+                    console.log('Disconnected');
+                    setIsConnected(false);
+                    Disconnect();
+                });
+    
+                // Reconnection attempt
+                socket.current.on('reconnecting', (attemptNumber) => {
+                    console.log(`Reconnecting attempt ${attemptNumber}`);
+                });
+    
+                // Inside your CreateSocketConnection function
+                socket.current.on('reconnect_failed', () => {
+                    console.log('Failed to reconnect');
+                    setIsConnected(false);
+
+                    // Implement a backoff algorithm for reconnection
+                    let attemptInterval = 1000; // Start with a 1 second interval
+                    const maxInterval = 60 * 1000; // Max interval is 1 minute
+
+                    const reconnectionAttempt = setInterval(() => {
+                        if (attemptInterval < maxInterval) {
+                            attemptInterval *= 2; // Double the interval each time
+                        }
+                        // Try to reconnect
+                        socket.current.connect();
+
+                    }, attemptInterval);
+                });
+            }
+        } 
+        catch (error) {
+            console.error('Failed to create socket connection:', error);
+        }
     }
 
     function Connect(config, callback) {
         try{
             socket.current.emit('connectToRemoteDevice',  config );
-            
+            setIsConnected(true);
         }
         catch(error) {
             console.log(error);
             output.current = 'Connection Failed'
-            
+            setIsConnected(false);
         }
 
-        if(callback) {
-            callback()
-        }
     }
     
     function Disconnect() {
         if (isConnected) {
             try{
-                socket.current.emit('disconnected');
+                console.log('Disconnecting Client from ssh socket');
+                socket.current.disconnect();
                 setIsConnected(false);
-                
             }
             catch(error) {
                 console.log(error);
                 output.current = 'Failed to disconnect'
-                
             }
         }
     }
@@ -137,30 +169,65 @@ function SocketContextProvider({children}) {
                     console.log('Measurement Started, DATA RECEIVED')
                     setIsMeasurementStarted(true)
                 }
+                
             }) 
         }
     }
 
 
-    function Command(inputType, command) {
-        try {
-            socket.current.emit('command', {command: command}) //TODOProblem
-            socket.current.on('terminalOutput', (data) => {
-                if (data && data.output) {
-                    responseOutput(data.output)
-                }
-            })
+    function EstablishSocketConnection() {
+        const config = { //TODO make these values statewide
+            host: ipAddressRaspberryPi,     
+            port: 22,
+            username: "ubuntu",
+            password: "password",
         }
-        catch (err) {
-            console.log(`Failed to send command: ${err}`)
-            responseOutput('Error: ' + err.message)
-            socket.current(null) // Reset socket to trigger reconnection
-            setIsConnected(false);
-            Alert.alert('You have been disconnected from the ssh connection')
-        };
-        
+        try {
+            Connect(config); //set assignment number and title
+            setIsConnected(true);
+        }
+        catch (error){
+            showAlert('Kan niet verbinden met de robot, ben je verbonden met het wifi network?')
+            setPower(false);
+        }
     }
 
+
+
+    function Command(inputType, command) {
+        try {
+            console.log('command: ' + command);
+            socket.current.emit('command', {command: command}); //TODOProblem
+            listenForTerminalOutput();  // Listen for terminal output when the script starts
+        } 
+        catch (err) {
+            console.log(`Failed to send command: ${err}`);
+            responseOutput('Error: ' + err.message);
+            socket.current(null); // Reset socket to trigger reconnection
+            setIsConnected(false);
+            showAlert('Geen connectie met de robot!');
+            setPower(false);
+        }
+    }
+
+    function listenForTerminalOutput() {
+        if (socket.current) {
+            // Remove any existing listener before adding a new one
+            socket.current.off('terminalOutput');
+    
+            // Add a new listener
+            socket.current.on('terminalOutput', (data) => {
+                if (data && data.data) {
+                    responseOutput(data.data);
+                } 
+                else {
+                    showAlert('Niet gelukt om commando te sturen naar de robot!');
+                    socket.current.off('terminalOutput');
+                    return null;
+                }
+            });
+        }
+    }
 
     function responseOutput(response){
         output.current = response;
@@ -177,6 +244,24 @@ function SocketContextProvider({children}) {
     function Loading(loading) {
         setIsLoading(loading)
     }
+
+
+    function showAlert(message) {
+        if (!isAlertShown) {
+          setIsAlertShown(true);
+          Alert.alert(
+            "Alert",
+            message,
+            [
+              {
+                text: "OK",
+                onPress: () => setIsAlertShown(false)
+              }
+            ]
+          );
+        }
+      }
+
 
     
     console.log(`check rerender`)
@@ -200,6 +285,7 @@ function SocketContextProvider({children}) {
         Loading: Loading,
         setPower,
         setIsMeasurementStarted,
+        EstablishSocketConnection
     } 
 
     return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

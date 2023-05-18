@@ -20,28 +20,20 @@ function AssignmentTab({title, initialIndex, subject}){
     ]);
 
     const renderTabBar = (props) => (
-      <LinearGradient
-        colors={[ColorsBlue.blue1300, ColorsBlue.blue1100, ColorsBlue.blue1300]}
+      <View
         style={styles.tabNav}
-        start={{
-          x: 0,
-          y: 0.5,
-        }}
-        end={{
-          x: 1,
-          y: 0.5,
-        }}
       >
       <TabBar
         {...props}
         style={{ backgroundColor: 'transparent' }}
+        indicatorStyle={{ backgroundColor: ColorsBlue.blue1000 }}
         renderLabel={({ route, focused, color }) => (
-          <Text style={{ color, fontWeight: focused ? 'bold' : 'normal', fontSize: focused ? 10 : 10,  paddingLeft: 0, paddingRight: 5, textAlign: 'center'}}>
+          <Text style={{ color: focused? ColorsBlue.blue200 : ColorsBlue.blue700, fontWeight: focused ? 'bold' : 'normal', fontSize: focused ? 10 : 10,  paddingLeft: 0, paddingRight: 5, textAlign: 'center'}}>
             {route.title.toUpperCase()}
           </Text>
         )}
       />
-      </LinearGradient>
+      </View>
     );
 
     const renderScene = ({route}) => {//SceneMap({
@@ -78,7 +70,7 @@ function AssignmentTab({title, initialIndex, subject}){
     };
 
     return (
-      <View style={{ flex: 1}}>
+      <View style={{ flex: 1,}}>
         <TabView
           navigationState={{ index, routes }}
           renderScene={renderScene}
@@ -97,10 +89,11 @@ export default AssignmentTab;
 const styles = StyleSheet.create({
   tabNav: {
     paddingTop: 33,
-    shadowColor: ColorsBlue.blue1400,
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: 'rgba(0,0,0,1)',
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 1,
-    shadowRadius: 5,
+    shadowRadius: 3,
     elevation: 2,
+    backgroundColor: ColorsBlue.blue1400
   }
 })

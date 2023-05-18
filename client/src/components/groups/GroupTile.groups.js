@@ -1,19 +1,42 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import {Text, View, StyleSheet, Pressable, Alert} from 'react-native';
-import { ColorsBlue, ColorsGray, ColorsRed } from '../../constants/palet';
+import { ColorsBlue, ColorsDarkerGreen, ColorsGray, ColorsGreen, ColorsRed } from '../../constants/palet';
 import Icon from '../Icon';
 import { GroupTeacherContext } from '../../store/group-teacher-context';
-import { useContext } from 'react';
-import { deleteClassByID } from '../../hooks/classes.hooks';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { TimeContext } from '../../store/time-context';
+import { useFetchTimeLessonsDataSocket } from '../../hooks/time-lessons.hook';
+import { UserProfileContext } from '../../store/userProfile-context';
+import { useFocusEffect } from '@react-navigation/native';
+import CountDownModal from './CountDownModal';
 
 
 function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCount, className, user_role, tileType, deletehHandler, editHandler, class_id, group_id}) {
     const title = tileType === 'Class' ? 'Klas: ' : 'Groep: '
     const groupTeacherCtx = useContext(GroupTeacherContext)
+    const userprofileCtx = useContext(UserProfileContext)
+    const user_class_id = userprofileCtx.userprofile.class_id
+    const user_group_id = userprofileCtx.userprofile.group_id
+    const timeCtx = useContext(TimeContext)
+    const currentActiveLessonData = timeCtx.filterSpecificLesson(class_id)
+    const [timeLeft, setTimeLeft] = useState(0);
+
+    useEffect(() => {
+        if (currentActiveLessonData && currentActiveLessonData.duration !== 10000) {
+            const interval = setInterval(() => {
+                const time = timeCtx.calculateTimeLeft(currentActiveLessonData);
+                setTimeLeft(time);
+            }, 1000); // Update every second
+          
+            return () => {
+              clearInterval(interval);
+            };
+        }
+      }, [currentActiveLessonData]);
+
 
     const handleEditPress = (class_id) => {
         if (tileType === 'Class') {
-            console.log('CLASS ID: ',class_id)
             groupTeacherCtx.setCurrentClass_id(class_id)
             editHandler(class_id);
         }
@@ -24,24 +47,51 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
         
     };
 
+    function handleTimer(class_id){
+        if (user_role === 'teacher') {
+            groupTeacherCtx.setCurrentClass_id(class_id)
+            groupTeacherCtx.addHandlerFunction('timer')
+        }
+        else {
+            if (currentActiveLessonData) {
+                // timeCtx.toggleTimeModal()
+                Alert.alert(`Les ${currentActiveLessonData.lesson_number} is bezig, begin met opdrachten oplossen`)
+            }
+            else{
+                Alert.alert('Er is geen timer actief, vraag je docent om een timer te starten')
+            }
+        }
+    }
+
     const handleDeletePress = (class_id) => {
             deletehHandler(class_id);
     };
 
-    //set statewide current ids here
+    let color = [ColorsBlue.blue1300, ColorsBlue.blue1000]
+    if (tileType === 'Class' && user_class_id === class_id) {
+        color = [ColorsBlue.blue1300, ColorsBlue.blue600]
+    }
+    if (tileType === 'Group' && user_group_id === group_id) {
+        color = [ColorsBlue.blue1300, ColorsBlue.blue600]
+    }
+
+
+    const timeCondition = currentActiveLessonData  ? (currentActiveLessonData.duration !== 10000 ? `Les ${currentActiveLessonData.lesson_number} - ${timeCtx.formatTimeLeft(timeLeft)}` : 'Les actief zonder tijd') : `geen les actief`
+    
     return(
         <Pressable 
         style = {styles.chatBox}
         onPress={navigationHandler}
         >
             <LinearGradient 
-                colors={[ColorsBlue.blue1300, ColorsBlue.blue1000]}
+                colors={color}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style = {styles.colorGradient}
             >
                 <View style = {[styles.textBox, {marginLeft: user_role === 'teacher' ? 25: 20, padding: tileType === 'Group' ? 0 : 10, justifyContent: tileType === 'Group' ? null : 'center'}]}>
                     <Text style = {styles.text}>{title}{groupNames}</Text>
+                    {tileType === 'Class' && <Text style = {styles.description}>{timeCondition}</Text>}
                     {tileType === 'Class' ? null : <Text style={styles.description}>{groupMembers.length > 0 ? groupMembers.join(', ') : 'Groep is leeg'}</Text>}
                 </View>
                 <View style = {{marginLeft: user_role === 'teacher' ? 25: 0}}>
@@ -66,6 +116,16 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
                     </View>
                     }
                 </View>
+                    {tileType === 'Class' &&
+                    <View style = {styles.timer}>
+                        <Icon
+                        icon = "timer-outline"
+                        size = {30}
+                        color = {currentActiveLessonData ? ColorsGreen.green400 : ColorsGray.gray400}
+                        onPress = {() => handleTimer(class_id)}
+                        />
+                    </View>
+                    }
                 <View style={styles.groupCount}>
                     <Text style = {styles.description}>{groupCount}</Text>
                 </View>
@@ -81,7 +141,12 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
 export default GroupCategoryTile
 
 
-styles = StyleSheet.create({
+const styles = StyleSheet.create({
+    timer: {
+        position: 'absolute',
+        top: '13%',
+        left: '3%'
+    },
     classInfo: {
         position: 'absolute',
         bottom: 5,
@@ -136,5 +201,5 @@ styles = StyleSheet.create({
         marginRight: 20,
         alignItems: 'center',
         justifyContent: 'center',
-    },
+    }
 })

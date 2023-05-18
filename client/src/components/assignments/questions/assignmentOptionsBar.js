@@ -1,26 +1,53 @@
 
-import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedback, TouchableOpacity } from "react-native"
+import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedback, TouchableOpacity, Animated } from "react-native"
 import Icon from "../../Icon";
 import ToggleMenu from "../../robot/driving_on_command/ToggleMenu";
-import { ColorsBlue, ColorsGray, ColorsLighterGold, ColorsTile } from "../../../constants/palet";
+import { ColorsBlue, ColorsGray, ColorsLighterGold, ColorsRed, ColorsTile } from "../../../constants/palet";
 import { useContext, useEffect, useState, useRef } from "react";
 import {  Header } from 'react-navigation-stack';
 import { BlurView } from "expo-blur";
 import { Colors } from "react-native/Libraries/NewAppScreen";
 import BlurWrapper from "../../UI/BlurViewWrapper";
+import SwitchScreensQuestions from "./SwitchScreensQuestions";
+import { useNavigation } from "@react-navigation/native";
 
 
 
 
-function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, currentIndex, redirectToMeasurementHandler, onMetingPressed, subject}){
+function AssignmentOptionsBar({
+    midIconHandler, 
+    chartLength, 
+    currentIndex, 
+    redirectToMeasurementHandler, 
+    onMetingPressed, 
+    subject, 
+    blinkButton, 
+    chartAvailable,
+    performedMeasurement,
+    opacityChange,
+    slideCount,
+    nextSlideHandler,
+    prevSlideHandler,
+    slideCountEnd,
+    setSlideCount,
+    text,
+    noForwardArrow
+}){
     const [isStopActive, setIsStopActive] = useState(false);
     const [headerHeight, setHeaderHeight] = useState(0);
     const [optionsVisible, setOptionsVisible] = useState(false);
     const metingRef = useRef(null);
     const [metingPosition, setMetingPosition] = useState({ x: 0, y: 0 });
+    const navigation = useNavigation();
 
-    const toggleModal = () => {
+    const toggleModalOpen = () => {
         setIsStopActive(!isStopActive); 
+        return;
+    };
+
+    const toggleModalClose = () => {
+        setIsStopActive(false);
+        return;
     };
 
     useEffect(() => {
@@ -32,13 +59,14 @@ function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, 
         return (
             <TouchableWithoutFeedback onPress={() => setOptionsVisible(false)}>
                 <View style={styles.modalBackground}>
-                    <TouchableWithoutFeedback onPress={() => {}}>
+                    <TouchableWithoutFeedback onPress={() => {}}
+                    style = {{flex: 1, borderRadius: 20, overflow: 'hidden'}}>
                         <BlurWrapper
                             intensity={50}
                             tint="dark"
                             style={[
                             styles.optionsBox,
-                            { top: metingPosition.y + 5, right: metingPosition.y - 25 },
+                            { top: metingPosition.y + 5, right: metingPosition.y - 10 },
                             ]}
                             customColor= 'rgba(30, 30, 80, 0.95)'
                         >
@@ -56,13 +84,14 @@ function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, 
                             ))}
                                 <TouchableOpacity
                                 activeOpacity={0.5}
-                                onPress={() => redirectToMeasurementHandler()}
+                                onPress={() => redirectToMeasurementHandler(setOptionsVisible)}
                                 style={styles.pressed}
                                 >
                                     <Text style={[styles.option, { fontSize: 16, fontWeight: "500" }]}>
                                         Start Meting
                                     </Text>
                                 </TouchableOpacity>
+                                                       
                         </BlurWrapper>
                     </TouchableWithoutFeedback>
                 </View>
@@ -85,56 +114,125 @@ function AssignmentOptionsBar({midIcon, rightIcon, midIconHandler, chartLength, 
         });
     };
 
+    function homeNavigatorHandler(){
+        navigation.navigate('Assignments', {screen: 'AssignmentsResults'})
+    }
+
     return(
-        <View intensity={10} tint = "dark" style = {styles.upperIcons}>
-            <TouchableOpacity onPress={toggleModal}>
-                <View style={styles.stopContainer}>
-                    <View
-                    style={[
-                        styles.stopCircle,
-                        isStopActive ? styles.stopCircleActive : {},
-                    ]}
-                    />
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={toggleOptions}>
-                <View ref={metingRef} style = {{flexDirection: 'row', alignItems: 'center', marginLeft: 33 }}>
-                        <Text  style = {styles.text}>
-                            METING {currentIndex + 1}
-                        </Text>
+    
+        <View style = {[styles.upperIcons]}>
+                
+                {text && 
+                    <View style = {{position: 'absolute', top: '58%', left: text.left}}>
+                        <Text style = {styles.text}>{text.text}</Text>
+                    </View>
+                }
+
+                <View style = {{position: 'absolute', top: '53%', left: '4.5%'}}>
                     <Icon 
-                    icon = {rightIcon} 
-                    size={23}
-                    color={ ColorsBlue.blue50 }//ColorsLighterGold.gold400}
-                    onPress = {toggleOptions}
-                    differentDir={true}
-                    />
+                    size={ 26}
+                    icon= { 'planet' }
+                    color={ColorsBlue.blue200}
+                    onPress={() => setSlideCount(0)}/>
                 </View>
-            </TouchableOpacity>
-            <View style = {{marginLeft: 25}}>
-                <Icon 
-                icon = {midIcon}
-                size={26}
-                color={ColorsBlue.error300}
-                onPress = {midIconHandler}
-                differentDir={true}/>
-            </View>
-            <ToggleMenu
-            headerHeight = {headerHeight}
-            isStopActive = {isStopActive}
-            toggleModal = {toggleModal}
-            subject = {subject}
-            />
-            {/* Options Box */}
-            <Modal
-                transparent={true}
-                visible={optionsVisible}
-                onRequestClose={() => {
-                    setOptionsVisible(false);
-                }}
-            >
-                <OptionsBox />
-            </Modal>
+
+                <View style = {{position: 'absolute', top: '58%', left: '15.5%'}}>
+                    <Icon 
+                        size={ 22}
+                        icon= { "home-outline" }
+                        color={ColorsBlue.blue200}
+                        onPress={() => homeNavigatorHandler()}
+                        />
+                </View>
+
+
+                {chartAvailable && performedMeasurement && 
+                    <TouchableOpacity onPress={toggleOptions} style = {{position: 'absolute', top: '57%' , left: '39%'}}>
+                    
+
+                        <View ref={metingRef} style = {{flexDirection: 'row'}}>
+                                <Text  style = {styles.text}>
+                                    METING {currentIndex + 1}
+                                </Text>
+                            <Icon 
+                            icon = "menu-down" 
+                            size={23}
+                            color={ ColorsBlue.blue50 }//ColorsLighterGold.gold400}
+                            onPress = {toggleOptions}
+                            differentDir={true}
+                            />
+                        </View>
+
+                    </TouchableOpacity>
+                }
+
+
+                {performedMeasurement ? 
+                    ( !chartAvailable &&
+                    <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: '36%'}}>
+                            <TouchableOpacity
+                            onPress = {() => redirectToMeasurementHandler()}>
+                                <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue100}]}>Start Meting</Text>
+                            </TouchableOpacity>
+                    </Animated.View>
+                    ):(!text && !chartAvailable &&
+                    <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: '36%'}}>
+                                <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue100}]}>Geen Meting</Text>
+                    </Animated.View>
+                    )
+                }
+
+
+                <SwitchScreensQuestions
+                addStyle={{position: 'absolute', top: '43%', right: 0, zIndex: 1000}}
+                    slideCount={slideCount}
+                    prevSlideHandler={prevSlideHandler}
+                    nextSlideHandler={nextSlideHandler}
+                    slideCountEnd={slideCountEnd}
+                    noForwardArrow={noForwardArrow}
+                />
+                {/* Options Box */}
+                <Modal
+                    transparent={true}
+                    visible={optionsVisible}
+                    onRequestClose={() => {
+                        setOptionsVisible(false);
+                    }}
+                >
+                    <OptionsBox />
+                </Modal>
+
+            {chartAvailable && 
+                <>
+                <TouchableOpacity onPress={toggleModalOpen} 
+                style = {{position: 'absolute', top: '75%', left: '24%'}}>
+                        <View style={styles.stopContainer}>
+                            <View
+                            style={[
+                                styles.stopCircle,
+                                isStopActive ? styles.stopCircleActive : {},
+                            ]}
+                            />
+                        </View>
+                    </TouchableOpacity>
+
+                    <ToggleMenu
+                    headerHeight = {headerHeight}
+                    isStopActive = {isStopActive}
+                    toggleModalClose = {toggleModalClose}
+                    subject = {subject}
+                    />
+                    
+                    <View style = {{position: 'absolute', top: '58%', right: '20%'}}>
+                        <Icon 
+                        icon = "trash-can-outline"
+                        size={25}
+                        color={ColorsRed.red700}
+                        onPress = {midIconHandler}
+                        differentDir={true}/>
+                    </View>
+                </> 
+            }
         </View>
     )
 }
@@ -143,14 +241,19 @@ export default AssignmentOptionsBar;
 
 const styles = StyleSheet.create({
     upperIcons: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        width: "101%",
-        paddingHorizontal: 15,
-        alignSelf: 'center',
+        minHeight: 60,
+        borderRadius: 20,
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 3, width: 1 },
+        shadowRadius: 3,
+        shadowOpacity: 1,
+        backgroundColor: ColorsBlue.blue1390,
+        borderColor: `rgba(77, 77, 77, 0.15)`,
+        borderWidth: 1,
+        marginHorizontal: 8,
+        marginTop: 7,
+        marginBottom: 7,
         paddingVertical: 15,
-        backgroundColor: 'rgba(5, 5, 30, 0.6)',
     },
     stopContainer: {
         width: 30,
@@ -158,22 +261,21 @@ const styles = StyleSheet.create({
         marginHorizontal: 5,
         borderRadius: 15,
         borderWidth: 2,
-        borderColor: ColorsTile.blue500,
+        borderColor: ColorsBlue.blue500,
         justifyContent: "center",
-        alignItems: "flex-start",
     },
     stopCircle: {
         width: 15,
         height: 15,
         borderRadius: 20,
-        backgroundColor: ColorsTile.blue500,
+        backgroundColor: ColorsBlue.blue500,
     },
     stopCircleActive: {
         transform: [{ translateX: 15 }],
     },
     text: {
         fontSize: 20,
-        color: ColorsBlue.blue50,//ColorsLighterGold.gold400,
+        color: ColorsBlue.blue200,//ColorsLighterGold.gold400,
         marginRight: 5,
         textAlign: 'center',
     },
@@ -183,20 +285,15 @@ const styles = StyleSheet.create({
         width: 130,
         position: "absolute",
         zIndex: 1000, // Make sure the box appears above other elements
-        borderColor: `rgba(77, 77, 77, 0.5)`,
-        borderWidth: 1,
         padding: 1.6,
-        shadowColor: `rgba(11, 11, 11)`,
-        shadowOffset: {height: 1, width: 0},
-        shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 2,
         justifyContent: 'center',
         alignItems: 'center',
+        borderRadius: 20,    
+        overflow: 'hidden'
     },
     option: {
         fontSize: 16,
-        color: ColorsBlue.blue50,
+        color: ColorsBlue.blue200,
         marginBottom: 8,
         textAlign: 'center',
     },  
@@ -210,5 +307,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        borderRadius: 20,
+        overflow: 'hidden'
     },    
 })

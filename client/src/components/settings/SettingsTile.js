@@ -26,7 +26,6 @@ function SettingsTile({type, blurFactor, icon,  onPress, differentDir}){
         }}>
                 <View 
                 style = {styles.colorGradient}
-                tint = 'light'
                 >
                 <Text style = {[styles.text]}>{type}</Text>
                 <View style = {styles.iconContainer}>
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
         borderRadius: 7, 
         flex: 1,
         overflow: 'hidden',
-        backgroundColor: Platform.OS === 'ios' ? 'rgba(10, 10, 40, 0.9)' : 'rgba(20, 20, 60, 0.9)',
+        backgroundColor: Platform.OS === 'ios' ? 'rgba(20, 35, 60, 0.9)' : 'rgba(20, 20, 60, 0.9)',
     },
     text: {
         textAlign: 'center',

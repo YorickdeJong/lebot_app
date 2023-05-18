@@ -12,14 +12,15 @@ import { useSocketMeasurementResults } from '../../../hooks/measurement_results'
 
 function Controller({ navigation, route }) {
     const socketCtx = useContext(SocketContext);
-    const carCtx = useContext(CarContext);
     const userprofileCtx = useContext(UserProfileContext);
     const assignmentCtx = useContext(AssignmentContext);
     const [alertShown, setAlertShown] = useState(false);
     const moveXReceived = useRef(0);
     const moveYReceived = useRef(0);
-    const { displayNumber, motorStand, command } = route.params;
-    
+    const { displayNumber, startScriptCommand } = route.params;
+    const rerenderCount = useRef(0);
+
+
     //connect power measurement socket to database if subject is CAR
     const shouldConnectPower = useMemo(() => assignmentCtx.assignmentImage.subject === "CAR", [assignmentCtx.assignmentImage.subject]);
     const socketPower = useSocketPower(shouldConnectPower, userprofileCtx.userprofile.id);
@@ -27,31 +28,25 @@ function Controller({ navigation, route }) {
     const shouldConnectMeasurement = useMemo(() => assignmentCtx.assignmentImage.subject === "MOTOR", [assignmentCtx.assignmentImage.subject]);
     const socketMeasurement = useSocketMeasurementResults(shouldConnectMeasurement, userprofileCtx.userprofile.id);
 
+    useEffect(() => {
+        rerenderCount.current += 1;
+        console.log('Controller rendered', rerenderCount.current);
+    }, [socketCtx.socket]);
+
     const powerHandler = useCallback(() => {
         socketCtx.setPower((prevPower) => !prevPower);
         if (!socketCtx.power) {
-            const { subject } = assignmentCtx.assignmentImage;
-            let command;
-
-            //start up specific script on the robot, using the sshSocket
-            if (subject === "MOTOR" && !motorStand){
-                command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
-            }
-            else if (subject === "CAR" && !motorStand){
-                command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${carCtx.carProperties.speed} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
-            }
-            else if (subject === "CAR" && motorStand){
-                command = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${motorStand} vel_ramp:=${carCtx.carProperties.acceleration} user_id:=${userprofileCtx.userprofile.id} assignment_number:=${assignmentCtx.assignmentImage.assignment_number} assignment_title:="${assignmentCtx.assignmentImage.title}" subject_title:=${assignmentCtx.assignmentImage.subject}`;
+            if (startScriptCommand) {
+                socketCtx.Command('',  startScriptCommand);
             }
             else{
                 console.log('ERROR: subject is not defined')
             }
-            socketCtx.Command('', command);
-
-        } else {
+        } 
+        else {
             socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
         }
-    }, [socketCtx, carCtx, userprofileCtx, assignmentCtx, displayNumber, socketPower, socketMeasurement]);
+    }, [socketCtx.power]);
 
     const throttledEmitDriveCommand = useCallback(
         throttle((command) => {
@@ -89,13 +84,13 @@ function Controller({ navigation, route }) {
         
         else if (!alertShown) {
             Alert.alert(
-                'Power off',
-                'You must turn on the power first!',
+                'Rover staat uit',
+                'Druk eerst op de aanknop!',
                 [
                 {
                     text: 'OK',
                     onPress: () => {
-                    setAlertShown(false);
+                        setAlertShown(false);
                     },
                 },
                 ],
@@ -112,6 +107,7 @@ function Controller({ navigation, route }) {
         midIconHandler={powerHandler}
         displayNumber={displayNumber}
         subject={assignmentCtx.assignmentImage.subject}
+        assignmentNumber={assignmentCtx.assignmentImage.assignment_number}
         />
         )
 }

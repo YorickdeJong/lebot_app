@@ -15,10 +15,9 @@ const {
 } = require('./../../services/queries/queryGroups');
 
 
-const getUsersInGroup = async (group_id) => {
+const getUsersInGroup = async (client, group_id) => {
     // console.log(group_id)
     const values = [group_id];
-    const client = await pool.connect();
 
     try {
         const { rows } = await client.query(getUsersInGroupQuery, values);
@@ -28,9 +27,6 @@ const getUsersInGroup = async (group_id) => {
         console.error(error);
         return { error: 'Server error', status: 500 }
     } 
-    finally {
-        client.release();
-    }
 };
 
 const createGroupUser = async (req, res) => {

@@ -1,27 +1,46 @@
 
-import { StyleSheet, Animated, Platform, View, Text } from 'react-native';
+import { StyleSheet, Animated, Platform, View, Text, Alert } from 'react-native';
 import {  useNavigation, } from '@react-navigation/native';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { createBottomTabNavigator,} from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from '../../components/Icon';
 import { BlinkContext } from '../../store/animation-context';
-import { ColorsBlue  } from '../../constants/palet';
+import { ColorsBlue, ColorsGreen  } from '../../constants/palet';
 import Assignments from './Assignments.navigator';
 import Robot from './Robot.navigator';
 import ChatScreen from './ChatScreen.navigator';
 import {scale, verticalScale} from 'react-native-size-matters';
+import { ShowIconsContext } from '../../store/show-icons-context';
+import { TimeContext } from '../../store/time-context';
+import { UserProfileContext } from '../../store/userProfile-context';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { InformationContext } from '../../store/information-context';
 //test
 const Bottom = createBottomTabNavigator();
 
 // BOTTOM MENU NAVIGATOR WITH ASSIGNMENTS, ROBOT AND CHATGPT
 function BottomMenu() {
     const navigation = useNavigation()
+    const showIconsCtx = useContext(ShowIconsContext);
     const blinkCtx = useContext(BlinkContext);
-    const goldColor = 'gold';
-    
-    console.log(`blinkContext: ${blinkCtx.shouldBlink}`)
-  
+    const [colorChange, setColorChange] = useState('gold');
+    const timeCtx = useContext(TimeContext);
+    const informationCtx = useContext(InformationContext);
+    const userprofileCtx = useContext(UserProfileContext);
+    const {class_id} = userprofileCtx.userprofile;
+    const activeTime = timeCtx.filterSpecificLesson(class_id)
+
+
+
+    const DummyComponent = () => null;
+    // New color interpolation code
+    const opacityInterpolation = blinkCtx.colorAnimation.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: [1, 0, 1],
+    });
+
+
     return (
         <Bottom.Navigator
         screenOptions={{
@@ -34,19 +53,9 @@ function BottomMenu() {
           },
           tabBarBackground: () => {
             return (
-              <LinearGradient
-                  colors={[ColorsBlue.blue1400, ColorsBlue.blue1100, ColorsBlue.blue1400]} 
-                  style={{flex:1}}
-                  start={{ 
-                      x: 0, 
-                      y: 0.5 
-                  }}
-                  end={{ 
-                      x: 1, 
-                      y: 0.5 
-                  }}>
-              </LinearGradient>
-  
+              <View
+                  style={{flex:1, backgroundColor: ColorsBlue.blue1400}} />
+              
             )
           },
           headerTintColor: 'white',
@@ -68,7 +77,8 @@ function BottomMenu() {
           },
           }}
         >
-        <Bottom.Screen 
+
+         <Bottom.Screen 
         component={Assignments}
         name = "Assignments"
         options={{
@@ -78,7 +88,7 @@ function BottomMenu() {
               return (
 
               
-              <View style={{ opacity: blinkCtx.shouldBlink ? blinkCtx.blinkAnimation : 1, 
+              <View style={{ 
               justifyContent: 'center', 
               alignItems: 'center',
               paddingTop: verticalScale(16) }}
@@ -88,11 +98,11 @@ function BottomMenu() {
                 icon = "list"
                 color = {color}
                 addStyle = {{marginRight: 0, marginBottom: Platform.OS === 'android' ? 3: 0}}
-                onPress={() => navigation.navigate('AssignmentsResults')}/>
+                onPress={() => navigation.navigate('Assignments', {screen: 'AssignmentsResults'})}/>
 
                 <Text
                 style={{
-                  color: blinkCtx.shouldBlink ? goldColor : color,
+                  color: color,
                   fontSize: 10,
                   paddingTop: Platform.OS === 'ios' ?  8  : 0,
                   // paddingBottom: 2,
@@ -107,93 +117,201 @@ function BottomMenu() {
             headerShown: false
         }}
         />
-  
-        <Bottom.Screen 
-        component={Robot}
-        name = "Rover" 
-        options={{
-            title: '',
-            tabBarIcon: ({color}) => {
-              return (
-
-              <View style={{ opacity: blinkCtx.shouldBlink ? blinkCtx.blinkAnimation : 1, 
-              justifyContent: 'center', 
-              alignItems: 'center',
-              paddingTop: verticalScale(16) }}
-              >
-                <Icon 
-                size = {24}
-                icon = "space-station"
-                color = {color}
-                addStyle = {{marginRight: 0}}
-                onPress={() => navigation.navigate('RobotStore')}
-                differentDir={true}
-                />
-                <Text
-                style={{
-                  color: blinkCtx.shouldBlink ? goldColor : color,
-                  fontSize: 10,
-                  paddingTop: Platform.OS === 'ios' ?  8  : 5,
-                  // paddingBottom: 2,
-                  textAlign: 'center',
-                }}
-              > 
-              Rover
-              </Text>
-              </View>
-
-              )
-            },
-            headerShown: false
-        }}
-        />
-  
-        <Bottom.Screen 
-        component={ChatScreen}
-        name = "ChatGPT"
-        options={{
-            title: ``,
-            tabBarActiveTintColor: blinkCtx.shouldBlink && goldColor,
-            tabBarInactiveTintColor:  blinkCtx.shouldBlink && goldColor, 
-            tabBarIcon: ({color}) => {
-              return (
-              <Animated.View style={{ opacity: blinkCtx.shouldBlink ? blinkCtx.blinkAnimation : 1, 
-              justifyContent: 'center', 
-              alignItems: 'center',
-              paddingTop: verticalScale(16) }}
-              >
-                <Icon
-                  size={24}
-                  icon="robot-happy-outline"
-                  color={blinkCtx.shouldBlink ? goldColor: color}
-                  addStyle={{ marginRight: 0 }}
-                  onPress={() => navigation.navigate('Chats')}
-                  differentDir
-                />
-                <Animated.Text
-                style={{
-                  color: blinkCtx.shouldBlink ? goldColor : color,
-                  fontSize: 10,
-                  paddingTop: Platform.OS === 'ios' ?  8  : 5,
-                  // paddingBottom: 2,
-                  textAlign: 'center',
-                }}
-              > 
-              Chatgpt
-              </Animated.Text>
-              </Animated.View>
-              )
-            },
-            headerShown: false
-        }}
-        />
         
+  
+        {showIconsCtx.showIcons.robotStore &&
+         <Bottom.Screen
+                    component={Robot}
+                    name="Rover"
+                    options={{
+                        title: ``,
+                        tabBarActiveTintColor: ColorsBlue.blue400,
+                        tabBarInactiveTintColor: ColorsBlue.blue900,
+                        tabBarIcon: ({ color }) => {
+                            return (
+                                <Animated.View
+                                    style={{
+                                        opacity: blinkCtx.shouldBlinkRobot ? opacityInterpolation : 1,
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        paddingTop: verticalScale(16),
+                                    }}
+                                >
+                                    <Icon
+                                        size={24}
+                                        icon="space-station"
+                                        color={blinkCtx.shouldBlinkRobot ? colorChange : color}
+                                        addStyle={{ marginRight: 0 }}
+                                        onPress={() => navigation.navigate('Rover', {screen: 'RobotStore'})}
+                                        differentDir
+                                    />
+                                    <Animated.Text
+                                        style={{
+                                            color: blinkCtx.shouldBlinkRobot ? colorChange : color,
+                                            fontSize: 10,
+                                            paddingTop: Platform.OS === 'ios' ? 8 : 5,
+                                            textAlign: 'center',
+                                        }}
+                                    >
+                                        Rover
+                                    </Animated.Text>
+                                </Animated.View>
+                            );
+                        },
+                        headerShown: false,
+                    }}
+                />
+        }
+  
+        {showIconsCtx.showIcons.chatgpt &&  
+            <Bottom.Screen
+              component={ChatScreen}
+              name="ChatGPT"
+              options={{
+                  title: ``,
+                  tabBarActiveTintColor: ColorsBlue.blue200,
+                  tabBarInactiveTintColor: ColorsBlue.blue700,
+                  tabBarIcon: ({ color }) => {
+                      return (
+                          <Animated.View
+                              style={{
+                                  opacity: blinkCtx.shouldBlink ? opacityInterpolation : 1,
+                                  justifyContent: 'center',
+                                  alignItems: 'center',
+                                  paddingTop: verticalScale(16),
+                              }}
+                          >
+                              <Icon
+                                  size={24}
+                                  icon="robot-happy-outline"
+                                  color={blinkCtx.shouldBlink ? colorChange : color}
+                                  addStyle={{ marginRight: 0 }}
+                                  onPress={() => navigation.navigate('ChatGPT', {screen: 'Chats'})}
+                                  differentDir
+                              />
+                              <Text
+                                  style={{
+                                      color: blinkCtx.shouldBlink ? colorChange : color,
+                                      fontSize: 10,
+                                      paddingTop: Platform.OS === 'ios' ? 8 : 5,
+                                      textAlign: 'center',
+                                  }}
+                              >
+                                  Chatgpt
+                              </Text>
+                          </Animated.View>
+                      );
+                  },
+                  headerShown: false,
+              }}
+          />
+        }
+
+        <Bottom.Screen
+            name="DummyOne" // Add a name for the screen
+            component={DummyComponent} // Add a dummy component
+            listeners={{
+                tabPress: e => {
+                // Prevent default action
+                e.preventDefault();
+                }
+            }}
+            options={{
+                title: '',
+                tabBarActiveTintColor: ColorsBlue.blue200,
+                tabBarInactiveTintColor: ColorsBlue.blue700,
+                tabBarIcon: ({ color }) => {
+                return (
+                    <TouchableOpacity 
+                    onPress={() => informationCtx.setShowInformationModal(prevState => !prevState)}
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingTop: verticalScale(12),
+                    }}
+                    >
+                    <Icon
+                        size={24}
+                        color={color}
+                        icon="information-outline"
+                        differentDir={true}
+                        addStyle={{opacity: 1}}
+                    />
+                    <Text
+                        style={{
+                        color: color,
+                        fontSize: 10,
+                        paddingTop: Platform.OS === 'ios' ? 4 : 1,
+                        textAlign: 'center',
+                        opacity: 1,
+                        }}
+                    >
+                        Info
+                    </Text>
+                    </TouchableOpacity>
+                );
+                },
+            }}
+            />
+        
+        {activeTime && 
+            <Bottom.Screen
+            name="DummyTwo" // Add a name for the screen
+            component={DummyComponent} // Add a dummy component
+            listeners={{
+                tabPress: e => {
+                // Prevent default action
+                e.preventDefault();
+                }
+            }}
+            options={{
+                title: '',
+                tabBarIcon: ({ color }) => {
+                return (
+                    <TouchableOpacity 
+                    onPress={() => timeCtx.toggleTimeModal()}
+                    style={{
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        paddingTop: verticalScale(12),
+                    }}
+                    >
+                    <Icon
+                        size={24}
+                        color={ColorsBlue.blue600}
+                        icon="time-sharp"
+                        addStyle={{opacity: 1}}
+                    />
+                    <Text
+                        style={{
+                        color: ColorsBlue.blue600,
+                        fontSize: 10,
+                        paddingTop: Platform.OS === 'ios' ? 4 : 1,
+                        textAlign: 'center',
+                        opacity: 1,
+                        }}
+                    >
+                        Timer
+                    </Text>
+                    </TouchableOpacity>
+                );
+                },
+            }}
+            />
+        }
+
+
+
       </Bottom.Navigator>
     );
   }
 
-  export default BottomMenu;
+export default BottomMenu;
   
-  const bottomNavStyles = StyleSheet.create({
-  });
+
+
+
+
+const styles = StyleSheet.create({
+});
   

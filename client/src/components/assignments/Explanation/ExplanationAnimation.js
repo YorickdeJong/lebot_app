@@ -103,6 +103,13 @@ const styles = StyleSheet.create({
         height: 221,
         alignItems: 'center',
         justifyContent: 'center',
+        marginVertical: 8,
+        elevation: 2,
+        marginHorizontal: 8,
+        borderRadius: 20,
+        overflow: 'hidden',
+        borderWidth: 0.6,
+        borderColor: `rgba(77, 77, 77, 0.5)`,
     },
     text: {
         fontSize: 30,

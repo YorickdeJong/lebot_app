@@ -1,25 +1,57 @@
-import { StyleSheet, View, Animated, Modal, TouchableHighlight, Text, StatusBar, Alert, ImageBackground } from "react-native"
+import { StyleSheet, View, Animated, StatusBar} from "react-native"
 import Icon from "../../Icon"
 import { ColorsBlue } from "../../../constants/palet"
-import { LinearGradient } from "expo-linear-gradient"
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {  Header } from 'react-navigation-stack';
 import { BlurView } from 'expo-blur';
 import ToggleMenu from "./ToggleMenu";
 import { SocketContext } from "../../../store/socket-context";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { BlinkContext } from "../../../store/animation-context";
 
-function OptionsBar({midIconHandler, rightIconHandler, midIcon, subject}) {
+function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
     const [isStopActive, setIsStopActive] = useState(false);
+    const [hasModalClosed, setHasModalClosed] = useState(false);
     const [headerHeight, setHeaderHeight] = useState(0);
     const socketCtx = useContext(SocketContext);
     const navigation = useNavigation()
+    const blinkCtx = useContext(BlinkContext)
+    const isFocused = useIsFocused();
+    const opacityInterpolation = useRef(new Animated.Value(1)).current;
+    const opacityInterpolationPower = useRef(new Animated.Value(1)).current;
+    const [iconButtonPower, setIconButtonPower] = useState("power");
 
-    const toggleModal = () => {
+    const toggleModalOpen = () => {
         setIsStopActive(!isStopActive); 
         return;
     };
+
+    const toggleModalClose = () => {
+        setIsStopActive(false);
+        setHasModalClosed(true);
+        return;
+    };
+    // New color interpolation code to show data button
+    useEffect(() => {
+        if (assignmentNumber === 2 && subject === 'MOTOR' && isFocused) {
+            blinkCtx.setShouldBlinkChartModal(true)
+            opacityInterpolation.current = blinkCtx.colorAnimationMeasurement.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [1, 0, 1],
+            });
+        } 
+    }, [isFocused]);
+
+    useEffect(() => {   
+        if (assignmentNumber === 2 && subject === 'MOTOR' && !isStopActive && hasModalClosed ) {
+            blinkCtx.setShouldBlinkPowerButton(true)
+            opacityInterpolationPower.current = blinkCtx.colorAnimationPower.interpolate({
+                inputRange: [0, 0.5, 1],
+                outputRange: [1, 0, 1],
+            });
+        } 
+    }, [hasModalClosed])
 
     useEffect(() => {
         const headerHeight = Header.HEIGHT + StatusBar.currentHeight;
@@ -33,15 +65,6 @@ function OptionsBar({midIconHandler, rightIconHandler, midIcon, subject}) {
         shadowColor: 'black',
         elevation: 4
     }
-
-    function chooseEqualityHandler(type) {
-        switch(type){
-            case "equals":
-                 
-        }
-
-    }
-
 
     return(    
         <View style={styles.shadowContainer}>
@@ -57,34 +80,38 @@ function OptionsBar({midIconHandler, rightIconHandler, midIcon, subject}) {
                         addStyle={addStyleIcon}
                         />
                         
-                        <Icon 
-                        icon = {midIcon ? midIcon : (socketCtx.power ? "pause-circle-outline" : "power")}
-                        size={45}
-                        color={ColorsBlue.blue200}
-                        onPress = {midIconHandler}
-                        differentDir={true}
-                        addStyle={addStyleIcon}
-                        />
-        
-                        {/* toggle menu */}
-                        <TouchableOpacity onPress={toggleModal}>
-                            <View style={styles.stopContainer}>
-                                <View
-                                style={[
-                                    styles.stopCircle,
-                                    isStopActive ? styles.stopCircleActive : {},
-                                ]}
-                                />
-                            </View>
-                        </TouchableOpacity>
+                        <Animated.View style = {{opacity: blinkCtx.shouldBlinkPowerButton ? opacityInterpolationPower.current : 1}}> 
+                            <Icon 
+                            icon = {midIcon ? midIcon : (socketCtx.power ? "pause-circle-outline" : "power")}
+                            size={45}
+                            color={blinkCtx.shouldBlinkPowerButton ? 'gold' :  ColorsBlue.blue200}
+                            onPress = {midIconHandler}
+                            differentDir={true}
+                            addStyle={addStyleIcon}
+                            />
+                        </Animated.View>
+
+                        <Animated.View style = {{opacity: blinkCtx.shouldBlinkChartModal ? opacityInterpolation.current : 1}}> 
+                            <TouchableOpacity onPress={toggleModalOpen}>
+                                <View style={[styles.stopContainer, {borderColor: blinkCtx.shouldBlinkChartModal ? 'gold' :  ColorsBlue.blue200}]}>
+                                    <View
+                                    style={[
+                                        [styles.stopCircle, {backgroundColor: blinkCtx.shouldBlinkChartModal ? 'gold' :  ColorsBlue.blue200}],
+                                        isStopActive ? styles.stopCircleActive : {},
+                                    ]}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+                        </Animated.View>
                     </View>
                 </View>
             </BlurView>
             <ToggleMenu
                 headerHeight = {headerHeight}
                 isStopActive = {isStopActive}
-                toggleModal = {toggleModal}
+                toggleModalClose = {toggleModalClose}
                 subject = {subject}
+                assignmentNumber = {assignmentNumber}
             />
         </View>
     )

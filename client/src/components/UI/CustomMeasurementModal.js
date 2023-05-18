@@ -5,78 +5,84 @@ import { ColorsBlue, ColorsGray } from "../../constants/palet";
 import { useContext, useState } from "react";
 import { SocketContext } from "../../store/socket-context";
 import BlurWrapper from "./BlurViewWrapper";
-import { ipAddressRaspberryPi } from '../../data/ipaddresses.data';
+import { ipAddressRaspberryPi, ipAddressComputer } from '../../data/ipaddresses.data';
 import { AssignmentContext } from '../../store/assignment-context';
 import { useNavigation } from '@react-navigation/native';
 import { UserProfileContext } from '../../store/userProfile-context';
+import { CarContext } from '../../store/car-context';
 
 
 
 
 
 function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, questionData, subject}) {
-    const socketCtx = useContext(SocketContext)
     const assignmentCtx = useContext(AssignmentContext)
+    const carCtx = useContext(CarContext);
+    const userprofileCtx = useContext(UserProfileContext);
     const navigation = useNavigation();
+    
+    const assignment_number = questionData.assignment_number;
+    const subject_title = questionData.subject;
+    const assignment_title = questionData.title;
+    const {id, school_id, class_id, group_id} = userprofileCtx.userprofile;
+    const vel_max = carCtx.carProperties.speed;
+    const vel_ramp = carCtx.carProperties.acceleration;
 
     function closeHandler(){
         setShowMeasurementModal(false)
-        socketCtx.Disconnect();
     }
 
     function redirectToMeasurementHandler(type) {
-        
-        let command = null
-        let motorStand = 0;
+        /*
+        1: constant velocity
+        2: constant acceleration
+        3: free driving
+        4: 40% of max speed
+        5: 60% of max speed
+        6: 80% of max speed
+        7: 100% of max speed
+        */
+        let startScriptCommand = null
         switch (type) {
             case '1':
-                command = 'start constante snelheid meting script ' //bedenk of je een predetermined snelheid wilt of van de user zelf -> kunnen ze de motoren al laten werken
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp constant_velocity.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '2':
-                command = 'start constante versnelling meting script'
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp constant_acceleration.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '3':
-                command = 'Vrij rijden script'
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${vel_max} vel_ramp:=${vel_ramp} user_id:=${id} school_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '4':
-                motorStand = 40;
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${40} vel_ramp:=${vel_ramp} user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '5':
-                motorStand = 60;
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${60} vel_ramp:=${vel_ramp} user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '6':
-                motorStand = 80;
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${80} vel_ramp:=${vel_ramp} user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '7':
-                motorStand = 100;
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${100} vel_ramp:=${vel_ramp} user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
         }
 
 
-        const config = { //TODO make these values statewide
-            host: ipAddressRaspberryPi,     
-            port: 22,
-            username: "ubuntu",
-            password: "password",
-        }
-        if (!socketCtx.isConnected) {
-            socketCtx.Connect(config); //set assignment number and title
-            assignmentCtx.setTitleImageHandler(questionData.title);
-            assignmentCtx.setAssignmentImageHandler(questionData.assignment_number);
-            assignmentCtx.setSubjectImageHandler(questionData.subject);
+        assignmentCtx.setTitleImageHandler(questionData.title);
+        assignmentCtx.setAssignmentImageHandler(questionData.assignment_number);
+        assignmentCtx.setSubjectImageHandler(questionData.subject);
 
-            // Nadenken welke snelheid ik hier wil sturen, als ze upgraden veranderd de snelheid weer
-            // Misschien dat ze hieruit de juiste upgrades kunnen krijgen -> zet dan hun energie voor de race per upgrade erbij. 
-            navigation.navigate('Assignments', 
-                { screen: 'Controller',    
-                    params: {
-                        displayNumber: 1,
-                        motorStand: motorStand,
-                        command: command
-                    },
-                }
-            ) 
-        }
+        // Nadenken welke snelheid ik hier wil sturen, als ze upgraden veranderd de snelheid weer
+        // Misschien dat ze hieruit de juiste upgrades kunnen krijgen -> zet dan hun energie voor de race per upgrade erbij. 
+        navigation.navigate('Assignments', 
+            { screen: 'Controller',    
+                params: {
+                    displayNumber: 1,
+                    startScriptCommand: startScriptCommand
+                },
+            }
+        ) 
+
         setShowMeasurementModal(false)
     }
     const height = questionData.subject === "CAR" ? (Platform.OS === 'ios' ?  310 : 330) : (Platform.OS === 'ios' ?  250 : 270);
@@ -156,11 +162,11 @@ export default CustomMeasurementModal;
 const styles = StyleSheet.create({
     modal: {
         width: '70%',
-        borderRadius: 5,
+        borderRadius: 20,
         borderWidth: 0.7,
-        borderColor: ColorsBlue.blue700,
-        backgroundColor: ColorsBlue.blue1100,
-        shadowColor: ColorsBlue.blue1400,
+        borderColor: ColorsBlue.blue900,
+        backgroundColor: ColorsBlue.blue1300,
+        shadowColor: 'rgba(0,0,0,1)',
         shadowOffset: { height: 2, width: 1 },
         shadowOpacity: 1,
         shadowRadius: 5,
@@ -184,7 +190,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: ColorsBlue.blue1200,
-        borderRadius: 5,
+        borderRadius: 15,
         padding: 13,
         width: 200,
         marginVertical: 5,

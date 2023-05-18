@@ -10,7 +10,6 @@ export const useFetchGroupsDataSocket = (shouldConnect, user_id, classroom_id, s
 
     const initialize = useCallback(() => {
       if (socket) {
-        console.log('user_id: ' + user_id, 'classroom_id ' + classroom_id, 'school_id ' + school_id);
         socket.emit('initialize', {
           user_id,
           classroom_id,

@@ -33,13 +33,13 @@ const Planets = ({ tileNumber, size, x, y, onPress }) => {
     }, [tileNumber, animationProgress]);
     
     const glowAnimation = useAnimatedStyle(() => {
-        const shadowOpacity = interpolate(animationProgress.value, [0, 0.25, 0.5], [0.5, 0.25, 0], Extrapolate.CLAMP);
+        const shadowOpacity = interpolate(animationProgress.value, [0.01, 0.25, 0.5], [0.5, 0.25, 0.01], Extrapolate.CLAMP);
         // console.log(`rgba(255, 255, 0, ${shadowOpacity})`)
         
         return {
             backgroundColor: `rgba(255, 153, 51, ${shadowOpacity})`,
         };
-        });
+    });
 
     return (
       <View style={{ left: x, top: y, position: "absolute" }}>

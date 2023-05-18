@@ -12,18 +12,20 @@ function SwitchScreens({prevSlideHandler, nextSlideHandler, slideCount, slideCou
                     <Icon 
                     onPress = {prevSlideHandler}
                     size = {40}
-                    icon = "play-back-circle-outline"
-                    color = {ColorsBlue.blue200}
-                    addStyle={{marginHorizontal: 10, marginVertical: 2}}
+                    icon = "navigate-before"
+                        color = {ColorsBlue.blue400}
+                        addStyle={{marginHorizontal: 10, marginVertical: 2}}
+                        MaterialIconsDir={true}
                     />
                 )}
 
                 {!slideCountEnd && <Icon 
                     onPress = {nextSlideHandler}
                     size = {40}
-                    color = {ColorsBlue.blue200}
-                    icon = "play-forward-circle-outline"
+                    color = {ColorsBlue.blue400}
+                    icon = "navigate-next"
                     addStyle={{marginHorizontal: 10, marginVertical: 2}}
+                    MaterialIconsDir={true}
                     />
                 }
         </View>

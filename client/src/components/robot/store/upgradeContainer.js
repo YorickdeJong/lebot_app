@@ -90,6 +90,7 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
     }, [carCtx.carProperties, carCtx.upgradeLog])
 
     return (
+        <View style = {styles.shadow}>
             <BlurWrapper 
             intensity={2} 
             style={[styles.upgradeContainer, {backgroundColor: backgroundColors, borderColor: borderColors}]}
@@ -116,6 +117,7 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
                     </View>
                 </View>
             </BlurWrapper>
+        </View>
     )
 },  (prevProps, nextProps) => {
   return prevProps.upgradeType === nextProps.upgradeType && 
@@ -129,6 +131,14 @@ export default UpgradeContainer
 
 
 const styles= StyleSheet.create({
+    shadow: {
+        elevation: 5,
+        shadowColor: 'black',
+        shadowOpacity: 0.3,
+        shadowOffset: {width: 0, height: 2},
+        shadowRadius: 1,
+        borderRadius: 20,
+    },
     blurContainer: {
         flex: 1,
         alignItems: 'center',
@@ -137,14 +147,9 @@ const styles= StyleSheet.create({
     upgradeContainer: {     
         justifyContent: 'center',
         margin: 10,
-        borderRadius: 5,
-        borderWidth: 1,
-        elevation: 5,
-        shadowColor: 'black',
-        shadowOpacity: 0.3,
-        shadowOffset: {width: 0, height: 2},
-        shadowRadius: 1,
-
+        borderRadius: 20,
+        borderWidth: 0.4,
+        overflow: 'hidden',
     },
     outerContainer: {
         justifyContent: 'center',

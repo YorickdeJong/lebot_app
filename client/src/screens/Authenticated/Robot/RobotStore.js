@@ -1,5 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ImageBackground, View, Text, StyleSheet, ImageBackgroundBase } from "react-native"
 import { FlatList, ScrollView } from "react-native-gesture-handler"
 import PartsButton from "../../../components/robot/store/partsButton";
@@ -9,11 +9,21 @@ import { ColorsBlue, ColorsDarkerBlue, ColorsDarkestBlue, ColorsGreen, ColorsLig
 import { accelData, handlingData, speedData, wheelsData } from "../../../data/storeData";
 import ButtonList from "../../../components/UI/ButtonList.UI";
 import ConnectRobotModal from "../../../components/robot/ConnectRobotModal.robot";
+import InstructionModalRobotStore from "../../../components/UI/InstructionModalRobotStore";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 
 function RobotStore() {
     const [type, setType] = useState("afstand")
-    
-    console.log(`CHECK SCREEN ROBOT STORE`)
+    const [showModalTemp, setShowModalTemp] = useState(true)
+    const isFocused = useIsFocused();
+
+
+    useEffect(() => {
+        if (isFocused) {
+            setShowModalTemp(true)
+        }
+    }, [isFocused])
+    console.log(`showModalTemp: ${showModalTemp}`)
 
     //TODO add function to select tiles
     function selectUpgrade(upgradeType){
@@ -29,6 +39,35 @@ function RobotStore() {
                 break;
         }
     }
+    const upgradeData = [
+        {
+          type: "speed",
+          upgradeType: "Snelheid",
+          textColor: ColorsRed.red300,
+          data: speedData,
+          Completed: true,
+          backgroundColors: "rgba(255, 255, 255, 0.05)",
+          borderColors: ColorsBlue.blue1400,
+        },
+        {
+          type: "acceleration",
+          upgradeType: "Versnelling",
+          textColor: ColorsPurple.purple300,
+          data: accelData,
+          Completed: false,
+          backgroundColors: "rgba(255, 255, 255, 0.05)",
+          borderColors: ColorsBlue.blue1400,
+        },
+        {
+          type: "afstand",
+          upgradeType: "Afstand",
+          textColor: ColorsOrange.orange300,
+          data: handlingData,
+          Completed: true,
+          backgroundColors: "rgba(255, 255, 255, 0.05)",
+          borderColors: ColorsBlue.blue1400,
+        },
+    ];
 
     return (
     <View style = {styles.outerContainer}>
@@ -55,7 +94,7 @@ function RobotStore() {
                             upgradeType = "Snelheid"
                             textColor = {ColorsRed.red300}
                             data = {speedData}
-                            Completed = {true}
+                            Completed = {false}
                             backgroundColors = 'rgba(255, 255, 255, 0.05)'
                             borderColors = {ColorsBlue.blue1400}
                             />
@@ -77,7 +116,7 @@ function RobotStore() {
                             upgradeType = "Afstand"
                             textColor = {ColorsOrange.orange300}
                             data = {handlingData}
-                            Completed = {true}
+                            Completed = {false}
                             backgroundColors = 'rgba(255, 255, 255, 0.05)'
                             borderColors = {ColorsBlue.blue1400}
                             />
@@ -96,6 +135,10 @@ function RobotStore() {
             </ImageBackground>
         </LinearGradient>
         <ConnectRobotModal />
+        <InstructionModalRobotStore 
+            setShowModalTemp = {setShowModalTemp}
+            showModalTemp = {showModalTemp}
+        />
     </View>
     )
 }

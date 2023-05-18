@@ -7,6 +7,8 @@ class CircularBuffer2D {
         this.start = 0;
         this.end = 0;
         this.size = 0;
+        this.cachedArray = [];
+        this.cacheInvalidated = false;
     }
 
     push(value) {
@@ -19,6 +21,7 @@ class CircularBuffer2D {
             this.size++;
         }
         this.end = (this.end + 1) % this.capacity;
+        this.cacheInvalidated = true; // Add this line
     }
 
     get(index) {
@@ -33,15 +36,22 @@ class CircularBuffer2D {
     }
 
     toArray() {
+        if (this.cachedArray && !this.cacheInvalidated) {
+            return this.cachedArray;
+        }
+
         if (this.start < this.end) {
-            return this.buffer.slice(this.start, this.end);
+            this.cachedArray = this.buffer.slice(this.start, this.end);
         } 
         else if (this.start > this.end) {
-            return [...this.buffer.slice(this.start), ...this.buffer.slice(0, this.end)];
+            this.cachedArray = [...this.buffer.slice(this.start), ...this.buffer.slice(0, this.end)];
         } 
         else {
-            return [];
+            this.cachedArray = [];
         }
+
+        this.cacheInvalidated = false;
+        return this.cachedArray;
     }
 }
 

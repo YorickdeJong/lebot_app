@@ -21,9 +21,25 @@ const deleteChatHistoryQuery = `
     DELETE FROM chatgpt WHERE thread_id = $1 AND user_id = $2
     `;
 
+
+const getDescriptionQuery = `
+    SELECT * FROM Posts WHERE user_id = $1 AND thread_id = $2
+`
+
+const createDescriptionQuery = `
+    INSERT INTO Posts (user_id, description, thread_id) VALUES ($1, $2, $3);
+`
+
+const deleteDescriptionQuery = `
+    DELETE FROM Posts WHERE user_id = $1 AND thread_id = $2
+`
+
 module.exports = { 
     postChatgptQuery,
     getAllChatHistoryQuery,
     getCurrentChatHistoryQuery,
-    deleteChatHistoryQuery
+    deleteChatHistoryQuery,
+    getDescriptionQuery,
+    createDescriptionQuery,
+    deleteDescriptionQuery
 }

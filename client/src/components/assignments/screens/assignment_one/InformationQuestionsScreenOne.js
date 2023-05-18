@@ -3,6 +3,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import QuestionsMap from '../../questions/QuestionsMap';
 import IntroScreenQuestions from '../../questions/IntroScreenQuestions';
 import { ASSIGNMENT_EXPLANATION } from '../../../../data/InitialAssignmentExplanation';
+import Explanation from "../../Explanation/Explanation";
 import { ColorsBlue } from '../../../../constants/palet';
 import Questions from '../../questions/Questions';
 import { ChartContext } from '../../../../store/chart-context';
@@ -11,6 +12,10 @@ import { generateAnswerConstantSlope, generateAnswerMotorQ3, generateAnswerMotor
 import { getSpecificAssignmentsDetail } from '../../../../hooks/assignmentDetails';
 import { UserProfileContext } from '../../../../store/userProfile-context';
 import ProjectOneCustomContainer from '../../questions/CustomQuestionContainers/ProjectOneCustomContainer';
+import { ShowIconsContext } from '../../../../store/show-icons-context';
+import ExplanationAnimation from '../../Explanation/ExplanationAnimation';
+import { TheoryExplanation } from '../../../../data/TheoryExplanation';
+import ThinkScreen from '../../questions/ThinkScreen';
 
 function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFocused }) {
     const [slideCount, setSlideCount] = useState(0);
@@ -19,7 +24,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
     const userprofileCtx = useContext(UserProfileContext);
     const [answersStudent, setAnswersStudent] = useState([])
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
-
+    const showIconCtx = useContext(ShowIconsContext);
     
     useEffect(() => {
       async function fetchData() {
@@ -79,10 +84,16 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
     }
 
 
+
+    function IconHandler() {
+      console.log('check CHECK')
+      showIconCtx.setShowIconsHandler('robotStore')
+  }
+
     return (
       <View style = {styles.topBorder}>
       {slideCount === 0 && <QuestionsMap 
-      numTiles = {8}
+      numTiles = {15}
       onPress={setSlideCount}
       /> } 
         {slideCount === 1 &&
@@ -91,21 +102,70 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
           prevSlideHandler={prevSlideHandler}
           typing={typing}
           setTyping={setTyping}
-          answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_11.answer.replace(/\s+/g, ' ')}
+          answer = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_11.answer}
           thread_id = {ASSIGNMENT_EXPLANATION.ASSIGNMENTQUESTIONSINTRO_11.thread_id}
           title = "Motoren testen"
           description = "In dit deel gaan jij en je team data verzamelen over de motoren van de rover. Deze data kunnen we gebruiken om andere motoren te testen op hun prestaties."
           isFocused={isFocused}
           setSlideCount={setSlideCount}
+          setIcon = {IconHandler}
+          screenType = "Motor"
+          slideCount={slideCount}
         /> 
         }
-        {  
+        {
         slideCount === 2 &&
+        <ThinkScreen
+          nextSlideHandler={nextSlideHandler}
+          prevSlideHandler={prevSlideHandler}
+          slideCount={slideCount}
+          isFocused={isFocused}
+          topic = "Beweging"
+          questions = {["Wat weet jij over snelheid en versnelling? Welke wiskunde komt terug die je al geleerd hebt?", "Welke kennis heb je al?", "Waarom zou je deze kennis nodig hebben?", "Welke vergelijkingen zou je kunnen gebruiken?", "Zijn jullie het eens met elkaar? Waarom wel/niet?"]}
+          setSlideCount={setSlideCount}
+
+        />
+        }
+        {  
+        slideCount === 3 &&
+          <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
+          title = "Verplaatsing en Afstand"
+          description = {`Stel jezelf de volgende vragen: \n\n- Wat is verplaatsing en wat is afstand?\n\n- Is er een verschil tussen verplaatsing en afstand?\n\n- Kan de snelheid negatief zijn?\n\nVergeet niet dat je chatgpt vragen kan stellen!`} 
+          questions={sortedQuestions}
+          assignmentNumber={slideCount - 2}
+          isFocused={isFocused}
+          setSlideCount={setSlideCount}
+          nextSlideHandler={nextSlideHandler}
+          prevSlideHandler={prevSlideHandler}
+          slideCount={slideCount}
+          chatgptAnswer = {true}
+          currentExerciseLesson = {2}
+
+          />
+        }
+        {slideCount === 4 &&
+          <Explanation
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {TheoryExplanation.ProjectOneConstantSpeed}
+            thread_id = {7}
+            topic = "Constante Snelheid"
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
+            video = {require('./../../../../../assets/instructions/starting_measurement.mp4')}
+          />
+        }
+        {  
+        slideCount === 5 &&
           <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
           title = "Grafieken: (s, t) - (v, t)"
           description = {`In Dit onderdeel ga jij je begrip voor afstand, snelheid en versnelling verbeteren. Maak observaties wat er gebeurd als de motor sneller of langzamer gaat draaien`} 
           questions={sortedQuestions}
-          assignmentNumber={slideCount - 1}
+          assignmentNumber={slideCount - 3}
           isFocused={isFocused}
           setSlideCount={setSlideCount}
           nextSlideHandler={nextSlideHandler}
@@ -113,15 +173,31 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
           slideCount={slideCount}
           performedMeasurement
           customMeasurement = {true}
+          currentExerciseLesson = {2}
+          />
+        }
+        {slideCount === 6 &&
+          <Explanation 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {TheoryExplanation.ProjectOneLineCalculation}
+            thread_id = {7}
+            topic = "Formule van een Lijn"
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
           />
         }
         { 
-        slideCount === 3 &&
+        slideCount === 7 &&
           <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
           title = "Formule Opstellen"
           description = {`Bij het opstellen van de formule voor een lijn moet je je altijd afvragen met wat voor soort lijn je te maken hebt. Welke orde is het? Is het een rechte lijn of een parabool?`} 
           questions={sortedQuestions}
-          assignmentNumber={slideCount - 1}
+          assignmentNumber={slideCount - 4}
           isFocused={isFocused}
           setSlideCount={setSlideCount}
           nextSlideHandler={nextSlideHandler}
@@ -131,30 +207,47 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
           normal_and_multiple_choice={true}
           generate_answer={generateAnswerConstantSlope}
           performedMeasurement
+          currentExerciseLesson = {2}
           />
         }
         { 
-        slideCount === 4 &&
+        slideCount === 8 &&
             <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
             title = "Agelegde afstand"
             description = {`Om een voorspelling te doen over de afgelegde afstand van de rover na 60 seconde kan je de formule voor de lijn gebruiken.`} 
             questions={sortedQuestions}
-            assignmentNumber={slideCount - 1}
+            assignmentNumber={slideCount - 4}
             isFocused={isFocused}
             setSlideCount={setSlideCount}
             nextSlideHandler={nextSlideHandler}
             prevSlideHandler={prevSlideHandler}
             slideCount={slideCount}
             generate_answer={generateAnswerMotorQ3}
+            currentExerciseLesson = {2}
             />
         }
+        {slideCount === 9 &&
+          <Explanation 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {TheoryExplanation.ProjectOneConstantAcceleration}
+            thread_id = {7}
+            topic = "Constante Versnelling"
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
+          />
+        }
         { 
-        slideCount === 5 &&
+        slideCount === 10 &&
             <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
             title = "Snelheid en Versnelling"
             description = {`wat weten we over de snelheid als er een constante versnelling plaats vindt?`} 
             questions={sortedQuestions}
-            assignmentNumber={slideCount - 1}
+            assignmentNumber={slideCount - 5}
             isFocused={isFocused}
             setSlideCount={setSlideCount}
             nextSlideHandler={nextSlideHandler}
@@ -162,15 +255,31 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
             slideCount={slideCount}
             performedMeasurement
             customMeasurement = {true}
+            currentExerciseLesson = {2}
             />
         }
+        {slideCount === 11 &&
+          <Explanation 
+            nextSlideHandler={nextSlideHandler}
+            prevSlideHandler={prevSlideHandler}
+            typing={typing}
+            setTyping={setTyping}
+            answer = {TheoryExplanation.ProjetOneNewtonsLaws}
+            thread_id = {7}
+            topic = "Newtons Wetten"
+            isFocused={isFocused}
+            setSlideCount={setSlideCount}
+            slideCount={slideCount}
+            ExplanationAnimation={ExplanationAnimation}
+          />
+        }
         { 
-          slideCount === 6 &&
+          slideCount === 12 &&
             <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
             title = "Resulterende Kracht"
             description = {`Wat betekend de resulterende kracht? Weet je welke formule daarbij hoort en waar deze formule vandaan komt? Hint: De versnelling is constant.`} 
             questions={sortedQuestions}
-            assignmentNumber={slideCount - 1}
+            assignmentNumber={slideCount - 6}
             isFocused={isFocused}
             setSlideCount={setSlideCount}
             nextSlideHandler={nextSlideHandler}
@@ -178,10 +287,11 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
             slideCount={slideCount}
             generate_answer={generateAnswerMotorQ5}
             normal_and_multiple_choice={true}
+            currentExerciseLesson = {3}
             />
         }
         {
-        slideCount === 7 &&
+        slideCount === 13 &&
             <IntroScreenQuestions 
               nextSlideHandler={nextSlideHandler}
               prevSlideHandler={prevSlideHandler}
@@ -197,7 +307,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
             /> 
         }
         { 
-        slideCount === 8 &&
+        slideCount === 14 &&
             <Questions //TODO in questions toevoegen dat je naar de volgende gaat als je hem goed hebt
             title = "Kapotte Motoren"
             description = {`Gebasseerd op de data die jij hebt verzameld, kan je bepalen welke motor kapot is. Niet elke motor is hetzelfde, daarom rekenen we met marges van ± 10%. In de haakjes, (), staat jouw gevonden waarde 
@@ -216,20 +326,32 @@ Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
             
             `} 
             questions={sortedQuestions}
-            assignmentNumber={slideCount - 2}
+            assignmentNumber={slideCount - 7}
             isFocused={isFocused}
             setSlideCount={setSlideCount}
             nextSlideHandler={nextSlideHandler}
             prevSlideHandler={prevSlideHandler}
             slideCount={slideCount}
-            slideCountEnd={true}  
+            // slideCountEnd={true}  
             CustomContainer={ProjectOneCustomContainer}
             performedMeasurement
             answersStudent={answersStudent}
             customMeasurement = {true}
+            currentExerciseLesson = {3}
             />
         }
-
+        {
+        slideCount === 15 &&
+        <ThinkScreen
+          nextSlideHandler={nextSlideHandler}
+          prevSlideHandler={prevSlideHandler}
+          slideCount={slideCount}
+          isFocused={isFocused}
+          topic = "Beweging"
+          questions = {["Reflecteer op jullie eerste bevindingen", "Welke nieuwe kennis heb je opgedaan?", "Hoe zou je aanpak veranderen met jouw nieuwe kennis?", "", "Zijn jullie het nog steeds met elkaar eens over jullie oorspronkelijke bevingen? Waarom wel/niet?"]}
+          slideCountEnd={true}
+        />
+        }
       </View>
     );
 }

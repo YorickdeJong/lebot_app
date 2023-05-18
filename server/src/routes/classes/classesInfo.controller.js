@@ -14,11 +14,10 @@ const {
     getIndividualClassQuery,
 } = require('./../../services/queries/queryClasses');
 
-const getUsersInClass = async (class_id) => {
+const getUsersInClass = async (client, class_id) => {
     console.log('classdata', class_id)
 
     const values = [class_id];
-    const client = await pool.connect();
 
     try {
         const { rows } = await client.query(getUsersInClassQuery, values);
@@ -29,10 +28,6 @@ const getUsersInClass = async (class_id) => {
         console.error(error);
         return { error: 'Server error', status: 500 }
     } 
-    finally {
-        console.log('released client in users in class')
-        client.release();
-    }
 };
 
 

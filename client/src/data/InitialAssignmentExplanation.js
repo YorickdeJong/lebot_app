@@ -45,14 +45,7 @@ export const ASSIGNMENT_EXPLANATION = {
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_11: {
-        answer: `Heel goed gedaan! Je hebt de motoren aan de praat gekregen! We
-        gaan nu een paar tests doen met een goed werkende motor, om zo accurate data
-        te verzamelen. Die data kunnen we gebruiken als test, om te kijken of andere
-        motoren ook goed functioneren. Op het volgende scherm kun je data verzame-
-        len door op ’Druk hier om data te verzamelen’ te klikken. Dit zal een meeting
-        starten, de motoren laten draaien en s,t en v,t grafieken produceren. Je kan de
-        data live zien, zodat je een beter begrip krijgt van s,t en v,t grafieken. Laten
-        we gelijk beginnen!`,
+        answer: `Heel goed gedaan! Je hebt de motoren aan de praat gekregen! We gaan nu een paar tests doen met een goed werkende motor, om zo accurate data te verzamelen. Die data kunnen we gebruiken als test, om te kijken of andere motoren ook goed functioneren. \n\nDoor tests goed uit te voeren, kan je geld verdienen om uit te geven in de rover shop. Hier kan je de rover upgraden, zodat je in project 3 de beste rover hebt om de race te winnen tegen andere crews. \n\nOp het volgende scherm kun je data verzamelen door op ’Druk hier om data te verzamelen’ te klikken. Dit zal een meeting starten, de motoren laten draaien en s,t en v,t grafieken produceren. Je kan de data live zien, zodat je een beter begrip krijgt van s,t en v,t grafieken. Laten we gelijk beginnen!`,
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_12: {

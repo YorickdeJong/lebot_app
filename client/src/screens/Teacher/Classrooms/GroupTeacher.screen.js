@@ -7,7 +7,7 @@ import { useFetchGroupsDataSocket } from "../../../hooks/groupSocket.hooks";
 import { deleteAllGroupInClass, deleteGroupByID } from "../../../hooks/groups.hooks";
 import { Alert } from "react-native";
 import { deleteGroupInfo } from "../../../hooks/groupsInfo.hooks";
-import { updateGroupIDForUsers } from "../../../hooks/auth";
+import { updateGroupIDForUsers, useUserSocket } from "../../../hooks/auth";
 
 
 function GroupTeacherScreen({ navigation, route }) {
@@ -23,15 +23,21 @@ function GroupTeacherScreen({ navigation, route }) {
     const school_id = userprofileCtx.userprofile.school_id
     const user_id = userprofileCtx.userprofile.id
 
-    const [data, initialize] = useFetchGroupsDataSocket(true, user_id, classroom_id, school_id);
+    const groups = groupTeacherCtx.getAllGroupsInClass(classroom_id);
+    let group_ids = [];
+    if (groups) {
+        group_ids = groups.map(group => group.group_id);
+    }
 
+    const [data, initialize] = useFetchGroupsDataSocket(true, user_id, classroom_id, school_id);
+    const [dataUser, initializeUser] = useUserSocket(true, group_ids);
 
     useFocusEffect(
         useCallback(() => {
             
             console.log('ClassesStudent component focused');
             initialize(); // Add this line to call initialize when the component is focused
-            
+            initializeUser();
             return () => {
                 console.log('ClassesStudent component blurred');
             };
@@ -100,6 +106,7 @@ function GroupTeacherScreen({ navigation, route }) {
             className={class_name}
             classroom_id={classroom_id}
             data={data}
+            dataUser={dataUser}
             setDbUpdate={setDbUpdate}
         />
     ) 

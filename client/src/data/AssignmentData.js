@@ -1,5 +1,5 @@
 import { useContext, useEffect } from "react";
-import { colorRGB, ColorsBlue, ColorsBronze, ColorsDarkerBlue, ColorsDarkerDiamond, ColorsDarkerGreen, ColorsDarkerOrange, ColorsDarkerRed, ColorsDarkerSilver, ColorsGreen, ColorsLighterGold, ColorsOrange, ColorsPurple, ColorsRed, ColorsSun, ColorsTile, StoreColors } from "../constants/palet"
+import { colorRGB, ColorsBlue, ColorsBronze, ColorsBrownWood, ColorsDark, ColorsDarkerBlue, ColorsDarkerDiamond, ColorsDarkerGreen, ColorsDarkerOrange, ColorsDarkerPurple, ColorsDarkerRed, ColorsDarkerSilver, ColorsDiamond, ColorsGreen, ColorsLighterGold, ColorsOrange, ColorsPurple, ColorsRed, ColorsSun, ColorsTile, StoreColors } from "../constants/palet"
 import { AssignmentContext } from "../store/assignment-context";
 import { AssignmentDetailsContext } from "../store/assignment-Details-context";
 
@@ -14,6 +14,7 @@ export const assignments = (subject) => {
     let assignmentData;
     let icons;
 
+      
     //selects icons and sorts data based on id
     switch (subject){
         case 'MOTOR':
@@ -85,6 +86,6 @@ export const assignmentPlanetImages = [
 ]
 
 export const planetColors = [
-    [ColorsLighterGold.gold600, ColorsRed.red400, ColorsBronze.bronze300, ColorsOrange.orange500, ColorsBlue.blue700,ColorsPurple.purple400, ColorsTile.blue500, ColorsDarkerDiamond.diamond500, ColorsDarkerGreen.green300, ColorsDarkerOrange.orange300, ColorsDarkerRed.red300, ColorsDarkerSilver.silver300], 
-    [StoreColors.gold800, ColorsRed.red1000, ColorsBronze.bronze1000,  ColorsOrange.orange900, ColorsBlue.blue1150, ColorsPurple.purple1000, ColorsTile.blue1000, ColorsDarkerDiamond.diamond1000, ColorsDarkerGreen.green900, ColorsDarkerOrange.orange900, ColorsDarkerRed.red900, ColorsDarkerSilver.silver900],
+    [ColorsLighterGold.gold600, ColorsRed.red400, ColorsBronze.bronze300, ColorsOrange.orange500, ColorsBlue.blue700,ColorsPurple.purple400, ColorsTile.blue500, ColorsDarkerDiamond.diamond500, ColorsDarkerGreen.green300, ColorsDarkerOrange.orange300, ColorsDarkerRed.red300, ColorsDarkerSilver.silver300,  ColorsDiamond.diamond500, ColorsSun.yellow400, ColorsDarkerPurple. purple300], 
+    [StoreColors.gold800, ColorsRed.red1000, ColorsBronze.bronze1000,  ColorsOrange.orange900, ColorsBlue.blue1150, ColorsPurple.purple1000, ColorsTile.blue1000, ColorsDarkerDiamond.diamond1000, ColorsDarkerGreen.green900, ColorsDarkerOrange.orange900, ColorsDarkerRed.red900, ColorsDarkerSilver.silver900,  ColorsDiamond.diamond900, ColorsSun.yellow1000, ColorsDarkerPurple. purple900],
 ]

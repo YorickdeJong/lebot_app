@@ -138,7 +138,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             break;
     }
 
-    let index = 0;
+    let index;
 
     if (completion_status === true) {
         index = 1;
@@ -217,7 +217,7 @@ export default AssignmentTile
 
 const styles = StyleSheet.create({
     colorGradient: {
-        borderRadius: 8, 
+        borderRadius: 20,
         flex: 1,
         borderColor: `rgba(10, 10, 10, 0.4)`,
         borderWidth: 0.4,
@@ -229,6 +229,7 @@ const styles = StyleSheet.create({
     },
     pressed: {
         opacity: 0.7,
+        borderRadius: 20,
     },  
     titlecontainer: {
         flexDirection: 'row',

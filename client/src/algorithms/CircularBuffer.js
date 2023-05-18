@@ -10,6 +10,8 @@ class CircularBuffer {
         this.start = 0;
         this.end = 0;
         this.size = 0;
+        this.cachedArray = [];
+        this.cacheInvalidated = false;
     }
 
     push(value) {
@@ -17,11 +19,13 @@ class CircularBuffer {
             // Buffer is full, overwrite the oldest element
             this.buffer[this.start] = value;
             this.start = (this.start + 1) % this.capacity;
+            this.end = this.start; // Adjust the end pointer when buffer is full
         } else {
             this.buffer[this.end] = value;
+            this.end = (this.end + 1) % this.capacity;
             this.size++;
         }
-        this.end = (this.end + 1) % this.capacity;
+        this.cacheInvalidated = true; // Add this line
     }
 
     get(index) {
@@ -36,13 +40,31 @@ class CircularBuffer {
     }
 
     toArray() {
-        if (this.start < this.end) {
-            return this.buffer.slice(this.start, this.end);
-        } else if (this.start > this.end) {
-            return [...this.buffer.slice(this.start), ...this.buffer.slice(0, this.end)];
-        } else {
-            return [];
+        if (this.cachedArray && !this.cacheInvalidated) {
+            return this.cachedArray;
         }
+
+        if (this.start < this.end) {
+            this.cachedArray = this.buffer.slice(this.start, this.end);
+        } 
+        else if (this.start > this.end) {
+            this.cachedArray = [...this.buffer.slice(this.start), ...this.buffer.slice(0, this.end)];
+        } 
+        else {
+            this.cachedArray = [];
+        }
+
+        this.cacheInvalidated = false;
+        return this.cachedArray;
+    }
+
+    clear() {
+        this.start = 0;
+        this.end = 0;
+        this.size = 0;
+        this.buffer = new Array(this.capacity);
+        this.cachedArray = [];
+        this.cacheInvalidated = false;
     }
     
 }

@@ -2,39 +2,48 @@ import { StyleSheet, View, Text, TouchableOpacity} from "react-native"
 import { ColorsBlue } from "../../../constants/palet";
 
 
-function ChartToggle({graphName, toggleChart, toggleChartSettings, extraStyle}){
-    return(
-
-            <View style = {[styles.textContainer, {...extraStyle}]}>
-                <Text style = {styles.text}>{graphName}</Text>
-                <TouchableOpacity onPress={toggleChartSettings}>
-                    <View style={styles.stopContainer}>
-                        <View
-                        style={[
-                            styles.stopCircle,
-                            toggleChart ? styles.stopCircleActive : {},
-                        ]}
-                        />
-                    </View>
+function ChartToggle({ graphName, toggleChart, toggleChartSettings, extraStyle, notShowBorder }) {
+    return (
+        <View>
+            <View style={[styles.textContainer, { ...extraStyle }]}>
+                <View style={styles.textWrapper}>
+                <Text style={styles.text}>{graphName}</Text>
+                </View>
+                <TouchableOpacity onPress={toggleChartSettings} style={{ marginRight: 10 }}>
+                <View style={styles.stopContainer}>
+                    <View
+                    style={[
+                        styles.stopCircle,
+                        toggleChart ? styles.stopCircleActive : {},
+                    ]}
+                    />
+                </View>
                 </TouchableOpacity>
             </View>
-    )
-}
-
+            {!notShowBorder && <View style = {styles.border}/>}
+        </View>
+    );
+  }
 export default ChartToggle;
 
 const styles = StyleSheet.create({
+    border: {
+        borderBottomWidth: 1,
+        borderBottomColor: ColorsBlue.blue200,
+    },
     text: {
         color: ColorsBlue.blue400,
         fontSize: 18,
     },
-
+    textWrapper: {
+        width: 120, // Set a fixed width according to your needs
+      },
     textContainer: {
         padding: 5,
         marginVertical: 10,
         marginLeft: 5,
         flexDirection: 'row',
-        alignItems: 'center',
+        height: 33,
         justifyContent: 'center',
     },
     stopContainer: {

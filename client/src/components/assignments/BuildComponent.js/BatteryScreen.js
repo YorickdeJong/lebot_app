@@ -1,5 +1,5 @@
 import {  ImageBackground, ScrollView, StyleSheet,  View } from 'react-native';
-import {useRef} from 'react';
+import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import { ColorsBlue, ColorsGray, } from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { BlurView } from 'expo-blur';
@@ -7,9 +7,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import TextDisplay from './TextDisplay';
 import VideoDisplay from './VideoDisplay';
 import SwitchScreens from './SwitchScreens';
+import { BlinkContext } from '../../../store/animation-context';
+import { ShowIconsContext } from '../../../store/show-icons-context';
+import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
 
 
-function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, video, title, description, isFocused, slideCountEnd}){
+function BatteryScreen({nextSlideHandler, setSlideCount, prevSlideHandler, slideCount, setTyping, typing, message, video, title, description, isFocused, slideCountEnd, setIcon, screenType}){
     const scrollViewRef = useRef(null);
     const extraStyle = {
         marginLeft: 8,
@@ -17,10 +20,19 @@ function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTypin
         paddingLeft: 5
     }
 
-    console.log(`check BatteryScreen`)
+    const showIconCtx = useContext(ShowIconsContext);
+    const blinkCtx = useContext(BlinkContext);
+
+    useEffect(() => {
+        if (isFocused && screenType === 'coding' && slideCount === 0 && setIcon && !showIconCtx.showIcons.chatgpt) { //
+            setIcon();
+            blinkCtx.setShouldBlink(true);
+        } 
+    }, [isFocused, slideCount]);
+
     return (
         <LinearGradient 
-                colors={[ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1400, ColorsBlue.blue1300, ColorsBlue.blue1400]} 
+                colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}  
                 style = {styles.container}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -30,44 +42,36 @@ function BatteryScreen({nextSlideHandler, prevSlideHandler, slideCount, setTypin
                 style={
                 {flex: 1}
                 }
-                imageStyle={{opacity: slideCount >= 0 ? 0.10 : 0.15}}
+                imageStyle={{opacity: 0.07}}
                 >
+                
+                <AssignmentOptionsBar
+                    slideCount = {slideCount}
+                    nextSlideHandler = {nextSlideHandler}
+                    prevSlideHandler = {prevSlideHandler}
+                    slideCountEnd = {slideCountEnd}
+                    setSlideCount = {setSlideCount}
+                />
                 <VideoDisplay 
                 video = {video}/>
-              <View style = {styles.textContainer}>
- 
-                </View>
-            
-                <View style = {styles.textContainer}>
-                    <TextDisplay 
-                    title={title}
-                    description={description}/>
-                </View>
-                  <ScrollView 
-                    style = {{flex: 1}}
-                    ref={scrollViewRef}
-                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-                    >
-                    
-                                <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
-                                    {isFocused && <ChatBoxGPT 
-                                    answer={message.answer}
-                                    isLastItem={true}
-                                    thread_id={message.thread_id}
-                                    setTyping={setTyping}
-                                    typing={typing}
-                                    extraStyle={extraStyle}
-                                    />}
-                                </View>
-                                    {!typing && (
-                                        <SwitchScreens 
-                                        prevSlideHandler={prevSlideHandler}
-                                        nextSlideHandler={nextSlideHandler}
-                                        slideCount={slideCount}
-                                        slideCountEnd={slideCountEnd}
-                                        />
-                                    )}
-                        </ScrollView>    
+                <TextDisplay 
+                title={title}
+                description={description}/>
+
+                    <ScrollView 
+                        style = {{flex: 1, marginTop: 12}}
+                        ref={scrollViewRef}
+                        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                        >
+                            {isFocused && <ChatBoxGPT 
+                            answer={message.answer}
+                            isLastItem={true}
+                            thread_id={message.thread_id}
+                            setTyping={setTyping}
+                            typing={typing}
+                            extraStyle={extraStyle}
+                            />}
+                    </ScrollView>    
                 </ImageBackground>
             </LinearGradient>
     )
@@ -78,13 +82,9 @@ export default BatteryScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
-        paddingBottom: 5
     },
     imageBackground: { 
         flex: 1, 
         resizeMode: 'contain',
     },
-    textContainer: {
-        backgroundColor: 'rgba(0, 0, 20, 0.75)',
-    }
 })

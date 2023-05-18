@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ColorsBlue, ColorsGray, ColorsGreen, ColorsRed } from "../../../../constants/palet";
 import { View, StyleSheet, Text, Alert, TouchableOpacity } from "react-native";
-
 import Icon from "../../../Icon"
 import Signs from "./Signs";
 import ModalOptions from "./ModalOoptions";
@@ -11,7 +10,7 @@ import { getSpecificAssignmentsDetail } from "../../../../hooks/assignmentDetail
 import QuestionB from "./QuestionB";
 
 
-function ProjectOneCustomContainer({answersStudent, filteredTry, questions, subject, assignment_number, assignment_id, title, setFilteredTry, multipleChoiceAnswers, sendData, getBackgroundColor, openQuestionAnswer}) {
+function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTry, questions, subject, assignment_number, assignment_id, title, setFilteredTry, multipleChoiceAnswers, sendData, getBackgroundColor, openQuestionAnswer}) {
 
     const [toggleModal, setToggleModal] = useState(false);
     const [indexEquality, setIndexEquality] = useState([
@@ -71,6 +70,9 @@ function ProjectOneCustomContainer({answersStudent, filteredTry, questions, subj
     function checkAnswerHandler() {
         if (!school_id || !class_id || !group_id) {
             Alert.alert('Voeg eerst een klas en group toe om vragen te kunnen beantwoorden')
+        }
+        if (!checkTimerActive()){
+            return
         }
 
         const hasEmptyField = indexEquality.some(indexObject => indexObject.answer === '');

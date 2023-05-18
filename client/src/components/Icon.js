@@ -1,5 +1,5 @@
 import {Ionicons, MaterialCommunityIcons, MaterialIcons} from '@expo/vector-icons'
-import { Pressable, StyleSheet, View, Text } from 'react-native'
+import { Pressable, StyleSheet, View, Text, Animated } from 'react-native'
 
 
 function Icon ({icon, size, color, onPress, addStyle, differentDir, MaterialIconsDir}) {

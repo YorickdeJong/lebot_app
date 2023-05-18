@@ -9,12 +9,12 @@ async function connectToRemoteDevice(sshConfig, socket, sshClient) {
             await new Promise((resolve, reject) => {
             sshClient.on('ready', () => {
                 console.log('SSH connection established Backend');
-                socket.emit('sshConnectionStatus', { connected: true, message: 'SSH connection established' });
+                socket.emit('sshConnectionStatus', { connected: true, message: 'Verbonden met de robot' });
                 resolve();
             });
             sshClient.on('error', (err) => {
                 console.error('SSH connection error:', err);
-                socket.emit('sshConnectionStatus', { connected: false, message: 'Failed to establish SSH connection' });
+                socket.emit('sshConnectionStatus', { connected: false, message: 'Kan niet verbinden met robot, ben je verbonden met de robots wifi netwerk?' });
                 reject(err);
             });
             sshClient.connect(sshConfig);
@@ -22,28 +22,31 @@ async function connectToRemoteDevice(sshConfig, socket, sshClient) {
     }}
     catch (err) {
         console.error('Failed to establish SSH connection:', err);
-        socket.emit('sshConnectionStatus', { connected: false, message: 'Failed to establish SSH connection' });
+        socket.emit('sshConnectionStatus', { connected: false, message: 'Kan niet verbinden met robot, ben je verbonden met de robots wifi netwerk?' });
     }
 }
 
 async function runCommandOnRemoteDeviceInternal(command, sshClient, socket) {
     let commandStatus = false;
+    console.log('CHECK EXECUTION')
     const output = await new Promise((resolve, reject) => {
         sshClient.shell('bash', (err, stream) => {
             if (err) {
                 reject(err);
+                socket.emit('sshConnectionStatus', { connected: false, message: 'Starten van robot is niet gelukt' });
+                return;
             }
             
             socket.on('driveCommand', (data) => {
-                console.log(`Received Command: ${data.command}`)
+                console.log('Drive Command', data.command)
                 stream.write(data.command + '\n');
             })
 
             let output = '';
             let checkOutputReceived = false;
+            
             stream.on('data', (data) => {
                 output += data.toString();
-                console.log(`Command '${command}' output: ${output}`);
                 //check either if measurement has started or if the robot connected to the wifi
                 if (!checkOutputReceived){
                     checkWifiConnected = output.includes("reboot system")
@@ -86,6 +89,7 @@ async function runCommandOnRemoteDeviceInternal(command, sshClient, socket) {
 
             stream.on('error', (err) => {
                 console.error(`Command '${command}' error:`, err);
+                socket.emit('sshConnectionStatus', { connected: false, message: `Command '${command}' execution error` });
                 reject(err);
             });
 
@@ -103,46 +107,37 @@ async function runCommandOnRemoteDeviceInternal(command, sshClient, socket) {
 
 //--------------- Start specific script on external device -----------------//
 async function startScriptOnRemoteDevice(data, sshClient) {
-    const pathToExternalScript = data
-    const output = await new Promise((resolve, reject) => {
-        sshClient.exec(pathToExternalScript, (err, stream) => {
-        if (err) {
-            reject(err);
-        }
+    const pathToExternalScript = data;
+    try {
+        const output = await new Promise((resolve, reject) => {
+            sshClient.exec(pathToExternalScript, (err, stream) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
 
-        let output = '';
-        stream.on('data', (data) => {
-            output += data.toString();
+                let output = '';
+                stream.on('data', (data) => {
+                    output += data.toString();
+                });
+                stream.on('end', () => {
+                    resolve(output);
+                });
+                stream.on('error', (err) => {
+                    console.error('Failed to start script on remote device:', err);
+                    reject(err);
+                });
+            });
         });
-        stream.on('end', () => {
-            console.log(`Script output: ${output}`);
-            resolve(output);
-        });
-        stream.on('error', (err) => {
-            console.error('Failed to start script on remote device:', err);
-            reject(err);
-        });
-        });
-    });
 
-    return output;
-}
-
-//--------------- Disconnect from external device -----------------//
-async function disconnectFromRemoteDevice(sshClient) {
-  try {
-    if (sshClient) {
-      sshClient.end();
-      sshClient = null;
-      console.log('SSH connection closed');
-    } else {
-      console.log('No active connection');
+        return output;
+    } catch (err) {
+        console.error('Failed to start script on remote device:', err);
+        // handle the error appropriately, e.g., you could throw the error again or return a default value
     }
-  }
-  catch (err) {
-    console.error('Failed to close SSH connection:', err);
-  }
 }
+
+
 
 //--------------- Socket Related Script on External Device -----------------//
 function streamOutputToSocket(socket, output) {
@@ -156,7 +151,6 @@ function streamOutputToSocket(socket, output) {
 module.exports = {
   connectToRemoteDevice,
   runCommandOnRemoteDeviceInternal,
-  disconnectFromRemoteDevice,
   startScriptOnRemoteDevice,
   streamOutputToSocket,
 };

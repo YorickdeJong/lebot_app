@@ -3,7 +3,6 @@ import { View, StyleSheet, PanResponder, Text, ImageBackground } from 'react-nat
 import { LinearGradient } from 'expo-linear-gradient';
 import { ColorsBlue } from '../../../../constants/palet';
 import CarPad from './CarPad';
-import WindmillPad from './WindmillPad';
 import { BlurView } from 'expo-blur';
 
 const ControlPad = ({ moveHandler, displayNumber }) => {
