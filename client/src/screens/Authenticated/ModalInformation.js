@@ -1,5 +1,5 @@
 
-import {Modal, View, StyleSheet, Text} from 'react-native';
+import {Modal, View, StyleSheet, Text, Platform} from 'react-native';
 import Icon from '../../components/Icon';
 import BlurWrapper from '../../components/UI/BlurViewWrapper';
 import { ColorsBlue, ColorsGray } from '../../constants/palet';
@@ -11,10 +11,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 import ChangeButton from '../../components/UI/ChangeButton';
 import InformationButton from '../../components/UI/InformationButton';
 import TextContainerInformation from '../../components/UI/TextContainerInformation';
-import { set } from 'react-native-reanimated';
+import { useNavigation } from '@react-navigation/native';
+
 
 function ModalInformation({}) {
     const informationCtx = useContext(InformationContext);
+    const navigation = useNavigation()
+
     const [subModal, setSubModal] = useState({
         modalOne: false,
         modalTwo: false,
@@ -26,6 +29,12 @@ function ModalInformation({}) {
 
     function subModalHandler(choice){
         switch(choice){
+            case 0:
+                console.log('check')
+                informationCtx.setShowInformationModal(false)
+                informationCtx.setShowBeginningScreen(true)
+                navigation.navigate('AppExplanation')
+                break;
             case 1:
                 setSubModal({
                     modalOne: true,
@@ -80,17 +89,19 @@ function ModalInformation({}) {
     }
 
     const isSubModule = subModal.modalOne || subModal.modalTwo || subModal.modalThree || subModal.modalFour
+
     return (
         <Modal
         visible={informationCtx.showInformationModal}
         transparent
         animationType="fade"
+        style = {{flex: 1}}
         >
-            <BlurWrapper style={styles.modalContainer} intensity={20}>
-                <View style = {[styles.shadow, {height: 300, marginTop: 15 }]}>
+            <BlurWrapper style={styles.modalContainer} intensity={20} tint = 'dark' customColor={'rgba(20, 20, 35, 0.6)'}> 
+                <View style = {[styles.shadow, {marginTop: 15 }]}>
                         <LinearGradient
                             style = {styles.textContainer}
-                            colors={[ColorsBlue.blue1360, ColorsBlue.blue1300]}
+                            colors={[ColorsBlue.blue1150, ColorsBlue.blue1200]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                                 >
@@ -119,8 +130,12 @@ function ModalInformation({}) {
                                 {!isSubModule &&
                                 <>
                                     <InformationButton 
-                                        text = "Probleem Begrijpen"
+                                        text = "App Instructies"
                                         headerHeight={30}
+                                        onPress = {() => subModalHandler(0)}
+                                    />
+                                    <InformationButton 
+                                        text = "Probleem Begrijpen"
                                         onPress = {() => subModalHandler(1)}
                                     />
                                     <InformationButton 
@@ -160,32 +175,37 @@ const styles = StyleSheet.create({
     textContainer: {
         marginBottom: 0, 
         borderRadius: 20,
-        elevation: 3,
         borderWidth: 0.6,
-        borderColor: ColorsBlue.blue1000,
+        borderColor: 'rgba(77, 77, 77, 0.40)',
     },
     shadow: {
-        shadowColor: 'rgba(0,0,0,1)',
-        shadowOffset: { width: 1, height: 3 },
+        shadowColor: 'rgba(0, 0, 0, 1)',
+        shadowOffset: { width: 2, height: 3 },
         shadowOpacity: 1,
-        shadowRadius: 4,
-        elevation: 3,
-        width: '80%',
-        marginBottom: 100
+        shadowRadius: 5,
+        backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'rgba(0, 0, 0, 0.3)',
+        paddingRight: 3,
+        paddingBottom: 3,
+        width: '90%',
+        marginBottom: 100,
+        borderRadius: 20,
+        // alignSelf: 'center',
     },
     header: {
-        height: 50,
-        backgroundColor: ColorsBlue.blue1200,
+        height: 60,
+        backgroundColor: 'rgba(30, 30, 120, 1)',
         shadowColor: ColorsBlue.blue1400,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 1,
         shadowRadius: 2,
-        elevation: 3,
+        justifyContent: 'center',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     iconRight: {
         position: 'absolute',
         right: 8,
-        top: 10,
+        top: 16,
         shadowColor: ColorsBlue.blue1400,
         shadowOffset: { height: 2, width: 1 },
         shadowOpacity: 1,
@@ -211,12 +231,12 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
+        
     },
     title: {
         color: ColorsBlue.blue100,
         fontSize: 25    ,
         alignSelf: 'center',
-        marginTop: 9,
         textShadowColor: ColorsBlue.blue1400,
         textShadowOffset: { width: 1, height: 2 },
         textShadowRadius: 2,

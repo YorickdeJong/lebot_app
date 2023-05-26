@@ -58,7 +58,7 @@ function ChatGPT() {
 
     return (
         <LinearGradient 
-                colors={['rgba(2,2,15,1)', 'rgba(2,2,7,1)']}  
+                colors={[ColorsBlue.blueblack1600, ColorsBlue.blueblack1500]}  
                 style = {styles.container}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -68,7 +68,7 @@ function ChatGPT() {
             style={
             {flex: 1, resizeMode: 'contain'}
             }
-            imageStyle={{opacity: 0.05}}
+            imageStyle={{opacity: 0.12}}
             >
                     <Chat 
                     customColor = 'rgba(15, 10, 50, 1)'

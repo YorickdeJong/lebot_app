@@ -10,13 +10,13 @@ function SwitchScreensQuestions({prevSlideHandler, nextSlideHandler, slideCount,
     return(
         <View style = {addStyle}>
             <View style = {styles.leftSlider}>
-                    {slideCount > 0  &&  (
+                    {slideCount > 1  &&  (
                     
                          <Icon 
                          onPress = {() => {
-                            console.log('Calling prevSlideHandler');
-                            prevSlideHandler();
-                            console.log('prevSlideHandler called');
+                                console.log('Calling prevSlideHandler');
+                                prevSlideHandler();
+                                console.log('prevSlideHandler called');
                             }}
                             size = {28}
                             icon = "navigate-before"

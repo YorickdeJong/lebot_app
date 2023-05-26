@@ -1,6 +1,5 @@
-import {View, StyleSheet, Text} from 'react-native'
+import {View, StyleSheet, Text, TouchableOpacity} from 'react-native'
 import { ColorsBlue } from '../../constants/palet'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { BlurView } from 'expo-blur'
 
 
@@ -29,7 +28,7 @@ const styles = StyleSheet.create({
         marginTop: 10, 
         margin: 10,
         height: 125,
-        borderRadius: 7, 
+        borderRadius: 20, 
         elevation: 4, 
         shadowColor: ColorsBlue.blue1000,
         shadowOffset: {height: 1, width: 0},

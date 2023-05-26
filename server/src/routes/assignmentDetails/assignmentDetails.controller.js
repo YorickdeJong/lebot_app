@@ -43,7 +43,7 @@ const getGroupAssignmentDetails = async (req, res) => {
     const client = await pool.connect();
     
     try {
-        const {school_id, class_id, group_id} = req.query
+        const { school_id, class_id, group_id } = req.query;
         const values = [school_id, class_id, group_id];
         console.log('values', values)
         const { rows } = await client.query(getGroupAssignmentDetailsQuery, values);

@@ -1,4 +1,4 @@
-import { View, KeyboardAvoidingView, StyleSheet, ScrollView, Alert, ImageBackground, Text } from "react-native";
+import { View, KeyboardAvoidingView, StyleSheet, ScrollView, Alert, ImageBackground, Text, Dimensions } from "react-native";
 import {useContext, useState} from 'react'
 
 import { ColorsGreen, ColorsBlue } from "../../constants/palet";
@@ -14,6 +14,7 @@ import { CarContext } from "../../store/car-context";
 import { createUserCarDetails } from "../../hooks/carDetails";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
+const {height: SCREEN_HEIGHT} = Dimensions.get('window')
 
 function Signup({route}) {
     const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -45,13 +46,13 @@ function Signup({route}) {
 
             userCtx.editUserProfile(userProfile);
             {user_role === "student" ? assignmentCtx.initializeAssignments(assignments) : null}
-            {user_role === "student" ? carCtx.initializeAssignments(carDetails) : null}
+            // {user_role === "student" ? carCtx.initializeAssignments(carDetails) : null}
 
             authCtx.authenticate(userData.token);
         }
         catch (error) {
             console.log(error)
-            Alert.alert('failed to create user, please check your credentials')
+            Alert.alert('Error', 'Het aanmaken an een account is niet gelukt')
             setIsAuthenticating(false);
         }
     }
@@ -91,8 +92,9 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     backgroundImage: {
-        flex: 1,
+        width: '100%',
+        height: SCREEN_HEIGHT,
         resizeMode: 'contain',
-        paddingBottom: 35
+        paddingBottom: 35,
     }
 })

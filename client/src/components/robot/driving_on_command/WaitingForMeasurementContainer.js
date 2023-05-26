@@ -1,4 +1,4 @@
-import { ImageBackground, StyleSheet, View } from "react-native";
+import { Dimensions, StyleSheet, View } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ColorsBlue } from "../../../constants/palet";
 import LoadingChat from "../../UI/LoadingChat";
@@ -6,7 +6,7 @@ import { BlurView } from "expo-blur";
 
 
 
-
+const { height } = Dimensions.get('window')
 function WaitingForMeasurementContainer() {
     
     const extraStyles = {        
@@ -33,14 +33,14 @@ const styles = StyleSheet.create({
     loadingContainer: {
         height: 460,
         margin: 2,
-        borderRadius: 5,
-        borderColor: ColorsBlue.blue700,
-        borderWidth: 1,
+        borderRadius: 20,
+        borderColor: 'rgba(0, 0, 0, 1)',
+        borderWidth: Platform.OS === 'android' ? 1.2 : 1,
     },
     shadowContainer: {
         margin: 2,
         marginHorizontal: 5,
-        borderRadius: 5,
+        borderRadius: 20,
         ...Platform.select({
             ios: {
                 shadowOffset: { height: 2, width: 2},
@@ -48,17 +48,14 @@ const styles = StyleSheet.create({
                 shadowOpacity: 1,
                 shadowColor: ColorsBlue.blue1400,
             },
-            android: {
-                elevation: 5,
-            },
         }),
-        height: 460,
+        height: height > 750 ? 460 : 370,
     },
     loadingContainer: {
         flex: 1,
-        borderRadius: 5,
+        borderRadius: 20,
         borderColor: ColorsBlue.blue1400,
-        borderWidth: 0.5,
+        borderWidth: Platform.OS === 'android' ? 1.2 : 0.5,
         overflow: 'hidden',
     }
 })

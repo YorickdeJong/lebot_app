@@ -1,6 +1,6 @@
 import { BlurView } from "expo-blur";;
-import { useContext, useEffect, useState } from "react";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import React, { useContext, useEffect, useState } from "react";
+import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
 import { ColorsBlue, ColorsDarkerGreen, ColorsGray, ColorsGreen, ColorsLighterGold, ColorsRed, ColorsTile } from "../../../constants/palet"
 import { AssignmentDetailsContext } from "../../../store/assignment-Details-context";
@@ -27,7 +27,9 @@ function QuestionContainer({
     answersStudent, 
     input, 
     setInput,
-    chatgptAnswer
+    chatgptAnswer,
+    chartAvailable,
+    onRenderedData
     }) {
     
     const [chartNumber, setChartNumber] = useState(null);
@@ -46,9 +48,10 @@ function QuestionContainer({
         async function fetchData() {
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, questionData.assignment_id, questionData.subject);
             if (data && data.answers_open_questions.length > 0) {
-                setFilteredTry(data.answers_open_questions.filter(answer => answer !== null).length)
+                const filteredData =  data.answers_open_questions.filter(answer => answer !== null)
+                setFilteredTry(filteredData.length)
                 
-                const correctAnswersFromData = data.answers_open_questions.filter(answer => answer.correct);
+                const correctAnswersFromData = filteredData.answers_open_questions.filter(answer => answer.correct);
                 setCorrectAnswers(correctAnswersFromData.length)
                 setInput(correctAnswersFromData[0].answer)
                 setChartNumber(correctAnswersFromData[0].chartNumber)
@@ -105,14 +108,14 @@ function QuestionContainer({
     
     function getBackgroundColor(correctAnswers, tries, maxTries) {
         if (correctAnswers === 1) {
-            return [ColorsBlue.blue400, ColorsBlue.blue400];
+            return [ColorsBlue.blue500, ColorsBlue.blue500];
         }
         
         if (tries === maxTries) {
             return correctAnswers === 1 ? [ColorsBlue.blue400, ColorsBlue.blue400]: [ColorsRed.red1000, ColorsRed.red700]
         }
         
-        return [ColorsBlue.blue400, ColorsBlue.blue400];
+        return [ColorsGray.gray500, ColorsGray.gray500];
     }
     
     function checkTimerActive() {
@@ -164,6 +167,11 @@ function QuestionContainer({
             return
         }
 
+        if (performedMeasurement && !chartAvailable) {
+            Alert.alert('Doe eerst een meting voordat je een antwoord kan geven')
+            return
+        }
+
         assignmentDetailsCtx.incrementTriesOpenQuestions(questionData.subject, questionData.assignment_number, questionData.title)
         setFilteredTry(filteredTry + 1)
         //calculates answer based on users findings
@@ -200,7 +208,6 @@ function QuestionContainer({
     const backgroundColor = getBackgroundColor(correctAnswers, filteredTry, maxTries);
     const inputContainer = [styles.inputContainer];
 
-    console.log(backgroundColor)
     return (
         <View style = {styles.shadow}>
 
@@ -209,7 +216,7 @@ function QuestionContainer({
                     <View intensity={0} tint = "dark" style = {styles.outerContainer}>
                                 
                         <LinearGradient 
-                        colors = {[ColorsBlue.blue1360, ColorsBlue.blue1300, ColorsBlue.blue1360,]} 
+                        colors = {[ColorsBlue.blue1300, ColorsBlue.blue1200, ColorsBlue.blue1300,]} 
                         style = {styles.header}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
@@ -218,16 +225,17 @@ function QuestionContainer({
                         </LinearGradient>
                             
                         <View style = {styles.questionContainer}>
+
                             {((normal_and_multiple_choice || !questionData.multiple_choice) && !CustomContainer) &&
                                 <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 40}}>
-                                    <Text style = {[styles.tries, {marginTop: 5, color: ColorsBlue.blue50}]}>Credits: €{questionData.currency}</Text>
+                                    <Text style = {[styles.tries, {marginTop: 5, color: ColorsGray.gray300}]}>Credits: €{questionData.currency}</Text>
                                     <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>
                                 </View>
                             }
                             
                             {!CustomContainer && 
                                 <>
-                                    <View style = {[styles.border, {marginBottom: 10, marginHorizontal: 15}]}/>
+                                    <View style = {[styles.border, {marginHorizontal: 15}]}/>
                                         <View style = {{alignItems: 'center'}}>
                                             <View style={styles.descriptionContainer}>
                                                 <Text style = {styles.question}>
@@ -235,7 +243,7 @@ function QuestionContainer({
                                                 </Text>
                                             </View>
                                         </View>
-                                    <View style = {[styles.border, {marginHorizontal: 15, marginBottom: 10, marginBottom: 20}]}/>
+                                    <View style = {[styles.border, {marginTop: 20, marginHorizontal: 15, marginBottom: 10}]}/>
                                 </>
                             }
                             
@@ -271,7 +279,7 @@ function QuestionContainer({
                                         {questions[1]}
                                     </Text>
                                 </View>
-                                <View style = {[styles.border, {marginHorizontal: 15}]}/>
+                                <View style = {[styles.border, {marginHorizontal: 15, marginBottom: 15}]}/>
                             </>
                             }
 
@@ -318,7 +326,7 @@ function QuestionContainer({
     )
 }
 
-export default QuestionContainer
+export default React.memo(QuestionContainer)
 
 function lessonSelection(lesson_number) {
     switch (lesson_number) {
@@ -345,31 +353,31 @@ function lessonSelection(lesson_number) {
 const styles= StyleSheet.create({
     header: {
         height: 45,
-        // backgroundColor: `rgba(25, 75, 85, 0.8)`, //`rgba(45, 45, 85, 0.6)`,
-        // shadowColor: `rgba(77, 77, 77, 0.2)`,
         shadowOffset: {height: 2, width: 0},
         shadowOpacity: 1,
         shadowRadius: 3,
         elevation: 2,
+    
     },
     inputContainer: {
-        height: 30,
-        borderRadius: 20, 
-        elevation: 2,
-        shadowOffset: {height:2, width:0 },
-        shadowRadius: 5,
-        shadowColor: ColorsBlue.blue1300,
-        shadowOpacity: 0.5,
-        paddingLeft: 5,
-        color: ColorsBlue.blue1400
+        height: 45,
+        paddingLeft: 10,
+        color: ColorsGray.gray500,
+        backgroundColor: ColorsBlue.blue1150,
+        borderTopLeftRadius: 10, 
+        borderBottomLeftRadius: 10,
+        marginRight: Platform.OS === 'android' ? 2 : 0,
+        marginBottom: Platform.OS === 'android' ? 3 : 0,
+        borderColor: 'rgba(77,77,77, 0.3)',
+        borderWidth: 1,
     },
     headerText: {
-        color: ColorsBlue.blue200,
+        color: ColorsGray.gray500,
         fontSize: 25,
         paddingTop: 6,
         paddingRight: 0,
         textAlign: 'center',
-        fontWeight: '300',
+        fontWeight: '302',
     },
     questionContainer: {
         marginHorizontal: 7,
@@ -380,12 +388,13 @@ const styles= StyleSheet.create({
 
     descriptionContainer: {
         flexDirection: 'row',
-        marginHorizontal: 20,
         marginVertical: 4,
+        marginTop: 20,
+        marginHorizontal: 20
     },
     question: {
         fontSize: 16,
-        color: ColorsGray.gray300,
+        color: ColorsGray.gray500,
         lineHeight: 29
     },
     outerContainer: {
@@ -394,25 +403,22 @@ const styles= StyleSheet.create({
         overflow: 'hidden',
     },
     border: {
-        borderWidth: 1,
+        borderWidth: 0.6,
         borderColor: `rgba(33, 33, 55, 0.7)`,
-        marginTop: 12,
+        marginTop: 10,
     },
     tries: {
         fontSize: 20,
         fontWeight: '200',
         textAlign: 'center',
         marginBottom: 10,
-        color: ColorsBlue.blue50,
+        color: ColorsGray.gray300,
         textShadowColor: ColorsBlue.blue1400,
         textShadowOffset: {height: 2, width: 0},
         textShadowRadius: 3,
     },
     container: {
         backgroundColor: ColorsBlue.blue1390,
-        marginVertical: 8,
-        elevation: 2,
-        marginHorizontal: 8,
         borderRadius: 20,
         overflow: 'hidden',
         borderWidth: 0.6,
@@ -423,6 +429,11 @@ const styles= StyleSheet.create({
         shadowOffset: { height: 3, width: 1 },
         shadowRadius: 3,
         shadowOpacity: 1,
-        elevation: 4,
+        backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 0.4)' :'transparent',
+        paddingBottom: 3, 
+        paddingRight: 2,
+        marginHorizontal: 8,
+        borderRadius: 20,
+        marginVertical: 8,
     }
 })

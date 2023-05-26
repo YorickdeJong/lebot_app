@@ -8,11 +8,8 @@ import InformationCodingScreenThree from "../../../components/assignments/screen
 function CodingScreen({tabIndex, currentIndex, subject}){
     const isFocused = tabIndex === currentIndex;
 
-
-    console.log(`isFoccused: ${isFocused}`)
-
-
     return (
+        isFocused &&
         <>
             {subject === 'MOTOR' && <InformationCodingScreenOne 
             isFocused={isFocused}

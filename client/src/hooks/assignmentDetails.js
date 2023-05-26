@@ -4,20 +4,20 @@ import { ipAddressComputer } from '../data/ipaddresses.data';
 const url = ipAddressComputer + '/api/v1/assignmentDetails'
 
 export async function getGroupAssignmentDetails(school_id, class_id, group_id) {
-    console.log(`userID: ${user_id}`)
+    console.log('school_id', school_id, 'class_id', class_id, 'group_id', group_id)
     try{
         const response = await axios.get(url + `/all`, {
-            school_id,
-            class_id,
-            group_id
+            params: {
+                school_id,
+                class_id,
+                group_id
+            }
         });
-        console.log(`data from assignmnetdetailsrepsose: ${response.data}`)
         return response.data;
     }
     catch (error){
         console.log(error);
     }
-
 }
 
 export async function getSpecificAssignmentsDetail(school_id, class_id, group_id, assignment_id, subject) {

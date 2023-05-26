@@ -27,14 +27,17 @@ import { SocketProviderUser } from './src/store/userprofile-socket-context';
 import WifiContextProvider from './src/store/robot-connect-context';
 import { ShowIconContextProvider } from './src/store/show-icons-context';
 import { TimeContextProvider } from './src/store/time-context';
-import { InformationContextProvider } from './src/store/information-context';
+import { InformationContext, InformationContextProvider } from './src/store/information-context';
+import ScrollContextProvider from './src/store/scroll-context';
+import AppExplanation from './src/screens/Authenticated/BeginningScreen/AppExplanation';
 
 // UPON LOGIN TOKEN GETS SET
 function Navigation() {
   const userprofileCtx = useContext(UserProfileContext);
   const authCtx = useContext(AuthContext);
 
-    const colors= [
+  
+  const colors= [
         ColorsBlue.blue900, ColorsBlue.blue700, 
         ColorsBlue.blue500,
         ColorsBlue.blue400, ColorsBlue.blue100, 
@@ -53,7 +56,7 @@ function Navigation() {
   return (
       <NavigationContainer theme = {MyTheme}>
           {!authCtx.isAuthenticated && <Authenticate />}
-          {authCtx.isAuthenticated  && userprofileCtx.userprofile.user_role === "admin" && <AdminNavigator />} 
+          {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "admin" && <AdminNavigator />} 
           {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "student" &&  <Authorized />} 
           {authCtx.isAuthenticated && userprofileCtx.userprofile.user_role === "teacher" &&  <TeacherNavigator />}              
       </NavigationContainer>
@@ -88,33 +91,6 @@ function Root({}) {
         };
     }, []);
 
-    
-      useEffect(() => {
-        if (user_role === 'teacher' || user_role === 'admin') {
-          return
-        }
-        if (!isConnected && connectionAttempted) {
-          showAlert(
-                'Niet verbonden met de robot',
-                'Kan geen meting starten. Ik verbind je opnieuw',
-                [
-                    {
-                        text: 'OK',
-                        onPress: () => {
-                          EstablishSocketConnection()
-                          setIsAlertShown(false) 
-                        }
-                    }
-                ]
-            );
-        } 
-        else if (isConnected) {
-            setConnectionAttempted(true);
-            showAlert(
-                'Je bent nu verbonden met de robot.',
-            );
-        }
-    }, [isConnected, connectionAttempted]);
 
     // move to auth context
     useEffect(() => {
@@ -139,21 +115,6 @@ function Root({}) {
     }, []);
 
 
-    function showAlert(message) {
-        if (!isAlertShown) {
-          setIsAlertShown(true);
-          Alert.alert(
-            "Alert",
-            message,
-            [
-              {
-                text: "OK",
-                onPress: () => setIsAlertShown(false)
-              }
-            ]
-          );
-        }
-      }
 
     if (isTryingLogin) {
       return <AppLoading />;
@@ -187,7 +148,9 @@ export default function App() {
                                       <ShowIconContextProvider>
                                         <TimeContextProvider namespace="/time-lessons">
                                           <InformationContextProvider>
-                                            <Root />
+                                            <ScrollContextProvider>
+                                                <Root />
+                                            </ScrollContextProvider>
                                           </InformationContextProvider>
                                         </TimeContextProvider>
                                       </ShowIconContextProvider>

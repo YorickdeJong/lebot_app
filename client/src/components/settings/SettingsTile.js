@@ -1,13 +1,11 @@
-import { Text, Pressable, StyleSheet, View, Platform } from "react-native"
+import { Text, Pressable, StyleSheet, View, Platform, TouchableOpacity } from "react-native"
 import { ColorsBlue, ColorsDarkerBlue, ColorsDarkestBlue, ColorsGreen, ColorsTile } from "../../constants/palet"
 import { useContext } from "react"
 import { ColorContext } from "../../store/color-context"
 import Icon from "../Icon"
-import { LinearGradient } from "expo-linear-gradient"
-import { BlurView } from "expo-blur"
+import { Shadow } from 'react-native-shadow-2'
 
-
-function SettingsTile({type, blurFactor, icon,  onPress, differentDir}){
+function SettingsTile({type, index, blurFactor, icon, onPress, differentDir}){
     const colorCtx = useContext(ColorContext)
 
     const addStyle = {
@@ -15,74 +13,99 @@ function SettingsTile({type, blurFactor, icon,  onPress, differentDir}){
         shadowOffset: {height: 2, width: 1},
         shadowRadius: 4,
         shadowOpacity: 1,
+        elevation: 4,
         marginRight: 0
     }
+
+    const shadow = {
+        shadowColor: 'rgba(0,0,0,0.5)', // I changed the opacity here
+        shadowOffset: {height: 2, width: 1},
+        shadowRadius: 4,
+        shadowOpacity: 1,
+        backgroundColor: 'rgba(1,1,1,1)',
+        elevation: 10,
+        marginBottom: (Platform.OS === 'android' && index === 3) ? 5 : 0
+    }
+
     return (
-        <Pressable
-        onPress = {onPress}
-        style = {({pressed}) => {
-            return [styles.tile, , 
-            pressed && styles.pressed]
-        }}>
+        <View style = {[ shadow]}>
+            <TouchableOpacity
+            onPress = {onPress}
+            style = {styles.tile}
+         >
                 <View 
-                style = {styles.colorGradient}
-                >
-                <Text style = {[styles.text]}>{type}</Text>
-                <View style = {styles.iconContainer}>
-                    <Icon 
-                    icon = {icon}
-                    color = {colorCtx.isBlue ? ColorsBlue.blue50: ColorsBlue.blue50}
-                    size = {40}
-                    onPress = {onPress}
-                    addStyle = {addStyle}
-                    differentDir={type === 'Groepen' ? true : false}
-                    />  
+                    style = {[styles.colorGradient, type === 'LogOut']} // && shadow
+                    >
+                    <View style = {styles.iconContainer}>
+                        <Icon 
+                        icon = {icon}
+                        color = {ColorsBlue.blue100}
+                        size = {40}
+                        onPress = {onPress}
+                        addStyle = {addStyle}
+                        differentDir={type === 'Groepen' ? true : false}
+                        />  
+                    </View>
+                    <View style = {styles.textContainer}>
+                        <Text style = {[styles.text]}>{type}</Text>
+                    </View>
+
+                    <View style = {[styles.iconContainer, {marginLeft: 50}]}>
+                        <Icon 
+                        icon = "navigate-next"
+                        color = {ColorsBlue.blue100}
+                        size = {40}
+                        onPress = {onPress}
+                        addStyle = {addStyle}
+                        MaterialIconsDir={true}
+                        />  
+                    </View>
                 </View>
-            </View>
-        </Pressable>
+        </TouchableOpacity>
+    </View>
     )
 }
-
 
 export default SettingsTile
 
 
 const styles = StyleSheet.create({
+    textContainer: {
+        width: 150,
+        marginLeft: 25,
+        justifyContent: 'center',
+    },
     tile: {
         flex: 1,
-        marginTop: 10, 
-        margin: 10,
-        height: 125,
-        borderRadius: 7, 
-        elevation: 4, 
-        shadowColor: ColorsBlue.blue1400,
-        shadowOffset: {height: 2, width: 1},
-        shadowRadius: 4,
-        shadowOpacity: 1,
+        height: 120,
+        elevation: 8, 
         borderWidth: 0.6,
         borderColor: ColorsBlue.blue1400,
+        backgroundColor: ColorsBlue.blue1150,
     },
     pressed: {
         opacity: 0.7
     },
     colorGradient: {
-        borderRadius: 7, 
+        height: 130,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
         flex: 1,
-        overflow: 'hidden',
-        backgroundColor: Platform.OS === 'ios' ? 'rgba(20, 35, 60, 0.9)' : 'rgba(20, 20, 60, 0.9)',
+        backgroundColor: Platform.OS === 'ios' ? 'rgba(10, 10, 50, 1)' : 'rgba(10, 10, 50, 1)',
+        zIndex: 1,
+        elevation: 4
     },
     text: {
         textAlign: 'center',
         fontSize: 20,
-        marginTop: 20,
         textShadowColor: ColorsBlue.blue1400, // set text shadow color
         textShadowOffset: { width: 0, height: 3 }, // set text shadow offset
         textShadowRadius: 2, // set text shadow radius
-        color: ColorsBlue.blue50
+        color: ColorsBlue.blue100
     },
     iconContainer: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: 'center',   
+        marginLeft: 30,
     }
 })

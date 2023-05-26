@@ -1,5 +1,5 @@
 
-import {Modal, View, StyleSheet, Text} from 'react-native';
+import {Modal, View, StyleSheet, Text, Platform} from 'react-native';
 import Icon from '../../components/Icon';
 import BlurWrapper from '../../components/UI/BlurViewWrapper';
 import { ColorsBlue, ColorsGray } from '../../constants/palet';
@@ -36,18 +36,20 @@ function CountDownModal({lesson}) {
         transparent
         animationType="fade"
         >
-            <BlurWrapper style={styles.modalContainer} intensity={20}>
-                <View style={styles.modal}>
-                    <View style={styles.closeIcon}>
-                        <Icon 
-                        icon="close-circle"
-                        size={25}
-                        color={ColorsGray.gray700}
-                        onPress={() => timeCtx.toggleTimeModal()}
-                        />
-                    </View> 
-                    <Text style={styles.title}>{timeDisplay}</Text>
-                </View>
+            <BlurWrapper style={styles.modalContainer} intensity={20} customColor={'rgba(30, 30, 70, 0.5)'}>
+               <View style = {styles.shadow}>
+                    <View style={styles.modal}>
+                        <View style={styles.closeIcon}>
+                            <Icon 
+                            icon="close-circle"
+                            size={25}
+                            color={ColorsGray.gray700}
+                            onPress={() => timeCtx.toggleTimeModal()}
+                            />
+                        </View> 
+                        <Text style={styles.title}>{timeDisplay}</Text>
+                    </View>
+               </View>
             </BlurWrapper>
         </Modal>
     )
@@ -57,6 +59,18 @@ export default CountDownModal
 
 
 const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: ColorsBlue.blue1400,
+        shadowOffset: { height: 2, width: 1 },
+        shadowOpacity: 1,
+        shadowRadius: 5,
+        width: '90%',
+        height: 93,
+        borderRadius: 21,
+        backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 0.6)' : 'transparent',
+        paddingBottom: 3,
+        paddingRight: 2,
+    }, 
     title: {
         fontSize: 22, 
         color: ColorsBlue.blue50, 
@@ -65,17 +79,11 @@ const styles = StyleSheet.create({
         textShadowRadius: 4,
     },
     modal: {
-        width: '90%',
         height: 90,
-        borderRadius: 5,
+        borderRadius: 20,
         borderWidth: 0.7,
         borderColor: ColorsBlue.blue700,
         backgroundColor: ColorsBlue.blue1100,
-        shadowColor: ColorsBlue.blue1400,
-        shadowOffset: { height: 2, width: 1 },
-        shadowOpacity: 1,
-        shadowRadius: 5,
-        elevation: 5,
         justifyContent: 'center',
         alignItems: 'center'
     },

@@ -161,20 +161,6 @@ function SocketContextProvider({children}) {
         }
     }
 
-    function listenForStartScript() { //in useEffect in chartContext
-        if (!isMeasurementStarted){
-            socket.current.on('measurementStarted', (data) => {
-                console.log(`DATA MESSAGE: ${data.message}`)
-                if(data.message === 'Measurement started') {
-                    console.log('Measurement Started, DATA RECEIVED')
-                    setIsMeasurementStarted(true)
-                }
-                
-            }) 
-        }
-    }
-
-
     function EstablishSocketConnection() {
         const config = { //TODO make these values statewide
             host: ipAddressRaspberryPi,     
@@ -187,11 +173,9 @@ function SocketContextProvider({children}) {
             setIsConnected(true);
         }
         catch (error){
-            showAlert('Kan niet verbinden met de robot, ben je verbonden met het wifi network?')
             setPower(false);
         }
     }
-
 
 
     function Command(inputType, command) {

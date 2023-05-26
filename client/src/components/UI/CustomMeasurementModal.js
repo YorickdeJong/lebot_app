@@ -45,18 +45,23 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
         let startScriptCommand = null
         switch (type) {
             case '1':
+                //constant velocity
                 startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp constant_velocity.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '2':
+                //constant acceleration
                 startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp constant_acceleration.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '3':
-                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${vel_max} vel_ramp:=${vel_ramp} user_id:=${id} school_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
+                //free driving
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${50} vel_ramp:=${vel_ramp} user_id:=${id} school_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '4':
+                //power_movement
                 startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${40} vel_ramp:=${vel_ramp} user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '5':
+                //power_movement
                 startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp power_movement.launch vel_max:=${60} vel_ramp:=${vel_ramp} user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '6':

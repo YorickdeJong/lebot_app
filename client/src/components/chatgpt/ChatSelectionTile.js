@@ -16,49 +16,56 @@ function ChatSelectionTile({thread_id, navigateToChatHandler}) {
     }
 
     return(
-        <Pressable 
-        style = {styles.chatBox}
-        onPress={navigateToChatHandler}>
-            <LinearGradient 
-                colors={['rgba(3, 5, 10,1)', ColorsBlue.blue1150]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style = {styles.colorGradient}
-            >
-                <View style = {styles.textBox}>
-                    <Text style = {styles.text}>{title}</Text>
-                    <Text style = {styles.description}>{description ? description : 'Begin met Chatten!'}</Text>
-                </View>
-                <View style={styles.iconWrapper}>
-                    <Icon 
-                    icon = "trash-can-outline"
-                    size = {40}
-                    color = {ColorsRed.red600}
-                    onPress = {deleteChatHandler}
-                    differentDir
-                    />
-                </View>
-            </LinearGradient>
-        </Pressable>
+        <View style = {[styles.shadow, {backgroundColor: Platform.OS === 'android' && 'rgba(0, 0, 0, 0.8)'}]}>
+            <Pressable 
+            style = {styles.chatBox}
+            onPress={navigateToChatHandler}>
+                <LinearGradient 
+                    colors={[ColorsBlue.blue1250, 'rgba(20, 20, 60,1)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style = {styles.colorGradient}
+                >
+                    <View style = {styles.textBox}>
+                        <Text style = {styles.text}>{title}</Text>
+                        <Text style = {styles.description}>{description ? description : 'Begin met Chatten!'}</Text>
+                    </View>
+                    <View style={styles.iconWrapper}>
+                        <Icon 
+                        icon = "trash-can-outline"
+                        size = {40}
+                        color = {ColorsRed.red600}
+                        onPress = {deleteChatHandler}
+                        differentDir
+                        />
+                    </View>
+                </LinearGradient>
+            </Pressable>
+        </View>
     )
 }
 
 export default ChatSelectionTile;
 
 const styles = StyleSheet.create({
-    chatBox: {
-        borderColor: ColorsBlue.blue1100,
-        borderWidth: 0.9,
-        flex: 1,
-        marginTop: 20, 
-        margin: 10,
-        height: 140,
-        borderRadius: 20, 
-        elevation: 4, 
+    shadow: {
         shadowColor: 'rgba(0,0,0, 1)',
         shadowOffset: {height: 3, width: 2},
         shadowRadius: 2,
         shadowOpacity: 1,
+        height: 140,
+        marginTop: 20, 
+        margin: 10,
+        paddingRight: 3,
+        paddingBottom: 4,
+        borderRadius: 20,
+    },
+    chatBox: {
+        borderColor: ColorsBlue.blue1400,
+        borderWidth: 0.6,
+        flex: 1,
+        height: 140,
+        borderRadius: 20, 
     },
     colorGradient: {
         borderRadius: 20, 

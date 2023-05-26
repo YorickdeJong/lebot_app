@@ -21,7 +21,6 @@ function TeacherModal({tileType, setDbUpdate }) {
 
     const handleCreate = async (groupType) => {
         if (name === '' || maxParticipants === '') {
-            console.log('check')
             Alert.alert("Vul alle velden in")
             return
         }

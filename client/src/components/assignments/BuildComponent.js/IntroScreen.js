@@ -35,10 +35,6 @@ function IntroScreen({nextSlideHandler, prevSlideHandler, slideCount, title, des
                 >
                     <VideoDisplay 
                     video = {video}/>
-                        <TextDisplay
-                        title = {title}
-                        description= {description}
-                        />
                         <View style={{ alignItems: 'flex-start', marginLeft: 10, paddingTop: 10 }}>
                             <ChatBoxGPT 
                             answer={message.answer}

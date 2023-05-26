@@ -8,45 +8,54 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 function AnswerContainer({input, inputContainer, backgroundColor, setInputDetails, maxTries, filteredTry, correctAnswers, validateInput, performedMeasurement, chartNumber, setChartNumber, placeholder}){
     
-    console.log('performedMeasurement', performedMeasurement)
     return (
-        <View style = {{flexDirection: 'row', alignItems: 'center', marginTop: 5,  marginLeft: 17, marginRight: 15}}>
-            <LinearGradient 
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            colors = {[backgroundColor[0], backgroundColor[1]]}
-            style = {{flex: 2.7, borderRadius: 12, marginRight: 5}}>
+        <View style = {{flexDirection: 'row', alignItems: 'center', marginTop: 5,  marginLeft: 17, marginRight: 15, shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 2, width: 1 },
+        shadowRadius: 3,
+        shadowOpacity: 1,
+        }}>
+            <View 
+            style = {{flex: 2.7,  marginRight: 6,  backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent',
+            borderTopLeftRadius: 10, 
+            borderBottomLeftRadius: 10, }}>
                 <TextInput 
                 style = {inputContainer}
                 placeholder = {placeholder}
-                placeholderTextColor={ColorsGray.gray900}
+                placeholderTextColor={ColorsGray.gray300}
                 onChangeText={setInputDetails}
                 value = {input}
                 editable={correctAnswers === 1 || filteredTry === maxTries ? false : true}
                 />
-            </LinearGradient>
+            </View>
             {performedMeasurement &&
-            <LinearGradient 
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            colors = {[backgroundColor[0], backgroundColor[1]]} 
-            style = {{flex: 1, marginRight: 3, borderRadius: 12}}>
+            <View 
+            style = {{flex: 1.1, marginRight: 2, backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent',
+            }}>
                 <TextInput 
-                style = {inputContainer}
+                style = {[inputContainer, {paddingLeft: 5, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderColor: 'rgba(77,77,77, 0.2)'}]}
                 placeholder = "Meting nr."
-                placeholderTextColor={ColorsGray.gray900}
+                placeholderTextColor={ColorsGray.gray300}
                 onChangeText={setChartNumber}
                 value = {chartNumber}
                 keyboardType="number-pad"
                 editable={correctAnswers === 1 || filteredTry === maxTries ? false : true}
                 />
-            </LinearGradient>
+            </View>
             }
-                <Icon
-                size = {36}
-                color = {backgroundColor[1]}
-                icon= 'checkbox'
-                onPress = {validateInput}/>
+            <Icon
+            size = {55}
+            color = {ColorsBlue.blue1150}
+            icon= 'md-checkbox-sharp'
+            onPress = {validateInput}
+            />
+            <Icon
+                icon='md-checkmark'
+                size={41} // Adjust the size to fit within the checkbox
+                color={ColorsGray.gray300}
+                onPress={validateInput}
+                addStyle={{position: 'absolute', top: 6.25, right: 8}}
+                addBorder
+            />
         </View>
     )
 }

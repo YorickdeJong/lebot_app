@@ -1,4 +1,4 @@
-import {  ImageBackground, ScrollView, StyleSheet,  View } from 'react-native';
+import {  ImageBackground, ScrollView, StyleSheet,  View, Dimensions } from 'react-native';
 import { ColorsBlue, } from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,9 +9,11 @@ import { useState, useRef } from 'react';
 import DragBlocksAnimation from './DragBlocksAnnimation';
 import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, isFocused, title, setSlideCount, slideCountEnd}) {
-    const [focused, setFocused] = useState(isFocused && slideCount === 3); 
+
+function ExampleExercise({nextSlideHandler, prevSlideHandler, slideTotal, slideCount, setTyping, typing, message, isFocused, currentSlidePosition, setSlideCount, slideCountEnd, index}) {
+    const isScreenFocused = slideCount - 1 === index
     const scrollViewRef = useRef(null);
     const extraStyle = {
         marginLeft: 8,
@@ -40,14 +42,18 @@ function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyp
                         slideCountEnd = {slideCountEnd}
                         setSlideCount = {setSlideCount}
                         text = {{text: 'Uitleg', left: '44%' }}
+                        slideTotal = {slideTotal}
+                        currentSlidePosition = {currentSlidePosition}
+                        noPlanet = {true}
                     />
 
                     <ScrollView style = {{flex: 1, marginTop: 0}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                     >
-                            <DragBlocksAnimation />               
-                            <View style = {{marginTop: 15}}>
+                            {isScreenFocused && 
+                            <>
+                                <DragBlocksAnimation />               
                                 <ChatBoxGPT 
                                 answer={message.answer}
                                 isLastItem={true}
@@ -56,8 +62,8 @@ function ExampleExercise({nextSlideHandler, prevSlideHandler, slideCount, setTyp
                                 typing={typing}
                                 extraStyle={extraStyle}
                                 />
-                            </View>
-
+                            </>
+                            }
                         </ScrollView>   
                 </ImageBackground>
             </LinearGradient>
@@ -70,6 +76,7 @@ export default ExampleExercise
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
+        width: SCREEN_WIDTH,
     },
     imageBackground: {
         flex: 1, 

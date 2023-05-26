@@ -19,10 +19,6 @@ function CodingQuestionsOne({isFocused}){
     const [close, setClose] = useState(false);
     const scrollViewRef = useRef(null);
 
-    //upon changing to this screen, set the thread id to the first thread id
-
-    console.log(`check CodingScreen`)
-
     useEffect(() => {
         console.log(slideCount)
     }, [slideCount])
@@ -82,42 +78,29 @@ function CodingQuestionsOne({isFocused}){
     }
 
     return (
-    <LinearGradient
-            colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}
-            style={{ flex: 1 }}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-        >
-            <ImageBackground
-                source={require('./../../../../../assets/chatbackground.png')} 
-                style={styles.container}
-                imageStyle={{opacity: 0.05}}
-            >
+        <View style = {styles.container}>
                     <AssignmentOptionsBar 
-                        slideCount = {slideCount}
                         nextSlideHandler = {nextSlideHandler}
                         prevSlideHandler = {prevSlideHandler}
                         setSlideCount = {setSlideCount}
                         text = {{text: 'Uitleg', left: '44%' }}
                         noForwardArrow = {true}
+                        slideTotal = {1}
+                        slideCount= {1}
+                        noPlanet = {true}
                     />
 
                     <CodeEditorScreen close = {close}/>
                     {!close ? 
                     <>
                     
-                    <TextDisplay 
-                    title="Codeer Vragen"
-                    description="In dit onderdeel wordt jouw kennis getest"
-                    showIcon
-                    setCloseHandler={setCloseHandler}/>
                 
                     <ScrollView 
-                    style = {{flex: 1, marginTop: 15}}
+                    style = {{flex: 1, marginTop: 8}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                     >
-
+                        
                         {isFocused && <ChatBoxGPT 
                         answer={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.answer}
                         isLastItem={true}
@@ -137,8 +120,7 @@ function CodingQuestionsOne({isFocused}){
                         icon="lock-open-outline"
                         onPress={setCloseHandler}/>
                     </View> }
-            </ImageBackground>
-        </LinearGradient>
+        </View>
     );
 }
 

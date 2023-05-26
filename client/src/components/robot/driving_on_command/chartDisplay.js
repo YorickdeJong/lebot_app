@@ -1,6 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState, useMemo } from "react"
 import { StyleSheet, View } from "react-native"
-import { ChartContext } from "../../../store/chart-context"
 import GraphDisplay from "./graphDisplay"
 
 
@@ -29,19 +28,20 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
 
             const padding = displayChart? 0 : 20; 
             return (
-                <View style = {{height: displayChart, paddingTop: 10}}>
-                    {!(selectedData[0] === undefined) && <GraphDisplay 
-                    dataType={dataType[0]}
-                    // data={{ xData: firstXData, yData: firstYData }}
-                    data = {selectedData[0]} 
-                    chartHeight = {chartHeight}
-                    finalPlot = {finalPlot}
-                    trueCount = {trueCount}
-                    padding = {padding}
-                    motorNumber = {subject === "MOTOR" ? motorNumber : false}
-                    legend
-                    isConstant = {isConstant}
-                    />}
+                <View style = {{ paddingTop: 10,  borderRadius: 20}}>
+                    {!(selectedData[0] === undefined) && 
+                        <GraphDisplay 
+                        dataType={dataType[0]}
+                        data = {selectedData[0]} 
+                        chartHeight = {chartHeight}
+                        finalPlot = {finalPlot}
+                        trueCount = {trueCount}
+                        padding = {padding}
+                        motorNumber = {subject === "MOTOR" ? motorNumber : false}
+                        legend
+                        isConstant = {isConstant}
+                        />
+                    }
                 </View>
             )
 
@@ -51,7 +51,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             [selectedData, dataType] = selectPlotData(chartToggle, chartData);
 
             return (
-                <View style = {{height: displayChart, paddingTop: finalPlot ? 10 : 10}}>
+                <View style = {{height: displayChart, paddingTop: finalPlot ? 10 : 10, width: '100%'}}>
                     <View>
                             {!(selectedData[0] === undefined) && <GraphDisplay 
                             dataType={dataType[0]}

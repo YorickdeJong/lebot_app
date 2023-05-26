@@ -44,7 +44,7 @@ function ChatContextProvider({ children }) {
             return;
         }
         generateDescriptions(currentThreadId)
-    },[chat])
+    }, [chat])
 
 
     // Load chat data from storage
@@ -215,12 +215,18 @@ function ChatContextProvider({ children }) {
 
     async function generateDescriptions(currentThreadId) {
         //don't set description if description is already set
-        if (descriptions[currentThreadId] !== 'Have a chat with your friend to generate a description!' && descriptions[currentThreadId] !== undefined){
+        if (descriptions[currentThreadId] !== 'Begin een chat met ChatGPT!' && descriptions[currentThreadId] !== undefined){
             console.log('description already set')
             return
         }
 
-        const threadChat = chat.filter((chat) => chat.thread_id === currentThreadId);
+        let threadChat;
+        try {
+            threadChat = chat.filter((chat) => chat.thread_id === currentThreadId);
+        }
+        catch (error) {
+            threadChat = [];
+        }
 
         //don't set description if chat is empty
         if (threadChat.length === 0) {
@@ -234,6 +240,8 @@ function ChatContextProvider({ children }) {
             question: chat.question, 
             answer: chat.answer 
         }))
+
+
         const chatParagraph = generateDescription(chatSummary)
         const message = `Please create a description in dutch of this chat in no more than 5 words: ${JSON.stringify(chatParagraph)} `  
         const titleRequest = `Please create a title in dutch for this chat in no more than 3 words, don't include punctuations: ${JSON.stringify(chatParagraph)}`
@@ -282,10 +290,10 @@ function ChatContextProvider({ children }) {
             };
         }
         catch (error) {
-            const descriptionText = 'Have a chat with your friend to generate a description!';
+            const descriptionText = 'Chat met ChatGPT om antwoord te krijgen op jouw vraggen! ';
             return {
                 description: descriptionText,
-                title: 'Chat Title'
+                title: 'Begin met Chatten!'
             };
         }
     }

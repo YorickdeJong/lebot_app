@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet} from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, } from 'react-native';
 import { useState, } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TabView, TabBar } from 'react-native-tab-view';
@@ -70,15 +70,32 @@ function AssignmentTab({title, initialIndex, subject}){
     };
 
     return (
-      <View style={{ flex: 1,}}>
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          renderTabBar={renderTabBar}
-          onIndexChange={setIndex}
-          initialLayout={{ width: '100%', height: '100%' }}
-        />
-      </View>
+      <LinearGradient 
+      colors={[ColorsBlue.blueblack1600, ColorsBlue.blueblack1500]}  
+      style = {styles.container}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 1 }}
+      >
+          <ImageBackground
+          source={require('./../../../assets/chatbackground.png')} 
+          style={
+          {flex: 1}
+          }
+          imageStyle={{opacity: 0.11}}
+          >
+              <TabView
+                lazy
+                animationEnabled = {false}
+                swipeEnabled= {false}
+                navigationState={{ index, routes }}
+                renderScene={renderScene}
+                renderTabBar={renderTabBar}
+                onIndexChange={setIndex}
+                initialLayout={{ width: '100%', height: '100%' }}
+              />
+            </ImageBackground>
+      </LinearGradient>
+
     );
 };
 
@@ -94,6 +111,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 3,
     elevation: 2,
-    backgroundColor: ColorsBlue.blue1400
-  }
+    backgroundColor: ColorsBlue.blue1300
+  },
+  container: {
+    flex: 1, 
+},
 })

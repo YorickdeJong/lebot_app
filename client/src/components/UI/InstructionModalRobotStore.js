@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingHorizontal: 20,
         height: Platform.OS === 'ios' ? 400 : 435,
-        borderRadius: 5,
+        borderRadius: 20,
         borderWidth: 0.7,
         borderColor: ColorsBlue.blue700,
         backgroundColor: ColorsBlue.blue1100,
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     },
     createButton: {
         backgroundColor: '#4a90e2',
-        borderRadius: 5,
+        borderRadius: 20,
         padding: 10,
         width: 180,
         marginTop: 30,

@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import { useEffect, useState } from "react";
-import { ImageBackground, View, Text, StyleSheet, ImageBackgroundBase } from "react-native"
+import { ImageBackground, View, Text, StyleSheet, Dimensions } from "react-native"
 import { FlatList, ScrollView } from "react-native-gesture-handler"
 import PartsButton from "../../../components/robot/store/partsButton";
 import PartsContainer from "../../../components/robot/store/partsContainer";
@@ -11,7 +11,9 @@ import ButtonList from "../../../components/UI/ButtonList.UI";
 import ConnectRobotModal from "../../../components/robot/ConnectRobotModal.robot";
 import InstructionModalRobotStore from "../../../components/UI/InstructionModalRobotStore";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
+const { width, height } = Dimensions.get('window');
 function RobotStore() {
     const [type, setType] = useState("afstand")
     const [showModalTemp, setShowModalTemp] = useState(true)
@@ -73,7 +75,7 @@ function RobotStore() {
     <View style = {styles.outerContainer}>
         <LinearGradient
                 colors={[ColorsBlue.blue1300, ColorsBlue.blue1100]}
-                style={{ flex: 1 }}
+                style={{ flex: 1, opacity: 0.95 }}
                 // locations={locations}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -81,8 +83,11 @@ function RobotStore() {
             <ImageBackground
                 source={require('./../../../../assets/planets/robot_screen3.png')} 
                 style={
-                {flex: 1, resizeMode: 'contain'}
+                {   
+                    flex: 1,         
                 }
+                }
+                resizeMode="cover"
                 imageStyle={{opacity: 1}}
             >
                 <ScrollView style = {{flex: 1}}
@@ -131,6 +136,7 @@ function RobotStore() {
                     textButtonOne= "Afstand"
                     textButtonTwo= "Snelheid"
                     textButtonThree= "Acc."
+                    selectFase = {type}
                 />
             </ImageBackground>
         </LinearGradient>
@@ -154,5 +160,6 @@ const styles = StyleSheet.create({
 
     outerContainer: {
         flex: 1,
+        backgroundColor:'rgba(50, 50, 70, 1)',
     }
 })

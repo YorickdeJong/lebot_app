@@ -1,5 +1,5 @@
 
-import { StyleSheet, Animated, Platform, View, Text, Alert } from 'react-native';
+import { StyleSheet, Animated, Platform, View, Text, Alert, TouchableOpacity } from 'react-native';
 import {  useNavigation, } from '@react-navigation/native';
 import { useContext, useEffect, useState } from 'react';
 import { createBottomTabNavigator,} from '@react-navigation/bottom-tabs';
@@ -14,7 +14,6 @@ import {scale, verticalScale} from 'react-native-size-matters';
 import { ShowIconsContext } from '../../store/show-icons-context';
 import { TimeContext } from '../../store/time-context';
 import { UserProfileContext } from '../../store/userProfile-context';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { InformationContext } from '../../store/information-context';
 //test
 const Bottom = createBottomTabNavigator();
@@ -54,7 +53,7 @@ function BottomMenu() {
           tabBarBackground: () => {
             return (
               <View
-                  style={{flex:1, backgroundColor: ColorsBlue.blue1400}} />
+                  style={{flex:1, backgroundColor: ColorsBlue.blue1300}} />
               
             )
           },
@@ -163,7 +162,7 @@ function BottomMenu() {
                 />
         }
   
-        {showIconsCtx.showIcons.chatgpt &&  
+        {/* {showIconsCtx.showIcons.chatgpt &&   */}
             <Bottom.Screen
               component={ChatScreen}
               name="ChatGPT"
@@ -205,7 +204,7 @@ function BottomMenu() {
                   headerShown: false,
               }}
           />
-        }
+        {/* } */}
 
         <Bottom.Screen
             name="DummyOne" // Add a name for the screen
@@ -227,21 +226,24 @@ function BottomMenu() {
                     style={{
                         justifyContent: 'center',
                         alignItems: 'center',
-                        paddingTop: verticalScale(12),
+                        paddingTop: verticalScale(18),
+                        
                     }}
                     >
                     <Icon
+                        
                         size={24}
                         color={color}
                         icon="information-outline"
                         differentDir={true}
-                        addStyle={{opacity: 1}}
+                        addStyle={{opacity: 1, height: 27}}
+                        onPress={() => informationCtx.setShowInformationModal(prevState => !prevState)}
                     />
                     <Text
                         style={{
                         color: color,
                         fontSize: 10,
-                        paddingTop: Platform.OS === 'ios' ? 4 : 1,
+                        paddingTop: Platform.OS === 'ios' ? 0 : 1,
                         textAlign: 'center',
                         opacity: 1,
                         }}

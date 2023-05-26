@@ -1,8 +1,8 @@
 
-import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedback, TouchableOpacity, Animated } from "react-native"
+import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedback, TouchableOpacity, Animated, Platform, Dimensions } from "react-native"
 import Icon from "../../Icon";
 import ToggleMenu from "../../robot/driving_on_command/ToggleMenu";
-import { ColorsBlue, ColorsGray, ColorsLighterGold, ColorsRed, ColorsTile } from "../../../constants/palet";
+import { ColorsBlue, ColorsGray, ColorsLighterGold, ColorsOrange, ColorsRed, ColorsTile } from "../../../constants/palet";
 import { useContext, useEffect, useState, useRef } from "react";
 import {  Header } from 'react-navigation-stack';
 import { BlurView } from "expo-blur";
@@ -10,9 +10,16 @@ import { Colors } from "react-native/Libraries/NewAppScreen";
 import BlurWrapper from "../../UI/BlurViewWrapper";
 import SwitchScreensQuestions from "./SwitchScreensQuestions";
 import { useNavigation } from "@react-navigation/native";
+import { ScrollContext } from "../../../store/scroll-context";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 
 
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window')
+const widthIphone = 390
+const heightIphone = 844
+const ratioWidthIphoneScreen = widthIphone / SCREEN_WIDTH
+const ratioHeightIphoneScreen = heightIphone / SCREEN_HEIGHT
 
 function AssignmentOptionsBar({
     midIconHandler, 
@@ -31,14 +38,18 @@ function AssignmentOptionsBar({
     slideCountEnd,
     setSlideCount,
     text,
-    noForwardArrow
+    slideTotal,
+    noForwardArrow,
+    currentSlidePosition,
+    noPlanet
 }){
     const [isStopActive, setIsStopActive] = useState(false);
-    const [headerHeight, setHeaderHeight] = useState(0);
     const [optionsVisible, setOptionsVisible] = useState(false);
     const metingRef = useRef(null);
     const [metingPosition, setMetingPosition] = useState({ x: 0, y: 0 });
     const navigation = useNavigation();
+    const scrollCtx = useContext(ScrollContext)
+
 
     const toggleModalOpen = () => {
         setIsStopActive(!isStopActive); 
@@ -50,54 +61,8 @@ function AssignmentOptionsBar({
         return;
     };
 
-    useEffect(() => {
-        const headerHeight = Header.HEIGHT + StatusBar.currentHeight;
-        setHeaderHeight(headerHeight);
-    }, []);
 
-    function OptionsBox() {
-        return (
-            <TouchableWithoutFeedback onPress={() => setOptionsVisible(false)}>
-                <View style={styles.modalBackground}>
-                    <TouchableWithoutFeedback onPress={() => {}}
-                    style = {{flex: 1, borderRadius: 20, overflow: 'hidden'}}>
-                        <BlurWrapper
-                            intensity={50}
-                            tint="dark"
-                            style={[
-                            styles.optionsBox,
-                            { top: metingPosition.y + 5, right: metingPosition.y - 10 },
-                            ]}
-                            customColor= 'rgba(30, 30, 80, 0.95)'
-                        >
-                            {Array.from({ length: chartLength }).map((_, i) => (
-                                <TouchableOpacity
-                                    key={i + 1}
-                                    activeOpacity={0.5}
-                                    onPress={() => {
-                                        onMetingPressed(i); 
-                                    }}
-                                    style={styles.pressed}
-                                >
-                                    <Text style={styles.option}>METING {i + 1}</Text>
-                                </TouchableOpacity>
-                            ))}
-                                <TouchableOpacity
-                                activeOpacity={0.5}
-                                onPress={() => redirectToMeasurementHandler(setOptionsVisible)}
-                                style={styles.pressed}
-                                >
-                                    <Text style={[styles.option, { fontSize: 16, fontWeight: "500" }]}>
-                                        Start Meting
-                                    </Text>
-                                </TouchableOpacity>
-                                                       
-                        </BlurWrapper>
-                    </TouchableWithoutFeedback>
-                </View>
-            </TouchableWithoutFeedback>
-        );
-      }
+
 
     const toggleOptions = () => {
         if (optionsVisible) {
@@ -118,121 +83,246 @@ function AssignmentOptionsBar({
         navigation.navigate('Assignments', {screen: 'AssignmentsResults'})
     }
 
-    return(
-    
-        <View style = {[styles.upperIcons]}>
-                
-                {text && 
-                    <View style = {{position: 'absolute', top: '58%', left: text.left}}>
-                        <Text style = {styles.text}>{text.text}</Text>
-                    </View>
-                }
-
-                <View style = {{position: 'absolute', top: '53%', left: '4.5%'}}>
-                    <Icon 
-                    size={ 26}
-                    icon= { 'planet' }
-                    color={ColorsBlue.blue200}
-                    onPress={() => setSlideCount(0)}/>
-                </View>
-
-                <View style = {{position: 'absolute', top: '58%', left: '15.5%'}}>
-                    <Icon 
-                        size={ 22}
-                        icon= { "home-outline" }
-                        color={ColorsBlue.blue200}
-                        onPress={() => homeNavigatorHandler()}
-                        />
-                </View>
-
-
-                {chartAvailable && performedMeasurement && 
-                    <TouchableOpacity onPress={toggleOptions} style = {{position: 'absolute', top: '57%' , left: '39%'}}>
-                    
-
-                        <View ref={metingRef} style = {{flexDirection: 'row'}}>
-                                <Text  style = {styles.text}>
-                                    METING {currentIndex + 1}
-                                </Text>
-                            <Icon 
-                            icon = "menu-down" 
-                            size={23}
-                            color={ ColorsBlue.blue50 }//ColorsLighterGold.gold400}
-                            onPress = {toggleOptions}
-                            differentDir={true}
-                            />
-                        </View>
-
+    let progressBarItems = [];
+    for (let i = 1; i <= slideTotal; i++) {
+        if (slideTotal === 1){ 
+            progressBarItems.push(
+                <TouchableOpacity 
+                onPress = {() => {}}
+                key={i} style={[styles.lightBlue, {borderRadius: 10}]} />
+            )
+            break; 
+        }
+        if (i === 1) { // first item
+            if (i <= slideCount) {
+                progressBarItems.push( 
+                    //Make this touchable such that you can navigate to that tile
+                    <TouchableOpacity 
+                    onPress = {() => scrollCtx.handleProgressBarPress(i, setSlideCount, currentSlidePosition)}
+                    key={i} style={[styles.lightBlue, {borderTopLeftRadius: 10, borderBottomLeftRadius: 10}]}  >
+                        <Text style = {styles.textBlock}>{i}</Text>
                     </TouchableOpacity>
-                }
-
-
-                {performedMeasurement ? 
-                    ( !chartAvailable &&
-                    <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: '36%'}}>
-                            <TouchableOpacity
-                            onPress = {() => redirectToMeasurementHandler()}>
-                                <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue100}]}>Start Meting</Text>
-                            </TouchableOpacity>
-                    </Animated.View>
-                    ):(!text && !chartAvailable &&
-                    <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: '36%'}}>
-                                <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue100}]}>Geen Meting</Text>
-                    </Animated.View>
-                    )
-                }
-
-
-                <SwitchScreensQuestions
-                addStyle={{position: 'absolute', top: '43%', right: 0, zIndex: 1000}}
-                    slideCount={slideCount}
-                    prevSlideHandler={prevSlideHandler}
-                    nextSlideHandler={nextSlideHandler}
-                    slideCountEnd={slideCountEnd}
-                    noForwardArrow={noForwardArrow}
-                />
-                {/* Options Box */}
-                <Modal
-                    transparent={true}
-                    visible={optionsVisible}
-                    onRequestClose={() => {
-                        setOptionsVisible(false);
-                    }}
-                >
-                    <OptionsBox />
-                </Modal>
-
-            {chartAvailable && 
-                <>
-                <TouchableOpacity onPress={toggleModalOpen} 
-                style = {{position: 'absolute', top: '75%', left: '24%'}}>
-                        <View style={styles.stopContainer}>
-                            <View
-                            style={[
-                                styles.stopCircle,
-                                isStopActive ? styles.stopCircleActive : {},
-                            ]}
-                            />
-                        </View>
-                    </TouchableOpacity>
-
-                    <ToggleMenu
-                    headerHeight = {headerHeight}
-                    isStopActive = {isStopActive}
-                    toggleModalClose = {toggleModalClose}
-                    subject = {subject}
-                    />
-                    
-                    <View style = {{position: 'absolute', top: '58%', right: '20%'}}>
-                        <Icon 
-                        icon = "trash-can-outline"
-                        size={25}
-                        color={ColorsRed.red700}
-                        onPress = {midIconHandler}
-                        differentDir={true}/>
-                    </View>
-                </> 
+                );
             }
+            else {
+                progressBarItems.push(
+                    <TouchableOpacity 
+                    onPress = {() => scrollCtx.handleProgressBarPress(i, setSlideCount, currentSlidePosition)}
+                    key={i} style={[styles.blue, {borderTopLeftRadius: 10, borderBottomLeftRadius: 10}]} >
+                        <Text style = {styles.textBlock}>{i}</Text>
+                    </TouchableOpacity>
+                );
+            }
+        }
+        else if (i === slideTotal) { // last item
+            if (i <= slideCount) {
+                progressBarItems.push(
+                    <TouchableOpacity 
+                    onPress = {() => scrollCtx.handleProgressBarPress(i, setSlideCount, currentSlidePosition)}
+                    key={i} style={[styles.lightBlue, {borderTopRightRadius: 10, borderBottomRightRadius: 10}]}  >
+                        <Text style = {styles.textBlock}>{i}</Text>
+                    </TouchableOpacity>
+                );
+            }
+            else {
+                progressBarItems.push(
+                    <TouchableOpacity 
+                    onPress = {() => scrollCtx.handleProgressBarPress(i, setSlideCount, currentSlidePosition)}
+                    key={i} style={[styles.blue, {borderTopRightRadius: 10, borderBottomRightRadius: 10}]}  >
+                        <Text style = {styles.textBlock}>{i}</Text>
+                    </TouchableOpacity>
+                );
+            }
+        }
+        else { // middle items
+            if (i <= slideCount) {
+                progressBarItems.push(<TouchableOpacity 
+                onPress = {() => scrollCtx.handleProgressBarPress(i, setSlideCount, currentSlidePosition)}
+                key={i} style={styles.lightBlue}  >
+                        <Text style = {styles.textBlock}>{i}</Text>
+                    </TouchableOpacity>);
+            }
+            else {
+                progressBarItems.push(<TouchableOpacity 
+                onPress = {() => scrollCtx.handleProgressBarPress(i, setSlideCount, currentSlidePosition)}
+                key={i} style={styles.blue}  >
+                        <Text style = {styles.textBlock}>{i}</Text>
+                    </TouchableOpacity>);
+            }
+        }
+    }
+    
+
+    function OptionsBox() {
+        return (
+            <TouchableWithoutFeedback onPress={() => setOptionsVisible(false)}>
+                <View style={styles.modalBackground}>
+                    <TouchableWithoutFeedback onPress={() => {}}
+                    style = {{flex: 1, borderRadius: 20, overflow: 'hidden'}}>
+                        <BlurWrapper
+                            intensity={50}
+                            tint="dark"
+                            style={[
+                            styles.optionsBox,
+                            // { top: metingPosition.y + 5, right: metingPosition.y - 10 },
+                            ]}
+                            customColor= 'rgba(30, 30, 80, 0.95)'
+                        >
+                            {Array.from({ length: chartLength }).map((_, j) => (
+                                <TouchableOpacity
+                                    key={j + 1}
+                                    activeOpacity={0.5}
+                                    onPress={() => {
+                                        onMetingPressed(j); 
+                                    }}
+                                    style={styles.pressed}
+                                >
+                                    <Text style={styles.option}>METING {j + 1}</Text>
+                                </TouchableOpacity>
+                            ))}
+                                <TouchableOpacity
+                                activeOpacity={0.5}
+                                onPress={() => redirectToMeasurementHandler(setOptionsVisible)}
+                                style={styles.pressed}
+                                >
+                                    <Text style={[styles.option, { fontSize: 16, fontWeight: "500" }]}>
+                                        Start Meting
+                                    </Text>
+                                </TouchableOpacity>
+                                                       
+                        </BlurWrapper>
+                    </TouchableWithoutFeedback>
+                </View>
+            </TouchableWithoutFeedback>
+        );
+      }
+
+    return(
+        <View style = {styles.shadow}>
+            <View style = {[styles.upperIcons]}>   
+                    <View>
+                        {text && 
+                            <View style = {{position: 'absolute', top: '58%', left: text.left}}>
+                                <Text style = {styles.text}>{text.text}</Text>
+                            </View>
+                        }
+                        {/* Home button */}
+
+                        <View style = {{position: 'absolute', top: 2, left: noPlanet ? '5%' : '15.5%'}}>
+                            <Icon 
+                                size={ 22}
+                                icon= { "home" }
+                                color={ColorsBlue.blue400}
+                                onPress={() => homeNavigatorHandler()}
+                                />
+                        </View>
+
+                        {/* Planet button */}
+                        {!noPlanet && <View style = {{position: 'absolute', top: '53%', left: '4.5%'}}>
+                            <Icon 
+                            size={ 26}
+                            icon= { 'planet' }
+                            color={ColorsBlue.blue400}
+                            onPress={() => setSlideCount(0)}/>
+                        </View>
+                        }
+
+                        {/* Measurement Text */}
+                        {chartAvailable && performedMeasurement && 
+                            <TouchableOpacity onPress={toggleOptions} style = {{position: 'absolute', top: 2 , left: '39%'}}>
+                            
+
+                                <View ref={metingRef} style = {{flexDirection: 'row'}}>
+                                        <Text  style = {styles.text}>
+                                            METING {currentIndex + 1}
+                                        </Text>
+                                    <Icon 
+                                    icon = "menu-down" 
+                                    size={23}
+                                    color={ ColorsBlue.blue50 }//ColorsLighterGold.gold400}
+                                    onPress = {toggleOptions}
+                                    differentDir={true}
+                                    />
+                                </View>
+
+                            </TouchableOpacity>
+                        }
+
+                        {/* header name  */}
+
+                        {performedMeasurement ? 
+                            ( !chartAvailable &&
+                            <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: '36%'}}>
+                                    <TouchableOpacity
+                                    onPress = {() => redirectToMeasurementHandler()}>
+                                        <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue400}]}>Start Meting</Text>
+                                    </TouchableOpacity>
+                            </Animated.View>
+                            ):(!text && !chartAvailable &&
+                            <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: '36%'}}>
+                                        <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue400}]}>Geen Meting</Text>
+                            </Animated.View>
+                            )
+                        }
+
+                        {/* Switch screen arrows */}
+                        <SwitchScreensQuestions
+                        addStyle={{position: 'absolute', top: -2,  right: 0, zIndex: 1000}}
+                            slideCount={slideCount}
+                            prevSlideHandler={prevSlideHandler}
+                            nextSlideHandler={nextSlideHandler}
+                            slideCountEnd={slideCountEnd}
+                            noForwardArrow={noForwardArrow}
+                        />
+                        {/* Options Box */}
+                        <Modal
+                            transparent={true}
+                            visible={optionsVisible}
+                            onRequestClose={() => {
+                                setOptionsVisible(false);
+                            }}
+                        >
+                            <OptionsBox />
+                        </Modal>
+
+                    {chartAvailable && 
+                        <>
+                        {/* Toggle Container */}
+                        <View style = {{position: 'absolute', top: 7, left: '24%'}}>
+                            <TouchableOpacity onPress={toggleModalOpen} 
+                            >
+                                    <View style={styles.stopContainer}>
+                                        <View
+                                        style={[
+                                            styles.stopCircle,
+                                            isStopActive ? styles.stopCircleActive : {},
+                                        ]}
+                                        />
+                                    </View>
+                            </TouchableOpacity>
+                        </View>
+
+                        {/* Toggle Modal */}
+                            <ToggleMenu
+                            isStopActive = {isStopActive}
+                            toggleModalClose = {toggleModalClose}
+                            subject = {subject}
+                            />  
+                            <View style = {{position: 'absolute', top: 2, right: '20%'}}>
+                                <Icon 
+                                icon = "trash-can-outline"
+                                size={25}
+                                color={ColorsRed.red700}
+                                onPress = {midIconHandler}
+                                differentDir={true}/>
+                            </View>
+                        </> 
+                    }
+                </View>
+                <View style = {[styles.progressbar, {backgroundColor: Platform.OS === 'android' && 'rgba(0, 0, 0, 0.4)'}]}>
+                    {progressBarItems}
+                </View>
+            </View>
         </View>
     )
 }
@@ -240,19 +330,46 @@ function AssignmentOptionsBar({
 export default AssignmentOptionsBar;
 
 const styles = StyleSheet.create({
-    upperIcons: {
-        minHeight: 60,
+    textBlock: {
+        textAlign: 'center',
+        color: ColorsGray.gray300,
+        fontSize: 11
+    },
+    progressbar: {
+        marginHorizontal: 15, 
+        borderColor: 'rgba(77, 77, 77, 0.15)',
+        borderWidth: 1,
+        marginTop: 38,
+        height: 20,
+        borderRadius: 10,
+        flexDirection: 'row',
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: { height: 2, width: 1 },
+        shadowRadius: 1,
+        shadowOpacity: 1,
+        paddingRight: 2,
+        paddingBottom: 2,
+    },
+    shadow: {
+        height: 88,
         borderRadius: 20,
         shadowColor: `rgba(0, 0, 0, 1)`,
         shadowOffset: { height: 3, width: 1 },
         shadowRadius: 3,
         shadowOpacity: 1,
-        backgroundColor: ColorsBlue.blue1390,
-        borderColor: `rgba(77, 77, 77, 0.15)`,
-        borderWidth: 1,
+        backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0)',
         marginHorizontal: 8,
         marginTop: 7,
         marginBottom: 7,
+        paddingBottom: 3,
+        paddingRight: 2,
+    },
+    upperIcons: {
+        height: 85,
+        borderRadius: 20,
+        backgroundColor: ColorsBlue.blue1390,
+        borderColor: `rgba(77, 77, 77, 0.2)`,
+        borderWidth: 1,
         paddingVertical: 15,
     },
     stopContainer: {
@@ -284,6 +401,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         width: 130,
         position: "absolute",
+        top: Platform.OS === 'android' ? (SCREEN_HEIGHT > 750 ? hp('13%') : hp('15%')) : hp('16%'),
         zIndex: 1000, // Make sure the box appears above other elements
         padding: 1.6,
         justifyContent: 'center',
@@ -310,4 +428,18 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         overflow: 'hidden'
     },    
+    lightBlue: {
+        flex: 1,
+        backgroundColor: ColorsBlue.blue600,
+        borderColor: 'black',
+        borderWidth: 1,
+        justifyContent: 'center',
+      },
+    blue: {
+        flex: 1,
+        backgroundColor: ColorsBlue.blue1100,
+        borderColor: 'black',
+        borderWidth: 1,
+        justifyContent: 'center',
+      },
 })

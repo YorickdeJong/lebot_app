@@ -1,5 +1,4 @@
 import { useCallback, useContext, useEffect, useState } from "react";
-import ManageEducationalUnits from "../../../components/groups/ManageEducationalUnits.groups";
 import { GroupTeacherContext } from "../../../store/group-teacher-context";
 import { UserProfileContext } from "../../../store/userProfile-context";
 import { Alert } from "react-native";
@@ -7,7 +6,7 @@ import { createGroupUser } from "../../../hooks/groupsInfo.hooks";
 import { useUserSocket, changeUserProfile } from "../../../hooks/auth";
 import { useFocusEffect } from "@react-navigation/native";
 import { useFetchGroupsDataSocket } from "../../../hooks/groupSocket.hooks";
-
+import ManageEducationalUnits from "../../../components/groups/ManageEducationalUnits.groups"
 
 
 function GroupStudent({ navigation, route, tileType }) {
@@ -38,9 +37,6 @@ function GroupStudent({ navigation, route, tileType }) {
             };
         }, [initialize, dbUpdated]) // Add initialize as a dependency
     );
-
-    console.log('data', data)
-    console.log('dataUser', dataUser)
 
     async function joinGroupHandler(group_id, class_id) {
         const user_id = userprofileCtx.userprofile.id //PROBLEM: FETCHED GROUPS AREN'T ADDED TO LOCAL STORAGE -> ADD THEM 

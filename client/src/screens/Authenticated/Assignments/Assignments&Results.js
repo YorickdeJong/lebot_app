@@ -36,6 +36,10 @@ function AssignmentsResults() {
     const [titleFase, setTitleFase] = useState("Motoren Testen");
     const [assignmentData, setAssignmentData] = useState(firstAssignment);
     
+
+    console.log('height', height)
+    console.log('width', width)
+
     useEffect(() => {
         switch (selectFase) {
           case 1:
@@ -94,10 +98,11 @@ function AssignmentsResults() {
                 style={
                 styles.backgroundImage
                 }
-                imageStyle={{opacity: 0.8}}
+                imageStyle={{opacity: 1}}
             >
-
-                <Text style={[styles.text]}>{titleFase}</Text>
+                <View style = {styles.textContainer}>
+                    <Text style={[styles.text]}>{titleFase}</Text>
+                </View>
                 <View style = {styles.tileContainer}>
                     <FlatList 
                         horizontal
@@ -109,6 +114,7 @@ function AssignmentsResults() {
                     />
                 </View>
                 <ButtonList 
+                    selectFase = {selectFase}
                     textButtonOne={"Fase 1"}
                     textButtonTwo={"Fase 2"}
                     textButtonThree={"Fase 3"}
@@ -125,16 +131,25 @@ function AssignmentsResults() {
 export default AssignmentsResults
 
 
-console.log('height', height)
-console.log('width', width)
 
 const styles = StyleSheet.create({
     outercontainer: {
         marginTop: 20,
         flex: 1
     },
+    textContainer: {
+        padding: 5,
+        // backgroundColor: 'rgba(10, 10, 55, 1)',
+        // borderColor: ColorsBlue.blue700,
+        // borderWidth: 0.6,
+        borderRadius: 400,
+        position: 'absolute',
+        top: height > 750 ? '22%' : '15%',
+        left: '25%',
+        right: '25%'
+    },
     text: {
-        color:  ColorsBlue.blue50,
+        color:  ColorsBlue.blue100,
         fontSize: 30,
         shadowColor: 'rgba(1, 1, 1, 1)',
         shadowOffset: { width: 1, height: 3 },
@@ -142,8 +157,8 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
         textAlign: 'center',
-        marginTop: Platform.OS === 'ios' ? verticalScale(120) : (height > 750 ? verticalScale(130) : verticalScale(80)),
-        fontWeight: '450',
+        // marginTop: Platform.OS === 'ios' ? verticalScale(120) : (height > 750 ? verticalScale(130) : verticalScale(80)),
+        fontWeight: 'bold',
 
     },
     backgroundImage: {
@@ -152,7 +167,7 @@ const styles = StyleSheet.create({
     },
     backgroundColor: {
         flex: 1,
-        backgroundColor: ColorsBlue.blue1400,
+        backgroundColor:'rgba(30, 30, 45, 1)',
     },
     tileContainer: {
         position: 'absolute',

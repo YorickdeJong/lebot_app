@@ -4,14 +4,14 @@ import { ColorsBlue } from "../../../constants/palet"
 import { LinearGradient } from "expo-linear-gradient"
 import { BlurView } from 'expo-blur';
 import React, { useContext, useEffect, useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import ChartToggle from "./chartToggle";
 import { ChartContext } from "../../../store/chart-context";
 import { ChartOptionsContext } from "../../../store/chartOptions-context";
+import BlurWrapper from "../../UI/BlurViewWrapper";
 
 
 
-function ToggleMenu({toggleModalClose, isStopActive, headerHeight, assignmentNumber, subject}) {
+function ToggleMenu({toggleModalClose, isStopActive, assignmentNumber, subject}) {
     const chartCtx = useContext(ChartContext)
     const chartOptionsCtx = useContext(ChartOptionsContext)
 
@@ -45,10 +45,10 @@ function ToggleMenu({toggleModalClose, isStopActive, headerHeight, assignmentNum
         visible={isStopActive} 
         animationType="fade"
         transparent>
-            <BlurView style={styles.modalContainer} intensity={20}>
-                <View style = {[styles.shadow, {marginBottom: assignmentNumber === 2 && subject === 'MOTOR' && 0}]}>
+            <BlurWrapper style={styles.modalContainer} intensity={20} customColor={'rgba(40, 40, 80, 0.7)'}>
+                <View style = {[styles.shadow, {marginBottom: assignmentNumber === 2 && subject === 'MOTOR' ? 0 : 100}]}>
                     <LinearGradient 
-                    style = {[styles.modal, { marginTop: headerHeight }]}
+                    style = {[styles.modal]}
                     colors={[ColorsBlue.blue1200, ColorsBlue.blue1100]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
@@ -125,7 +125,7 @@ function ToggleMenu({toggleModalClose, isStopActive, headerHeight, assignmentNum
                     </LinearGradient>
                 </View>
                 }
-            </BlurView>
+            </BlurWrapper>
         </Modal>
     )
 }
@@ -147,8 +147,8 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 3,
         width: '85%',
-        height: 300,
-        marginBottom: 100
+        maxHeight: 300,
+        borderRadius: 20,
     },
     header: {
         height: 50,
@@ -158,6 +158,8 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 3,
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
     },
     icon: {
         position: 'absolute',
@@ -169,11 +171,10 @@ const styles = StyleSheet.create({
         shadowRadius: 1,
     },  
     modal: {
-        borderRadius: 5,
+        borderRadius: 20,
         borderWidth: 0.7,
         borderColor: ColorsBlue.blue700,
-        flex: 1,
-
+        maxHeight: 300,
     },
     modalContainer: {
         alignItems: 'center',

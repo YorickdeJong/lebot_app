@@ -3,11 +3,10 @@ import CodingQuestionsTwo from "../../../components/assignments/screens/assignme
 import CodingQuestionsThree from "../../../components/assignments/screens/assignment_three/CodingQuestionsThree";
 
 function CodeAnswerScreen({tabIndex, currentIndex, subject}) {
-
-    console.log(`tabIndex: ${tabIndex}`)
-    console.log(`currentIndex: ${currentIndex}`)
     const isFocused = tabIndex === currentIndex
+
     return (
+        isFocused &&
         <>
             {subject === 'MOTOR' &&<CodingQuestionsOne
             isFocused = {isFocused}/>}

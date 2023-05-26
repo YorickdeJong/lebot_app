@@ -16,30 +16,23 @@ const Planets = ({ tileNumber, size, x, y, onPress }) => {
       
     useEffect(() => {
         if (tileNumber === 1) {
-        animationProgress.value = withRepeat(
-            withTiming(1, { duration: 2500, easing: EasingReanimated.linear }),
-            -1,
-            true
-        );
+            animationProgress.value = withRepeat(
+                withTiming(1, { duration: 2500, easing: EasingReanimated.linear }),
+                -1,
+                true
+            );
     
-        const interval = setInterval(() => {
-            // console.log(JSON.stringify(glowAnimation))
-        }, 1000);
-        
-        return () => {
-            clearInterval(interval);
-        };
         }
     }, [tileNumber, animationProgress]);
     
+    // Simplified glow animation
     const glowAnimation = useAnimatedStyle(() => {
         const shadowOpacity = interpolate(animationProgress.value, [0.01, 0.25, 0.5], [0.5, 0.25, 0.01], Extrapolate.CLAMP);
-        // console.log(`rgba(255, 255, 0, ${shadowOpacity})`)
-        
         return {
             backgroundColor: `rgba(255, 153, 51, ${shadowOpacity})`,
         };
     });
+
 
     return (
       <View style={{ left: x, top: y, position: "absolute" }}>
@@ -53,18 +46,9 @@ const Planets = ({ tileNumber, size, x, y, onPress }) => {
                 height: size ,
                 borderRadius: size  / 2,
                 overflow: 'hidden',
-                }]}
-            >
-                    <Animated.View
-                    style={[
-                        {
-                        width: '100%',
-                        height: '100%',
-                        },
-                        glowAnimation,
-                    ]}
-                    />
-            </Animated.View>
+               
+                }, glowAnimation]}
+            />
             )}
           <Svg width={size} height={size}>
             {/* devs creates planet like shadow */}
@@ -111,7 +95,7 @@ const Planets = ({ tileNumber, size, x, y, onPress }) => {
     );
 };
 
-export default Planets;
+export default React.memo(Planets);
 
 const styles = StyleSheet.create({
     container: {
@@ -133,3 +117,4 @@ const styles = StyleSheet.create({
         backgroundColor: ColorsBlue.blue1300,
     }
 });
+

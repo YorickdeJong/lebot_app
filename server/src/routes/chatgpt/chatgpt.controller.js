@@ -15,7 +15,7 @@ const {
 
 const pool = require('../../services/postGreSQL');
 const { get } = require('http');
-const apiKey = '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';
+const apiKey = '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';
 
 const getChatHistory = async (req, res) => {
     const client = await pool.connect();
@@ -60,7 +60,8 @@ const postChatgpt = async (req, res) => {
         let GPT35TurboMessage;
         let messageGPT;
         if (thread_id <= 5) {
-            messageGPT = 'respond with a question or a hint in dutch that makes the user think about their problem. If you think that the user gets it, respond with the actual answer. Here is the full conversation context: ' + "'" + fullContext + "'";
+            const messageAnswer = 'Beantwoord in het nederlands de volgende vraag in maximaal 10 zinnen: ' + fullContext
+            //messageGPT = 'respond with a question or a hint in dutch that makes the user think about their problem. If you think that the user gets it, respond with the actual answer. Here is the full conversation context: ' + "'" + fullContext + "'";
             GPT35TurboMessage = [
                 {
                     role: "system",
@@ -68,7 +69,7 @@ const postChatgpt = async (req, res) => {
                 },
                 {
                     role: "user",
-                    content: messageGPT
+                    content: messageAnswer
                 }
             ]
         } 

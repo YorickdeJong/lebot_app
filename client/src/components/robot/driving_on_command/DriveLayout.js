@@ -1,8 +1,5 @@
-import { ImageBackground, StyleSheet, View, Alert } from "react-native"
-import Icon from "../../Icon"
+import { ImageBackground, StyleSheet, View, Dimensions } from "react-native"
 import { ColorsBlue } from "../../../constants/palet"
-import { LinearGradient } from "expo-linear-gradient"
-import GraphDisplay from "./graphDisplay"
 import OptionsBar from "./optionsBar"
 import ChartDisplay from "./chartDisplay"
 import ControlPad from "./ControllPadDisplay/ControlPad"
@@ -11,11 +8,9 @@ import { SocketContext } from "../../../store/socket-context"
 import WaitingForMeasurementContainer from "./WaitingForMeasurementContainer"
 import PowerOffContianer from "./PowerOffContainer"
 import { ChartContext } from "../../../store/chart-context"
-import { BlurView } from "expo-blur"
-import { useIsFocused } from "@react-navigation/native"
-import { BlinkContext } from "../../../store/animation-context"
+import BlurWrapper from "../../UI/BlurViewWrapper"
 
-
+const { width, height } = Dimensions.get('window');
 function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assignmentNumber}) {
     const socketCtx = useContext(SocketContext)
     const chartCtx = useContext(ChartContext)
@@ -37,22 +32,24 @@ function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assig
                 {socketCtx.power && socketCtx.isConnected ? (
                     //Display charts if first data is send, otherwise loading screen
                     socketCtx.isMeasurementStarted && 
+                    chartCtx.chartData && // Check if chartData exists
+                    chartCtx.chartData.distance_time && // Check if distance_time exists
+                    chartCtx.chartData.distance_time[0] && // Check if it has at least one element
                     chartCtx.chartData.distance_time[0].length !== undefined ? (
                     <View style={styles.shadowContainer}>
-                        <BlurView style = {styles.loadingContainer} intensity={15} tint="dark">
-                                <ChartDisplay 
-                                chartData = {chartCtx.chartData}
-                                chartToggle = {chartCtx.chartToggle}
-                                trueCount = {chartCtx.trueCount}
-                                displayChart = {390}
-                                subject = {subject}
-                                />
-                        </BlurView>
+                        <BlurWrapper style = {styles.loadingContainer} intensity={15} tint="dark">
+                            <ChartDisplay 
+                            chartData = {chartCtx.chartData}
+                            chartToggle = {chartCtx.chartToggle}
+                            trueCount = {chartCtx.trueCount}
+                            displayChart = {390}
+                            subject = {subject}
+                            />
+                        </BlurWrapper>
                     </View>
                     ) : (
                         <WaitingForMeasurementContainer />
                     )
-                
                 ) : (
                     <PowerOffContianer />
                 )}
@@ -81,17 +78,17 @@ const styles = StyleSheet.create({
     loadingContainer: {
         flex: 1,
         margin: 2,
-        borderRadius: 5,
+        borderRadius: 20,
     },
     loadingContainer: {
         flex: 1,
-        borderRadius: 5,
+        borderRadius: 20,
         overflow: 'hidden',
     },
     shadowContainer: {
         margin: 2,
         marginHorizontal: 5,
-        borderRadius: 5,
+        borderRadius: 20,
         ...Platform.select({
             ios: {
                 shadowOffset: { height: 2, width: 2},
@@ -100,9 +97,10 @@ const styles = StyleSheet.create({
                 shadowColor: ColorsBlue.blue1400,
             },
             android: {
-                elevation: 5,
-            },
+
+                borderWidth: 1.2
+            }
         }),
-        height: 460,
+        height: height > 750 ? 460 : 370,
     },
 })

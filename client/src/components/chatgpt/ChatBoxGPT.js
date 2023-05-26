@@ -1,50 +1,40 @@
-
-import { BlurView } from 'expo-blur';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../constants/palet'
-import BlurWrapper from '../UI/BlurViewWrapper';
 
-
-const {width, height} = Dimensions.get('window');  
-function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraStyle, customColor}) {
+function ChatBoxGPT({ answer, isLastItem, thread_id, setTyping, typing, customColor}) {
     const [displayText, setDisplayText] = useState('');
 
-    useEffect(() => {
-
-        if (!isLastItem){
-            return;
-        }
-        if (typing) {
-            if (displayText.length < answer.length) {
-                setTimeout(() => {
-                    setDisplayText(answer.slice(0, displayText.length + 1));
-                    return;
-                }, 15);
-            } else {
-                setTyping(false);
-                setDisplayText(answer);
-                return;
-            }
-        }
+    const updateText = useCallback(() => {
+        let timer = null;
+        if (isLastItem && typing && displayText.length < answer.length) {
+            timer = setTimeout(() => setDisplayText(answer.slice(0, displayText.length + 1)), 15);
+        } 
         else {
-            setDisplayText(answer);
             setTyping(false);
+            setDisplayText(answer);
         }
+        return timer;
+    }, [displayText, answer, isLastItem, typing]);
 
-        // Cleanup function
-        if (displayText.length === answer.length) {
-            return () => {
-                setDisplayText(answer);
-                setTyping(true);
-            }
-        }
-    }, [displayText, typing]);
+    useEffect(() => {
+        let timer = updateText();
     
-    const showFullText = () => {
+        if (displayText.length === answer.length) {
+            setDisplayText(answer);
+            setTyping(true);
+        }
+        return () => {
+            if(timer) clearTimeout(timer);
+        }
+    }, [displayText, typing, updateText]);
+
+
+
+    const showFullText = useCallback(() => {
         setTyping(false);
         setDisplayText(answer);
-    };
+    }, [answer]);
 
     const shadowCustom = {
         shadowColor: `rgba(0, 0, 0, 1)`,
@@ -58,35 +48,48 @@ function ChatBoxGPT({ answer,  isLastItem, thread_id, setTyping, typing, extraSt
     const shadowOuterContainer = {
         shadowColor: customColor ? null: `rgba(0, 0, 0, 1)`, 
         shadowOpacity: customColor ? 0 : 1, 
-        backgroundColor: customColor? null : ColorsBlue.blue1390, 
-        borderColor: customColor ? ColorsBlue.blue1390 : `rgba(77, 77, 77, 0.17)`,
+        backgroundColor: customColor? null : ColorsBlue.blue1390, //Colors.blue1390
+        borderColor: customColor ? ColorsBlue.blue1390 : `rgba(77, 77, 77, 0.25)`, //Colors.blue1390 
         marginRight: customColor ? 18 : 8,
         paddingBottom: customColor ? 0 : 15,
     }
 
     return (
-        <View style = {[styles.outerContainer, shadowOuterContainer]}>
-            <Image
-            style={[styles.profilePicture, {left: customColor ? '1%' : '4.5%'}]}
-            source={thread_id > 5 ?
-                require(
-                    "./../../../assets/robotIcon.png"
-                ) :require("./../../../assets/chatgptLogo.png")
+        <View style = {{flex: 1}}>
+            <View style = {[styles.outerContainer, shadowOuterContainer]}>
+                <Image
+                style={[styles.profilePicture, {left: customColor ? '1%' : '4.5%'}]}
+                source={thread_id > 5 ?
+                    require(
+                        "./../../../assets/robotIcon.png"
+                    ) :require("./../../../assets/chatgptLogo.png")
+                }
+                resizeMode="cover"
+                />
+                    <View style = {[customColor && shadowCustom, {flex: 1, marginLeft: 50, backgroundColor: customColor}]}>
+                        <TouchableOpacity onPress={showFullText}>
+                            <View style={[styles.chatGPTTextBox]}>
+                                <Text style={styles.chatGPTText}>{isLastItem ? displayText : answer}</Text>
+                            </View>
+                        </TouchableOpacity>
+                </View> 
+            </View>
+            {   <View style = {{marginTop: 40}}>
+                    <TouchableOpacity onPress = {() => showFullText()} style = {{position: 'absolute', bottom: '3%', left: '45%'}}>
+                        <Text style = {[styles.chatGPTText, {fontSize: 18}]}>Skip</Text>
+                    </TouchableOpacity>
+                </View>
             }
-            resizeMode="cover"
-            />
-            <View style = {[customColor && shadowCustom, {flex: 1, marginLeft: 50, backgroundColor: customColor}]}>
-                <TouchableOpacity onPress={showFullText}>
-                    <View style={[styles.chatGPTTextBox]}>
-                        <Text style={styles.chatGPTText}>{isLastItem ? displayText : answer}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View> 
+
         </View>
     );
 }
 
 export default React.memo(ChatBoxGPT);
+
+
+
+
 
 const styles = StyleSheet.create({
     chatGPTTextBox: {
@@ -108,6 +111,7 @@ const styles = StyleSheet.create({
         top: '45%',
     },
     outerContainer: {
+        marginTop: 8,
         borderWidth: 1,
         marginHorizontal: 8,
         borderRadius: 20,

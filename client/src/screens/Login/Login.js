@@ -45,7 +45,7 @@ function Login({route}) {
             console.log(userProfile)
             userCtx.editUserProfile(userProfile);
             
-            const assignments = await getAllAssignments();
+            const assignments = await getAllAssignments(); //
             assignmentCtx.initializeAssignments(assignments)
             
             if (user_role === 'student') {

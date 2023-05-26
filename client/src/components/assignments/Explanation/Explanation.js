@@ -1,6 +1,6 @@
 
-import {  ImageBackground, ScrollView, StyleSheet,  View, Text } from 'react-native';
-import {useRef} from 'react';
+import {  ImageBackground, ScrollView, StyleSheet,  View, Text, Dimensions } from 'react-native';
+import React, {useEffect, useRef} from 'react';
 import { ColorsBlue,} from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,72 +9,65 @@ import SwitchScreens from '../BuildComponent.js/SwitchScreens';
 import SwitchScreensQuestions from '../questions/SwitchScreensQuestions';
 import Icon from '../../Icon';
 import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
+import { useIsFocused } from '../../../hooks/isFocused.hooks';
 
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function Explanation({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, answer, thread_id, video, isFocused, slideCountEnd, topic, ExplanationAnimation, setSlideCount}) {
-        const scrollViewRef = useRef(null);
+function Explanation({nextSlideHandler, prevSlideHandler, currentSlidePosition, slideTotal, index, slideCount, setTyping, typing, answer, thread_id, video, isFocused, slideCountEnd, topic, ExplanationAnimation, setSlideCount}) {
+    const isScreenFocused = slideCount - 2 <= index && slideCount >= index
+    const scrollViewRef = useRef(null);
 
-        const extraStyle = {
-            marginLeft: 8,
-            borderRadius: 10,
-            paddingLeft: 5
-        }
+    const extraStyle = {
+        marginLeft: 8,
+        borderRadius: 10,
+        paddingLeft: 5
+    }
 
-        const addStyle = {marginBottom: 20}
-        return (
-            <LinearGradient 
-            colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}
-            style = {styles.container}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            >
-            <ImageBackground
-            source={require('./../../../../assets/chatbackground.png')} 
-            style={
-            {flex: 1}
-            }
-            imageStyle={{opacity: 0.07}}
-            >
 
-                    <AssignmentOptionsBar 
-                        slideCount = {slideCount}
-                        nextSlideHandler = {nextSlideHandler}
-                        prevSlideHandler = {prevSlideHandler}
-                        slideCountEnd = {slideCountEnd}
-                        setSlideCount = {setSlideCount}
-                        text = {{text: 'Uitleg', left: '44%' }}
-                    />
+    const addStyle = {marginBottom: 20}
+    return (
+        <View style = {styles.container}>
+                <AssignmentOptionsBar 
+                    slideCount = {slideCount}
+                    nextSlideHandler = {nextSlideHandler}
+                    prevSlideHandler = {prevSlideHandler}
+                    slideCountEnd = {slideCountEnd}
+                    setSlideCount = {setSlideCount}
+                    text = {{text: 'Uitleg', left: '44%' }}
+                    slideTotal = {slideTotal}
+                    currentSlidePosition ={currentSlidePosition}
+                />
 
-                    {video && <VideoDisplay 
-                    video = {video}/>}
-                    
-                    {!video && <ExplanationAnimation/>}
-                
+                    {isScreenFocused && <ScrollView 
+                    style = {{flex:1 }}
+                    ref={scrollViewRef}
+                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                    >
 
-                        <ScrollView 
-                        style = {{flex:1, marginTop: 15 }}
-                        ref={scrollViewRef}
-                        onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-                        >
-                                {isFocused && <ChatBoxGPT 
-                                answer={answer}
-                                isLastItem={true}
-                                thread_id={thread_id}
-                                setTyping={setTyping}
-                                typing={typing}
-                                extraStyle={extraStyle}
-                                />}
-                
+                            {/* {video && <VideoDisplay 
+                            video = {video}/>}
+                            
+                            {!video && <ExplanationAnimation/>} */}
+                        
+                            {isFocused && <ChatBoxGPT 
+                            answer={answer}
+                            isLastItem={true}
+                            thread_id={thread_id}
+                            setTyping={setTyping}
+                            typing={typing}
+                            extraStyle={extraStyle}
+                            />}
+            
 
-                               
-                            </ScrollView>   
-                    </ImageBackground>
-                </LinearGradient>
-        )
+                            
+                        </ScrollView> 
+                    }  
+        </View>
+    )
 }
 
-export default Explanation
+export default React.memo(Explanation)
     
 const styles = StyleSheet.create({
         descriptionContainer: {
@@ -89,7 +82,7 @@ const styles = StyleSheet.create({
         },
         container: {
             flex: 1, 
-            backgroundColor: ColorsBlue.blue1360,
+            width: SCREEN_WIDTH,
         },
         imageBackground: { 
             flex: 1, 

@@ -90,11 +90,11 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
     }, [carCtx.carProperties, carCtx.upgradeLog])
 
     return (
-        <View style = {styles.shadow}>
+        <View style = {[styles.shadow, { backgroundColor: Platform.OS === 'android' && 'rgba(1, 1, 1, 0.4)'}]}>
             <BlurWrapper 
             intensity={2} 
             style={[styles.upgradeContainer, {backgroundColor: backgroundColors, borderColor: borderColors}]}
-            customColor={'rgba(60,60,90,0.4)'}>
+            customColor={'rgba(50, 60, 110, 0.4)'}>
                 <View style ={styles.outerContainer}>
                     <UpgradeTab
                     textColor={textColor}
@@ -132,12 +132,15 @@ export default UpgradeContainer
 
 const styles= StyleSheet.create({
     shadow: {
-        elevation: 5,
+        paddingBottom: 3, 
+        paddingRight: 2,
+
         shadowColor: 'black',
         shadowOpacity: 0.3,
         shadowOffset: {width: 0, height: 2},
         shadowRadius: 1,
         borderRadius: 20,
+        margin: 10,
     },
     blurContainer: {
         flex: 1,
@@ -146,7 +149,6 @@ const styles= StyleSheet.create({
     },
     upgradeContainer: {     
         justifyContent: 'center',
-        margin: 10,
         borderRadius: 20,
         borderWidth: 0.4,
         overflow: 'hidden',

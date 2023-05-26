@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     modal: {
         width: '70%',
         height: Platform.OS === 'ios' ? 220 : 230,
-        borderRadius: 5,
+        borderRadius: 20,
         borderWidth: 0.7,
         borderColor: ColorsBlue.blue700,
         backgroundColor: ColorsBlue.blue1100,

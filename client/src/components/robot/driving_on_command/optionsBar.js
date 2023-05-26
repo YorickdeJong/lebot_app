@@ -22,6 +22,7 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
     const opacityInterpolationPower = useRef(new Animated.Value(1)).current;
     const [iconButtonPower, setIconButtonPower] = useState("power");
 
+
     const toggleModalOpen = () => {
         setIsStopActive(!isStopActive); 
         return;
@@ -80,16 +81,17 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
                         addStyle={addStyleIcon}
                         />
                         
-                        <Animated.View style = {{opacity: blinkCtx.shouldBlinkPowerButton ? opacityInterpolationPower.current : 1}}> 
-                            <Icon 
-                            icon = {midIcon ? midIcon : (socketCtx.power ? "pause-circle-outline" : "power")}
-                            size={45}
-                            color={blinkCtx.shouldBlinkPowerButton ? 'gold' :  ColorsBlue.blue200}
-                            onPress = {midIconHandler}
-                            differentDir={true}
-                            addStyle={addStyleIcon}
-                            />
-                        </Animated.View>
+                            <Animated.View style = {{opacity: blinkCtx.shouldBlinkPowerButton ? opacityInterpolationPower.current : 1}}> 
+                                <Icon 
+                                icon = {midIcon ? midIcon : (socketCtx.power && socketCtx.isConnected ? "pause-circle-outline" : "power")}
+                                size={45}
+                                color={blinkCtx.shouldBlinkPowerButton ? 'gold' :  ColorsBlue.blue200}
+                                onPress = {midIconHandler}
+                                differentDir={true}
+                                addStyle={addStyleIcon}
+                                />
+                            </Animated.View>
+                    
 
                         <Animated.View style = {{opacity: blinkCtx.shouldBlinkChartModal ? opacityInterpolation.current : 1}}> 
                             <TouchableOpacity onPress={toggleModalOpen}>
@@ -124,7 +126,7 @@ const styles = StyleSheet.create({
         margin: 3,
         marginTop: 8,
         marginHorizontal: 5,
-        borderRadius: 5,
+        borderRadius: 20,
         ...Platform.select({
             ios: {
                 shadowOffset: { height: 2, width: 1 },
@@ -132,16 +134,13 @@ const styles = StyleSheet.create({
                 shadowOpacity: 1,
                 shadowColor: ColorsBlue.blue1400,
             },
-            android: {
-                elevation: 5,
-            },
         }),
         flex: 0.7
     },
     upperContainer: {
         borderColor: ColorsBlue.blue1400,
-        borderWidth: 0.5,
-        borderRadius: 5,
+        borderWidth: Platform.OS === 'android' ? 1.2 :0.5,
+        borderRadius: 20,
         overflow: 'hidden',
         flex: 1
     },

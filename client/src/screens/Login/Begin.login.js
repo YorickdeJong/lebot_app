@@ -63,15 +63,15 @@ function Begin() {
           snapToInterval={screenHeight}
           snapToAlignment="center"
         >
-          <View style={[styles.container, { width: screenWidth , height: screenHeight}]}>
+          <View style={[styles.container, { width: screenWidth , height: screenHeight - 30}]}>
             <LandingPageOne blinkOpacity={blinkOpacity} />
           </View>
 
-          <View style={[styles.container, { width: screenWidth, height: screenHeight }]}>
+          <View style={[styles.container, { width: screenWidth, height: screenHeight  + 30}]}>
             <LandingPageTwo blinkOpacity={blinkOpacity} />
           </View>
 
-          <View style={[styles.container, { width: screenWidth, height: screenHeight }]}>
+          <View style={[styles.container, { width: screenWidth, height: screenHeight  - 30}]}>
             <LandingPageThree blinkOpacity={blinkOpacity} />
           </View>
         </ScrollView>

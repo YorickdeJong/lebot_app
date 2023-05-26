@@ -93,36 +93,3 @@ function getTitleXLabelYLabel(dataType) {
     }
 }
 
-
-const styles = StyleSheet.create({
-    graphContainer: {
-        borderRadius: 10,
-        flex: 1,
-    },
-    titleContainer: {
-        height: 45,
-        marginBottom: 20,
-        shadowColor: `rgba(11, 11, 11)`,
-        shadowOffset: {height: 2, width: 0},
-        shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 2,
-    },
-    title: {
-        paddingTop: 7,
-        paddingLeft: 10,
-        textAlign: 'center', 
-        fontSize: 23, 
-        fontWeight: '300', 
-        color: ColorsBlue.blue50,
-    },
-    legend: {
-        zIndex: 20,
-        right: 2,
-        position: 'absolute',
-        top: 10,
-        borderRadius: 6,
-        alignItems: 'center', // Add this line
-        justifyContent: 'center', // Add this line
-    }
-})

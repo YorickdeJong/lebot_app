@@ -33,13 +33,13 @@ function TextDisplay({title, description, showIcon, differentIcon, setCloseHandl
                             {!showDescription && 
                             <TouchableOpacity
                             onPress = {expandDescriptionHandler}>
-                                <Text style = {[styles.description, {marginLeft: 8, color: ColorsBlue.blue50}]}>...meer</Text>
+                                <Text style = {[styles.description, {marginLeft: 8, color: ColorsGray.gray500,}]}>...meer</Text>
                             </TouchableOpacity>
                             }
                         </View>
                         {showDescription && <TouchableOpacity
                             onPress = {expandDescriptionHandler}>
-                            <Text style = {[styles.description, {marginLeft: 15, marginTop: 10, color: ColorsBlue.blue50}]}>...minder</Text>
+                            <Text style = {[styles.description, {marginLeft: 15, marginTop: 10, color: ColorsGray.gray500,}]}>...minder</Text>
                         </TouchableOpacity>
                         }
                 </View> 
@@ -72,9 +72,9 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 25,
-        fontWeight: '300',
+        fontWeight: '302',
         marginLeft: 15,
-        color: ColorsBlue.blue200,
+        color: ColorsGray.gray500,
         textAlign: 'center',
         paddingRight: 10,
         paddingTop: 8,
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     },
     description: {
         fontSize: 16,
-        color: ColorsGray.gray300,
+        color: ColorsGray.gray500,
         lineHeight: 30
     },
     border: {
@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
     },
     outerContainer: {
         backgroundColor: ColorsBlue.blue1390,
-        marginTop: 8,
         marginHorizontal: 8,
         borderWidth: 1,
         borderColor: `rgba(77, 77, 77, 0.2)`,

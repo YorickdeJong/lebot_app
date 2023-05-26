@@ -2,30 +2,24 @@ import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native'
+import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, Dimensions, TouchableOpacity, View, Alert } from 'react-native'
 import { ColorsBlue, ColorsGreen } from '../../../constants/palet'
-import { AssignmentContext } from '../../../store/assignment-context'
 import { ChartContext } from '../../../store/chart-context'
-import { SocketContext } from '../../../store/socket-context'
 import Icon from '../../Icon'
-import TextDisplay from '../BuildComponent.js/TextDisplay'
 import ImageContainer from './ImageContainer'
 import QuestionContainer from './QuestionContainer'
-import { ipAddressRaspberryPi } from '../../../data/ipaddresses.data'
 import { UserProfileContext } from '../../../store/userProfile-context'
 import DisplayCircuit from './CustomContainersProject2/DisplayCircuit'
 import CarAnimation from './CustomCarAnimationContainer/CarAnimation'
 import CustomMeasurementModal from '../../UI/CustomMeasurementModal'
 import { BlinkContext } from '../../../store/animation-context'
-import { TimeContext, TimeContextProvider } from '../../../store/time-context'
-import { CarContext } from '../../../store/car-context'
 import ChatGPTQuestionsContainer from './CustomQuestionContainers/ChatGPTQuestionsContainer'
 
 
 
-function Questions({
-    title, 
-    description, 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+function Questions({ 
+    currentSlidePosition, 
     questions, 
     assignmentNumber, 
     isFocused, 
@@ -41,15 +35,16 @@ function Questions({
     CustomContainer,
     answersStudent,
     showCarAnimation,
-    customMeasurement,
+    index,
     chatgptAnswer,
-    currentExerciseLesson
+    currentExerciseLesson,
+    slideTotal,
 }){
+    const isScreenFocused = slideCount - 2 <= index && slideCount >= index
+
     const chartCtx = useContext(ChartContext);
     const userprofileCtx = useContext(UserProfileContext);
 
-
-    const navigation = useNavigation(); 
 
     const opacityInterpolation = useRef(new Animated.Value(1)).current;
     const keyboardHeight = useRef(new Animated.Value(1)).current;
@@ -69,14 +64,12 @@ function Questions({
     //filter out assignment∂
     const questionData = questions[assignmentNumber - 1]; //Filter for correct subject
     
-    //check if screen is focused
-    const isFocussedDiffScreen = useIsFocused()
     const [close, setClose] = useState(false);
-    
-    
+
+
     // New color interpolation code to show data button
     useEffect(() => {
-        if (assignmentNumber === 2 && questionData.subject === 'MOTOR' && isFocused) {
+        if (slideCount === 5 && isFocused) {
             blinkCtx.setShouldBlinkDataButton(true)
             opacityInterpolation.current = blinkCtx.colorAnimation.interpolate({
                 inputRange: [0, 0.5, 1],
@@ -86,7 +79,7 @@ function Questions({
         else {
             blinkCtx.setShouldBlinkDataButton(false)
         }
-    }, [isFocused]);
+    }, [isFocused, slideCount]);
     
     useEffect(() => {
         const keyboardWillShowSub = Keyboard.addListener('keyboardWillShow', keyboardWillShow);
@@ -160,26 +153,12 @@ function Questions({
     }
 
     return(
-        <LinearGradient 
-                colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}
-                style = {styles.container}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                >
-                <ImageBackground
-                source={require('./../../../../assets/chatbackground.png')} 
-                style={
-                {flex: 1}
-                }
-                imageStyle={{opacity: 0.07}}
-                >
-                <Animated.View style={{flex: 1, marginBottom: keyboardHeight}}>
+            <Animated.View style={{flex: 1, marginBottom: keyboardHeight, width: SCREEN_WIDTH,}}>
 
-                        <ScrollView style = {{flex: 1}}
-                        showsVerticalScrollIndicator={false}>
-                            {isFocused && isFocussedDiffScreen && 
-
-                            <ImageContainer 
+                    <ScrollView style = {{flex: 1}}
+                    showsVerticalScrollIndicator={false}>
+                
+                                <ImageContainer 
                                 assignment_number={questionData.assignment_number}
                                 tokens={questionData.tokens}
                                 title={questionData.title}
@@ -198,10 +177,16 @@ function Questions({
                                 prevSlideHandler = {prevSlideHandler}
                                 slideCountEnd = {slideCountEnd}
                                 setSlideCount = {setSlideCount}
+                                slideTotal = {slideTotal}
+                                currentSlidePosition = {currentSlidePosition}
+                                isKeyboardOpen = {isKeyboardOpen}
                             />
-                            }
+                            
 
 
+                            { 
+                            isScreenFocused && 
+                            <>
                             
                             {questionData.subject === 'LED' && 
                             <DisplayCircuit 
@@ -220,17 +205,7 @@ function Questions({
                                 
                             />
                             }
-                                {!close ? 
-                                    (<TextDisplay
-                                    title = {title}
-                                    description= {description}
-                                    differentIcon="planet"
-                                    iconSize={29}
-                                    setCloseHandler={() => setSlideCount(0)}
-                                    showBorder={true}
-                                    />
-
-                                    ):( 
+                                {close &&
                                     <View style = {styles.compress}>
                                         <Icon
                                         size = {30 }
@@ -238,7 +213,6 @@ function Questions({
                                         icon="lock-open-outline"
                                         onPress={setCloseHandler}/>
                                     </View> 
-                                    )
                                 }
 
                                 <QuestionContainer 
@@ -257,6 +231,7 @@ function Questions({
                                 setInput = {setInput}
                                 currentExerciseLesson = {currentExerciseLesson}
                                 chatgptAnswer = {chatgptAnswer}
+                                chartAvailable = {chartAvailable}
                                 />
                                 
                                 
@@ -272,11 +247,11 @@ function Questions({
                                 {chatgptAnswer && 
                                     <ChatGPTQuestionsContainer />
                                 }
-                        </ScrollView>  
-                </Animated.View>
-            </ImageBackground>
-        </LinearGradient>
-    )
+                            </>
+                        }   
+                    </ScrollView>  
+            </Animated.View>
+)
 }
 
 export default React.memo(Questions)
@@ -285,7 +260,7 @@ export default React.memo(Questions)
 const styles = StyleSheet.create({ 
     container: {
         flex: 1, 
-        backgroundColor: ColorsBlue.blue1360,
+        width: SCREEN_WIDTH,
     },
     compress: {
         position: 'absolute',

@@ -10,7 +10,7 @@ const BlurWrapper = ({ children, intensity, tint, style, customColor }) => {
     </BlurView>
   ) : (
         <View 
-        style={[style,{backgroundColor: customColor}]}>
+        style={[style, {backgroundColor: customColor}]}>
             {children}
         </View>
   );

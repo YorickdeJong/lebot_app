@@ -133,7 +133,6 @@ const styles  = StyleSheet.create({
         flexDirection: 'row',
         paddingVertical: 3,
         backgroundColor: ColorsBlue.blue1390,
-        marginTop: 8,
         marginHorizontal: 8,
         borderWidth: 1,
         borderColor: `rgba(77, 77, 77, 0.2)`,

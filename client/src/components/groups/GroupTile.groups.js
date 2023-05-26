@@ -1,17 +1,18 @@
 import { LinearGradient } from 'expo-linear-gradient';
-import {Text, View, StyleSheet, Pressable, Alert} from 'react-native';
+import {Text, View, StyleSheet, Pressable, Alert, Platform} from 'react-native';
 import { ColorsBlue, ColorsDarkerGreen, ColorsGray, ColorsGreen, ColorsRed } from '../../constants/palet';
 import Icon from '../Icon';
 import { GroupTeacherContext } from '../../store/group-teacher-context';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { TimeContext } from '../../store/time-context';
 import { useFetchTimeLessonsDataSocket } from '../../hooks/time-lessons.hook';
 import { UserProfileContext } from '../../store/userProfile-context';
 import { useFocusEffect } from '@react-navigation/native';
 import CountDownModal from './CountDownModal';
+import { Animated } from 'react-native';
 
 
-function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCount, className, user_role, tileType, deletehHandler, editHandler, class_id, group_id}) {
+function GroupCategoryTile({groupNames, navigationHandler, fadeAnim, groupMembers, groupCount, className, user_role, tileType, deletehHandler, editHandler, class_id, group_id}) {
     const title = tileType === 'Class' ? 'Klas: ' : 'Groep: '
     const groupTeacherCtx = useContext(GroupTeacherContext)
     const userprofileCtx = useContext(UserProfileContext)
@@ -20,6 +21,10 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
     const timeCtx = useContext(TimeContext)
     const currentActiveLessonData = timeCtx.filterSpecificLesson(class_id)
     const [timeLeft, setTimeLeft] = useState(0);
+
+
+
+
 
     useEffect(() => {
         if (currentActiveLessonData && currentActiveLessonData.duration !== 10000) {
@@ -55,10 +60,10 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
         else {
             if (currentActiveLessonData) {
                 // timeCtx.toggleTimeModal()
-                Alert.alert(`Les ${currentActiveLessonData.lesson_number} is bezig, begin met opdrachten oplossen`)
+                Alert.alert(`Les ${currentActiveLessonData.lesson_number} is bezig', 'begin met discussiëren`)
             }
             else{
-                Alert.alert('Er is geen timer actief, vraag je docent om een timer te starten')
+                Alert.alert('Er is geen timer actief', 'vraag je docent om een timer te starten')
             }
         }
     }
@@ -68,17 +73,22 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
     };
 
     let color = [ColorsBlue.blue1300, ColorsBlue.blue1000]
-    if (tileType === 'Class' && user_class_id === class_id) {
-        color = [ColorsBlue.blue1300, ColorsBlue.blue600]
+    const class_condition = tileType === 'Class' && user_class_id === class_id
+    const group_condition = tileType === 'Group' && user_group_id === group_id
+    if (class_condition) {
+        color = [ColorsBlue.blue1400, ColorsBlue.blue1000, ColorsBlue.blue600]
     }
-    if (tileType === 'Group' && user_group_id === group_id) {
-        color = [ColorsBlue.blue1300, ColorsBlue.blue600]
+    if (group_condition) {
+        color = [ColorsBlue.blue1300, ColorsBlue.blue1000, ColorsBlue.blue600]
     }
 
 
     const timeCondition = currentActiveLessonData  ? (currentActiveLessonData.duration !== 10000 ? `Les ${currentActiveLessonData.lesson_number} - ${timeCtx.formatTimeLeft(timeLeft)}` : 'Les actief zonder tijd') : `geen les actief`
-    
+    const userInClass = tileType === 'Class' ? user_class_id === class_id : user_group_id === group_id
+    const alert = () => Alert.alert(tileType === 'Class' ? 'Je zit in deze klas' : 'Je zit in deze groep')
+
     return(
+        <Animated.View style = {[styles.shadow, {backgroundColor: Platform.OS === 'android' && 'rgba(0, 0, 0, 0.9)', opacity: (group_condition || class_condition) ? fadeAnim : 1}]}>
         <Pressable 
         style = {styles.chatBox}
         onPress={navigationHandler}
@@ -97,10 +107,10 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
                 <View style = {{marginLeft: user_role === 'teacher' ? 25: 0}}>
                     <View style={styles.iconWrapper}>
                         <Icon 
-                        icon = {user_role === 'teacher' ? 'settings-outline' : "head-plus-outline"}
+                        icon = {user_role === 'teacher' ? ('settings-outline') : (userInClass ? "head-check-outline" : "head-plus-outline")}
                         size = {user_role === 'teacher' ? 30 : 40}
-                        color = {user_role === 'teacher' ? ColorsGray.gray400 :  ColorsRed.red500}
-                        onPress = {user_role === 'teacher' ? () => handleEditPress(class_id) : () => handleEditPress(class_id)}
+                        color = {user_role === 'teacher' ? ( ColorsGray.gray400 ) : ( userInClass ? ColorsGreen.green500 : ColorsRed.red500 )}
+                        onPress = {user_role === 'teacher' ? (() => handleEditPress(class_id) ): ( userInClass ? alert : () => handleEditPress(class_id))}
                         differentDir = {user_role === 'teacher' ? false : true}
                         />
                     </View>
@@ -135,6 +145,7 @@ function GroupCategoryTile({groupNames, navigationHandler, groupMembers, groupCo
                 </View>}
             </LinearGradient> 
         </Pressable>
+    </Animated.View>
     )
 }
 
@@ -142,6 +153,18 @@ export default GroupCategoryTile
 
 
 const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: 'rgba(0, 0,0, 1)',
+        shadowOffset: {height: 3, width: 2},
+        shadowRadius: 3,
+        shadowOpacity: 1,
+        borderRadius: 20, 
+        height: 142, 
+        paddingRight: 2,
+        paddingBottom: 4,
+        marginTop: 15, 
+        marginHorizontal: 10,
+    },
     timer: {
         position: 'absolute',
         top: '13%',
@@ -158,21 +181,14 @@ const styles = StyleSheet.create({
         left: 10
     },
     chatBox: {
-        borderColor: ColorsBlue.blue900,
+        borderColor: ColorsBlue.blue1150,
         borderWidth: 0.9,
         flex: 1,
-        marginTop: 20, 
-        margin: 10,
         height: 140,
-        borderRadius: 6, 
-        elevation: 4, 
-        shadowColor: ColorsBlue.blue1150,
-        shadowOffset: {height: 3, width: 2},
-        shadowRadius: 2,
-        shadowOpacity: 1,
+        borderRadius: 20, 
     },
     colorGradient: {
-        borderRadius: 6, 
+        borderRadius: 20, 
         flex: 1,
         justifyContent: 'space-around',
         alignItems: 'center',

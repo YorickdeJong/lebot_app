@@ -5,19 +5,23 @@ import InformationBuildScreenThree from "../../../components/assignments/screens
 function BuildScreen({tabIndex, currentIndex, subject}){
     const isFocused = tabIndex === currentIndex;
 
-    
+    if (!isFocused){
+        return
+    }
+
     return (
-    <>
-        {subject === 'MOTOR' && <InformationBuildScreenOne
-        isFocused={isFocused}
-        />}
-        {subject === 'LED' && <InformationBuildScreenTwo 
-        isFocused={isFocused}
-        />}
-        {subject === 'CAR' && <InformationBuildScreenThree
-        isFocused={isFocused}
-        />}
-    </>
+            isFocused &&
+                <>
+                    {subject === 'MOTOR' && <InformationBuildScreenOne
+                    isFocused={isFocused}
+                    />}
+                    {subject === 'LED' && <InformationBuildScreenTwo 
+                    isFocused={isFocused}
+                    />}
+                    {subject === 'CAR' && <InformationBuildScreenThree
+                    isFocused={isFocused}
+                    />}
+                </>
     )
 }
 

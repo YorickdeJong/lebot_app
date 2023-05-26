@@ -1,11 +1,11 @@
 import { LinearGradient } from "expo-linear-gradient"
-import { ImageBackground, StyleSheet, Text, View } from "react-native"
+import { ImageBackground, StyleSheet, Text, View, Dimensions } from "react-native"
 import { ColorsBlue } from "../../../constants/palet"
 import { BlurView } from "expo-blur"
 
 
 
-
+const { height } = Dimensions.get('window')
 function PowerOffContianer() {
     return (
         <View style={styles.shadowContainer}>
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     shadowContainer: {
         margin: 2,
         marginHorizontal: 5,
-        borderRadius: 5,
+        borderRadius: 20,
         ...Platform.select({
             ios: {
                 shadowOffset: { height: 2, width: 2},
@@ -32,11 +32,9 @@ const styles = StyleSheet.create({
                 shadowOpacity: 1,
                 shadowColor: ColorsBlue.blue1400,
             },
-            android: {
-                elevation: 5,
-            },
+
         }),
-        height: 460,
+        height: height > 750 ? 460 : 370,
     },
     powerOffContianer: {
         flex: 1,
@@ -54,9 +52,9 @@ const styles = StyleSheet.create({
     },
     loadingContainer: {
         flex: 1,
-        borderRadius: 5,
+        borderRadius: 20,
         borderColor: ColorsBlue.blue1400,
-        borderWidth: 0.5,
+        borderWidth: Platform.OS === 'android' ? 1.2 : 0.5,
         overflow: 'hidden',
     },
 })

@@ -56,8 +56,8 @@ function CarContextProvider({children}) {
 
     useEffect(() => {
         loadCarDataFromStorage();
-         loadCarUnlockFromStorage();
-         loadShowModal();
+        loadCarUnlockFromStorage();
+        loadShowModal();
     }, []);
 
     async function loadShowModal() {

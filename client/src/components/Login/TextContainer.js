@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native"
-import {ColorsBlue, ColorsGray, ColorsGreen } from "../../constants/palet"
+import {ColorsBlue, ColorsGray, ColorsGreen, ColorsRed } from "../../constants/palet"
 import { ColorContext } from "../../store/color-context";
 
 function TextContainer({placeholder, setUserDetails, value, isValid, addStyle, secure}) {
@@ -12,7 +12,7 @@ function TextContainer({placeholder, setUserDetails, value, isValid, addStyle, s
     return(
     <View style = {addStyle}>
         <TextInput 
-        style= {[textInput, isValid && {backgroundColor: ColorsGreen.error300}]}
+        style= {[textInput, isValid && {backgroundColor: ColorsRed.red500}]}
         onChangeText = {setUserDetails}
         value={value}
         secureTextEntry={secure}

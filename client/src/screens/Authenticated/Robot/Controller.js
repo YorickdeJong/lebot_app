@@ -34,6 +34,12 @@ function Controller({ navigation, route }) {
     }, [socketCtx.socket]);
 
     const powerHandler = useCallback(() => {
+        if (!socketCtx.isConnected) {
+            Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk')
+            // Try to reconnect
+            socketCtx.socket.current.connect();;
+            return 
+        }
         socketCtx.setPower((prevPower) => !prevPower);
         if (!socketCtx.power) {
             if (startScriptCommand) {

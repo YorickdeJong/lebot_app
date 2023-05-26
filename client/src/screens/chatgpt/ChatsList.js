@@ -35,7 +35,7 @@ function Chats({navigation, route}) {
 
     return (
         <LinearGradient 
-            colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}  
+            colors={[ColorsBlue.blueblack1600, ColorsBlue.blueblack1500]}  
             style = {styles.container}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -45,7 +45,7 @@ function Chats({navigation, route}) {
                 style={
                 {flex: 1, resizeMode: 'contain'}
                 }
-                imageStyle={{opacity: 0.05}}
+                imageStyle={{opacity: 0.12}}
                 >
                 <View style = {{flex: 7}}>
                     <FlatList 

@@ -88,9 +88,9 @@ const updateMeasurementResult = async (req, res) => {
     const client = await pool.connect();
 
     const record_number = req.params.record_number;
-    const { school_id, class_id, group_id, assignment_number, distance, velocity, time, user_id, title, type, motor_number, subject } = req.body;
+    const { school_id, class_id, group_id, assignment_number, distance_time, velocity_time, user_id, title, type, motor_number, subject } = req.body;
 
-    const values = [school_id, class_id, group_id, assignment_number, distance, velocity, time, user_id, title, type, motor_number, subject, record_number];
+    const values = [school_id, class_id, group_id, assignment_number, distance_time, velocity_time, user_id, title, type, motor_number, subject, record_number];
 
     // Check if the measurement result exists in the database
     const checkExistsQuery = existInDatabaseQuery;

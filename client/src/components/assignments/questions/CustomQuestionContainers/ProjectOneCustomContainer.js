@@ -37,7 +37,6 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
     useEffect(() => {
         async function fetchData() {
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, assignment_id, subject);
-            console.log('data received from database', data)
             
             if (data && data.answers_open_questions.length > 0) {
                 setFilteredTry(data.answers_multiple_choice.filter(answer => answer !== null).length)

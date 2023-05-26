@@ -1,4 +1,4 @@
-import {  ImageBackground, ScrollView, StyleSheet,  View } from 'react-native';
+import {  ImageBackground, ScrollView, StyleSheet,  View, Dimensions } from 'react-native';
 import { ColorsBlue, } from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -9,9 +9,10 @@ import { useContext, useEffect, useLayoutEffect, useState, useRef } from 'react'
 import { BlinkContext } from '../../../store/animation-context';
 import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
 
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function CodingExample({nextSlideHandler, prevSlideHandler, slideCount, setTyping, typing, message, slideCountEnd, setSlideCount, title}){
-    const description = "Dit is een beschrijving van het onderwerp. Hier leren we heel veel dingen over batterijen en kabels en over hoe we ze moeten aansluiten."
+function CodingExample({nextSlideHandler, prevSlideHandler, slideTotal, slideCount, currentSlidePosition, setTyping, typing, message, slideCountEnd, setSlideCount, index}){
+    const isScreenFocused = slideCount - 1 === index
 
     const scrollViewRef = useRef(null);
     
@@ -44,27 +45,31 @@ function CodingExample({nextSlideHandler, prevSlideHandler, slideCount, setTypin
                         slideCountEnd = {slideCountEnd}
                         setSlideCount = {setSlideCount}
                         text = {{text: 'Uitleg', left: '44%' }}
+                        slideTotal = {slideTotal}
+                        currentSlidePosition = {currentSlidePosition}
+                        noPlanet = {true}
                     />
 
-                    <LightBulbAnimation />
-
-                    <TextDisplay 
-                    title={title}
-                    description={description}/>
 
                     <ScrollView 
-                    style = {{flex: 1, marginTop: 12}}
+                    style = {{flex: 1}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                     >
-                            <ChatBoxGPT 
-                            answer={message.answer}
-                            isLastItem={true}
-                            thread_id={message.thread_id}
-                            setTyping={setTyping}
-                            typing={typing}
-                            extraStyle={extraStyle}
-                            />
+                            {isScreenFocused && 
+                                <>
+                                    <LightBulbAnimation />
+
+                                    <ChatBoxGPT 
+                                    answer={message.answer}
+                                    isLastItem={true}
+                                    thread_id={message.thread_id}
+                                    setTyping={setTyping}
+                                    typing={typing}
+                                    extraStyle={extraStyle}
+                                    />
+                                </>
+                            }
                 </ScrollView>   
             </ImageBackground>
         </LinearGradient>
@@ -76,6 +81,7 @@ export default CodingExample;
 const styles = StyleSheet.create({
     container: {
         flex: 1, 
+        width: SCREEN_WIDTH,
     },
     imageBackground: {
         flex: 1, 

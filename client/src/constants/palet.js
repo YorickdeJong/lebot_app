@@ -19,8 +19,10 @@ export const ColorsBlue = {
   blue1350: '#01011C',
   blue1360: 'rgba(2,6,27, 1)',
   blue1375: '#010118',
-  blue1390: 'rgba(0,1,23, 1)',
+  blue1390: Platform.OS === 'ios' ? 'rgba(9, 9, 45, 1)' : 'rgba(12, 12, 48, 1)',
   blue1400: '#000014',
+  blueblack1500: Platform.OS === 'ios' ? 'rgba(2, 2, 22, 1)' : 'rgba(3, 3, 23, 1)', //'rgba(2,2, 15, 1)', // 'rgba(20,20,45,1)',
+  blueblack1600: Platform.OS === 'ios' ? 'rgba(2, 2, 18, 1)' : 'rgba(3, 3, 15, 1)', //'rgba(2, 2, 8, 1)', //'rgba(10,10,15,1)', //rgba(2, 2, 8, 1)
   gray100: '#cccccc',
   gray200: '#808080',
   gray300: '#303030',

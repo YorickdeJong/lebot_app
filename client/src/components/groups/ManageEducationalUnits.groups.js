@@ -1,16 +1,55 @@
 
-import { View,  ImageBackground, StyleSheet, FlatList} from 'react-native'
-import { ColorsBlue } from '../../constants/palet'
+import { View,  ImageBackground, StyleSheet, FlatList, Alert, Text, TouchableOpacity, Dimensions, Animated} from 'react-native'
+import { ColorsBlue, ColorsGray } from '../../constants/palet'
 import { useNavigation } from '@react-navigation/native';
 import GroupCategoryTile from './GroupTile.groups';
 import TeacherModal from '../Teacher/TeacherModal.components';
-import GroupStudent from '../../screens/Authenticated/Groups/GroupStudents.screen';
 import TeacherTimeModal from '../Teacher/TeacherTimeModal';
 import { TimeContext } from '../../store/time-context';
-import { useContext } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
+import { LinearGradient } from 'expo-linear-gradient';
+import { UserProfileContext } from '../../store/userProfile-context';
+import { InformationContext } from '../../store/information-context';
+import ChatBoxGPT from '../chatgpt/ChatBoxGPT';
+import { TextBubbleLeft } from '../UI/TextBubble';
+import { Image } from 'react-native';
+
+const { width, height } = Dimensions.get('window');
 
 function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandler, addUserHandler, classroom_id, className, data, setDbUpdate, dataUser, tabNav}){
     const navigation = useNavigation();
+    const userprofileCtx = useContext(UserProfileContext)
+    const user_class_id = userprofileCtx.userprofile.class_id
+    const user_group_id = userprofileCtx.userprofile.group_id
+    const informationCtx = useContext(InformationContext)
+    const fadeAnim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 0
+    const [explanationState, setExplanationState] = useState(false);
+
+    useEffect(() => {
+        fadeAnim.setValue(1)
+        const animation = Animated.loop(
+          Animated.sequence([
+            Animated.timing(fadeAnim, {
+              toValue: 0.4,
+              duration: 2000,
+              useNativeDriver: false,
+            }),
+            Animated.timing(fadeAnim, {
+              toValue: 1,
+              duration: 2000,
+              useNativeDriver: false,
+            }),
+          ]),
+          {
+            iterations: -1,
+          },
+        )
+        
+        animation.start();
+        return () => {
+            animation.stop();
+        };
+    }, []);
 
     function mergeDataWithNames(userNames, data) {
         return data.map(item => {
@@ -29,7 +68,7 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
         });
     }
 
-    function renderGroups({item}) {   
+    function renderGroups({item, index}) {   
         //Don't display tiles that do not have the selected classroom
         function navigationHandler(tile) {
             if (user_role === 'teacher'){
@@ -44,7 +83,16 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
                         });
                         break;
                     case 'Group':
-                        navigation.navigate('IndividualGroup') // add specfic group info
+                        //REPLACE WITH USER SCREENS
+                        navigation.navigate('groups', {
+                            screen: 'IndividualGroup', 
+                            params: {
+                                group_id: item.group_id,
+                                group_name: item.name,
+                                classroom_id: item.class_id,
+                                class_name: item.name,
+                            },
+                    }) // add specfic group info
                 }
             } 
             else {
@@ -58,41 +106,60 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
                             },
                         });
                         break;
+
                     case 'Group':
-                        //REPLACE WITH USER SCREENS
-                        navigation.navigate('IndividualGroup') // add specfic group info
+                        if (user_class_id === item.class_id && user_group_id === item.group_id) {
+                            //REPLACE WITH USER SCREENS
+                            console.log('GROUPMEMBVERS', item.usernames)
+                            navigation.navigate('groups', {
+                                screen: 'IndividualGroup', 
+                                params: {
+                                    group_members: item.usernames,
+                                    group_name: item.name,
+                                    class_name: className,
+                                },
+                            }) // add specfic group info
+                        }
+                        else {
+                            Alert.alert('Dit is niet jouw groep', 'Je kan alleen je eigen groep bekijken')
+                        }
                 }
             }
         }
 
-        return (
-            <GroupCategoryTile
-                navigationHandler={navigationHandler.bind(this, tileType)}
-                addUserHandler={addUserHandler}
-                groupNames={item.name}
-                groupMembers={item.usernames} //change this to 
-                groupCount={item.current_count + '/' + item.max_count} // change that it contains max number of members + current participants
-                user_role={user_role}
-                tileType={tileType}
-                deletehHandler={deletehHandler}
-                editHandler={editHandler}
-                class_id = {item.class_id}
-                group_id = {tileType === 'Group' ? item.group_id : false }
-                className = {className}
-            />
+        return (           
+                <GroupCategoryTile
+                    navigationHandler={navigationHandler.bind(this, tileType)}
+                    addUserHandler={addUserHandler}
+                    groupNames={item.name}
+                    groupMembers={item.usernames} //change this to 
+                    groupCount={item.current_count + '/' + item.max_count} // change that it contains max number of members + current participants
+                    user_role={user_role}
+                    tileType={tileType}
+                    deletehHandler={deletehHandler}
+                    editHandler={editHandler}
+                    class_id = {item.class_id}
+                    group_id = {tileType === 'Group' ? item.group_id : false }
+                    className = {className}
+                    fadeAnim = {fadeAnim}
+                />  
+
         )
     }
  
     const mergedData = dataUser ? mergeDataWithNames(dataUser, data) : data;
 
     return (
-        <View style = {styles.container}>
+        <LinearGradient style = {styles.container}
+        colors={[ColorsBlue.blueblack1600, ColorsBlue.blueblack1500, ]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}>
             <ImageBackground
             source={require('./../../../assets/chatbackground.png')} 
             style={
             {flex: 1, resizeMode: 'contain'}
             }
-            imageStyle={{opacity: 0.15}}
+            imageStyle={{opacity: 0.1}}
             >
                 <View style = {{flex: 1}}>
                     <FlatList
@@ -100,6 +167,36 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
                     data = {mergedData} //toevoegen dat deze data alleen voor teacher geldt -> wil eigenlijk dat dit gefetch wordt via een socket
                     renderItem = {renderGroups}
                     />
+                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Class'  && !explanationState && 
+                        <View style = {{position: 'absolute', top: height > 750 ? '50%' : '55%', left: '12%'}}>  
+                            <View style = {{}}>
+                                <TextBubbleLeft
+                                    title = 'Kies je klas en groep'
+                                    text = {`• Je deelt alle antwoorden en metingen met je groepsleden\n• Werk samen als een team! \n• Brainstorm met elkaar, dit zal jullie helpen om de juiste antwoorden te vinden!`}
+                                    setExplanationState={setExplanationState.bind(this, true)}
+
+                                />
+                            </View>
+                            <View style = {{ position: 'absolute', left: '-10%', top: '89%',}}>
+                                <Image
+                                    style={styles.profilePicture}
+                                    source={require("./../../../assets/robotIcon.png")}
+                                    resizeMode="cover"
+                                    />
+                            </View>
+                        </View>
+                    } 
+                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Group' &&
+                        <Animated.View style = {{position: 'absolute', bottom: height > 750 ? '20%' : '10%', left: '28%', padding: 15, backgroundColor: ColorsBlue.blue1325,
+                            borderRadius: 10, borderColor: 'rgba(77,77,77,0.3)', borderWidth: 1, shadowColor: 'rgba(0,0,0,1)',
+                            shadowRadius: 4, shadowOffset: {width: 2, height: 3}, shadowOpacity: 1, elevation: 4, opacity: fadeAnim}}>
+                            <TouchableOpacity 
+                                onPress={() => {informationCtx.setShowBeginningScreen(false), navigation.navigate('BottomMenu', {screen: 'Assignments'})}}
+                            >
+                                <Text style = {{fontSize: 27, color: ColorsGray.gray300}}>Naar de App</Text>
+                            </TouchableOpacity>
+                        </Animated.View>
+                    } 
                 </View>
             </ImageBackground>
         <TeacherModal
@@ -108,7 +205,8 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
         setDbUpdate={setDbUpdate}
         />
         <TeacherTimeModal />
-        </View>
+
+        </LinearGradient>
     )
 }
 
@@ -118,5 +216,11 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: ColorsBlue.blue1300,
-    }
+    },
+    profilePicture: {
+        width: 40,
+        height: 40,
+        borderRadius: 30,
+        zIndex: 3,
+    },
 })

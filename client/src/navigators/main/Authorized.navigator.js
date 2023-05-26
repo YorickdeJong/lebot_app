@@ -7,19 +7,18 @@ import Results from '../../screens/Authenticated/Settings/Results';
 import ChangeUserName from '../../screens/Authenticated/UserProfile/ChangeUsername';
 import ChangePassword from '../../screens/Authenticated/UserProfile/ChangePassword';
 import ChangeEmail from '../../screens/Authenticated/UserProfile/ChangeEmail';
-import { ColorsBlue, ColorsGreen } from '../../constants/palet';
 import BottomMenu from './BottomMenu.navigator';
-import Groups from '../../screens/Authenticated/Groups/ClassesStudents.screens';
-import IndividualGroup from '../../components/groups/IndividualGroup.groups';
 import CustomHeader from './CustomNavigator.main';
 import StudentClassroomNavigator from './StudentClassRoomNavigator';
 import ModalTime from '../../screens/Authenticated/ModalTime';
 import { useFetchTimeLessonsDataSocket } from '../../hooks/time-lessons.hook';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { UserProfileContext } from '../../store/userProfile-context';
 import {View, Platform, StyleSheet, Alert} from 'react-native';
 import { TimeContext } from '../../store/time-context';
 import ModalInformation from '../../screens/Authenticated/ModalInformation';
+import AppExplanation from '../../screens/Authenticated/BeginningScreen/AppExplanation';
+import { InformationContext } from '../../store/information-context';
 
 //test
 const Stack = createNativeStackNavigator()
@@ -30,9 +29,10 @@ function Authorized() {
     const userprofileCtx = useContext(UserProfileContext);
     const {school_id, class_id} = userprofileCtx.userprofile;
     const timeCtx = useContext(TimeContext);
-    const activeLesson = timeCtx.filterActiveTimers(class_id);
-
+    const activeLesson = timeCtx.filterActiveTimers(-1);
+    const [firstUpdate, setFirstUpdate] = useState(true)
     const [dataTime, initializeTime] = useFetchTimeLessonsDataSocket(true, school_id)
+    const informationCtx = useContext(InformationContext);
 
     function lessonSelection(lesson_number) {
       switch (lesson_number) {
@@ -56,12 +56,19 @@ function Authorized() {
     }
 
     useEffect(() => {
+      if (firstUpdate){
+        setFirstUpdate(false)
+        return
+      }
       if (activeLesson) {
         const {subject, planeet} = lessonSelection(activeLesson)
         Alert.alert('Discussie Tijd!', `Discussieer met elkaar over het onderwerp ${subject} ${planeet}`)
         return
       }
-      Alert.alert('Discussie tijd afgelopen', 'Ga verder met de opdrachten')      
+      if (!activeLesson){
+        Alert.alert('Discussie tijd afgelopen', 'Ga verder met de opdrachten')      
+
+      }
 
     }, [activeLesson])
     
@@ -82,13 +89,12 @@ function Authorized() {
       <>
         <ModalTime 
         />
-        <ModalInformation 
-
-        />
+        <ModalInformation />  
+        
         <Stack.Navigator
+          initialRouteName = {informationCtx.showBeginningScreen ? "AppExplanation" : "BottomMenu"}
           screenOptions={{
             headerTintColor: 'white',
-
             header: ({ route }) => {
                 const showChatPlus = route.name === 'Chats';
                 const showChatBubbles = route.name === 'Chat';
@@ -107,6 +113,15 @@ function Authorized() {
             }}
             >
     
+
+          <Stack.Screen
+            component={AppExplanation}
+              name = "AppExplanation"
+              options = {{
+                headerShown: false,
+              }}
+          />
+
           <Stack.Screen 
           component={BottomMenu}
           name = "BottomMenu"
@@ -135,12 +150,14 @@ function Authorized() {
             headerLeft: ({tintColor}) => {
               return (
                 <Icon 
-                icon = 'arrow-back-circle'
+                icon = 'navigate-before'
                 size = {30}
                 color = {tintColor}
                 onPress = {() => {
                   navigation.dispatch(StackActions.pop(2))
-                }}/>
+                }}
+                MaterialIconsDir={true}
+                />
               )
             }
           }}
@@ -150,16 +167,19 @@ function Authorized() {
           name = 'results'
           component = {Results}
           options ={{
+            presentation: 'modal',
             title: 'Your Results',
             headerLeft: ({tintColor}) => {
               return (
                 <Icon 
-                icon = 'arrow-back-circle'
+                icon = 'navigate-before'
                 size = {30}
                 color = {tintColor}
                 onPress = {() => {
                   navigation.navigate('Settings')
-                }}/>
+                }}
+                MaterialIconsDir={true}
+                />
                 )
               }
             }}/>
@@ -170,16 +190,18 @@ function Authorized() {
             component = {UserProfile}
             options = {{
               title: "User Profile",
+              presentation: 'modal',
               headerLeft: ({tintColor}) => {
                 return (
                   <Icon 
-                  icon = 'arrow-back-circle'
+                  icon = 'navigate-before'
                   size = {30}
                   color = {tintColor}
                   onPress = {() => {
-                    
                     navigation.navigate('Settings')
-                  }}/>
+                  }}
+                  MaterialIconsDir={true}
+                  />
                 )
               }
             }}
@@ -190,15 +212,18 @@ function Authorized() {
             component = {ChangeUserName}
             options = {{
               title: "Change Username",
+              presentation: 'modal',
               headerLeft: ({tintColor}) => {
                 return (
                   <Icon 
-                  icon = 'arrow-back-circle'
+                  icon = 'navigate-before'
                   size = {30}
                   color = {tintColor}
                   onPress = {() => {
                     navigation.navigate('userProfile')
-                  }}/>
+                  }}
+                  MaterialIconsDir={true}
+                  />
                 )
               }
             }}
@@ -212,12 +237,14 @@ function Authorized() {
               headerLeft: ({tintColor}) => {
                 return (
                   <Icon 
-                  icon = 'arrow-back-circle'
+                  icon = 'navigate-before'
                   size = {30}
                   color = {tintColor}
                   onPress = {() => {
                     navigation.navigate('userProfile')
-                  }}/>
+                  }}
+                  MaterialIconsDir={true}
+                  />
                 )
               }
             }}
@@ -231,12 +258,14 @@ function Authorized() {
               headerLeft: ({tintColor}) => {
                 return (
                   <Icon 
-                  icon = 'arrow-back-circle'
+                  icon = 'navigate-before'
                   size = {30}
                   color = {tintColor}
                   onPress = {() => {
                     navigation.navigate('userProfile')
-                  }}/>
+                  }}
+                  MaterialIconsDir={true}
+                  />
                 )
               }
             }}
@@ -257,7 +286,7 @@ const styles = StyleSheet.create({
       bottom: "0.7%",
       right: "2%",
       zIndex: 2,
-      shadowColor: `rgba(11, 11, 11)`,
+      shadowColor: `rgba(11, 11, 11, 1)`,
       shadowOffset: {height: 2, width: 0},
       shadowOpacity: 1,
       shadowRadius: 3,

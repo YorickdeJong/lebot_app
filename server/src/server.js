@@ -2,7 +2,6 @@ const fs = require('fs');
 const https = require('https');
 const http = require('http');
 const app = require('./app');
-const path = require('path');
 const socketsSSH = require('./routes/ssh/ssh.sockets')
 const socketMeasurementResults = require('./routes/measurement_results/measurementResults.socket')
 const socketPowerMeasurement = require('./routes/power_measurement/powerMeasurement.socket')
@@ -46,6 +45,8 @@ async function startServer() {
 }
 
 startServer()
+module.exports = startServer; // Export the startServer function
+
 socketsSSH.listenToClientSSH(ioConnect, sshClients, Client); 
 socketPowerMeasurement.listenToClientPower(ioConnect);
 socketMeasurementResults.listenToClientMeasurementResults(ioConnect);

@@ -1,12 +1,13 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
-import {Alert, View, FlatList, StyleSheet, Text, SectionList} from 'react-native';
+import {Alert, View, FlatList, StyleSheet, Text, SectionList, Platform} from 'react-native';
 import { BlurView } from "expo-blur";
-import { ColorsBlue, ColorsDarkerRed, ColorsGreen, ColorsLighterGold } from "../../../constants/palet";
-import { useContext, useEffect, useState } from "react";
+import { ColorsBlue, ColorsDarkerRed, ColorsGray, ColorsGreen, ColorsLighterGold, ColorsRed } from "../../../constants/palet";
+import React, { useContext, useEffect, useState } from "react";
 import { UserProfileContext } from "../../../store/userProfile-context";
 import { AssignmentDetailsContext } from "../../../store/assignment-Details-context";
 import { createAssignmentsDetail, getSpecificAssignmentsDetail } from "../../../hooks/assignmentDetails";
 import { LinearGradient } from "expo-linear-gradient";
+import Icon from "../../Icon";
 
 
 function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multipleChoiceAnswers, subject, assignment_number, assignment_id, title, sendData, currency}) {
@@ -24,8 +25,7 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
         async function fetchData() {
 
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, assignment_id, subject);
-        
-            console.log('multiple choice data', data)
+
             if (data && data.answers_multiple_choice.length > 0) {
                 const tileColorsFromData = Array.from({ length: multipleChoiceOptions.length }, () => false);
                 
@@ -48,7 +48,6 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
                 setTileColor(tileColorsFromData);
         
                 const correctAnswersFromData = data.answers_multiple_choice.filter(answer => answer.correct).length;
-                console.log('correctAnswered', correctAnswersFromData)
                 setCorrectAnswers(correctAnswersFromData);
             }
         }
@@ -126,53 +125,72 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
 
 
         return (
-            <View style = {styles.shadow}>
-                <LinearGradient 
-                    colors = {[tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? 'rgba(8, 30, 8, 1)' : ColorsDarkerRed.red1000) : ColorsBlue.blue1400, 
-                    tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? 'rgba(25, 130, 25, 1)' : 'rgba(150, 70, 51, 1)') : ColorsBlue.blue1200, 
-                    tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? 'rgba(8, 30, 8, 1)' : ColorsDarkerRed.red1000) : ColorsBlue.blue1400]} 
-                    style = {styles.tile}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}>
-                    <TouchableOpacity onPress = {() => !tileColor[index] ? checkAnswerHandler() : Alert.alert('Deze vraag is al beantwoord')} 
-                    >
-                            <View style = {styles.textContainer}>
-                                <Text style = {styles.text}>{item}</Text>
-                            </View>
-                    </TouchableOpacity>
-                </LinearGradient>
+            <View style = {[styles.shadow2, { backgroundColor: (Platform.OS === 'android' && tileColor[index]) ? 'rgba(0, 0, 0, 1)' : 'transparent',}]}>
+                <View style = {[styles.shadow, {backgroundColor: tileColor[index] ? ColorsBlue.blue1200 : null, borderWidth: tileColor[index] ? 1 : 0,
+                        borderColor: Platform.OS === 'android' ? 'rgba(77, 77, 77, 0.35)' : 'rgba(77, 77, 77, 0.2)',}]}>
+                        <TouchableOpacity 
+                        onPress = {() => !tileColor[index] ? checkAnswerHandler() : Alert.alert('Deze vraag is al beantwoord')}
+                        
+                        >
+                                <View style = {styles.textContainer}>
+                                    <View style = {styles.icon}>
+                                        <Icon 
+                                            icon = {tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? "md-checkmark-circle-outline" : "md-close-circle-outline") : "md-add-circle-outline"}
+                                            size = {30}
+                                            color = {tileColor[index] ? (multipleChoiceAnswers[index] === 'true' ? ColorsGreen.green400 : ColorsRed.red500) : ColorsBlue.blue200}
+                                        />
+                                    </View>
+                                    <View style = {styles.innerTextContainer}>
+                                        <Text style = {styles.text}>{item}</Text>
+                                    </View>
+                                </View>
+                        </TouchableOpacity>
+                </View>
             </View>
         )
     }
     
     return (
-        <View style = {{marginTop: 12}}>
+        <View style = {{marginTop: 5}}>
             <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 40}}>
-                <Text style = {[styles.tries, {marginTop: 5, color: ColorsBlue.blue50}]}>Credits: €{currency}</Text>
+                <Text style = {[styles.tries, {marginTop: 5, color: ColorsGray.gray300,}]}>Credits: €{currency}</Text>
                 <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>
             </View>
-            
-            <FlatList
-                data={multipleChoiceOptions}
-                renderItem={({ item, index }) => MultipleChoiceTileHandler({ item, index })}
-                keyExtractor={(item, index) => index.toString()}
-                showVerticalScrollIndicator={false}
-            />
+            <View style = {styles.list}>
+                <FlatList
+                    data={multipleChoiceOptions}
+                    renderItem={({ item, index }) => MultipleChoiceTileHandler({ item, index })}
+                    keyExtractor={(item, index) => index.toString()}
+                    showVerticalScrollIndicator={false}
+                />
+            </View>
         </View>
     )
 }
 
 
-export default MultipleChoiceContainer;
+export default React.memo(MultipleChoiceContainer);
 
 
 const styles = StyleSheet.create({ 
-    shadow: {
+    shadow2: {
         shadowColor: `rgba(1, 1, 1, 1)`,
         shadowOffset: {height: 2, width: 1},
         shadowOpacity: 1,
         shadowRadius: 3,
-        elevation: 4,
+        marginVertical: 3,
+        borderRadius: 20,
+        marginHorizontal: 5
+    },
+    list:  {
+        marginTop: 10
+    },
+    shadow: {
+        paddingVertical: 5,
+        borderRadius: 20,
+
+        marginRight: 2,
+        marginBottom: 3
     },
     tile: {
         marginHorizontal: 10,
@@ -192,13 +210,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5
     },
     textContainer: {
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center', 
-        paddingHorizontal: 10
     },
     text: {
-        color: ColorsBlue.blue100,
-        fontSize: 18,
+        color: ColorsGray.gray400,
+        fontSize: 16,
         fontWeight: '200',
         textAlign: 'center',
         lineHeight: 23,
@@ -211,9 +229,15 @@ const styles = StyleSheet.create({
         fontWeight: '200',
         textAlign: 'center',
         marginBottom: 10,
-        color: ColorsBlue.blue50,
+        color: ColorsGray.gray300,
         textShadowColor: ColorsBlue.blue1400,
         textShadowOffset: {height: 2, width: 0},
         textShadowRadius: 3,
+    },
+    icon: {
+        width: 50
+    },
+    innerTextContainer: {
+        width: 260
     }
 })

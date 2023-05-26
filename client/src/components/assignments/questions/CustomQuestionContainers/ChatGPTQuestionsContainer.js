@@ -42,8 +42,6 @@ function ChatGPTQuestionsContainer() {
         ]).start();
     };
 
-    console.log('keyboard heigt', keyboardHeight)
-
     return (
         <Animated.View style = {[styles.container, {marginBottom: keyboardHeight ? keyboardHeight : 20}]}>
             <Icon 

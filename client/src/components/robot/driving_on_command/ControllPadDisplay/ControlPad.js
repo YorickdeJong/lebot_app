@@ -29,16 +29,13 @@ const styles = StyleSheet.create({
         margin: 3,
         marginBottom: 8,
         marginHorizontal: 5,
-        borderRadius: 5,
+        borderRadius: 20,
         ...Platform.select({
             ios: {
                 shadowOffset: { height: 1, width: 1 },
                 shadowRadius: 3,
                 shadowOpacity: 1,
                 shadowColor: ColorsBlue.blue1400,
-            },
-            android: {
-                elevation: 5,
             },
         }),
         flex: 1
@@ -51,8 +48,8 @@ const styles = StyleSheet.create({
     controller: {
         justifyContent: 'center',
         borderColor: ColorsBlue.blue1400,
-        borderWidth: 0.5,
-        borderRadius: 5,
+        borderWidth: Platform.OS === 'android' ? 1.2 :0.5,
+        borderRadius: 20,
         flex: 1,
         overflow: 'hidden',
     },

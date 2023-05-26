@@ -1,6 +1,6 @@
 
 import {  ImageBackground, ScrollView, StyleSheet,  View, Text, TextInput, Dimensions, Keyboard, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { ColorsBlue, ColorsGray,} from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -13,22 +13,24 @@ import TextInputThinkScreen from '../../UI/TextInputThinkScreen';
 import { useLiveChat } from '../../../hooks/liveChat.hooks';
 import CustomFieldContainer from '../../CustomDocs/CustomField';
 import AssignmentOptionsBar from './assignmentOptionsBar';
+import { useIsFocused } from '../../../hooks/isFocused.hooks';
 
 
 const {height, width} = Dimensions.get('window');
 
-function ThinkScreen({nextSlideHandler, prevSlideHandler, slideCount, questions, topic, slideCountEnd, setSlideCount}) {
+function ThinkScreen({nextSlideHandler, currentSlidePosition, prevSlideHandler, slideTotal, slideCount, questions, index, slideCountEnd, setSlideCount}) {
+    const isScreenFocused = slideCount - 2 <= index && slideCount >= index
+
     const [isCloseIcon, setIsCloseIcon] = useState(false);
     // const [inputTextOne, setInputTextOne] = useState('');
     const [inputTextTwo, setInputTextTwo] = useState('');
     const [inputTextThree, setInputTextThree] = useState('');
+    const [inputTextFour, setInputTextFour] = useState('');
+
     const [yesButton, setYesButton] = useState(false);
     const [noButton, setNoButton] = useState(false);
 
     const [inputTextOne, setInputTextOne] = useLiveChat();
-
-    console.log(inputTextOne, 'inputTextOne')
-    console.log(inputTextTwo, 'inputTextTwo')
 
     function handleAgreementChoice(type) {
         switch(type) {
@@ -44,157 +46,149 @@ function ThinkScreen({nextSlideHandler, prevSlideHandler, slideCount, questions,
     }
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <LinearGradient 
-            colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}  
-            style = {styles.container}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            >
-            <ImageBackground
-            source={require('./../../../../assets/chatbackground.png')} 
-            style={
-            {flex: 1}
-            }
-            imageStyle={{opacity: 0.07}}
-            >
-                    <ScrollView>
-                            <AssignmentOptionsBar 
-                                slideCount = {slideCount}
-                                nextSlideHandler = {nextSlideHandler}
-                                prevSlideHandler = {prevSlideHandler}
-                                slideCountEnd = {slideCountEnd}
-                                setSlideCount = {setSlideCount}
-                                text = {{text: 'Brainstorm', left: '38%'}}
-                            />
-                        {isCloseIcon && 
-                            <View style = {{position: 'absolute', top: "3%", right: '5%', zIndex: 10}}>
-                                <Icon
-                                    icon = {"lock-open"}
-                                    size = {30}
-                                    color = {ColorsGray.gray400}
-                                    onPress={() => setIsCloseIcon(!isCloseIcon)}
-                                />
-                            </View>
-                        }
+            <View style = {styles.container}>
 
-                        {!isCloseIcon && 
-                            <LinearGradient
-                                colors = {[ColorsBlue.blue1400, ColorsBlue.blue1300, ColorsBlue.blue1400,]} 
-                                style = {styles.textContainer}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 1 }}
-                                > 
-                                    <Text style = {[styles.text,  {fontSize: 17,  marginHorizontal: 30, marginVertical: 10}]}>{questions[0]}</Text>
-                        
-                                </LinearGradient>
-                        }
-                      
-                            <KeyboardAwareScrollView>
-
-                            {/* <CustomFieldContainer 
-                                questions = {questions[1]}
-                            /> */}
-
-
-                            {questions[1] && 
-                                <View style = {{marginTop: 5}}>
-                                    <TextInputThinkScreen 
-                                        questions = {questions[1]}
-                                        inputText = {inputTextOne}
-                                        setInputText = {setInputTextOne}
-                                        height = {height}
+                    <AssignmentOptionsBar 
+                        slideCount = {slideCount}
+                        nextSlideHandler = {nextSlideHandler}
+                        prevSlideHandler = {prevSlideHandler}
+                        slideCountEnd = {slideCountEnd}
+                        setSlideCount = {setSlideCount}
+                        text = {{text: 'Brainstorm', left: '38%'}}
+                        slideTotal = {slideTotal}
+                        currentSlidePosition = {currentSlidePosition}
+                    />
+                    {isScreenFocused && <ScrollView style = {{flex: 1}}>
+                        <View style = {{flex: 1}}>
+                            
+                            {isCloseIcon && 
+                                <View style = {{position: 'absolute', top: "3%", right: '5%', zIndex: 10}}>
+                                    <Icon
+                                        icon = {"lock-open"}
+                                        size = {30}
+                                        color = {ColorsGray.gray400}
+                                        onPress={() => setIsCloseIcon(!isCloseIcon)}
                                     />
                                 </View>
                             }
 
-                            {questions[2] && 
-                                <TextInputThinkScreen 
-                                    questions = {questions[2]}
-                                    inputText = {inputTextTwo}
-                                    setInputText = {setInputTextTwo}
-                                    height = {height}
-                                />
-                            }
+                        
+                                <KeyboardAwareScrollView>
+                                {!isCloseIcon && 
+                                    <LinearGradient
+                                        colors = {[ColorsBlue.blue1390, ColorsBlue.blue1390]} 
+                                        style = {styles.textContainer}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                        > 
+                                            <Text style = {[styles.text,  {fontSize: 17,  marginHorizontal: 30, marginVertical: 10}]}>{questions[0]}</Text>
+                                
+                                        </LinearGradient>
+                                }
 
-                            {questions[3] && 
-                                <TextInputThinkScreen 
-                                    questions = {questions[3]}
-                                    inputText = {inputTextThree}
-                                    setInputText = {setInputTextThree}
-                                    height = {height}
-                                />
-                            }
-
-                            {questions[4] && 
-                                <View style={[styles.textInput, {flex: 1, minHeight: height / 3 }]}>
-                                <Text style = {[styles.text, {color: 'black', paddingBottom: 3}]}>{questions[4]}</Text>
-                                <View style = {{borderBottomColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}/>
-                                <View style = {{flexDirection: 'row', justifyContent: 'center'}}>
-                                    <View style = {{flexDirection: 'row', marginHorizontal: 20, marginBottom: 7}}>
-                                        <Text style = {[styles.text, {color: ColorsGray.gray900}]}>Ja: </Text>
-                                        <Icon 
-                                            icon = {yesButton ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
-                                            size = {30}
-                                            color = {ColorsGray.gray700}
-                                            onPress={handleAgreementChoice.bind(this, 'yes')}
-                                            differentDir={true}
+                                {questions[1] && 
+                                        <TextInputThinkScreen 
+                                            questions = {questions[1]}
+                                            inputText = {inputTextOne}
+                                            setInputText = {setInputTextOne}
+                                            height = {height}
                                         />
+                                }
+
+                                {questions[2] && 
+                                    <TextInputThinkScreen 
+                                        questions = {questions[2]}
+                                        inputText = {inputTextTwo}
+                                        setInputText = {setInputTextTwo}
+                                        height = {height}
+                                    />
+                                }
+
+                                {questions[3] && 
+                                    <TextInputThinkScreen 
+                                        questions = {questions[3]}
+                                        inputText = {inputTextThree}
+                                        setInputText = {setInputTextThree}
+                                        height = {height}
+                                    />
+                                }
+
+                                {questions[4] && 
+                                    <View style={[styles.textInput, {flex: 1, minHeight: height / 2.5 }]}>
+                                    <Text style = {[styles.text, {color: ColorsGray.gray300, paddingBottom: 10}]}>{questions[4]}</Text>
+                                    <View style = {{borderBottomColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}/>
+                                    <View style = {{flexDirection: 'row', justifyContent: 'center'}}>
+                                        <View style = {{flexDirection: 'row', marginHorizontal: 20, marginBottom: 7}}>
+                                            <Text style = {[styles.text, {color: ColorsGray.gray400}]}>Ja: </Text>
+                                            <Icon 
+                                                icon = {yesButton ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
+                                                size = {30}
+                                                color = {ColorsGray.gray500}
+                                                onPress={handleAgreementChoice.bind(this, 'yes')}
+                                                differentDir={true}
+                                            />
+                                        </View>
+                                        <View style = {{flexDirection: 'row', marginHorizontal: 20, marginBottom: 7}}>
+                                            <Text style = {[styles.text, {color: ColorsGray.gray400}]}>Nee: </Text>
+                                            <Icon 
+                                                icon = {noButton ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
+                                                size = {30}
+                                                color = {ColorsGray.gray500}
+                                                onPress={handleAgreementChoice.bind(this, 'no')}
+                                                differentDir={true}
+                                            />
+                                        </View>
                                     </View>
-                                    <View style = {{flexDirection: 'row', marginHorizontal: 20, marginBottom: 7}}>
-                                        <Text style = {[styles.text, {color: ColorsGray.gray900}]}>Nee: </Text>
-                                        <Icon 
-                                            icon = {noButton ? 'checkbox-marked-outline' : 'checkbox-blank-outline'}
-                                            size = {30}
-                                            color = {ColorsGray.gray700}
-                                            onPress={handleAgreementChoice.bind(this, 'no')}
-                                            differentDir={true}
-                                        />
+                                    <View style = {{borderBottomColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}/>
+                                            <TextInput
+                                                style={{flex: 1, color: ColorsGray.gray400, fontSize: 14, lineHeight: 26}}
+                                                value={inputTextFour}
+                                                onChangeText={text => setInputTextFour(text)}
+                                                placeholder="Type hier jouw antwoord..."
+                                                placeholderTextColor = {ColorsGray.gray400}
+                                                multiline={true}   // Enable multiline input
+                                                textAlignVertical="top" // Align text to the top of the TextInput
+                                            /> 
                                     </View>
-                                </View>
-                                <View style = {{borderBottomColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}/>
-                                        <TextInput
-                                            style={{flex: 1}}
-                                            value={inputTextThree}
-                                            onChangeText={text => setInputTextThree(text)}
-                                            placeholder="Type hier jouw antwoord..."
-                                            multiline={true}   // Enable multiline input
-                                            textAlignVertical="top" // Align text to the top of the TextInput
-                                        /> 
-                                </View>
-                            }                
+                                }                
 
 
 
 
-                            </KeyboardAwareScrollView>
+                                </KeyboardAwareScrollView>
+                            </View>
                     </ScrollView>
-                    </ImageBackground>
-                </LinearGradient>
-            </TouchableWithoutFeedback>
+                    }
+            </View>
+        </TouchableWithoutFeedback>
     )
 }
 
-export default ThinkScreen
+export default React.memo(ThinkScreen)
 
 const styles = StyleSheet.create({
     questionsText: {
         fontSize: 15,
-        color: ColorsGray.gray400,
+        color: ColorsGray.gray500,
         textAlign: 'center',
         marginVertical: 5,
         marginHorizontal: 20
     },
     textInput: {
-        borderColor: 'gray', 
-        borderWidth: 1.2, 
         margin: 10, 
-        backgroundColor: 'rgba(175, 175, 155, 0.9)', 
+        backgroundColor: ColorsBlue.blue1390, 
         paddingHorizontal: 20, 
         borderRadius: 15, 
         paddingTop: 10, 
         marginBottom: 10, 
         fontSize: 20,
-        lineHeight: 27,
+        shadowColor: `rgba(0, 0, 0, 1)`,
+        shadowOffset: {height: 2, width: 1},
+        shadowOpacity: 1,
+        shadowRadius: 4,
+        elevation: 4,     
+        borderWidth: 0.8,
+        borderColor: `rgba(77, 77, 77, 0.2)`,  
     },
     customTextEditContainer: {
         height: 50,
@@ -208,7 +202,7 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1, 
-        backgroundColor: ColorsBlue.blue1400,
+        width: width,
     },
     imageBackground: { 
         flex: 1, 
@@ -216,13 +210,13 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         backgroundColor: 'rgba(0, 0, 20, 0.75)',
-        marginVertical: 8,
         elevation: 2,
         marginHorizontal: 8,
         borderRadius: 20,
         overflow: 'hidden',
         borderWidth: 1,
         borderColor: `rgba(77, 77, 77, 0.18)`,
+        marginVertical: 5,
     },
     leftSlider: {
         position: 'absolute',
@@ -242,7 +236,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 23,
         fontWeight: '300',
-        color: ColorsBlue.blue50,
+        color: ColorsGray.gray400,
         textAlign: 'center',
 
     },

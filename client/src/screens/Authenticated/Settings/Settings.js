@@ -16,11 +16,11 @@ function Settings() {
     const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(true);
 
-    function settingsGrid(itemData) {
+    function settingsGrid({item, index}) {
         
         function onPressHandler() {
 
-            switch(itemData.item.type) {
+            switch(item.type) {
                 case 'UserProfile':
                     navigation.replace('userProfile');
                     break;
@@ -41,7 +41,8 @@ function Settings() {
         }
         return (
             <SettingsTile 
-            {...itemData.item}
+            index = {index}
+            {...item}
             onPress = {onPressHandler}
             />
             )
@@ -49,18 +50,12 @@ function Settings() {
     
     return (
         <View style = {styles.modalContainer}> 
-            <ImageBackground
-                source={require('./../../../../assets/planets/user_screen16.png')} 
-                style={styles.backgroundImage}
-                imageStyle={{opacity: 0.8}}
-            >
                 <FlatList 
                 data = {settingsData}
                 keyExtractor = {item => item.id}
                 renderItem = {settingsGrid}
-                numColumns = {2}
+                numColumns = {1}
                 />
-            </ImageBackground>
         </View>
     )
 }
@@ -74,7 +69,8 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1, 
-        backgroundColor: ColorsBlue.blue1200,
+        backgroundColor: 'rgba(10, 10, 35,1)',
+        elevation: 8
     },
     backgroundImage: {
         flex: 1,
