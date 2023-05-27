@@ -9,6 +9,9 @@ function listenToClientGroups(io) {
     // Stores the cleanupNotificationListener functions for each school
     const cleanupFunctions = {};
 
+    // Stores the database clients for each school
+    const schoolClients = {};
+
     groupsNamespace.on('connection', async (socket) => {
       console.log('Client connected to groups');
 
@@ -72,7 +75,4 @@ function listenToClientGroups(io) {
     };
   }
 }
-
-
-
 module.exports = { listenToClientGroups };
