@@ -46,7 +46,7 @@ async function startServer() {
 }
 
 startServer()
-module.exports = startServer; // Export the startServer function
+module.exports = startServer; // Export the startServer function for testing purposes
 
 socketsSSH.listenToClientSSH(ioConnect, sshClients, Client); 
 socketPowerMeasurement.listenToClientPower(ioConnect);

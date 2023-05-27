@@ -10,12 +10,13 @@ import Icon from '../../components/Icon';
 import LandingPageOne from './PageOne';
 import LandingPageTwo from './PageTwo';
 
-
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 function LandingPageThree() {
     return(
         <ImageBackground
         source={require('./../../../assets/planets/landing_page3.png')}
         style={styles.backgroundImage}
+        resizeMode='cover'
         >
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>• Leer door te doen</Text>
@@ -31,6 +32,8 @@ export default LandingPageThree;
 
 const styles = StyleSheet.create({
     backgroundImage: {
+        // height: screenHeight,
+        // width: screenWidth,
         flex: 1,
         justifyContent: 'flex-end',
     },    

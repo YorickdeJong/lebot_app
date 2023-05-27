@@ -19,7 +19,7 @@ function Authenticate() {
     <Stack.Navigator
       screenOptions={{
         header: ({ route }) => {
-          return <CustomHeader title={route.name} />;
+          return null;
         },
         headerTintColor: 'white',
         headerStyle: {

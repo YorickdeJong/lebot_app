@@ -16,7 +16,7 @@ const authCtx = useContext(AuthContext);
         shadowOpacity: 0.9,
         shadowRadius: 4,
         elevation: 2,
-
+        position: 'absolute'
       }}
     >
       <LinearGradient
@@ -25,7 +25,7 @@ const authCtx = useContext(AuthContext);
         start={{ x: 0, y: 0.5 }}
         end={{ x: 1, y: 0.5 }}
       >
-            <View style={{ marginLeft: 10, marginTop: verticalScale(27)
+            <View style={{ marginLeft: 10, marginTop: 0//verticalScale(30)
                 }}>
                 <Icon
                     icon="menu"
@@ -34,7 +34,7 @@ const authCtx = useContext(AuthContext);
                     onPress={() => console.log(`pressed`)}
                 />
             </View>
-            <View style={{ marginLeft: 10, marginTop: verticalScale(27)
+            <View style={{ marginLeft: 10, marginTop: 0//verticalScale(30)
                 }}>
                 <Icon
                     icon="robot"
@@ -46,7 +46,7 @@ const authCtx = useContext(AuthContext);
                 />
             </View>
 
-            <View style={{ right: 15, top: verticalScale(32), position: 'absolute'
+            <View style={{ right: 15, top: 0//verticalScale(32), position: 'absolute'
                 }}>
                 <Icon
                     icon="rocket"
@@ -54,7 +54,7 @@ const authCtx = useContext(AuthContext);
                     size={24}
                     addStyle={{opacity: 0.8}}
                     color={ColorsBlue.blue100}
-                    onPress={() => authCtx.authenticate('token')}
+                    onPress={() => {}}
                 />
             </View>
       </LinearGradient>
@@ -64,10 +64,10 @@ const authCtx = useContext(AuthContext);
 
 const styles = StyleSheet.create({
   header: {
-    height: verticalScale(58),
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 15,
+    height: 40
   },
   title: {
     fontSize: 20,

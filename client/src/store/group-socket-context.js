@@ -18,7 +18,7 @@ export const SocketProviderGroups = ({ children, namespace }) => {
     
         // Add your listeners here
         newSocket.on('connect_error', (error) => {
-            console.error('Connection error:', error);
+            console.error('Connection error group scpcet:', error);
         });
     
         newSocket.on('disconnect', (reason) => {

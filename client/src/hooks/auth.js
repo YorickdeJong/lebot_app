@@ -25,6 +25,7 @@ export async function createUser({email, password, username, name, lastname, dob
 }
 
 export async function login(email, password) {
+    console.log('email', email, 'password', password, 'url', url + 'auth/signin')
     try{
         const response = await axios.post(url + 'auth/signin', {
             email: email,
@@ -152,7 +153,7 @@ export function useUserSocket(shouldConnect, group_ids) {
         socket.on('connect', initializeUser);
 
         socket.on('connect_error', (error) => {
-            console.error('Connection error:', error);
+            console.error('Connection error Authenitcation:', error);
         });
 
         socket.on('disconnect', (reason) => {

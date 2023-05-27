@@ -213,7 +213,7 @@ function TextForm({LoginVariable, onAuthenticate, onAuthenticateAdmin, onCreateU
 
     return(
         <>
-        <View style = {styles.boxContainer}>
+        <View style = {[styles.boxContainer, {marginTop: !LoginVariable? '15%' : 0}]}>
            <BlurWrapper intensity={15} tint = "dark" style={[styles.box, ]}
            customColor={'rgba(90,90,150, 0.45)'}>
                 <Text style  = {styles.userTypeText}>{title}</Text>    
@@ -315,6 +315,7 @@ const styles = StyleSheet.create({
               elevation: 0,
             },
           }),
+          
     },
     box: {
         marginTop: 20,

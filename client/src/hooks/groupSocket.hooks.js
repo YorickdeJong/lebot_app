@@ -28,7 +28,7 @@ export const useFetchGroupsDataSocket = (shouldConnect, user_id, classroom_id, s
       socket.on('connect', initialize);
   
       socket.on('connect_error', (error) => {
-        console.log('Connection error:', error);
+        console.log('Connection error Groups socket:', error);
       });
   
       socket.on('disconnect', (reason) => {

@@ -22,6 +22,8 @@ const authenticateUser = async (req, res) => {
     const { email, password } = req.body;
     const client = await pool.connect();
 
+    console.log('email', email)
+    console.log('password', password)
     try {
         const { rows } = await client.query(authenticateUserQuery, [email]);
         if (rows.length === 0) {

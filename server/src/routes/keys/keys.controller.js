@@ -39,7 +39,6 @@ const getSpecificKey = async (req, res) => {
 // Get all keys in the database for a specific school
 const getAllKeysForSchool = async (req, res) => {
     const school_name = req.query.school_name;
-    console.log('school_name', school_name)
     const values = [school_name];
     const client = await pool.connect();
 

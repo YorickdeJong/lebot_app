@@ -19,7 +19,7 @@ export const SocketProviderUser = ({ children, namespace }) => {
     
         // Add your listeners here
         newSocket.on('connect_error', (error) => {
-            console.error('Connection error:', error);
+            console.error('Connection error userProfile:', error);
         });
     
         newSocket.on('disconnect', (reason) => {

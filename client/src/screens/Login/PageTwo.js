@@ -9,7 +9,7 @@ import Icon from '../../components/Icon';
 import LandingPageOne from './PageOne';
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
-
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 function Subject({ title, topics }) {
     return (
         // TODO on press add a modal that explains what the subject is about
@@ -29,6 +29,7 @@ function LandingPageTwo() {
         <ImageBackground
             source={require('./../../../assets/planets/landing_page2.png')}
             style={styles.backgroundImage}
+            resizeMode='cover'
         >
             <View style={styles.titleContainer}>
                 <Subject
@@ -76,11 +77,13 @@ const styles = StyleSheet.create({
     },
     titleContainer: {
         flexDirection: 'row',
-        marginBottom: verticalScale(35),
+        marginBottom: verticalScale(20),
     },
     backgroundImage: {
-        flex:1,
         alignItems: 'center',
         justifyContent: 'flex-end',
+        // width: screenWidth,
+        // height: screenHeight,
+        flex: 1,
     },
 });

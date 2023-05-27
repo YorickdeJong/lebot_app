@@ -5,9 +5,9 @@ import { BlurView } from 'expo-blur';
 import Icon from '../../components/Icon';
 import { useNavigation } from '@react-navigation/native';
 import ModalCredentials from './ModalCredentials';
-import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 function LandingPageOne({blinkOpacity}){
 
     const navigation = useNavigation();
@@ -28,7 +28,7 @@ function LandingPageOne({blinkOpacity}){
         <ImageBackground
         source={require('./../../../assets/planets/landing_page.png')}
         style={styles.backgroundImage}
-        resizeMode="stretch"
+        resizeMode='cover'
     >
 
         <Text style={styles.title}>Learning Bot</Text>
@@ -94,7 +94,7 @@ function LandingPageOne({blinkOpacity}){
                 
             </View>
         </View>
-        <View style = {{marginBottom: verticalScale(50)}}>
+        <View style = {{position: 'absolute', bottom: '3%'}}>
             <Icon
                 size = {50}
                 icon = "robot"
@@ -104,7 +104,7 @@ function LandingPageOne({blinkOpacity}){
             />
         </View>
 
-        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: verticalScale(30), left: 50 }}>
+        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: '3%', left: 50 }}>
             <Icon
                 size={25}
                 icon="arrow-down-bold-circle-outline"
@@ -114,7 +114,7 @@ function LandingPageOne({blinkOpacity}){
             />
         </Animated.View>
 
-        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: verticalScale(30), right: 50 }}>
+        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: '6%', right: 50 }}>
             <Icon
                 size={25}
                 icon="arrow-down-bold-circle-outline"
@@ -138,9 +138,10 @@ export default LandingPageOne;
 
 const styles = StyleSheet.create({
     backgroundImage: {
-        // height: verticalScale(614),//0.8925, // Set the height greater than the screen height  Dimensions.get('window').height *
-        flex:1,
         alignItems: 'center',
+        flex: 1
+        // width: screenWidth,
+        // height: screenHeight,
     },
     title: {
         fontSize: 36,
@@ -150,36 +151,35 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     buttonOuterContainer: {
-        justifyContent: 'flex-end',
+        position: 'absolute',
+        bottom: '15%',
         width: "100%",
-        flex: 1
     },
     button: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginHorizontal: 30,
-        marginBottom: verticalScale(50),
 
     },
     buttonContainer: {
-            width: 100,
-            height: 55,
-            paddingVertical: 0.4,
-            borderRadius: 5,
-            borderColor: ColorsBlue.blue700,
-            borderWidth: 0.6,
-            justifyContent: 'center',
-            ...Platform.select({
-                ios: {
-                  shadowColor: 'black',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 1,
-                  shadowRadius: 4,
-                },
-                android: {
-                  elevation: 8,
-                },
-              }),
+        width: 100,
+        height: 55,
+        paddingVertical: 0.4,
+        borderRadius: 5,
+        borderColor: ColorsBlue.blue700,
+        borderWidth: 0.6,
+        justifyContent: 'center',
+        ...Platform.select({
+            ios: {
+                shadowColor: 'black',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 1,
+                shadowRadius: 4,
+            },
+            android: {
+                elevation: 8,
+            },
+            }),
     },
     buttonText: {
         color: ColorsBlue.blue50,

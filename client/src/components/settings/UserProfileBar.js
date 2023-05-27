@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     },
     border: {
         height: 1,
-        marginHorizontal:15,
+        marginHorizontal: 15,
         backgroundColor: ColorsBlue.blue400,
         elevation: 3, 
         shadowColor: ColorsBlue.blue1200,
