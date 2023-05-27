@@ -7,7 +7,7 @@ const ipAddressRaspberryPiHome = '10.7.191.113'
 const ipAddressRasPiComputer = 'http://192.168.4.2:3001'
 const ipAddressRasPiSelf = '192.168.4.1'
 const ipAddressRasPiHomeSelf = '10.7.191.107'
+const herokuSeverIP = 'https://morning-spire-88261.herokuapp.com'
 
-
-export const ipAddressComputer =  ipAddressHomeComputer //ipAddressRasPiComputer ipAddressHomeRaspi //
+export const ipAddressComputer =  herokuSeverIP //ipAddressHomeComputer //ipAddressRasPiComputer ipAddressHomeRaspi //
 export const ipAddressRaspberryPi = ipAddressRasPiHomeSelf //ipAddressRasPiSelf

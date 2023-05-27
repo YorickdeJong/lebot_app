@@ -14,7 +14,8 @@ const socketLiveChat = require('./routes/liveChat/liveChat.socket')
 const io = require('socket.io')
 const Client = require('ssh2').Client;
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001;
+
 let sshClients = new Map();
 
 // const server = https.createServer({
