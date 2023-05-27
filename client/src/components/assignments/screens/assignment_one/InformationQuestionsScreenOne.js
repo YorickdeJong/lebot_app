@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, Button, FlatList, Dimensions, ActivityIndicator } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useMemo, useRef, useState} from 'react';
 import QuestionsMap from '../../questions/QuestionsMap';
 import IntroScreenQuestions from '../../questions/IntroScreenQuestions';
 import { ASSIGNMENT_EXPLANATION } from '../../../../data/InitialAssignmentExplanation';
@@ -16,15 +16,14 @@ import { ShowIconsContext } from '../../../../store/show-icons-context';
 import ExplanationAnimation from '../../Explanation/ExplanationAnimation';
 import { TheoryExplanation } from '../../../../data/TheoryExplanation';
 import ThinkScreen from '../../questions/ThinkScreen';
-import { throttle } from 'lodash';
 import { ScrollContext } from '../../../../store/scroll-context';
-import LoadingChat from '../../../UI/LoadingChat';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFocused }) {
+function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
     const [slideCount, setSlideCount] = useState(0);
     const [typing, setTyping] = useState(true);
     const { chartToggle, setChartToggleHandler } = useContext(ChartContext)
@@ -37,8 +36,12 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
     const scrollPositionRef = useRef(0);
     const scrollCtx = useContext(ScrollContext)
     const [isLoading, setIsLoading] = useState(true);
+    const navigation = useNavigation();
     const onScrollBeginDrag = () => setIsScrolling(true);
     const onScrollEndDrag = () => setIsScrolling(false);
+    // const [screenFocussed, setScreenFocussed] = useState(true);
+    const screenFocussed = useIsFocused();
+
 
     useEffect(() => {
       async function fetchData() {
@@ -54,7 +57,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
       fetchData()
 
     }, [])
-        
+
     //If chart toggle of distance and or velocity is true, set chart toggle to false here
     useEffect(() => {
       if (chartToggle.p_t) {
@@ -82,42 +85,39 @@ function InformationQuestionsScreenOne({ assignmentTopic, assignmentNumber, isFo
       }
     }, [isScrolling, slideCount]);
 
-    if (!isFocused){
-      return
-    }
+
 
     //Filter out assignments for the correct subject
     const questions = assignmentTopic.filter(item => item.subject === "MOTOR"); //maybe also filter for Vragen Opdrcht hier
     const sortedQuestions = questions.sort((a, b) => a.assignment_number - b.assignment_number);
 
-    function nextSlideHandler(){
+    const nextSlideHandler = useCallback(() => {
         console.log(`next slide handled`)
         setSlideCount(slideCount + 1);
         // Calculate the offset to scroll to
         const offset = (slideCount) * SCREEN_WIDTH;
         flatListRef.current.scrollToOffset({ offset, animated: false });
         setTyping(true);
-    }
+    }, [slideCount]);
 
-    function prevSlideHandler(){
-        console.log(`prev slide handled`)
+    const prevSlideHandler = useCallback(() => {
+        console.log(`prev slide handled`);
         setSlideCount(slideCount - 1);
-        // Calculate the offset to scroll to
         const offset = (slideCount - 2) * SCREEN_WIDTH;
         flatListRef.current.scrollToOffset({ offset, animated: false });
         setTyping(true);
-    }
+    }, [slideCount]);
 
 
 
     function IconHandler() {
-      console.log('check CHECK')
       showIconCtx.setShowIconsHandler('robotStore')
     }
 
 
     const slideTotal = 15
-    const SCREENS = [
+    const SCREENS = useMemo(() => {
+      return [
       {
         component: IntroScreenQuestions,
         props: {
@@ -412,43 +412,44 @@ Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
             slideCount,
           }
         },
-    ];
+      ]
+    },[nextSlideHandler, prevSlideHandler, typing, setTyping, isFocused, setSlideCount, slideCount, slideTotal]);;
 
 
 
-    const onScroll = event => {
-        // If a manual scroll is in progress, do not run onScroll logic
+    const onScroll = useCallback(event => {
         if (scrollCtx.manualScrollRef.current) {
-          scrollCtx.manualScrollRef.current = false;
+            scrollCtx.manualScrollRef.current = false;
             return;
         }
-
         scrollPositionRef.current = event.nativeEvent.contentOffset.x;
         const slide = Math.round(scrollPositionRef.current / SCREEN_WIDTH);
         if (slide !== slideCount - 1) {
-          setSlideCount(slide + 1);
+            setSlideCount(slide + 1);
         }
-    };
+    }, [slideCount]);
 
-    const setSlideCountHandler = (slide) => {
-        setIsLoading(true);
-        setSlideCount(slide);
-    }
-
-
+    const setSlideCountHandler = useCallback(slide => {
+          setIsLoading(true);
+          setSlideCount(slide);
+    }, []);
 
 
-    const renderItem = ({ item, index }) => {
-        console.log('Rendering item at index:', index);
+
+
+    const renderItem = useCallback( ({ item, index }) => {
         const CurrentScreen = item.component;
+
         return <CurrentScreen {...item.props} 
         currentSlidePosition = {flatListRef} 
         index = {index}
         />;
-    };
+    }, []);
 
-    console.log('Check is lOading', isLoading)
-    console.log('slideCount', slideCount)
+    if (!screenFocussed){
+      console.log("screen not focussed")
+      return
+    }
     
     return (
         <View style = {styles.topBorder}>

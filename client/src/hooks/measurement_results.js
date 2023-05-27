@@ -102,7 +102,7 @@ export async function getSpecificMeasurementResult(school_id, class_id, group_id
         return response.data;
     }
     catch (error){
-        console.log(error);
+        console.log('error while getting specific measurement result', error);
     }
 
 }
@@ -113,7 +113,7 @@ export async function deleteMeasurementResult(recordNumber) { //change this to d
         return await axios.delete(url + `?record_number=${recordNumber}`)
     }
     catch (error){
-        console.log(error)
+        console.log('failed to delete', error)
     }
 }
 

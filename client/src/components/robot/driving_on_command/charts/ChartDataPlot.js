@@ -81,10 +81,13 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
                 <VictoryChart 
                     theme={customTheme}
                     domain={{x: [xMin, xMax + xMax / 14], y: [yMin - cutoff, yMax + cutoff]}}
-                    containerComponent={<VictoryZoomContainer 
-                        zoomDomain={zoomDomain}
-                        onZoomDomainChange={(domain) => setZoomDomain(domain)}
-                    />}
+                    containerComponent={
+                        finalPlot && (
+                        <VictoryZoomContainer 
+                            zoomDomain={zoomDomain}
+                            onZoomDomainChange={(domain) => setZoomDomain(domain)}
+                        />
+                    )}
                     padding={trueCount == 1 ? paddingCountOne : paddingCountTwo} //Add padding here
                     >
                     <VictoryAxis
@@ -125,58 +128,58 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
             </View>
 
                 {/* right icons */}
-                <View style = {{position: 'absolute', top: '11%', right: '15%'}}>
-                    <Icon icon="zoom-in" 
-                        MaterialIconsDir={true} 
-                        onPress={() => handleZoomIn()} 
-                        size = {30}
-                        color = {ColorsBlue.blue400}
-                    />
-                </View>
-                <View style = {{position: 'absolute', top: '11%', right: '5%'}}>
-                    <Icon 
-                        icon="zoom-out" 
-                        MaterialIconsDir={true} 
-                        onPress={() => handleZoomOut()} 
-                        size = {30}
-                        color = {ColorsBlue.blue400}
-                    />
-                </View>
+              {finalPlot &&
+              <>
+
+                    <View style = {{position: 'absolute', top: '11%', right: '15%'}}>
+                        <Icon icon="zoom-in" 
+                            MaterialIconsDir={true} 
+                            onPress={() => handleZoomIn()} 
+                            size = {30}
+                            color = {ColorsBlue.blue400}
+                        />
+                    </View>
+                    <View style = {{position: 'absolute', top: '11%', right: '5%'}}>
+                        <Icon 
+                            icon="zoom-out" 
+                            MaterialIconsDir={true} 
+                            onPress={() => handleZoomOut()} 
+                            size = {30}
+                            color = {ColorsBlue.blue400}
+                        />
+                    </View>
 
 
-                {/* left icons */}
-                <View style = {{position: 'absolute', top: '11%', left: '5%'}}>
-                    <Icon 
-                        icon="refresh" 
-                        onPress={() => handleRefresh()} 
-                        size = {23}
-                        color = {ColorsBlue.blue400}
-                    />
-                </View>
-                
-                <View style = {{position: 'absolute', top: '11%', left: '15%'}}>
-                    <Icon 
-                        icon="pan-left" 
-                        onPress={() => handlePanLeft()}
-                        size = {28}
-                        color = {ColorsBlue.blue400}
-                        differentDir={true}
-                    />
-                </View>
-                <View style = {{position: 'absolute', top: '11%', left: '20%'}}>
-                    <Icon 
-                        icon="pan-right" 
-                        onPress={() => handlePanRight()}
-                        size = {28}
-                        color = {ColorsBlue.blue400}
-                        differentDir={true}
-                    />
-                </View>
-
-                {/* <Button title="Pan Left"  /> */}
-                {/* <Button title="Pan Right" onPress={() => handlePan('right')} />
-                <Button title="Pan Up" onPress={() => handlePan('top')} />
-                <Button title="Pan Down" onPress={() => handlePan('bottom')} /> */}
+                    {/* left icons */}
+                    <View style = {{position: 'absolute', top: '11%', left: '5%'}}>
+                        <Icon 
+                            icon="refresh" 
+                            onPress={() => handleRefresh()} 
+                            size = {23}
+                            color = {ColorsBlue.blue400}
+                        />
+                    </View>
+                    
+                    <View style = {{position: 'absolute', top: '11%', left: '15%'}}>
+                        <Icon 
+                            icon="pan-left" 
+                            onPress={() => handlePanLeft()}
+                            size = {28}
+                            color = {ColorsBlue.blue400}
+                            differentDir={true}
+                        />
+                    </View>
+                    <View style = {{position: 'absolute', top: '11%', left: '20%'}}>
+                        <Icon 
+                            icon="pan-right" 
+                            onPress={() => handlePanRight()}
+                            size = {28}
+                            color = {ColorsBlue.blue400}
+                            differentDir={true}
+                        />
+                    </View>
+              </>
+              }
         </View>
     );
 }

@@ -42,7 +42,7 @@ function ChartContextProvider({children}) {
 
     const [trueCount, setTrueCount] = useState(Object.values(chartToggle).filter(value => value === true).length);
 
-    const bufferSize = 600;
+    const bufferSize = 70;
 
     const [finalChartData, setFinalChartData] = useState({
         distance_time: [[], [], [], []],
@@ -77,13 +77,11 @@ function ChartContextProvider({children}) {
 
     //upon fetching, all charts are set for a certain user_id, assignment_number and title
     const setAllChartsDataHandler = useCallback((newChartData) => {
-    
         // console.log('newData', newChartData)
         if (newChartData === undefined){
             emptyFinalChartData();
             return
         };
-
         // Directly set the new chart data without using prevState
         setFinalChartData(newChartData.map((chartData, idx) => {
             if (!chartData) {
@@ -97,25 +95,27 @@ function ChartContextProvider({children}) {
                     recordNumber: 0,
                 };
             }
+
             if (chartData.distance_time){
                 return {
-                    distance_time: chartData.distance_time, 
-                    velocity_time: chartData.velocity_time,
-                    motorNumber: chartData.motor_number || [],
-                    recordNumber: chartData.record_number || 0,
-                };
+                        distance_time: chartData.distance_time, 
+                        velocity_time: chartData.velocity_time,
+                        motorNumber: chartData.motor_number || [],
+                        recordNumber: chartData.record_number || 0,
+                    };
             }
+            
             if (chartData.voltage_array){
-                return {
-                    distance_time: [[], [], [], []],
-                    velocity_time: [[], [], [], []],
-                    power_time: chartData.power_array.map((val, i) => ({time: chartData.time_array[i], value: val})),
-                    voltage_time: chartData.voltage_array.map((val, i) => ({time: chartData.time_array[i], value: val})),
-                    current_time: chartData.current_array.map((val, i) => ({time: chartData.time_array[i], value: val})),
-                    motorNumber: chartData.motor_number || [],
-                    recordNumber: chartData.record_number || 0,
-                };
-            }
+                    return {
+                        distance_time: [[], [], [], []],
+                        velocity_time: [[], [], [], []],
+                        power_time: chartData.power_array.map((val, i) => ({time: chartData.time_array[i], value: val})),
+                        voltage_time: chartData.voltage_array.map((val, i) => ({time: chartData.time_array[i], value: val})),
+                        current_time: chartData.current_array.map((val, i) => ({time: chartData.time_array[i], value: val})),
+                        motorNumber: chartData.motor_number || [],
+                        recordNumber: chartData.record_number || 0,
+                    };
+                }
         }));
     }, []);
 

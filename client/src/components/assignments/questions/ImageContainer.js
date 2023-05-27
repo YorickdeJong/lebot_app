@@ -58,6 +58,7 @@ function ImageContainer({
             return;
         }
         try {
+            setIsLoading(true);
               if (subject === "MOTOR"){
                 //change this fetch to fetch specific group result
                   specificAssignmentImages = await getSpecificMeasurementResult( //if subject -> fetch from power data
@@ -122,9 +123,10 @@ function ImageContainer({
         }
     
         fetchData();
-    }, [assignment_number, isFocused, chartCtx]);
+    }, [assignment_number, isFocused, chartCtx.finalChartData]);
   
     const deleteImageHandler = useCallback(async () => {
+      console.log('chatCtx: ', chartCtx.finalChartData)
         const {recordNumber} = chartCtx.finalChartData[currentIndex];
         console.log('CURRENTCHARTDATA: ', recordNumber);
         // const recordNumber = currentChartData.recordNumber;
@@ -143,11 +145,13 @@ function ImageContainer({
                   )
                 );
                 console.log(`deleted image from local app wide state`);
+                setIsLoading(false);
               })
               .catch((error) => {
                 console.log(error);
+                setIsLoading(false);
               });
-              setIsLoading(false);
+             
         }
 
         if (subject === "CAR"){
@@ -164,14 +168,16 @@ function ImageContainer({
                   )
                 );
                 console.log(`deleted image from local app wide state`);
+                setIsLoading(false);
               })
               .catch((error) => {
-                console.log(error);
+                console.log('failed to delete', error);
+                setIsLoading(false);
             });
-            setIsLoading(false);
+            
         }
     
-    }, [subject])
+    }, [subject, chartCtx.finalChartData, currentIndex]);
   
     function renderImage({ item, index }) {
         let isConstant;
@@ -210,11 +216,12 @@ function ImageContainer({
     }
 
     if (!isFocused || chartLength === 0) {
-      setChartAvailable(false);
+      // setChartAvailable(false);
       return null;
     }
 
-    console.log('keyboard,', isKeyboardOpen)
+    console.log('current index: ', currentIndex);
+    console.log('chart length: ', chartLength);
     return (
       <>
         {isLoading ? (
@@ -245,7 +252,7 @@ function ImageContainer({
                     currentSlidePosition = {currentSlidePosition}
                   />
             </View>
-          {chartAvailable && 
+          {chartAvailable && chartLength > 0 &&
             <Swiper
               ref={swiperRef}
               loop={false}

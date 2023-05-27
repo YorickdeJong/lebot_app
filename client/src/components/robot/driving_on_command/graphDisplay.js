@@ -22,17 +22,9 @@ function GraphDisplay({
     isConstant,
 }) {
     const {title, xlabel, ylabel} = getTitleXLabelYLabel(dataType)
-    const socketCtx = useContext(SocketContext);
     let legendItems;
 
-    // Other lines remain same...
-    const [chartData, setChartData] = useState([]);
-
-    useEffect(() => {
-        setChartData(data)
-    }, [data, finalPlot, socketCtx.power]);
-
-    const flattenedChartData = [].concat(...chartData.flat());
+    const flattenedChartData = [].concat(...data.flat());
 
     const xData = flattenedChartData.map(point => point.time);
     const yData = flattenedChartData.map(point => point.value);
@@ -50,13 +42,13 @@ function GraphDisplay({
         ].filter(Boolean), [motorNumber]);
     }
 
-    if (chartData.length === 0){
+    if (data.length === 0){
         return null;
     } 
     return (
         <>
         <ChartDataPlot
-            chartData={chartData}
+            chartData={data}
             xMin={xMin}
             xMax={xMax}
             yMin={yMin}
