@@ -2,7 +2,7 @@ import { createContext, useState, useEffect, useRef } from "react";
 import {AppState, Alert} from 'react-native'
 
 import io from 'socket.io-client';
-import { ipAddressComputer, ipAddressRaspberryPi } from "../data/ipaddresses.data";
+import { fullIpAddressRaspi, ipAddressComputer, ipAddressRaspberryPi } from "../data/ipaddresses.data";
 import { set } from "react-native-reanimated";
 export const SocketContext = createContext({
     socket: null,
@@ -41,7 +41,7 @@ function SocketContextProvider({children}) {
     const [isAlertShown, setIsAlertShown] = useState(false);
 
 
-    const SOCKET_SERVER_URL = ipAddressComputer;
+    const SOCKET_SERVER_URL = fullIpAddressRaspi;
     
     // This effect sets up event listeners when socket.current changes.
     // It also cleans up these listeners when socket.current changes.
@@ -134,7 +134,13 @@ function SocketContextProvider({children}) {
         }
     }
 
-    function Connect(config, callback) {
+    function Connect() {
+        const config = { //TODO make these values statewide
+            host: ipAddressRaspberryPi,     
+            port: 22,
+            username: "ubuntu",
+            password: "password",
+        }
         try{
             socket.current.emit('connectToRemoteDevice',  config );
             setIsConnected(true);
@@ -162,14 +168,8 @@ function SocketContextProvider({children}) {
     }
 
     function EstablishSocketConnection() {
-        const config = { //TODO make these values statewide
-            host: ipAddressRaspberryPi,     
-            port: 22,
-            username: "ubuntu",
-            password: "password",
-        }
         try {
-            Connect(config); //set assignment number and title
+            Connect(); //set assignment number and title
             setIsConnected(true);
         }
         catch (error){

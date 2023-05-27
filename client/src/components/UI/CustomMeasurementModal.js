@@ -20,13 +20,14 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
     const carCtx = useContext(CarContext);
     const userprofileCtx = useContext(UserProfileContext);
     const navigation = useNavigation();
-    
+    const socketCtx = useContext(SocketContext);
     const assignment_number = questionData.assignment_number;
     const subject_title = questionData.subject;
     const assignment_title = questionData.title;
     const {id, school_id, class_id, group_id} = userprofileCtx.userprofile;
     const vel_max = carCtx.carProperties.speed;
     const vel_ramp = carCtx.carProperties.acceleration;
+
 
     function closeHandler(){
         setShowMeasurementModal(false)
@@ -43,6 +44,7 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
         7: 100% of max speed
         */
         let startScriptCommand = null
+        socketCtx.Connect();
         switch (type) {
             case '1':
                 //constant velocity

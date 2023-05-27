@@ -40,18 +40,22 @@ function Signup({route}) {
         }
         try {
             const userData = await createUser(userProfile);
+            console.log('userData', userData)
+            console.log('check 1')
             const assignments = await getAllAssignments();
+            console.log('check 2')
             userProfile.id = userData.id
-            const carDetails = await createUserCarDetails(userData.id);
 
+            console.log('check 3')
             userCtx.editUserProfile(userProfile);
+            console.log('check 4')
             {user_role === "student" ? assignmentCtx.initializeAssignments(assignments) : null}
-            // {user_role === "student" ? carCtx.initializeAssignments(carDetails) : null}
-
+            console.log('check 5')
             authCtx.authenticate(userData.token);
+            console.log('check 6')
         }
         catch (error) {
-            console.log(error)
+            console.log('error while making account', error)
             Alert.alert('Error', 'Het aanmaken an een account is niet gelukt')
             setIsAuthenticating(false);
         }
