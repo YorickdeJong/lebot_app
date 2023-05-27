@@ -36,7 +36,7 @@ function listenToClientGroups(io) {
             });
         }
 
-        await fetchDataAndNotifyGroups(schoolClients[school_id], classroom_id, school_id, groupsNamespace.to(`school-${school_id}`));
+        await setupNotificationListener(schoolClients[school_id], classroom_id, school_id, groupsNamespace.to(`school-${school_id}`));
     });
   });
 
