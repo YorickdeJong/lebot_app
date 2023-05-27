@@ -9,7 +9,6 @@ export const InformationContextProvider = ({ children }) => {
 
     // function to save showBeginningScreen in async storage
     const storeShowBeginningScreen = async (value) => {
-    console.log('token stored', value)
       try {
         await AsyncStorage.setItem('@showBeginningScreen', JSON.stringify(value))
       } catch (e) {

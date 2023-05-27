@@ -9,7 +9,7 @@ export async function getUsersInGroup(group_id) {
         return response.data;
     } 
     catch (error) {
-        console.error(error);
+        console.error('error while getting users in group', error);
         throw error;
     }
 }
@@ -20,7 +20,7 @@ export async function createGroupUser(user_id, group_id, class_id) {
       return response.data[0];
     } 
     catch (error) {
-      console.error(error);
+      console.error('error while creating group user', error);
       throw error;
     }
 }
@@ -31,7 +31,7 @@ export async function updateGroupUser(user_id) {
       return response.data[0];
     } 
     catch (error) {
-      console.error(error);
+      console.error('error while updating group user', error);
       throw error;
     }
 }
@@ -42,20 +42,18 @@ export async function deleteGroupUser(user_id) {
       return response.data[0];
     } 
     catch (error) {
-      console.error(error);
+      console.error('error while deleting group user', error);
       throw error;
     }
 }
 
 export async function deleteGroupInfo(group_id) {
   try {
-    console.log(group_id)
     const response = await axios.delete(groupUserUrl +  `/group/${group_id}`);
     return response.data[0];
   } 
   catch (error) {
-    console.log('failed to delete')
-    console.error(error);
+    console.log('error while deleting group info', error)
     throw error;
   }
 }
@@ -66,7 +64,7 @@ export async function deleteAllGroupsInfo(class_id) {
     return response.data[0];
   } 
   catch (error) {
-    console.error(error);
+    console.error('error while deleting all groups info', error);
     throw error;
   }
 }

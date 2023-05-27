@@ -5,7 +5,7 @@ import { ColorContext } from "../../store/color-context"
 import Icon from "../Icon"
 import { Shadow } from 'react-native-shadow-2'
 
-function SettingsTile({type, index, blurFactor, icon, onPress, differentDir}){
+function SettingsTile({type, index, icon, onPress}){
     const colorCtx = useContext(ColorContext)
 
     const addStyle = {
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     },
     tile: {
         flex: 1,
-        height: 120,
+        height: 110,
         elevation: 8, 
         borderWidth: 0.6,
         borderColor: ColorsBlue.blue1400,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         flex: 1,
-        backgroundColor: Platform.OS === 'ios' ? 'rgba(10, 10, 50, 1)' : 'rgba(10, 10, 50, 1)',
+        backgroundColor: Platform.OS === 'ios' ? 'rgba(2, 2, 30, 1)' : 'rgba(2, 2, 30, 1)',
         zIndex: 1,
         elevation: 4
     },

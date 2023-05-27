@@ -67,7 +67,7 @@ function UserProfile() {
     return (
         <ScrollView style = {{flex: 1, marginBottom: 50}}>
             <View style = {styles.container}>
-                 <TitleContainer text = "Account Details" style = {{borderTopLeftRadius: 10, borderTopRightRadius: 10}}
+                 <TitleContainer text = "Account Details"
                 /> 
                 
                 <UserProfileBar text = "Gebruikers naam" isBorder={true} onPress = {onPressHandler.bind(this, "username")}
@@ -80,25 +80,27 @@ function UserProfile() {
                 isBorder={false}
                 style = {{height: 50}}
                 onPress = {onPressHandler.bind(this, "password")}/>
-
-                <TitleContainer text = "Personal Information" isBorder={true} /> 
-                <UserProfileBar text = "Naam" isBorder={true} onPress = {onPressHandler.bind(this, "name")}
-                userInfo = {userCtx.userprofile.name}/>
-                <UserProfileBar text = "Achternaam" isBorder={true} onPress = {onPressHandler.bind(this, "lastName")}
-                userInfo = {userCtx.userprofile.lastname}/>
-                <UserProfileBar text = "Geboorte datum" isBorder={true} onPress = {onPressHandler.bind(this, "DOB")}
-                userInfo = {userCtx.userprofile.dob}/>
-                <UserProfileBar text = "School" isBorder={true} onPress = {onPressHandler.bind(this, "school")}
-                userInfo = {userCtx.userprofile.school_name}/>
-                <UserProfileBar text = "Klas" isBorder={true} onPress = {onPressHandler.bind(this, "klas")}
-                userInfo = {userCtx.userprofile.class_name}/>
-                <UserProfileBar text = "Groep" isBorder={true} onPress = {onPressHandler.bind(this, "groep")}
-                userInfo = {userCtx.userprofile.group_name}/>
-                <UserProfileBar text = "Gebruiker" isBorder={false} style = {{height: 50, borderBottomLeftRadius: 10,
-                borderBottomRightRadius: 10}}
-                onPress = {onPressHandler.bind(this, "level")}
-                userInfo = {userCtx.userprofile.user_role}/> 
             </View>
+
+            <View style = {styles.container}> 
+                <TitleContainer text = "Personal Information"  /> 
+                    <UserProfileBar text = "Naam" isBorder={true} onPress = {onPressHandler.bind(this, "name")}
+                    userInfo = {userCtx.userprofile.name}/>
+                    <UserProfileBar text = "Achternaam" isBorder={true} onPress = {onPressHandler.bind(this, "lastName")}
+                    userInfo = {userCtx.userprofile.lastname}/>
+                    <UserProfileBar text = "Geboorte datum" isBorder={true} onPress = {onPressHandler.bind(this, "DOB")}
+                    userInfo = {userCtx.userprofile.dob}/>
+                    <UserProfileBar text = "School" isBorder={true} onPress = {onPressHandler.bind(this, "school")}
+                    userInfo = {userCtx.userprofile.school_name}/>
+                    <UserProfileBar text = "Klas" isBorder={true} onPress = {onPressHandler.bind(this, "klas")}
+                    userInfo = {userCtx.userprofile.class_name}/>
+                    <UserProfileBar text = "Groep" isBorder={true} onPress = {onPressHandler.bind(this, "groep")}
+                    userInfo = {userCtx.userprofile.group_name}/>
+                    <UserProfileBar text = "Gebruiker" isBorder={false} style = {{height: 50}}
+                    onPress = {onPressHandler.bind(this, "level")}
+                    userInfo = {userCtx.userprofile.user_role}/> 
+            </View>
+
             <View style = {styles.delete}>
                 <Icon 
                 icon = 'trash'
@@ -117,9 +119,11 @@ export default UserProfile
 
 const styles = StyleSheet.create({
     container: {
+        marginHorizontal: 20,
         margin: 10,
         marginTop: 30,
-        borderRadius: 10,
+        borderRadius: 20,
+        backgroundColor: ColorsBlue.blue1150,
     },
     delete: {
         alignItems: 'center',

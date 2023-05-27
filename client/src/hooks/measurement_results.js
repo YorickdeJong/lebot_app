@@ -13,7 +13,7 @@ export async function getAllMeasurementResults(user_profile_id) {
         return response.data;
     }
     catch (error){
-        console.log(error);
+        console.log('error while getting all measurement results', error);
     }
 
 }
@@ -49,7 +49,7 @@ export const useSocketMeasurementResults = (shouldConnect, user_id) => {
         });
     
         newSocket.on('connect_error', (error) => {
-            //console.error('Connection error:', error);
+            console.error('Connection error live measurements:', error);
         });
     
         newSocket.on('disconnect', (reason) => {

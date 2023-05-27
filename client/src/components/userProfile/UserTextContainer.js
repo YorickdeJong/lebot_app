@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     },  
     outerInputContainer: {
         marginTop: 10,
-        borderRadius: 10,
+        borderRadius: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: ColorsBlue.blue200,
@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
         margin: 20
     },
     iconStyle: {
-        marginTop: 5
+        marginTop: 5,
+        marginRight: 5
     }
 })

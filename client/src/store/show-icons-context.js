@@ -15,7 +15,6 @@ export function ShowIconContextProvider({ children }) {
 
     // Load data from AsyncStorage when the component mounts
     useEffect(() => {
-        console.log('sets icon')
         async function fetchShowIcons() {
             const iconsJson = await AsyncStorage.getItem('showIcons');
             if (iconsJson) {

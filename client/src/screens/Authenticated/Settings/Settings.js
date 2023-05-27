@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1, 
-        backgroundColor: 'rgba(10, 10, 35,1)',
+        backgroundColor: 'rgba(8, 8, 25,1)',
         elevation: 8
     },
     backgroundImage: {

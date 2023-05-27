@@ -17,10 +17,8 @@ function ColorContextProvider({children}) {
     async function setColor(storedColor, storedIconColor) {
         if (storedColor && storedIconColor)
         {
-            console.log(`stored Color is: ${storedColor}`)
             setIsBlueColor(!storedColor);
             setIconColor(storedIconColor)
-            console.log(`blue color is: ${isBlueColor}`)
             return;
         }
 
@@ -34,8 +32,6 @@ function ColorContextProvider({children}) {
             setIconColor(ColorsBlue.blue400)
         }
         AsyncStorage.setItem('iconColor', iconColor)
-        console.log(`setcolo`)
-        console.log(`stored token: ${await AsyncStorage.getItem('color')}`)
     }
 
     const value = {

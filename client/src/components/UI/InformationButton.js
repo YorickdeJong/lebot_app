@@ -24,12 +24,8 @@ const styles = StyleSheet.create({
     shadow: {
         alignSelf: 'center',
         marginVertical: 10,
-        shadowOffset: {height:2, width:1 },
-        shadowRadius: 3,
-        shadowOpacity: 1,
-        shadowColor: 'rgba(0,0,0,1)',
         width: '80%',    
-        height: 55,
+        height: 40,
         borderBottomColor: 'rgba(77, 77, 77, 0.2)',
         borderWidth: 2.1,
         justifyContent: 'center',
@@ -38,7 +34,7 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
-        fontSize: 21,
+        fontSize: 20,
         fontWeight: '400',
         color: ColorsBlue.blue100
 

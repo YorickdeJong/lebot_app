@@ -41,6 +41,5 @@ export function useLiveChat() {
         socket.emit("text", groupId, newText);
     }
 
-    console.log('TEXT', text)
     return [text, handleTextChange];
 }

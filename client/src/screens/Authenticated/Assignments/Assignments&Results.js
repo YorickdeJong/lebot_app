@@ -139,20 +139,16 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         padding: 5,
-        // backgroundColor: 'rgba(10, 10, 55, 1)',
-        // borderColor: ColorsBlue.blue700,
-        // borderWidth: 0.6,
-        borderRadius: 400,
         position: 'absolute',
         top: height > 750 ? '22%' : '15%',
-        left: '25%',
-        right: '25%'
+        left: 0,
+        right: 0
     },
     text: {
         color:  ColorsBlue.blue100,
         fontSize: 30,
         shadowColor: 'rgba(1, 1, 1, 1)',
-        shadowOffset: { width: 1, height: 3 },
+        shadowOffset: { width: 1, height: 2 },
         shadowOpacity: 1,
         shadowRadius: 4,
         elevation: 5,

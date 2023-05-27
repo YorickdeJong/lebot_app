@@ -27,7 +27,7 @@ export const useFetchClassesDataSocket = (shouldConnect, user_id, school_id) => 
       socket.on('connect', initialize);
   
       socket.on('connect_error', (error) => {
-        //console.log('Connection error:', error);
+        console.log('Connection error:', error);
       });
   
       socket.on('disconnect', (reason) => {

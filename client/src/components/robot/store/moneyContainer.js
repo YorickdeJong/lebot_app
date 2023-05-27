@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { StyleSheet, Text, View } from "react-native"
-import { ColorsGreen, ColorsLighterGold } from "../../../constants/palet"
+import { ColorsBlue, ColorsGreen, ColorsLighterGold } from "../../../constants/palet"
 import { CarContext } from "../../../store/car-context"
 import Icon from "../../Icon"
 import {scale , verticalScale} from 'react-native-size-matters'
@@ -10,7 +10,7 @@ function MoneyContainer() {
     const carCtx = useContext(CarContext);
     return (
         <View style = {styles.moneyContainer}>
-            <Text style = {styles.textGold} > € {carCtx.carProperties.money}</Text>
+            <Text style = {styles.text} > € {carCtx.carProperties.money}</Text>
         </View>
     )
 }
@@ -26,10 +26,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         marginBottom: Platform.OS === 'ios' ? verticalScale(8) : verticalScale(3),
     },
-    textGold: {
+    text: {
         color: "white",
         fontSize: 20,
         marginTop: 5,
-        color: ColorsGreen.green300,
+        color: ColorsBlue.blue200,
     },
 })

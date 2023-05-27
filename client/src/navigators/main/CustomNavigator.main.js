@@ -18,15 +18,6 @@ const CustomHeader = ({ title, height, goBack, goBackTwice, onCustomHeaderLayout
     
     return (
       <>
-          <View
-            style={{
-              shadowColor: 'rba(0,0,0,1)',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 1,
-              shadowRadius: 2,
-              elevation: 2,
-            }}
-          >
             <LinearGradient
               colors={[ColorsBlue.blue1300, ColorsBlue.blue1300]}
               style={[styles.header, { height: height ? verticalScale(height) : (height > 750 ? verticalScale(65) : verticalScale(65)) }]}
@@ -92,7 +83,6 @@ const CustomHeader = ({ title, height, goBack, goBackTwice, onCustomHeaderLayout
                       />
                   </View>
             </LinearGradient>
-          </View>
       </>
     );
 };

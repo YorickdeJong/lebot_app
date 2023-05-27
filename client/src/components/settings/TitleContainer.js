@@ -19,7 +19,7 @@ export default TitleContainer
 const styles = StyleSheet.create({
     bar: {
         height: verticalScale(40),
-        backgroundColor: ColorsBlue.blue500,
+        backgroundColor: ColorsBlue.blue700,
         justifyContent: 'flex-end',
         borderBottomWidth: Platform.OS === 'ios' ? "1%" : 0.8,
         borderBottomColor: ColorsBlue.blue800,
@@ -27,9 +27,11 @@ const styles = StyleSheet.create({
         shadowColor: ColorsBlue.blue1300,
         shadowOpacity: 0.7,
         shadowRadius: 4,
-        shadowOffset: {height: 3, width: 1}
-
+        shadowOffset: {height: 3, width: 1},
+        borderTopRightRadius: 20,
+        borderTopLeftRadius: 20,
     },
+
     text: {
         marginLeft: 20,
         marginBottom: 10,

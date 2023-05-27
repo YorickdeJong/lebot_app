@@ -75,6 +75,13 @@ function ModalInformation({}) {
                 setTitle("Controleren")
                 setText(`- Is jouw oplossing logisch? Bijv. een vliegtuig die 5 km/uur vliegt is niet mogelijk. \n\n- Heb je daadwerkelijk het probleem opgelost?`)
                 break;
+            case 5: 
+                setSubModal({
+                    modalOne: false,
+                    modalTwo: false,
+                    modalThree: false,
+                    modalFour: false,
+                })
             default:
                 setSubModal({
                     modalOne: false,
@@ -120,7 +127,7 @@ function ModalInformation({}) {
                                                 icon="arrow-left"
                                                 size={24}
                                                 color={ColorsBlue.blue100}
-                                                onPress={() => subModalHandler(0)}
+                                                onPress={() => subModalHandler(5)}
                                                 differentDir={true}
                                             />
                                         </View>
@@ -186,13 +193,13 @@ const styles = StyleSheet.create({
         backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'rgba(0, 0, 0, 0.3)',
         paddingRight: 3,
         paddingBottom: 3,
-        width: '90%',
+        width: '80%',
         marginBottom: 100,
         borderRadius: 20,
         // alignSelf: 'center',
     },
     header: {
-        height: 60,
+        height: 45,
         backgroundColor: 'rgba(30, 30, 120, 1)',
         shadowColor: ColorsBlue.blue1400,
         shadowOffset: { width: 0, height: 2 },
@@ -205,7 +212,7 @@ const styles = StyleSheet.create({
     iconRight: {
         position: 'absolute',
         right: 8,
-        top: 16,
+        top: 8,
         shadowColor: ColorsBlue.blue1400,
         shadowOffset: { height: 2, width: 1 },
         shadowOpacity: 1,
@@ -214,7 +221,7 @@ const styles = StyleSheet.create({
     iconLeft: {
         position: 'absolute',
         left: 8,
-        top: 12,
+        top: 10,
         shadowColor: ColorsBlue.blue1400,
         shadowOffset: { height: 2, width: 1 },
         shadowOpacity: 1,

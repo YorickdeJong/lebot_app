@@ -39,7 +39,7 @@ export const useSocketPower = (shouldConnect, user_id) => {
         });
     
         newSocket.on('connect_error', (error) => {
-            //console.error('Connection error:', error);
+            console.error('Connection error power measurements:', error);
         });
     
         newSocket.on('disconnect', (reason) => {

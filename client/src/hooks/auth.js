@@ -32,11 +32,10 @@ export async function login(email, password) {
             returnSecureToken: true,
         });
     
-        console.log(`response ${JSON.stringify(response.id)}`)
         return response.data;
     }
     catch (error) {
-        console.log(error)
+        console.log('error while logging in', error)
         throw error;
     }
 }
@@ -48,12 +47,11 @@ export async function loginAdmin(email, password) {
             password: password,
             returnSecureToken: true,
         });
-    
-        console.log(`response ${JSON.stringify(response.id)}`)
+
         return response.data;
     }
     catch (error) {
-        console.log(error)
+        console.log('error while loggin in admin', error)
         throw error;
     }
 }
@@ -61,11 +59,10 @@ export async function loginAdmin(email, password) {
 export async function getUserProfileDetails(id) {
     try{
         const response =  await axios.get(url + `users/${id}`);
-        console.log(response.data)
         return response.data
     }
     catch(error){
-        console.log(error)
+        console.log('error while gettting userprofile details', error)
         throw error;
     }
 }
@@ -74,11 +71,10 @@ export async function getUserProfileDetails(id) {
 export async function getAdminProfileDetails(id) {
     try{
         const response =  await axios.get(url + `users/admin/${id}`);
-        console.log(response.data)
         return response.data
     }
     catch(error){
-        console.log(error)
+        console.log('error while getting admin profile details', error)
         throw error;
     }
 }
@@ -89,6 +85,7 @@ export async function deleteUserProfile(id) {
         return await axios.delete(url + `users/${id}`)
     }
     catch (error) {
+        console.log('error while deleting user profile', error)
         throw error
     }
 }
@@ -99,6 +96,7 @@ export async function changeUserProfile(userProfile) {
         return response.data
     }
     catch (error){
+        console.log('error while making changes to user profile', error)
         throw error
     }
 }
@@ -109,6 +107,7 @@ export async function updateGroupIDForUsers(group_id) {
         return response.data
     }
     catch (error){
+        console.log('error while updating group id for users', error)
         throw error
     }
 }
@@ -120,13 +119,13 @@ export async function updateGroupIDForClass(class_id) {
         return response.data
     }
     catch (error){
+        console.log('error while updating group id for class', error)
         throw error
     }
 }
 
 
 export function useUserSocket(shouldConnect, group_ids) {
-    console.log('GROUP IDS: ' + group_ids)
     const [dataUser, setDataUser] = useState([]);
     const socket = useSocketUser();
 
@@ -140,7 +139,6 @@ export function useUserSocket(shouldConnect, group_ids) {
             });
             console.log('Connected to socket');
         }
-        console.log('Initialize called for user_profile');
     }, [group_ids, socket]);
 
     useEffect(() => {

@@ -34,7 +34,6 @@ function ChartContextProvider({children}) {
     });
 
     useEffect(() => {
-        console.log('power', socketCtx.power)
         if (!socketCtx.power){
             emptyChartData();
         }
@@ -174,131 +173,7 @@ function ChartContextProvider({children}) {
         });
     }, [socketCtx.power]);
 
-    // const setChartDataHandler = useCallback((newDataArray) => { 
-    //     setChartData((prevState) => {
-    //         if (prevState.recordNumber === 0) {
-    //             if (!socketCtx.power) {
-    //                 console.log('cleared chart data')
-    //                 return {
-    //                     distance_time: [[], [], [], []],
-    //                     velocity_time: [[], [], [], []],
-    //                     power_time: [],
-    //                     voltage_time: [],
-    //                     current_time: [],
-    //                     motorNumber: [],
-    //                     recordNumber: 0,
-    //                 };
-    //             }
-
-
-    //             //Movement measurement case
-    //             if (newDataArray.distance){
-    //                 newDataArray.distance.forEach((points, idx) => {
-    //                     const latestPoint = points[points.length - 1];
-    //                     const latestTime = newDataArray.time[newDataArray.time.length - 1];
-    //                     distanceBuffer.current[idx].push({time: latestTime, value: latestPoint});
-    //                 });
-                    
-    //                 newDataArray.velocity.forEach((points, idx) => {
-    //                     const latestPoint = points[points.length - 1];
-    //                     const latestTime = newDataArray.time[newDataArray.time.length - 1];
-    //                     velocityBuffer.current[idx].push({time: latestTime, value: latestPoint});
-    //                 });
-    
-    //                 return {
-    //                     distance_time: distanceBuffer.current.map(buffer => buffer.toArray()),
-    //                     velocity_time: velocityBuffer.current.map(buffer => buffer.toArray()),
-    //                     motorNumber: newDataArray.motor_number,
-    //                     recordNumber: newDataArray.record_number,
-    //                 };
-    //             }
-                                                  
-    //             //Voltage Measurement Case
-    //             if (newDataArray.voltage_array){
-    //                 const latestVoltage = newDataArray.voltage_array[newDataArray.voltage_array.length - 1];
-    //                 const latestCurrent = newDataArray.current_array[newDataArray.current_array.length - 1];
-    //                 const latestPower = newDataArray.power_array[newDataArray.power_array.length - 1];
-    //                 const latestTime = newDataArray.time_array[newDataArray.time_array.length - 1];
-    //                 voltageBuffer.current.push({time: latestTime, value: latestVoltage});
-    //                 currentBuffer.current.push({time: latestTime, value: latestCurrent});
-    //                 powerBuffer.current.push({time: latestTime, value: latestPower});
-    
-    //                 return {
-    //                     distance_time: [[], [], [], []],
-    //                     velocity_time: [[], [], [], []],
-    //                     power_time: powerBuffer.current.toArray(),
-    //                     voltage_time: voltageBuffer.current.toArray(),
-    //                     current_time: currentBuffer.current.toArray(),
-    //                     motorNumber: newDataArray.motor_number,
-    //                     recordNumber: newDataArray.record_number,
-    //                 };
-    //             }
-    //         }
-    //         //stop measuremetn after buffersize is reached
-            
-            
-    //         if (newDataArray.distance){
-    //             if (newDataArray.distance[0].length === bufferSize ) { 
-    //                 socketCtx.setPower((prevPower) => !prevPower);
-    //                 socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
-    //                 Alert.alert('Meeting Gestopt!', 'Je hebt je maximale meettijd bereikt.')
-    //                 return;
-    //             }
-    //             return {
-    //                 distance_time: prevState.distance_time.map((distances_times, idx) => { 
-    //                     const newData = newDataArray.distance[idx];
-    //                     if (!newData) return distances_times;
-            
-    //                     const latestPoint = newData[newData.length - 1];
-    //                     const latestTime = newDataArray.time[newDataArray.time.length - 1];
-    //                     distanceBuffer.current[idx].push({time: latestTime, value: latestPoint});
-                        
-    //                     return distanceBuffer.current[idx].toArray();
-    //                 }),
-    //                 velocity_time: prevState.velocity_time.map((velocities_time, idx) => {
-    //                     const newData = newDataArray.velocity[idx];
-    //                     if (!newData) return velocities_time;
-            
-    //                     const latestPoint = newData[newData.length - 1];
-    //                     const latestTime = newDataArray.time[newDataArray.time.length - 1];
-    //                     velocityBuffer.current[idx].push({time: latestTime, value: latestPoint});
-                        
-    //                     return velocityBuffer.current[idx].toArray();
-    //                 }),
-    //                 motorNumber: prevState.motorNumber,
-    //                 recordNumber: prevState.recordNumber,
-    //             };
-    //         }
-    //         if (newDataArray.voltage_array){
-    //             if (newDataArray.power_array.length === bufferSize) {
-    //                 socketCtx.setPower(false);
-    //                 socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
-    //                 Alert.alert('Meeting Gestopt!', 'Je hebt je maximale meettijd bereikt.')
-    //                 return;
-    //             }
-    //             const latestVoltage = newDataArray.voltage_array[newDataArray.voltage_array.length - 1];
-    //             const latestCurrent = newDataArray.current_array[newDataArray.current_array.length - 1];
-    //             const latestPower = newDataArray.power_array[newDataArray.power_array.length - 1];
-    //             const latestTime = newDataArray.time_array[newDataArray.time_array.length - 1];
-    //             voltageBuffer.current.push({time: latestTime, value: latestVoltage});
-    //             currentBuffer.current.push({time: latestTime, value: latestCurrent});
-    //             powerBuffer.current.push({time: latestTime, value: latestPower});
-            
-    //             return {
-    //                 distance_time: [[], [], [], []],
-    //                 velocity_time: [[], [], [], []],
-    //                 power_time: powerBuffer.current.toArray(),
-    //                 voltage_time: voltageBuffer.current.toArray(),
-    //                 current_time: currentBuffer.current.toArray(),
-    //                 motorNumber: prevState.motorNumber,
-    //                 recordNumber: prevState.recordNumber,
-    //             };
-    //         }
-    //         });
-    //     }, [socketCtx.power]);
-
     function emptyChartData(){
-        console.log('emptied chart data')
         setChartData({
             distance_time: [[], [], [], []],
             velocity_time: [[], [], [], []],

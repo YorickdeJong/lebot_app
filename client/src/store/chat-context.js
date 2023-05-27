@@ -29,7 +29,6 @@ function ChatContextProvider({ children }) {
     const [currentThreadId, setCurrentThreadId] = useState(null);
     const [descriptions, setDescriptions] = useState([
     ]);
-    console.log('description', descriptions)
     const userprofileCtx = useContext(UserProfileContext);
 
     const user_id = userprofileCtx.userprofile.id;
@@ -56,7 +55,6 @@ function ChatContextProvider({ children }) {
                     return self.indexOf(value) === index;
             });
             const uniqueThreadIds = uniqueThreadIdsFiltered.filter(thread => thread !== null)
-            console.log('uniqueThreadIds', uniqueThreadIds)
             const descriptionsJSON = await AsyncStorage.getItem("descriptions");
 
             if (chatJSON !== null) {
@@ -70,9 +68,6 @@ function ChatContextProvider({ children }) {
 
             if (descriptionsJSON !== null) {
                 const storedDescriptions = JSON.parse(descriptionsJSON);
-                console.log('storedDescriptions', storedDescriptions)
-                console.log('unqiueThreadIds', uniqueThreadIds)
-                console.log('descriptionStorage', storedDescriptions)
                 storedDescriptions.map(description => {
                     if (description.thread_id === undefined)
                     {
@@ -114,7 +109,6 @@ function ChatContextProvider({ children }) {
     }
 
     async function saveDescriptionsInStorage(newDescriptions){
-        console.log('newDescriptions', newDescriptions)
         try {
             const descriptionsJSON = JSON.stringify(newDescriptions);
             await AsyncStorage.setItem("descriptions", descriptionsJSON);

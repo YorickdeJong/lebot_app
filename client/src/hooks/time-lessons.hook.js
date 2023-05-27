@@ -14,7 +14,6 @@ export const useFetchTimeLessonsDataSocket = (shouldConnect, school_id) => {
     const initialize = useCallback(() => {
         if (socket) {
             socket.emit('initialize', {school_id });
-            console.log('Connected to socket');
         }
         console.log('Initialize called for time lessons');
     }, [school_id, socket]);
@@ -27,7 +26,7 @@ export const useFetchTimeLessonsDataSocket = (shouldConnect, school_id) => {
             socket.on('connect', initialize);
 
             socket.on('connect_error', (error) => {
-            //console.log('Connection error:', error);
+                console.log('Connection error time lessons:', error);
             });
 
             socket.on('disconnect', (reason) => {
@@ -71,7 +70,7 @@ export async function getAllTimeLessonsForClass(school_id, class_id) {
         return response.data;
     } 
     catch (error) {
-        console.log(error);
+        console.log('error while fetching all time lessons for class', error);
         throw error;
     }
 }
@@ -88,7 +87,7 @@ export async function createTimeLesson(class_id, duration, school_id, active, le
         return response.data;
     } 
     catch (error) {
-        console.log(error);
+        console.log('error while creating time lesson', error);
         throw error;
     }
 }
@@ -105,7 +104,7 @@ export async function updateTimeLesson(time_lesson_id, class_id, duration, schoo
         return response.data;
     } 
     catch (error) {
-        console.log(error);
+        console.log('error while updating time lesson', error);
         throw error;
     }
 }
@@ -116,7 +115,7 @@ export async function deleteTimeLesson(time_lesson_id) {
         return response.data;
     } 
     catch (error) {
-        console.log(error);
+        console.log('error while deleting time lesson', error);
         throw error;
     }
 }
@@ -127,7 +126,7 @@ export async function deleteAllLessonsForClass(class_id) {
         return response.data;
     } 
     catch (error) {
-        console.log(error);
+        console.log('error while deleting all time lessons for class', error);
         throw error;
     }
 }

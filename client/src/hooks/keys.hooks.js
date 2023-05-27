@@ -32,7 +32,6 @@ export async function useGetAllKeysForSchool(school_name) {
 export const createKeys = async (keys) => {
     let responseData = null;
 
-    console.log('keys', keys)
     try {
         const response = await axios.post(`${API_BASE_URL}`, { keys });
         responseData = response.data;
@@ -51,7 +50,6 @@ export const deleteAllSchoolKeys = async (school_name) => {
         try {
             const response = await axios.delete(`${API_BASE_URL}/all/${school_name}`);
             responseData = response.data.keys;
-            console.log('response', responseData)
             return responseData;
         } 
         catch (error) {

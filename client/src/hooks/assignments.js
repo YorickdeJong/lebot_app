@@ -9,7 +9,7 @@ export async function getAssignments(title, assignment_number) {
         return response.data;
     }
     catch (error){
-        console.log(error);
+        console.log('error while getting specific assignment', error);
     }
 
 }
@@ -20,7 +20,7 @@ export async function getAllAssignments(){
         return response.data
     }
     catch (error){
-        console.log(error)
+        console.log('error while getting all assignments', error)
     }
 }
 

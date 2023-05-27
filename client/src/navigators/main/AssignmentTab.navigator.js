@@ -106,11 +106,6 @@ export default AssignmentTab;
 const styles = StyleSheet.create({
   tabNav: {
     paddingTop: 33,
-    shadowColor: 'rgba(0,0,0,1)',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 1,
-    shadowRadius: 3,
-    elevation: 2,
     backgroundColor: ColorsBlue.blue1300
   },
   container: {
