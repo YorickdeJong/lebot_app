@@ -18,28 +18,31 @@ function verifyToken(token) {
   return jwt.verify(token, secret);
 }
 
+
 const authenticateUser = async (req, res) => {
+    console.log("Authenticate User called");  // add this line
     const { email, password } = req.body;
     const client = await pool.connect();
-
-    console.log('email', email)
-    console.log('password', password)
+    
+    console.log("Connected to database");  // add this line
     try {
         const { rows } = await client.query(authenticateUserQuery, [email]);
+        console.log("Executed query");  // add this line
         if (rows.length === 0) {
             return res.status(401).send({ error: 'Email incorrect' });
         }
 
         const user = rows[0];
         const isMatch = await bcrypt.compare(password, user.password);
-
+        
+        console.log("Compared password");  // add this line
         if (!isMatch) {
             return res.status(401).send({ error: 'Password is incorrect' });
         }
 
-        const id = user.id
+        const id = user.id;
         const token = generateToken(user.id);
-        const user_role = user.user_role
+        const user_role = user.user_role;
 
         console.log(`user token: ${token}`)
         res.json({ 
@@ -50,7 +53,7 @@ const authenticateUser = async (req, res) => {
         });
     } 
     catch (error) {
-        console.error(error);
+        console.error("Error occurred during authentication", error);  // modify this line
         return res.status(500).send({ error: 'An error occurred while logging in' });
     } 
     finally {
