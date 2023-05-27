@@ -22,6 +22,7 @@ function verifyToken(token) {
 const authenticateUser = async (req, res) => {
     console.log("Authenticate User called");  // add this line
     const { email, password } = req.body;
+    console.log('email', email, 'password', password)
     const client = await pool.connect();
     
     console.log("Connected to database");  // add this line
