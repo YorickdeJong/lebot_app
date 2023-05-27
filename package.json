@@ -4,6 +4,7 @@
   },
   "scripts": {
     "test": "jest",
-    "start": "cd server && npm start"
+    "start": "cd server && npm start",
+    "heroku-postbuild": "npm install --prefix server"
   }
 }
