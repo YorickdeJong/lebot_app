@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const secret = "secret-key"; // your secret key for signing the JWT
 const pool = require('../../services/postGreSQL')
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const {
     authenticateUserQuery,

@@ -1,6 +1,5 @@
 const pool = require('../../services/postGreSQL')
 const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt');
 const secret = "secret-key"; // your secret key for signing the JWT
 
 const {    
