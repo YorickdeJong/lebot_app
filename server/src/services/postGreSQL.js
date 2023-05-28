@@ -4,11 +4,9 @@ let pool;
 
 if (process.env.NODE_ENV === 'production') {
     // In production environment (Heroku), use DATABASE_URL
+    const connectionString = process.env.PGBOUNCER_URL;
     pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false
-        }
+        connectionString: connectionString,
     });
 } else {
     // In development environment (local machine), use local database settings
