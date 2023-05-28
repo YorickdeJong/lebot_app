@@ -25,7 +25,6 @@ function RobotStore() {
             setShowModalTemp(true)
         }
     }, [isFocused])
-    console.log(`showModalTemp: ${showModalTemp}`)
 
     //TODO add function to select tiles
     function selectUpgrade(upgradeType){

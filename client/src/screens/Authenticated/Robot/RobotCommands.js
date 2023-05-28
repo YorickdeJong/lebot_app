@@ -21,8 +21,6 @@ function RobotCommands() {
         setHeaderHeight(headerHeight);
     }, []);
 
-    console.log(`CHECK SCREEN SETTINGS`)
-
     function settingsGrid(itemData) {
         function onPressHandler() {
             switch(itemData.item.type) {

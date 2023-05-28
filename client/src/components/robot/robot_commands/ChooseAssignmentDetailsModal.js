@@ -28,7 +28,6 @@ function ChooseAssignmentModal({headerHeight, setShowChooseAssignmentDetailsModa
     const assignments = assignmentCtx.assignments
     .filter(
         (assignment) => (
-            console.log(assignment.title),
             assignment.title === assignmentCtx.assignmentImage.title
             )
         )

@@ -47,6 +47,7 @@ export const useFetchGroupsDataSocket = (shouldConnect, user_id, classroom_id, s
       });
   
       socket.on('fetch-data-update', async (fetchedData) => {
+        console.log('UPDATED DATA', fetchedData)
         groupTeacherCtx.addGroupArrayHandler(fetchedData);
         setData(fetchedData);
       });

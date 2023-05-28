@@ -82,7 +82,6 @@ export const TimeContextProvider = ({ children, namespace }) => {
                     false, // Set active to false
                     specificLesson.lesson_number
                 );
-                console.log('Lesson updated:', updatedLesson);
             } 
             catch (error) {
                 console.error('Failed to update time lesson:', error);

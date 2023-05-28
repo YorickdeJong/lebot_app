@@ -10,7 +10,7 @@ const {
     updateUser,
     updateGroupIDForClass,
     updateGroupIDForUsers,
-    getUsersInGroup,
+    getUsersNamesInGroup,
 } = require('./user_profile.controller')
 const router = Router()
 
@@ -24,7 +24,7 @@ router.post('/admin', createAdminAccount)
 router.get('/admin', getAllAdminProfiles)
 
 router.get('/admin/:id', getAdminProfileById)
-router.get('/users-in-group', getUsersInGroup)
+router.get('/users-in-group', getUsersNamesInGroup)
 router.get('/:id', getUserProfileById)
 router.get('/', getAllUserProfiles)
 router.post('/', createUserProfile)

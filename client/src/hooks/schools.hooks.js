@@ -29,7 +29,6 @@ export async function getAllSchools(){
 export async function createSchool(school_name) { //add to create account
     try {
         const response = await axios.post(url, {school_name: school_name} )
-        console.log(response.date)
         return response.data[0]
     }   
     catch(error) {

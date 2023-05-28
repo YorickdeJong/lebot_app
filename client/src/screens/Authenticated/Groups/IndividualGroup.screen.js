@@ -13,8 +13,6 @@ function IndividualGroup() {
     const route = useRoute();
     const {group_members, group_name, class_name} = route.params
 
-    console.log('GROEP', group_members)
-
 
     const [tries, setTries] = useState([]);
     const [correct, setCorrect] = useState([]);

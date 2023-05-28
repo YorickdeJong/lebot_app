@@ -92,7 +92,7 @@ function ClassRoomMain({ route }) {
                             return
                         }
                         catch(error) {
-                            console.log(error)
+                            console.log('failed to edit class', error)
                             setDbUpdate(false)
                         }
                         

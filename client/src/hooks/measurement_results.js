@@ -8,6 +8,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 const url = ipAddressComputer + '/api/v1/measurement-results'
 
 export async function getAllMeasurementResults(user_profile_id) {
+    console.log(user_profile_id)
     try{
         const response = await axios.get(url + `/all/${user_profile_id}`);
         return response.data;
@@ -70,7 +71,7 @@ export const useSocketMeasurementResults = (shouldConnect, user_id) => {
         });
     
         newSocket.on('measurement-results-update', (data) => {
-            chartCtx.setChartDataHandler(data[0]);
+            chartCtx.setChartDataHandler(data[0]); //change this, maybe return some data? 
         });
 
         
@@ -88,6 +89,7 @@ export const useSocketMeasurementResults = (shouldConnect, user_id) => {
 
 
 export async function getSpecificMeasurementResult(school_id, class_id, group_id, title, assignment_number, subject) {
+    console.log('school_id', school_id, 'class_id', class_id, 'group_id', group_id, 'title', title, 'assignment_number', assignment_number, 'subject', subject)
     try{
         const response = await axios.get(url,  {
             params: {

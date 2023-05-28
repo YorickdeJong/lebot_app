@@ -108,7 +108,7 @@ const getAdminProfileById = async (req, res) => {
     }
 }
 
-const getUsersInGroup = async (client, group_id) => {
+const getUsersNamesInGroup = async (client, group_id) => {
     console.log('group_id', group_id)
     const values = [group_id];
 
@@ -417,5 +417,5 @@ module.exports = {
     updateUser,
     updateGroupIDForClass,
     updateGroupIDForUsers,
-    getUsersInGroup
+    getUsersNamesInGroup
 }

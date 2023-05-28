@@ -26,6 +26,7 @@ function GraphDisplay({
 
     const flattenedChartData = [].concat(...data.flat());
 
+
     const xData = flattenedChartData.map(point => point.time);
     const yData = flattenedChartData.map(point => point.value);
     const xMin = Math.min(...xData);

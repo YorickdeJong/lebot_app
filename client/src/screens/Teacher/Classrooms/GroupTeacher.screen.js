@@ -69,7 +69,6 @@ function GroupTeacherScreen({ navigation, route }) {
                     text: 'Yes',
                     onPress: async () => {
                         try {
-                            console.log('GROUP_ID', group_id)
                             groupTeacherCtx.deleteGroupHandler(group_id);
 
                             if (groupTeacherCtx.checkIfGroupIsEmpty(group_id)) {

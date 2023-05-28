@@ -42,6 +42,7 @@ const getSpecificMeasurementResult = async (req, res) => {
 
     try {
         const {school_id, class_id, group_id, assignment_number, title, subject} = req.query;
+        console.log('school_id, class_id, group_id, assignment_number, title, subject', school_id, class_id, group_id, assignment_number, title, subject)
         const {rows} = await client.query(getSpecificMeasurementResultQuery, [assignment_number, title, subject, school_id, class_id, group_id]);
 
         if (rows.length === 0) {

@@ -215,7 +215,7 @@ function ImageContainer({
         swiperRef.current.scrollBy(index - currentIndex, true);
     }
 
-    if (!isFocused || chartLength === 0) {
+    if (!isFocused) {
       // setChartAvailable(false);
       return null;
     }

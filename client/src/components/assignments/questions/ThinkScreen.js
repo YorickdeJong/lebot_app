@@ -22,7 +22,7 @@ function ThinkScreen({nextSlideHandler, currentSlidePosition, prevSlideHandler, 
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
 
     const [isCloseIcon, setIsCloseIcon] = useState(false);
-    // const [inputTextOne, setInputTextOne] = useState('');
+    const [inputTextOne, setInputTextOne] = useState('');
     const [inputTextTwo, setInputTextTwo] = useState('');
     const [inputTextThree, setInputTextThree] = useState('');
     const [inputTextFour, setInputTextFour] = useState('');
@@ -30,7 +30,6 @@ function ThinkScreen({nextSlideHandler, currentSlidePosition, prevSlideHandler, 
     const [yesButton, setYesButton] = useState(false);
     const [noButton, setNoButton] = useState(false);
 
-    const [inputTextOne, setInputTextOne] = useLiveChat();
 
     function handleAgreementChoice(type) {
         switch(type) {

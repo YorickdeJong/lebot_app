@@ -26,12 +26,10 @@ function GroupStudent({ navigation, route, tileType }) {
         group_ids = groups.map(group => group.group_id);
     }
     const [data, initialize] = useFetchGroupsDataSocket(true, user_id, classroom_id, school_id);
-    const [dataUser, initializeUser] = useUserSocket(true, group_ids);
 
     useFocusEffect( 
         useCallback(() => {
             initialize();
-            initializeUser();
             return () => {
                 console.log('GroupStudent component blurred');
             };
@@ -87,7 +85,7 @@ function GroupStudent({ navigation, route, tileType }) {
                                 return;
                             }  
                             catch(error){
-                                console.log(error)
+                                console.log('failed to add groep', error)
                                 setDbUpdated(false)
                                 Alert.alert('Er is iets mis gegaan')
                                 return
@@ -152,7 +150,6 @@ function GroupStudent({ navigation, route, tileType }) {
             className={class_name}
             classroom_id={classroom_id}
             data={data}
-            dataUser={dataUser}
         />
     ) 
 }

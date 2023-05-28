@@ -16,7 +16,7 @@ import { Image } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
-function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandler, addUserHandler, classroom_id, className, data, setDbUpdate, dataUser, tabNav}){
+function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandler, addUserHandler, classroom_id, className, data, setDbUpdate, tabNav}){
     const navigation = useNavigation();
     const userprofileCtx = useContext(UserProfileContext)
     const user_class_id = userprofileCtx.userprofile.class_id
@@ -50,23 +50,6 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
             animation.stop();
         };
     }, []);
-
-    function mergeDataWithNames(userNames, data) {
-        return data.map(item => {
-          const groupData = userNames.find(group => group.group_id === item.group_id);
-          if (groupData) {
-            return {
-              ...item,
-              usernames: groupData.names
-            };
-          } else {
-            return {
-              ...item,
-              usernames: []
-            };
-          } 
-        });
-    }
 
     function renderGroups({item, index}) {   
         //Don't display tiles that do not have the selected classroom
@@ -110,7 +93,6 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
                     case 'Group':
                         if (user_class_id === item.class_id && user_group_id === item.group_id) {
                             //REPLACE WITH USER SCREENS
-                            console.log('GROUPMEMBVERS', item.usernames)
                             navigation.navigate('groups', {
                                 screen: 'IndividualGroup', 
                                 params: {
@@ -146,8 +128,6 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
 
         )
     }
- 
-    const mergedData = dataUser ? mergeDataWithNames(dataUser, data) : data;
 
     return (
         <LinearGradient style = {styles.container}
@@ -164,7 +144,7 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
                 <View style = {{flex: 1}}>
                     <FlatList
                     KeyExtractor = {(item) => item.classroom_id.to_String()}
-                    data = {mergedData} //toevoegen dat deze data alleen voor teacher geldt -> wil eigenlijk dat dit gefetch wordt via een socket
+                    data = {data} //toevoegen dat deze data alleen voor teacher geldt -> wil eigenlijk dat dit gefetch wordt via een socket
                     renderItem = {renderGroups}
                     />
                     {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Class'  && !explanationState && 

@@ -37,8 +37,6 @@ function AssignmentsResults() {
     const [assignmentData, setAssignmentData] = useState(firstAssignment);
     
 
-    console.log('height', height)
-    console.log('width', width)
 
     useEffect(() => {
         switch (selectFase) {

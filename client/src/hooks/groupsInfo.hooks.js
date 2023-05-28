@@ -15,6 +15,7 @@ export async function getUsersInGroup(group_id) {
 }
 
 export async function createGroupUser(user_id, group_id, class_id) {
+  console.log('create group user', user_id, group_id, class_id)
     try {
       const response = await axios.post(groupUserUrl, { user_id, group_id, class_id });
       return response.data[0];

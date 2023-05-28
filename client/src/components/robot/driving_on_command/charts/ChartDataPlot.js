@@ -1,4 +1,4 @@
-import { VictoryLine, VictoryChart, VictoryTheme, VictoryZoomContainer, VictoryScatter, VictoryAxis, VictoryGroup, ZoomHelpers } from "victory-native";
+import { VictoryLine, VictoryChart, VictoryTheme, VictoryZoomContainer, VictoryScatter, VictoryAxis, VictoryGroup, ZoomHelpers, VictoryContainer } from "victory-native";
 import { ColorsBlue, ColorsBrownWood, ColorsGray, ColorsGreen, ColorsPurple, ColorsRed } from "../../../../constants/palet";
 import {StyleSheet, View, Text, Button} from 'react-native'
 import Icon from "../../../Icon";
@@ -20,7 +20,7 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
             }
           }
         }
-      }
+    }
 
     let cutoff;
     if (Math.abs(yMax) > Math.abs(yMin)) {
@@ -30,10 +30,11 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
         cutoff = Math.abs(yMin) / 8;
     }
 
+
     const paddingCountOne = { top: finalPlot ? 40 : 20, bottom: finalPlot ? 55 : 0, left: 48, right: 35 }
     const paddingCountTwo = { top: finalPlot ? 40 : 30, bottom: finalPlot ? 120 : 170, left: 48, right: 35 }
 
-    const [zoomDomain, setZoomDomain] = useState({ x: [0, xMax + 0.5], y: [yMin - cutoff, yMax + cutoff] });
+    const [zoomDomain, setZoomDomain] = useState({ x: [0, finalPlot ? xMax + 0.5 : 0.5], y: [finalPlot ? yMin - cutoff : 0, isFinite(yMax) ? yMax + cutoff : 0.5] });
 
     const handleZoomIn = () => {
       // Implement your logic to calculate the new zoom domain for zooming in
@@ -82,12 +83,12 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
                     theme={customTheme}
                     domain={{x: [xMin, xMax + xMax / 14], y: [yMin - cutoff, yMax + cutoff]}}
                     containerComponent={
-                        finalPlot && (
+                        finalPlot ? 
                         <VictoryZoomContainer 
                             zoomDomain={zoomDomain}
                             onZoomDomainChange={(domain) => setZoomDomain(domain)}
-                        />
-                    )}
+                        /> : <VictoryContainer />
+                    }
                     padding={trueCount == 1 ? paddingCountOne : paddingCountTwo} //Add padding here
                     >
                     <VictoryAxis

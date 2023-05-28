@@ -1,4 +1,5 @@
 const { getUsersInGroup } = require('../groups/groupsInfo.controller');
+const { getUsersNamesInGroup } = require('../user_profile/user_profile.controller')
 const { getGroupsPerClassRoom } = require('../groups/groups.controller');
 
 const pool = require('../../services/postGreSQL');
@@ -43,7 +44,13 @@ function listenToClientGroups(io) {
           const updatedData = await Promise.all(
             fetchedData.data.map(async (item) => {
                 const countData = await getUsersInGroup(client, item.group_id);
-                return { ...item, current_count: countData.count };
+                const result = await getUsersNamesInGroup(client, item.group_id);
+                let usernames = []
+                if (result.status === 200) {
+                    usernames = result.data.map((user) => user.name);
+                }
+                // add getUsersInGroup here
+                return { ...item, current_count: countData.count, usernames};
             })
           );
   
@@ -60,6 +67,7 @@ function listenToClientGroups(io) {
           user_id = userId;
           classroom_id = classroomId;
           school_id = schoolId;
+
           try {
               socket.join(school_id); // Add socket to a room based on school_id
           
@@ -103,7 +111,7 @@ function listenToClientGroups(io) {
                   if (poolData) {
                       const { client, cleanupNotificationListener } = poolData;
                       // Only call cleanupNotificationListener and release the client if it hasn't been released yet
-                      if (client) {
+                      if (client && clientPool.has(school_id)) {
                           cleanupNotificationListener();
                           client.release();
                           clientPool.delete(school_id);
@@ -135,7 +143,13 @@ async function fetchDataAndNotifyGroups(client, classroom_id, school_id, groupsN
     const updatedData = await Promise.all(
         fetchedData.data.map(async (item) => {
             const countData = await getUsersInGroup(client, item.group_id);
-            return { ...item, current_count: countData.count };
+            const result = await getUsersNamesInGroup(client, item.group_id);
+            let usernames = [];
+            if (result.status === 200) {
+              usernames = result.data.map((user) => user.name);
+            }
+            //add getUsersInGroup here and add to countData
+            return { ...item, current_count: countData.count, usernames };
         })
     );
 

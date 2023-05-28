@@ -25,7 +25,6 @@ function ChooseTitleModal({headerHeight, setShowChooseTitleDetailsModal}) {
     }
     
     useEffect(() => {
-        console.log(assignmentCtx.assignmentImage.assignment_number)
         assignmentCtx.setAssignmentImageHandler(0)
     }, [assignmentCtx.assignmentImage.title])
 

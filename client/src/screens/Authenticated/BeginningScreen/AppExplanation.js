@@ -102,7 +102,6 @@ function AppExplanation() {
     };
 
     function setExplanationStateHandler(screen, index) {
-        console.log(screen, index);
         let temp = {...explanationState};
         temp[screen][index] = true;
         setExplanationState(temp);

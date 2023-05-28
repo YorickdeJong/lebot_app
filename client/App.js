@@ -70,11 +70,9 @@ function Root({}) {
   const [isTryingLogin, setIsTryingLogin] = useState(true);
   const authCtx = useContext(AuthContext);
   const colorCtx = useContext(ColorContext)
-  const { socket, isConnected, Disconnect, CreateSocketConnection, EstablishSocketConnection } = useContext(SocketContext);
-  const [connectionAttempted, setConnectionAttempted] = useState(false); //add connection atempt to not immidiately show first alert
+  const { Disconnect, CreateSocketConnection, } = useContext(SocketContext);
   const userprofileCtx = useContext(UserProfileContext);
   const {user_role} = userprofileCtx.userprofile;
-  const [isAlertShown, setIsAlertShown] = useState(false);
 
 
 
@@ -133,7 +131,6 @@ export default function App() {
       <SocketContextProvider>
         <SocketProviderClasses namespace = "/api/v1/classes">
           <SocketProviderGroups namespace = "/api/v1/groups">
-            <SocketProviderUser namespace = "/api/v1/user/users-in-group">
               <WifiContextProvider>
                 <ChatContextProvider>
                   <AssignmentDetailsContextProvider>
@@ -165,7 +162,6 @@ export default function App() {
                   </AssignmentDetailsContextProvider>
                 </ChatContextProvider>
               </WifiContextProvider>
-            </SocketProviderUser>
           </SocketProviderGroups>
         </SocketProviderClasses>
       </SocketContextProvider>

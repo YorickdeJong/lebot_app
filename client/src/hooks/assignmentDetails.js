@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ipAddressComputer } from '../data/ipaddresses.data';
-
+import { Alert } from 'react-native';
 const url = ipAddressComputer + '/api/v1/assignmentDetails'
 
 export async function getGroupAssignmentDetails(school_id, class_id, group_id) {
@@ -33,6 +33,7 @@ export async function getSpecificAssignmentsDetail(school_id, class_id, group_id
         return response.data[0];
     }
     catch (error){
+        // Alert.alert('Niet gelukt om de opdracht te laden')
         console.log('error while fetching specific assignment detail', error);
     }
 
