@@ -25,18 +25,18 @@ function GroupStudent({ navigation, route, tileType }) {
     if (groups) {
         group_ids = groups.map(group => group.group_id);
     }
-    const [data, initialize] = useFetchGroupsDataSocket(true, user_id, classroom_id, school_id);
-    const [dataUser, initializeUser] = useUserSocket(true, group_ids);
+    // const [data, initialize] = useFetchGroupsDataSocket(true, user_id, classroom_id, school_id);
+    // const [dataUser, initializeUser] = useUserSocket(true, group_ids);
 
-    useFocusEffect( 
-        useCallback(() => {
-            initialize();
-            initializeUser();
-            return () => {
-                console.log('GroupStudent component blurred');
-            };
-        }, [initialize, dbUpdated]) // Add initialize as a dependency
-    );
+    // useFocusEffect( 
+    //     useCallback(() => {
+    //         initialize();
+    //         initializeUser();
+    //         return () => {
+    //             console.log('GroupStudent component blurred');
+    //         };
+    //     }, [initialize, dbUpdated]) // Add initialize as a dependency
+    // );
 
     async function joinGroupHandler(group_id, class_id) {
         const user_id = userprofileCtx.userprofile.id //PROBLEM: FETCHED GROUPS AREN'T ADDED TO LOCAL STORAGE -> ADD THEM 

@@ -20,20 +20,20 @@ function ClassesStudent({tileType}) {
     const school_id = userprofileCtx.userprofile.school_id
     const user_id = userprofileCtx.userprofile.id
 
-    const [data, initialize] = useFetchClassesDataSocket(true, user_id, school_id);
-    const [dataTime, initializeTime] = useFetchTimeLessonsDataSocket(true, school_id)
+    // const [data, initialize] = useFetchClassesDataSocket(true, user_id, school_id);
+    // const [dataTime, initializeTime] = useFetchTimeLessonsDataSocket(true, school_id)
 
-    useFocusEffect(
-        useCallback(() => {
+    // useFocusEffect(
+    //     useCallback(() => {
             
-            console.log('ClassesStudent component focused');
-            initialize(); // Add this line to call initialize when the component is focused
-            initializeTime();
-            return () => {
-                console.log('ClassesStudent component blurred');
-            };
-        }, [initialize, initializeTime, dbUpdated]) // Add initialize as a dependency
-    );
+    //         console.log('ClassesStudent component focused');
+    //         initialize(); // Add this line to call initialize when the component is focused
+    //         initializeTime();
+    //         return () => {
+    //             console.log('ClassesStudent component blurred');
+    //         };
+    //     }, [initialize, initializeTime, dbUpdated]) // Add initialize as a dependency
+    // );
 
     async function joinClassHandler(class_id) {
         const user_id = userprofileCtx.userprofile.id
