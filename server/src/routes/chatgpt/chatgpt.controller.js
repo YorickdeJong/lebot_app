@@ -1,6 +1,8 @@
 //TODO make post and delete request to endpoint
 
-const axios = require('axios');
+require('dotenv').config();
+
+
 const {Configuration, OpenAIApi} = require('openai');
 
 const { 
@@ -15,7 +17,7 @@ const {
 
 const pool = require('../../services/postGreSQL');
 const { get } = require('http');
-const apiKey = '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';
+const apiKey = process.env.API_KEY_CHATGPT; 
 
 const getChatHistory = async (req, res) => {
     const client = await pool.connect();

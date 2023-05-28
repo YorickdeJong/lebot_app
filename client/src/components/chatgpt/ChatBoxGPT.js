@@ -53,6 +53,7 @@ function ChatBoxGPT({ answer, isLastItem, thread_id, setTyping, typing, customCo
         marginRight: customColor ? 18 : 8,
         paddingBottom: customColor ? 0 : 15,
     }
+    console.log('typing', typing)
 
     return (
         <View style = {{flex: 1}}>
@@ -74,7 +75,8 @@ function ChatBoxGPT({ answer, isLastItem, thread_id, setTyping, typing, customCo
                         </TouchableOpacity>
                 </View> 
             </View>
-            {   <View style = {{marginTop: 40}}>
+            { displayText.length < answer.length &&
+                <View style = {{marginTop: 40}}>
                     <TouchableOpacity onPress = {() => showFullText()} style = {{position: 'absolute', bottom: '3%', left: '45%'}}>
                         <Text style = {[styles.chatGPTText, {fontSize: 18}]}>Skip</Text>
                     </TouchableOpacity>
