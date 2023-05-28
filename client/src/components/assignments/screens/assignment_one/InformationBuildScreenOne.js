@@ -3,6 +3,7 @@ import { Animated, View, StyleSheet, Dimensions, FlatList } from 'react-native';
 import { ASSIGNMENT_EXPLANATION } from '../../../../data/InitialAssignmentExplanation';
 import BatteryScreen from '../../BuildComponent.js/BatteryScreen';
 import { ScrollContext } from '../../../../store/scroll-context';
+import { useIsFocused } from '@react-navigation/native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -14,6 +15,7 @@ function InformationBuildScreenOne({isFocused}) {
     const [isScrolling, setIsScrolling] = useState(false);
     const scrollPositionRef = useRef(0);
     const scrollCtx = useContext(ScrollContext)
+    const isFocusedScreen = useIsFocused();
 
     function nextSlideHandler(){
         console.log(`next slide handled`)
@@ -137,6 +139,10 @@ function InformationBuildScreenOne({isFocused}) {
     };
 
 
+    if (!isFocusedScreen){
+        return 
+    }
+    
     return (
         <FlatList
             ref={flatListRef}

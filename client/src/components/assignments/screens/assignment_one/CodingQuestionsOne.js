@@ -18,6 +18,7 @@ function CodingQuestionsOne({isFocused}){
     const [typing, setTyping] = useState(true);
     const [close, setClose] = useState(false);
     const scrollViewRef = useRef(null);
+    const isFocusedScreen = useIsFocused();
 
     useEffect(() => {
         console.log(slideCount)
@@ -75,6 +76,10 @@ function CodingQuestionsOne({isFocused}){
         marginLeft: 8,
         borderRadius: 10,
         paddingLeft: 5
+    }
+
+    if (!isFocusedScreen){
+        return 
     }
 
     return (

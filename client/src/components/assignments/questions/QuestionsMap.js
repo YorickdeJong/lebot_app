@@ -119,45 +119,46 @@ function QuestionsMap({ numTiles, onPress, slideCount }) {
                 {ellipses}
                 {/* Draws orbits */}
                 {tilesArray.map((_, i) => {
-                const size = i === 1 ? tileSize * (0.6 + 0.4 * Math.random()) : tileSize * (0.8 + 0.4 * Math.random());
-                const positionX = orbitAnimation.interpolate({
-                    ...withFunction((value) => centerX + orbitRadii[i] * Math.cos(angleOffsets[i] + 2 * Math.PI * value) - size / 2),
-                    extrapolate: "clamp",
-                });
-                const positionY = orbitAnimation.interpolate({
-                    ...withFunction((value) => centerY + ellipticalFactor * orbitRadii[i] * Math.sin(angleOffsets[i] + 2 * Math.PI * value) - size / 2),
-                    extrapolate: "clamp",
-                });
-                if (i === 0) { 
-                    return (
-                        <Planets
-                        key={1}
-                        tileNumber={1}
-                        size={tileSize}
-                        x={centerX - tileSize / 2 }
-                        y={centerY - tileSize / 2 }
-                        onPress={onPress}
-                        />
-                     )
-                }
-                else {
-                    return (
-                        <Animated.View
-                            key={i + 1}
-                            style={[
-                                { position: "absolute" },
-                                { transform: [{ translateX: positionX }, { translateY: positionY }] },
-                            ]}
-                        >
+                    i = i + 1;
+                    const size = i === 1 ? tileSize * (0.6 + 0.4 * Math.random()) : tileSize * (0.8 + 0.4 * Math.random());
+                    const positionX = orbitAnimation.interpolate({
+                        ...withFunction((value) => centerX + orbitRadii[i] * Math.cos(angleOffsets[i] + 2 * Math.PI * value) - size / 2),
+                        extrapolate: "clamp",
+                    });
+                    const positionY = orbitAnimation.interpolate({
+                        ...withFunction((value) => centerY + ellipticalFactor * orbitRadii[i] * Math.sin(angleOffsets[i] + 2 * Math.PI * value) - size / 2),
+                        extrapolate: "clamp",
+                    });
+                    if (i === 1) { 
+                        return (
                             <Planets
-                                tileNumber={i + 1}
-                                size={size}
-                                x={0}
-                                y={0}
-                                onPress={onPress}
+                            key={1}
+                            tileNumber={1}
+                            size={tileSize}
+                            x={centerX - tileSize / 2 }
+                            y={centerY - tileSize / 2 }
+                            onPress={onPress}
                             />
-                        </Animated.View>
-                    );
+                        )
+                    }
+                    else {
+                        return (
+                            <Animated.View
+                                key={i + 1}
+                                style={[
+                                    { position: "absolute" },
+                                    { transform: [{ translateX: positionX }, { translateY: positionY }] },
+                                ]}
+                            >
+                                <Planets
+                                    tileNumber={i + 1}
+                                    size={size}
+                                    x={0}
+                                    y={0}
+                                    onPress={onPress}
+                                />
+                            </Animated.View>
+                        );
                 }
             })}
         </ScrollView>

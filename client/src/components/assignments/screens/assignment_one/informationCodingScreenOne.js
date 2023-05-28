@@ -8,6 +8,7 @@ import ExampleExercise from '../../CodingComponent.js/ExampleExercise';
 import { ShowIconsContext } from '../../../../store/show-icons-context';
 import { FlatList } from 'react-native-gesture-handler';
 import { ScrollContext } from '../../../../store/scroll-context';
+import { useIsFocused } from '@react-navigation/native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
@@ -20,6 +21,7 @@ function InformationCodingScreenOne({isFocused}) {
     const [isScrolling, setIsScrolling] = useState(false);
     const scrollPositionRef = useRef(0);
     const scrollCtx = useContext(ScrollContext)
+    const isFocusedScreen = useIsFocused();
     //upon changing to this screen, set the thread id to the first thread id
 
     console.log(`check CodingScreen`)
@@ -63,7 +65,7 @@ function InformationCodingScreenOne({isFocused}) {
         showIconCtx.setShowIconsHandler('chatgpt')
     }
 
-    const slideTotal = 4
+    const slideTotal = 3
     const SCREENS = [
         { 
           component: BatteryScreen,
@@ -116,25 +118,7 @@ function InformationCodingScreenOne({isFocused}) {
               setSlideCount,
               slideTotal,
             }
-          },
-          {
-            component: ExampleExercise,
-            props: {
-              nextSlideHandler,
-              prevSlideHandler,
-              slideCount,
-              setTyping,
-              typing,
-              message: ASSIGNMENT_EXPLANATION.CODINGSCREEN_4,
-              video: require('./../../../../../assets/ifelse.mp4'),
-              title: "Test Je Kennis",
-              description: "Sleep de juiste blokken naar de juiste plek om de lamp aan te laten gaan als het donker is. Hou er rekening mee welk blok geld als een uitspraak en wel blok geld als een actie",
-              isFocused,
-              slideCountEnd: true,
-              setSlideCount,
-              slideTotal,
-            }
-          },
+        }
     ]
     
     const onScroll = event => {
@@ -166,6 +150,9 @@ function InformationCodingScreenOne({isFocused}) {
         return <CurrentScreen {...item.props} currentSlidePosition = {flatListRef} index = {index}/>;
     };
 
+    if (!isFocusedScreen){
+      return 
+    }
     return (
           <FlatList
               ref={flatListRef}

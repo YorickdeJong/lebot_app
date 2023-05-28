@@ -79,9 +79,9 @@ function GroupStudent({ navigation, route, tileType }) {
                         onPress: async () => {
                             try {
                                 // add class_id and class_name to user profile
-                                userprofileCtx.editUserProfile(userprofile)
                                 await createGroupUser(user_id, group_id, class_id)
                                 await changeUserProfile(userprofile)
+                                userprofileCtx.editUserProfile(userprofile)
                                 setDbUpdated(true)
                                 Alert.alert('Groep toegevoegd!')
                                 return;

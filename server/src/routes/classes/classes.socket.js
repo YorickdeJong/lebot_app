@@ -64,26 +64,25 @@ function listenToClientClasses(io) {
         socket.on('disconnect', () => {
             console.log('Client disconnected from classes');
             try {
-                if (cleanupNotificationListener) {
-                    cleanupNotificationListener();
-                }
                 socket.leave(school_id); // Remove socket from the room when disconnected
-
+        
                 // Optionally release the client connection if no more clients for this school
                 // Update the active sockets count
                 const currentCount = activeSockets.get(school_id) || 0;
-
+        
                 if (currentCount > 1) {
                     activeSockets.set(school_id, currentCount - 1);
-                } 
-                else {
+                } else {
                     activeSockets.delete(school_id);
                     const poolData = clientPool.get(school_id);
                     if (poolData) {
                         const { client, cleanupNotificationListener } = poolData;
-                        cleanupNotificationListener();
-                        client.release();
-                        clientPool.delete(school_id);
+                        // Only call cleanupNotificationListener and release the client if it hasn't been released yet
+                        if (client) {
+                            cleanupNotificationListener();
+                            client.release();
+                            clientPool.delete(school_id);
+                        }
                     }
                 }
             } catch (error) {

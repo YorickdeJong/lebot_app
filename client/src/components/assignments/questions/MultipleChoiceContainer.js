@@ -153,7 +153,7 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
     return (
         <View style = {{marginTop: 5}}>
             <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 40}}>
-                <Text style = {[styles.tries, {marginTop: 5, color: ColorsGray.gray300,}]}>Credits: €{currency}</Text>
+                <Text style = {[styles.tries, {marginTop: 5}]}>Credits: €{currency}</Text>
                 <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>
             </View>
             <View style = {styles.list}>
@@ -215,14 +215,11 @@ const styles = StyleSheet.create({
         alignItems: 'center', 
     },
     text: {
-        color: ColorsGray.gray400,
+        color: ColorsGray.gray300,
         fontSize: 16,
         fontWeight: '200',
         textAlign: 'center',
         lineHeight: 23,
-        textShadowColor: ColorsBlue.blue1400,
-        textShadowOffset: {height: 2, width: 0},
-        textShadowRadius: 3,
     },
     tries: {
         fontSize: 20,
@@ -230,9 +227,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 10,
         color: ColorsGray.gray300,
-        textShadowColor: ColorsBlue.blue1400,
-        textShadowOffset: {height: 2, width: 0},
-        textShadowRadius: 3,
     },
     icon: {
         width: 50

@@ -88,31 +88,30 @@ function listenToClientGroups(io) {
         });
     
         socket.on('disconnect', () => {
-            console.log('Client disconnected from groups');
-            try {
-                if (cleanupNotificationListener) {
-                   cleanupNotificationListener();
-                }
-                socket.leave(school_id); // Remove socket from the room when disconnected
-                // Optionally release the client connection if no more clients for this school
-                // Update the active sockets count
-                const currentCount = activeSockets.get(school_id) || 0;
-    
-                if (currentCount > 1) {
-                    activeSockets.set(school_id, currentCount - 1);
-                } 
-                else {
-                    activeSockets.delete(school_id);
-                    const poolData = clientPool.get(school_id);
-                    if (poolData) {
-                        const { client, cleanupNotificationListener } = poolData;
-                        cleanupNotificationListener();
-                        client.release();
-                        clientPool.delete(school_id);
-                    }
-                }
-            }
-            catch (error) {
+          console.log('Client disconnected from groups');
+          try {
+              socket.leave(school_id); // Remove socket from the room when disconnected
+              // Optionally release the client connection if no more clients for this school
+              // Update the active sockets count
+              const currentCount = activeSockets.get(school_id) || 0;
+          
+              if (currentCount > 1) {
+                  activeSockets.set(school_id, currentCount - 1);
+              } else {
+                  activeSockets.delete(school_id);
+                  const poolData = clientPool.get(school_id);
+                  if (poolData) {
+                      const { client, cleanupNotificationListener } = poolData;
+                      // Only call cleanupNotificationListener and release the client if it hasn't been released yet
+                      if (client) {
+                          cleanupNotificationListener();
+                          client.release();
+                          clientPool.delete(school_id);
+                      }
+                  }
+              }
+          }
+          catch (error) {
               console.error('Error disconnecting groups socket:', error);
               // socket.emit('error', 'Error disconnecting groups socket');
             }

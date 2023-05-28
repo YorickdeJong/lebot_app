@@ -362,7 +362,7 @@ const styles= StyleSheet.create({
     inputContainer: {
         height: 45,
         paddingLeft: 10,
-        color: ColorsGray.gray500,
+        color: ColorsGray.gray400,
         backgroundColor: ColorsBlue.blue1150,
         borderTopLeftRadius: 10, 
         borderBottomLeftRadius: 10,
@@ -412,7 +412,7 @@ const styles= StyleSheet.create({
         fontWeight: '200',
         textAlign: 'center',
         marginBottom: 10,
-        color: ColorsGray.gray300,
+        color: ColorsGray.gray400,
         textShadowColor: ColorsBlue.blue1400,
         textShadowOffset: {height: 2, width: 0},
         textShadowRadius: 3,

@@ -53,7 +53,6 @@ function ChatBoxGPT({ answer, isLastItem, thread_id, setTyping, typing, customCo
         marginRight: customColor ? 18 : 8,
         paddingBottom: customColor ? 0 : 15,
     }
-    console.log('typing', typing)
 
     return (
         <View style = {{flex: 1}}>
@@ -99,7 +98,7 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     chatGPTText: {
-        color: ColorsGray.gray300,
+        color: ColorsGray.gray400,
         fontSize: 16,
         fontWeight: '400',
         lineHeight: 30,

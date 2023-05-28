@@ -1,15 +1,17 @@
 import { useIsFocused } from '@react-navigation/native';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { Keyboard, Animated, View, StyleSheet, ImageBackground } from 'react-native'
+import { Keyboard, Animated, View, StyleSheet, ImageBackground, Text } from 'react-native'
 import Chat from '../../../chatgpt/Chat'
-import { ColorsBlue, ColorsRed } from '../../../../constants/palet';
+import { ColorsBlue, ColorsGray, ColorsRed } from '../../../../constants/palet';
 import Icon from '../../../Icon';
 import { ChatContext } from '../../../../store/chat-context';
+import { UserProfileContext } from '../../../../store/userProfile-context';
 
 
 function ChatGPTQuestionsContainer() {
     const keyboardHeight = useRef(new Animated.Value(0)).current;
     const chatCtx = useContext(ChatContext)
+    const userprofileCtx = useContext(UserProfileContext)
 
     useEffect(() => {
 
@@ -52,12 +54,21 @@ function ChatGPTQuestionsContainer() {
                 addStyle = {{position: 'absolute', top: 12, right: '3%'}}
                 differentDir={true}
             />
-            <Chat 
-            keyboardHeight={0}
-            placeholder="Type hier je antwoord..."
-            customThread_id={6}
-            customColor = 'rgba(15, 10, 50, 1)'
-            />
+            {userprofileCtx.userprofile.class_id &&
+                <Chat 
+                keyboardHeight={0}
+                placeholder="Type hier je antwoord..."
+                customThread_id={6}
+                customColor = 'rgba(15, 10, 50, 1)'
+                />
+            }
+            {!userprofileCtx.userprofile.class_id &&
+            <View style = {{marginHorizontal: 20, marginBottom: 40}}>
+                <Text style = {styles.text}>Voeg een klas toe om vragen te beantwoorden. Ga hiervoor naar instellingen en kies 'Groepen'</Text>
+            </View>
+            }
+        
+        
         </Animated.View>
     )
 }
@@ -81,5 +92,12 @@ const styles = StyleSheet.create({
         marginHorizontal: 8,
         marginTop: 0,
         marginBottom: 20,
+    },
+    text: {
+        color: ColorsGray.gray300,
+        fontSize: 22,
+        textAlign: 'center',
+        lineHeight: 26,
+
     }
 })
