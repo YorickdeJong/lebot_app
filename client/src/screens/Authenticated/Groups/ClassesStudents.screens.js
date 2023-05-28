@@ -11,6 +11,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { useFetchClassesDataSocket } from "../../../hooks/classesSocket.hooks"
 import { useFetchTimeLessonsDataSocket } from "../../../hooks/time-lessons.hook"
 
+
+
 function ClassesStudent({tileType}) {
     // implement create user_group and user_classes here     
     const [dbUpdated, setDbUpdated] = useState(false) //retrigger when db updated        
@@ -20,20 +22,20 @@ function ClassesStudent({tileType}) {
     const school_id = userprofileCtx.userprofile.school_id
     const user_id = userprofileCtx.userprofile.id
 
-    // const [data, initialize] = useFetchClassesDataSocket(true, user_id, school_id);
-    // const [dataTime, initializeTime] = useFetchTimeLessonsDataSocket(true, school_id)
+    const [data, initialize] = useFetchClassesDataSocket(true, user_id, school_id);
+    const [dataTime, initializeTime] = useFetchTimeLessonsDataSocket(true, school_id)
 
-    // useFocusEffect(
-    //     useCallback(() => {
+    useFocusEffect(
+        useCallback(() => {
             
-    //         console.log('ClassesStudent component focused');
-    //         initialize(); // Add this line to call initialize when the component is focused
-    //         initializeTime();
-    //         return () => {
-    //             console.log('ClassesStudent component blurred');
-    //         };
-    //     }, [initialize, initializeTime, dbUpdated]) // Add initialize as a dependency
-    // );
+            console.log('ClassesStudent component focused');
+            initialize(); // Add this line to call initialize when the component is focused
+            initializeTime();
+            return () => {
+                console.log('ClassesStudent component blurred');
+            };
+        }, [initialize, initializeTime, dbUpdated]) // Add initialize as a dependency
+    );
 
     async function joinClassHandler(class_id) {
         const user_id = userprofileCtx.userprofile.id
