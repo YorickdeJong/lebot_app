@@ -10,7 +10,7 @@ function TextInputThinkScreen({questions, inputText, setInputText, height}) {
         <Text style = {[styles.text, {color: ColorsGray.gray400, paddingBottom: 10}]}>{questions}</Text>
         <View style = {{borderBottomColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}/>
                 <TextInput
-                    style={{flex: 1, lineHeight: 24, fontSize: 14, color: ColorsGray.gray400}}
+                    style={{flex: 1, lineHeight: 24, fontSize: 14, color: ColorsGray.gray300}}
                     value={inputText}
                     onChangeText={text => setInputText(text)}
                     placeholder="Type hier jouw antwoord..."
@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 23,
         fontWeight: '300',
-        color: ColorsBlue.blue50,
         textAlign: 'center',
 
     },

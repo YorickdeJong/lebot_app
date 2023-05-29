@@ -1,6 +1,6 @@
 
 import {  ImageBackground, ScrollView, StyleSheet,  View, Text, TextInput, Dimensions, Keyboard, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import { ColorsBlue, ColorsGray,} from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -14,21 +14,61 @@ import { useLiveChat } from '../../../hooks/liveChat.hooks';
 import CustomFieldContainer from '../../CustomDocs/CustomField';
 import AssignmentOptionsBar from './assignmentOptionsBar';
 import { useIsFocused } from '../../../hooks/isFocused.hooks';
-
+import { createBrainstormText, getBrainstormText, updateBrainstormText } from '../../../hooks/thinkScreen.hooks';
+import { UserProfileContext } from '../../../store/userProfile-context';
 
 const {height, width} = Dimensions.get('window');
 
-function ThinkScreen({nextSlideHandler, currentSlidePosition, prevSlideHandler, slideTotal, slideCount, questions, index, slideCountEnd, setSlideCount}) {
+function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlidePosition, prevSlideHandler, slideTotal, slideCount, questions, index, slideCountEnd, setSlideCount}) {
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
-
+    const userprofileCtx = useContext(UserProfileContext);
+    const user_id = userprofileCtx.userprofile.id;
     const [isCloseIcon, setIsCloseIcon] = useState(false);
     const [inputTextOne, setInputTextOne] = useState('');
     const [inputTextTwo, setInputTextTwo] = useState('');
     const [inputTextThree, setInputTextThree] = useState('');
     const [inputTextFour, setInputTextFour] = useState('');
-
+    const inputTextOneRef = useRef('');
+    const inputTextTwoRef = useRef('');
+    const inputTextThreeRef = useRef('');
+    const inputTextFourRef = useRef('');
     const [yesButton, setYesButton] = useState(false);
     const [noButton, setNoButton] = useState(false);
+    
+
+    useEffect(() => {
+        async function fetchText() {
+
+            const response = await getBrainstormText(user_id, assignmentNumber, subject);
+
+            if (response){
+                const {text_one, text_two, text_three, text_four} = response
+                setInputTextOne(text_one);
+                setInputTextTwo(text_two);
+                setInputTextThree(text_three);
+                setInputTextFour(text_four);
+            }
+        }
+
+        fetchText();
+    }, []);
+
+
+    
+    // Update refs when state changes
+    useEffect(() => {
+      inputTextOneRef.current = inputTextOne;
+      inputTextTwoRef.current = inputTextTwo;
+      inputTextThreeRef.current = inputTextThree;
+      inputTextFourRef.current = inputTextFour;
+    }, [inputTextOne, inputTextTwo, inputTextThree, inputTextFour]);
+    
+    useEffect(() => {
+        return async () => {
+            console.log('input text', inputTextOneRef.current, inputTextTwoRef.current, inputTextThreeRef.current, inputTextFourRef.current)
+            await createBrainstormText(user_id, assignmentNumber, subject, inputTextOneRef.current, inputTextTwoRef.current, inputTextThreeRef.current, inputTextFourRef.current);
+        }
+    }, []); 
 
 
     function handleAgreementChoice(type) {
@@ -43,6 +83,8 @@ function ThinkScreen({nextSlideHandler, currentSlidePosition, prevSlideHandler, 
             break;
         }
     }
+
+
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style = {styles.container}>
@@ -150,10 +192,6 @@ function ThinkScreen({nextSlideHandler, currentSlidePosition, prevSlideHandler, 
                                             /> 
                                     </View>
                                 }                
-
-
-
-
                                 </KeyboardAwareScrollView>
                             </View>
                     </ScrollView>

@@ -37,7 +37,7 @@ function listenToClientGroups(io) {
           if (fetchedData.status === 404 || fetchedData.status === 500) {
             console.log(fetchedData.message);
             console.log('setupNotificationListener groups data is empty, returning []');
-            groupsNamespace.to(school_id).emit('fetch-data-update', []);
+            groupsNamespace.to(classroom_id).emit('fetch-data-update', []);
             return;
           }
   
@@ -54,7 +54,7 @@ function listenToClientGroups(io) {
             })
           );
   
-          groupsNamespace.to(school_id).emit('fetch-data-update', updatedData);
+          groupsNamespace.to(classroom_id).emit('fetch-data-update', updatedData);
         });
   
         return () => {
@@ -69,25 +69,25 @@ function listenToClientGroups(io) {
           school_id = schoolId;
 
           try {
-              socket.join(school_id); // Add socket to a room based on school_id
+              socket.join(classroom_id); // Add socket to a room based on school_id
           
               // Update the active sockets count
-              activeSockets.set(school_id, (activeSockets.get(school_id) || 0) + 1);
+              activeSockets.set(classroom_id, (activeSockets.get(classroom_id) || 0) + 1);
         
         
               let client;
-              if (!clientPool.has(school_id)) {
+              if (!clientPool.has(classroom_id)) {
                   client = await pool.connect();
                   cleanupNotificationListener = await setupNotificationListener(client);
-                  clientPool.set(school_id, { client, cleanupNotificationListener });
+                  clientPool.set(classroom_id, { client, cleanupNotificationListener });
               } 
               else {
-                  const poolData = clientPool.get(school_id);
+                  const poolData = clientPool.get(classroom_id);
                   client = poolData.client;
                   cleanupNotificationListener = poolData.cleanupNotificationListener;
               }
         
-              await fetchDataAndNotifyGroups(client, classroom_id, school_id, groupsNamespace, school_id);          
+              await fetchDataAndNotifyGroups(client, classroom_id, school_id, groupsNamespace);          
           }
           catch (error) {
               console.error('Error initializing groups socket:', error);
@@ -98,23 +98,23 @@ function listenToClientGroups(io) {
         socket.on('disconnect', () => {
           console.log('Client disconnected from groups');
           try {
-              socket.leave(school_id); // Remove socket from the room when disconnected
+              socket.leave(classroom_id); // Remove socket from the room when disconnected
               // Optionally release the client connection if no more clients for this school
               // Update the active sockets count
-              const currentCount = activeSockets.get(school_id) || 0;
+              const currentCount = activeSockets.get(classroom_id) || 0;
           
               if (currentCount > 1) {
-                  activeSockets.set(school_id, currentCount - 1);
+                  activeSockets.set(classroom_id, currentCount - 1);
               } else {
-                  activeSockets.delete(school_id);
-                  const poolData = clientPool.get(school_id);
+                  activeSockets.delete(classroom_id);
+                  const poolData = clientPool.get(classroom_id);
                   if (poolData) {
                       const { client, cleanupNotificationListener } = poolData;
                       // Only call cleanupNotificationListener and release the client if it hasn't been released yet
-                      if (client && clientPool.has(school_id)) {
+                      if (client && clientPool.has(classroom_id)) {
                           cleanupNotificationListener();
                           client.release();
-                          clientPool.delete(school_id);
+                          clientPool.delete(classroom_id);
                       }
                   }
               }
@@ -136,7 +136,7 @@ async function fetchDataAndNotifyGroups(client, classroom_id, school_id, groupsN
     if (fetchedData.status === 404 || fetchedData.status === 500) {
         console.log(fetchedData.message);
         console.log('fetchDataAndNotifyGroups groups data is empty, returning []');
-        groupsNamespace.to(school_id).emit('fetch-data-update', []);
+        groupsNamespace.to(classroom_id).emit('fetch-data-update', []);
         return;
     }
 
@@ -153,7 +153,7 @@ async function fetchDataAndNotifyGroups(client, classroom_id, school_id, groupsN
         })
     );
 
-    groupsNamespace.to(school_id).emit('fetch-data-update', updatedData);
+    groupsNamespace.to(classroom_id).emit('fetch-data-update', updatedData);
 }
 
 module.exports = { listenToClientGroups };

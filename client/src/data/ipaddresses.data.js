@@ -9,6 +9,6 @@ const ipAddressRasPiSelf = '192.168.4.1'
 const ipAddressRasPiHomeSelf = '10.7.191.107'
 const herokuSeverIP = 'https://learning-bot-app.herokuapp.com'
 
-export const ipAddressComputer =  ipAddressHomeComputer // herokuSeverIP // ipAddressRasPiComputer ipAddressHomeRaspi //
+export const ipAddressComputer =  ipAddressHomeComputer // herokuSeverIP //ipAddressRasPiComputer ipAddressHomeRaspi //
 export const ipAddressRaspberryPi = ipAddressRasPiHomeSelf //ipAddressRasPiSelf
 export const fullIpAddressRaspi = 'http://10.7.191.107:3001'

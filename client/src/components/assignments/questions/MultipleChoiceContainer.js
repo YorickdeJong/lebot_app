@@ -114,7 +114,7 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
                                 await sendData(index, correctness, true);
                             }   
                             catch(error) {
-                                console.log(error);
+                                console.log('error', error);
                                 Alert.alert('Er is iets mis gegaan bij het beantwoorden van de vraag!')
                             }
                         }

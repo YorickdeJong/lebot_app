@@ -115,7 +115,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
     }
 
 
-    const slideTotal = 15
+    const slideTotal = 16
     const SCREENS = useMemo(() => {
       return [
       {
@@ -154,6 +154,8 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
             ],
             setSlideCount,
             slideTotal,
+            assignmentNumber: 0,
+            subject: "MOTOR",
             slideCount,
           },
       },
@@ -409,6 +411,8 @@ Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
             slideCountEnd: true,
             slideTotal,
             setSlideCount,
+            assignmentNumber: 8,
+            subject: "MOTOR",
             slideCount,
           }
         },

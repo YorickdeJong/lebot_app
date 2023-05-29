@@ -101,7 +101,7 @@ function QuestionContainer({
             });
         } 
         catch (error) {
-            console.log('failed to send data to backend')
+            Alert.alert('Er is iets misgegaan met het beantwoorden van de vraag')
             console.log(error);
         }
     }

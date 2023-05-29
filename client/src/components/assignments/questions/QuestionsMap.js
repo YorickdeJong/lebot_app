@@ -59,7 +59,7 @@ function QuestionsMap({ numTiles, onPress, slideCount }) {
     const angleOffsets = useMemo(() => {
         const angles = [];
         for (let i = 0; i < numTiles; i++) {
-            const angleOffset = (2 * Math.PI * i * (4.13)) / numTiles;
+            const angleOffset = (2 * Math.PI * i * (4.4)) / numTiles;
             angles.push(angleOffset);
         }
         return angles;
@@ -144,14 +144,14 @@ function QuestionsMap({ numTiles, onPress, slideCount }) {
                     else {
                         return (
                             <Animated.View
-                                key={i + 1}
+                                key={i}
                                 style={[
                                     { position: "absolute" },
                                     { transform: [{ translateX: positionX }, { translateY: positionY }] },
                                 ]}
                             >
                                 <Planets
-                                    tileNumber={i + 1}
+                                    tileNumber={i}
                                     size={size}
                                     x={0}
                                     y={0}
