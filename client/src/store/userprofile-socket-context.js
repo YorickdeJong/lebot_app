@@ -9,7 +9,6 @@ export const useSocketUser= () => {
 };
 
 export const SocketProviderUser = ({ children, namespace }) => {
-    console.log('namespace', namespace)
     const [socket, setSocket] = useState(null);
     const SOCKET_SERVER_URL = ipAddressComputer + namespace;
   

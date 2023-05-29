@@ -18,9 +18,9 @@ function chooseKey(title){
             return 0;
         case 'Codeer Theorie':
             return 1;
-        case 'Codeer Vragen':
+        case 'Coderen Toepassen':
             return 2;
-        case 'Vragen Opdracht':
+        case 'Onderzoek Toepassen':
             return 3;
     }
     return 'first';

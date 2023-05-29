@@ -34,7 +34,7 @@ function AppExplanation() {
     
     const message = [
         { 
-            answer: `Welkom bij het ruimte rover project! In dit deel ga ik jou uitleggen hoe jij het meest uit de app kan halen! Let goed op, dit geeft je een voorsprong op de rest.`,
+            answer: `Welkom! Ik zie dat dit jou eerste keer is in de app. Daarom zal ik je een rondleiding geven! \n\nOp het volgende scherm zal je afbeeldingen zien van de app, die jou een overview geven. Let goed op, dit geeft je een voorsprong op de rest.`,
             thread_id: 15 
         }, 
     ]
@@ -173,7 +173,7 @@ function AppExplanation() {
                             <View style = {{}}>
                                 <TextBubbleRight 
                                 title = 'Kies uit verschillende onderwerpen:'
-                                text = {`• Beweging (fase 1): Snelheid & Versnelling\n• Schakelingen (fase 2): Ohm & Circuits\n• Energie (fase 3): Krachten & Vermogen `} 
+                                text = {`• Beweging (Fase 1): Snelheid & Versnelling\n• Schakelingen (Fase 2): Ohm & Circuits\n• Energie (Fase 3): Krachten & Vermogen `} 
                                 setExplanationState = {setExplanationStateHandler.bind(this, 'screenOne', 1)}
                                 />
                             </View>
@@ -213,7 +213,7 @@ function AppExplanation() {
                             <View style = {{}}>
                                 <TextBubbleRight 
                                 title = 'Verbind je robot met wifi:'
-                                text = {`• Klik links boven in om te verbinden\n• Zo kan je live data bekijken van de snelheid, versnelling en energie verbruik van de robot`} 
+                                text = {`\n• Scroll naar boven en klik links boven in op het 'cast' icoontje om te verbinden\n\n• Zo kan je live data bekijken van de snelheid, versnelling en energie verbruik van de robot`} 
                                 setExplanationState = {setExplanationStateHandler.bind(this, 'screenTwo', 1)}
                                 />
                             </View>
@@ -273,7 +273,7 @@ function AppExplanation() {
                 <View style = {styles.outerContainer}>
                     <View style={styles.circleContainer}>
                         {SCREENS.map((screen, index) => {
-                            const color = (slideCount - 1) === index ? 'lightblue' : 'darkblue';
+                            const color = (slideCount - 1) === index ? 'lightblue' : ColorsBlue.blue1000;
                             return (
                                 <View 
                                     key={`circle-${index}`} 
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
         height: 15,
         borderRadius: 10,
         margin: 8,
+
     },
     profilePicture: {
         width: 40,

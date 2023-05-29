@@ -9,47 +9,43 @@ import {getSpecificAssignmentsDetail} from '../hooks/assignmentDetails';
 
 export const ASSIGNMENT_EXPLANATION = {
     BUILDSCREEN_1: {
-        answer: `Hey! Je bent eindelijk wakker! Hoe gaat het? Je bent buiten bewust zijn geraakt nadat ons ruimteschip is gecrasht. Laat me je snel bijpraten over wat er is gebeurd en wat we van plan zijn. We zijn een week geleden door een onbekende reden neergestort op een vreemde planeet. Het lijkt op aarde, maar we kunnen de buitenlucht niet inademen. Gelukkig hebben we een basis gedetecteerd waar we mogelijk hulp kunnen vinden. Er is een plan bedacht om die basis te bereiken. We hebben wat onderdelen gevonden waarmee we hopelijk een rover kunnen bouwen. Daarmee zouden we de basis kunnen bereiken. Ons AI systeem heeft drie fases gedefinieerd om de rover te bouwen en operationeel te krijgen.`,
+        answer: `Hey ik zie dat jij nieuw bent binnen ons bedrijf! Welkom! Ik ben een AI systeem van het team dat een ruimte rover gaat bouwen. Als het goed is ben jij samen met een team van 2 andere aangewezen om deze taak te volbrengen. \n\nWe zullen de ruimte rover in 3 fases volbrengen: \n\nFase 1: Hierin testen we de snelheid en versnelling van de motoren. \n\nFase 2: Hierin testen we het elektriciteits netwerk van de rover. \n\nFase 3: Hierin testen we het energieverbruik en efficiëntië van de rover.`,
         thread_id: 6,
     },
     BUILDSCREEN_2: {
-        answer: `Samen 2 andere bemanningsleden ga jij ervoor zorgen dat deze 3 fases goed verlopen. Allereerst moeten we de motoren van de rover aan de praat krijgen. Daarna moeten we de lichten van de rover laten werken, zodat we ook 's nachts kunnen rijden. We moeten zo snel mogelijk bij die basis zijn, en met jouw expertise kunnen we de verlichtingssystemen zeker aan de praat krijgen. Ten slotte moeten we de optimale snelheid van de rover bepalen. We moeten zo zuinig mogelijk rijden om de afstand naar de basis te halen met de brandstof die we hebben. Jij bent altijd goed geweest met berekeningen, dus we vertrouwen erop dat je ons hierbij kunt helpen.`,
+        answer: `Elke Fase bestaat uit 4 delen die jij en je team moeten volbrengen: \n\nBouwen: Je bouwd de test opstelling waarmee jij aan de slag gaat. \n\nCodeer kennis: Je leert hier hoe je code kan schrijven om je test opstelling te laten werken. \n\nCode schrijven: Hier schrijf je de code voor de test opstelling. \n\nOnderzoek: Gebruik jouw natuur- en wiskunde kennis om de rover te verbeteren.`,
         thread_id: 7,
     },
     BUILDSCREEN_3: {
-        answer: `Hierboven zie je de eerste instructie om de windmolen te bouwen, we beginnen met het aansluiten de batterij. Koppel de rode draad aan de + kant van het blauwe bord en de zwarte draad aan de - kant van het blauwe bord, zoals op de video wordt voorgedaan. Als het groene lampje brand, zit je goed. Klik vervolgens op de knop om verder te gaan.`,
+        answer: `Laten we beginnen met het bouwen van de eerste testopstelling. Er zijn in totaal 4 houders die in elkaar gezet moeten worden. Het is aan jou en je team om de precieze opstelling te vinden, zoals in de bovenstaan figuur. Overleg je aanpak met elkaar, success!`,
         thread_id: 8,
     },
     BUILDSCREEN_4: {
-        answer: 'We gaan nu de motor aansluiten. Op de motor vind je een cijfer. Verbind de draden van motor 1 met de M1 aansluiting op het blauwe board. Doe hetzelfde voor motor 2, 3 en 4. Vergeet niet dat de rode draad links moet en de zwarte draad rechts. De GND aansluiten gebruiken we niet.',
+        answer: ' We gaan nu de motor aansluiten. Op de motor vind je een cijfer. Verbind de draden van motor 1 met de M1 aansluiting op het blauwe board. Doe hetzelfde voor motor 2, 3 en 4. Vergeet niet dat de rode draad links moet en de zwarte draad rechts. De GND aansluiten gebruiken we niet.',
         thread_id: 9
     },
     CODINGSCREEN_1: {
-        answer: 'Om de motoren aan en uit te kunnen zetten, moeten we een klein stukje code schrijven. Omdat coderen voor jou waarschijnlijk nieuw is, zullen we er op een gepast tempo doorheen gaan. Ik zal je goed begelijden en je helpen als je vastloopt. Je kan je vragen over programmeren, natuur- en wiskunde stellen in door op het chatgpt icoontje rechtsonderin te klikken. Klik op de knop om te beginnen met coderen.',
+        answer: 'Zoals je misschien gemerkt hebt, kunnen we de motoren nog niet aan zetten. Om dit te bereiken, moeten we een klein stukje code schrijven. Ik zie in onze systemen dat jij nog niet eerder gecodeerd hebt. Daarom zal ik jou en je team helpen met het schrijven van de code. \n\nJe kan je vragen over programmeren, natuur- en wiskunde stellen in door op het chatgpt icoontje rechtsonderin te klikken. Let wel op dat je mij maximaal 10 vragen per opdracht kan stellen.',
         thread_id: 10
     },
     CODINGSCREEN_2: {
-        answer: 'Om de motoren aan en uit te kunnen zetten, moeten we een klein stukje code schrijven. Omdat coderen voor jou waarschijnlijk nieuw is, zullen we er op een gepast tempo doorheen gaan. Ik zal je goed begeleiden en je helpen als je vastloopt. Je kan je vragen over programmeren, natuur- en wiskunde stellen in door op het chatgpt icoontje rechtsonderin te klikken. Let wel op dat je mij maximaal 10 vragen per opdracht kan stellen. We gaan leren hoe we de bovenstaande aan/uit schakelaar zelf kunnen maken. Deze kennis gaan we toepassen om de motoren aan en uit te kunnen zetten. Klik op de knop om te beginnen met coderen.',
+        answer: "Hierboven zie je een Aan en Uit knop. De lamp gaat aan als je op 'Aan' klikt en gaat uit als je op 'Uit', logisch. Zo'n knop kunnen we ook gebruiken om de motoren aan en uit te zetten! \n\nHoe kunnen we hier code voor schrijven? We gaan hiervoor een zogenaamde 'if-else statement' voor gebruiken. Daar heb je waarschijnlijk nog nooit van gehoord. \n\nLaten we op de volgende pagina kijken hoe een if-else statement werkt.",
         thread_id: 11
     },
     CODINGSCREEN_3: {
-        answer: `Hoe zorgen we ervoor dat de motoren aangaan wanneer wij dat willen? We kunnen dit doen door gebruik te maken van zogenaamde "if/ else statements". Je kan een if/ else statement ook wel vergelijken met waar of niet waar (In het Engels: true or false). Waneer een uitspraak waar is, gebruiken we hetgeen dat in de if statement beschreven staat, is de uitspraak niet waar? Dan voeren we de code uit die in de else statement staat. In ons geval willen we dat de motoren aangaan wanneer de knop ingedrukt wordt. We kunnen dit doen door te zeggen: als de knop ingedrukt is, zet dan de motor aan. Als de knop niet ingedrukt is, zet dan de motor uit.`,
+        answer: `In het bovenstaande blok is een if-else statement geschreven. Een if-else statement kan je vergelijken met een 'waar of niet waar' uitspraak. Als de uitspraak waar is, dan voeren we de actie uit die in de if-statement staat. \n\nIs de uitspraak niet waar is? Dan voeren we de actie uit die in de else-statement staat. \n\nAls we op de bovenstaande 'Aan'knop drukken, dan is de uitspraak tussen de haakjes van de if-statement waar, dus wordt dat stukje code uitgevoerd en gaat de lamp aan. Andersom, gaat de lamp uit.`,
         thread_id: 12
     },
-    CODINGSCREEN_4: {
-        answer: `We gaan nu jouw kennis testen. We willen dat de lamp aangaat als de schakelaar aan de rechterkant is. Versleep de juiste conditie in de if-statement en de daarbij passende actie die we moeten ondernemen. Let op er zijn meerdere antwoorden mogelijk, vind ze allemaal. Verder hoef je niet alle blokken te gebruiken.`,
-        thread_id: 13
-    },
     CODINGQUESTIONS_1: {
-        answer: `Nu je jouw introductie hebt gehad met coderen, gaan we jouw kennis toepassen om de motoren werkende te krijgen. We hebben weer een schakelaar, als deze naar links staat, willen we dat de motoren uitstaan. Staat deze naar rechts, dan gaan de motoren aan. Dit kunnen we bereiken door weer gebruik te maken van een if else statement. Het is aan jou om de juiste conditie en actie te vinden. Succes!`,
+        answer: `Het is nu tijd voor het echte werk. Zorg dat de motoren aan gaan als de schakelaar aan de rechterkant is en uitgaan als de schakelaar aan de linker kant is. \n\nTip: Motor 1 doet het al.`,
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_11: {
-        answer: `Heel goed gedaan! Je hebt de motoren aan de praat gekregen! We gaan nu een paar tests doen met een goed werkende motor, om zo accurate data te verzamelen. Die data kunnen we gebruiken als test, om te kijken of andere motoren ook goed functioneren. \n\nDoor tests goed uit te voeren, kan je geld verdienen om uit te geven in de rover shop. Hier kan je de rover upgraden, zodat je in project 3 de beste rover hebt om de race te winnen tegen andere crews. \n\nOp het volgende scherm kun je data verzamelen door op ’Druk hier om data te verzamelen’ te klikken. Dit zal een meeting starten, de motoren laten draaien en s,t en v,t grafieken produceren. Je kan de data live zien, zodat je een beter begrip krijgt van s,t en v,t grafieken. Laten we gelijk beginnen!`,
+        answer: `Goed gedaan! Jullie hebben de motoren aan de praat gekregen! Het is nu tijd voor onderzoek. Het is aan jou en je team de taak om uit te zoeken wat de bewegingseigenschappen zijn van de motoren. \n\nVerder is het belangrijk dat jullie kennis op gelijke hoogte is. Op het volgende scherm gaan jullie brainstormen over snelheid en versnelling. \n\nDoor tests goed uit te voeren, kan je geld verdienen om uit te geven in de rover shop. Hier kan je de rover upgraden, in project 3 ga je namelijk racen tegen andere crews. `,
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_12: {
-        answer: `We hebben helaas net te horen gekregen dat onze leverancier 6 motoren heeft geleverd, waarvan er 2 kapot zijn. Echter weten we niet welke dat zijn. Gelukkig heb jij net een aantal tests gedaan aan een goed werkende motor. Hierdoor waren we instaat om een aantal criteria op te stellen waaraan de motor moet voldoen: 
+        answer: `We hebben helaas net te horen gekregen dat onze leverancier 4 motoren heeft geleverd, waarvan er 1 kapot is. Echter weten we niet welke dat zijn. Gelukkig heb jij net een aantal tests gedaan aan een goed werkende motor. Hierdoor waren we instaat om een aantal criteria op te stellen waaraan de motor moet voldoen: 
         
 1. De snelheid is groter dan, of gelijk aan 0.3 en kleiner dan, of gelijk aan 0.4 
         

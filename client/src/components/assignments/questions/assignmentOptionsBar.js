@@ -38,7 +38,8 @@ function AssignmentOptionsBar({
     slideTotal,
     noForwardArrow,
     currentSlidePosition,
-    noPlanet
+    noPlanet,
+    titleOfPage
 }){
     const [isStopActive, setIsStopActive] = useState(false);
     const [optionsVisible, setOptionsVisible] = useState(false);
@@ -256,8 +257,8 @@ function AssignmentOptionsBar({
                                     </TouchableOpacity>
                             </Animated.View>
                             ):(!text && !chartAvailable &&
-                            <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: '36%'}}>
-                                        <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue400}]}>Geen Meting</Text>
+                            <Animated.View style = {{opacity: blinkButton ? opacityChange : 1, position: 'absolute', top: '57%', left: (titleOfPage && titleOfPage.length > 12) ? '34%' :'36%'}}>
+                                        <Text style = {[styles.text, {color: blinkButton ? 'gold' : ColorsBlue.blue400}]}>{titleOfPage ? titleOfPage : 'Geen Meting'}</Text>
                             </Animated.View>
                             )
                         }

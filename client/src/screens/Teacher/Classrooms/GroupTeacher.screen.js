@@ -30,7 +30,7 @@ function GroupTeacherScreen({ navigation, route }) {
     }
 
     const [data, initialize] = useFetchGroupsDataSocket(true, user_id, classroom_id, school_id);
-    const [dataUser, initializeUser] = useUserSocket(true, group_ids);
+    const [dataUser, initializeUser] = useUserSocket(true, group_ids); // remove this function 
 
     useFocusEffect(
         useCallback(() => {

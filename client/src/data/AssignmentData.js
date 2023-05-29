@@ -66,7 +66,7 @@ export const assignments = (subject) => {
                 acquiredCurrency: acquiredCurrency,
                 totalCurrency: totalCurrency,
             },
-            title: assignment.title,
+            title: assignment.title === 'Vragen Opdracht' ? (`Onderzoek Toepassen`) : (assignment.title === 'Codeer Vragen' ? 'Coderen Toepassen' : assignment.title),
             colorLight: lightColors,
             colorDark: darkColors,
             icon: icons[index]

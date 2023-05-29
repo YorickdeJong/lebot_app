@@ -154,7 +154,6 @@ function AssignmentTile ({onPress, title, subject, icon,
 
 
     return ( 
-        // <View style = {{elevation: 4, backgroundColor: 'rgba(1,1,1,0)',         alignSelf: 'center',}}>
             <Pressable
                 onPress={onPress}
                 style={({
@@ -209,7 +208,6 @@ function AssignmentTile ({onPress, title, subject, icon,
 
                 </BlurWrapper>
             </Pressable>
-        // </View>
     )
 }
 
@@ -219,7 +217,6 @@ export default AssignmentTile
 const styles = StyleSheet.create({
     colorGradient: {
         borderRadius: 20,
-        // flex: 1,
         borderColor: `rgba(10, 10, 10, 0.4)`,
         borderWidth: 0.4,
         shadowOffset: {height: 2, width: 1},

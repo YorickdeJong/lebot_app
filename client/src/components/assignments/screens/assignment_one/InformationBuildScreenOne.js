@@ -35,7 +35,7 @@ function InformationBuildScreenOne({isFocused}) {
         setTyping(true);
     }
       
-    const slideTotal = 4
+    const slideTotal = 3
 
     const SCREENS = [
         { 
@@ -53,7 +53,7 @@ function InformationBuildScreenOne({isFocused}) {
             isFocused,
             setSlideCount,
             slideTotal,
-            
+            text: {text : 'Introductie', left: '37%'}
           }
         },
         {
@@ -71,6 +71,7 @@ function InformationBuildScreenOne({isFocused}) {
             isFocused,
             setSlideCount,
             slideTotal,
+            text: {text : 'Introductie', left: '37%'}
           }
         },
         {
@@ -88,23 +89,7 @@ function InformationBuildScreenOne({isFocused}) {
               isFocused,
               setSlideCount,
               slideTotal,
-            }
-          },
-          {
-            component: BatteryScreen,
-            props: {
-              nextSlideHandler,
-              prevSlideHandler,
-              slideCount,
-              setTyping,
-              typing,
-              message: ASSIGNMENT_EXPLANATION.BUILDSCREEN_3,
-              title: "Motor Aansluiten",
-              description: "Sluit nu de motor aan op het blauwe bordje. De rode draad moet aan de meest linker kant van de zwarte aansluiting. Sluit motor 1 aan op M1, motor 2 op M2, enzovoort",  //your description
-              video: require('./../../../../../assets/BatterijFilm2.mp4'),
-              isFocused,
-              setSlideCount,
-              slideTotal,
+              text: {text : 'Opstelling', left: '37%'}
             }
           },
     ]

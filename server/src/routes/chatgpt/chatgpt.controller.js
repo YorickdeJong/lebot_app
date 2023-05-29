@@ -76,7 +76,7 @@ const postChatgpt = async (req, res) => {
             ]
         } 
         if (thread_id === 6) {
-            messageGPT = "check if the folllowing message contains the following information: De snelheid kan zowel positief als negatief zijn, de afstand kan alleen positief zijn en de verplaatsing kan zowel positief als negatief zijn. Comment if a statement is missing an keep your response very short."  + "'" + fullContext + "'";  //If the following message failed to answer all of these statements or provided a wrong statement, let the user know and begin your response with 'Onjuist', otherwise respond with 'Correct' for the following message: " + "'" + fullContext + "'";
+            messageGPT = "check if the folllowing message contains the following information: De snelheid kan zowel positief als negatief zijn, de afstand kan alleen positief zijn en de verplaatsing kan zowel positief als negatief zijn. Respond with one word only, which is either 'Correct' or 'Onjuist'."  + "'" + fullContext + "'";  //If the following message failed to answer all of these statements or provided a wrong statement, let the user know and begin your response with 'Onjuist', otherwise respond with 'Correct' for the following message: " + "'" + fullContext + "'";
             GPT35TurboMessage = [
                 {
                     role: "system",

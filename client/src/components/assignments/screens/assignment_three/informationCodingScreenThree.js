@@ -4,8 +4,6 @@ import { ASSIGNMENT_EXPLANATION } from '../../../../data/InitialAssignmentExplan
 import BatteryScreen from '../../BuildComponent.js/BatteryScreen';
 import IntroScreen from '../../BuildComponent.js/IntroScreen';
 import CodingExample from '../../CodingComponent.js/CodingExample';
-import ExampleExercise from '../../CodingComponent.js/ExampleExercise';
-
 
 
 function InformationCodingScreenThree({isFocused}) {
@@ -80,7 +78,7 @@ function InformationCodingScreenThree({isFocused}) {
                 isFocused={isFocused}
             /> 
         }
-        {
+        {/* {
             slideCount === 3 && 
             <ExampleExercise 
                 nextSlideHandler={nextSlideHandler}
@@ -94,7 +92,7 @@ function InformationCodingScreenThree({isFocused}) {
                 description = "Sleep de juiste blokken naar de juiste plek om de lamp aan te laten gaan als het donker is. Hou er rekening mee welk blok geld als een uitspraak en wel blok geld als een actie"
                 isFocused={isFocused}
             />
-        }
+        } */}
         </>
     );
 }

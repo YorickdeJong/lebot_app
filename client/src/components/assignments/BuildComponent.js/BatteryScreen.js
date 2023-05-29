@@ -14,7 +14,7 @@ import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 
-function BatteryScreen({nextSlideHandler, setSlideCount, slideTotal, prevSlideHandler, slideCount, index, setTyping, typing, message, video, currentSlidePosition, isFocused, slideCountEnd, setIcon, screenType}){
+function BatteryScreen({nextSlideHandler, setSlideCount, text, slideTotal, prevSlideHandler, slideCount, index, setTyping, typing, message, video, currentSlidePosition, isFocused, slideCountEnd, setIcon, screenType}){
     const isScreenFocused = slideCount - 1 === index
     
     
@@ -46,6 +46,7 @@ function BatteryScreen({nextSlideHandler, setSlideCount, slideTotal, prevSlideHa
                     slideTotal = {slideTotal}
                     currentSlidePosition = {currentSlidePosition}
                     noPlanet = {true}
+                    text = {text}
                 />
                     {isScreenFocused && 
                     <ScrollView 

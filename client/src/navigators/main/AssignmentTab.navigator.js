@@ -16,7 +16,7 @@ function AssignmentTab({title, initialIndex, subject}){
       { key: 'first', title: 'Test Opstelling' },
       { key: 'second', title: 'Codeer Theorie' },
       { key: 'third', title: 'Codeer Vragen' },
-      { key: 'fourth', title: 'Vragen Opdrachten' },
+      { key: 'fourth', title: 'Onderzoek' },
     ]);
 
     const renderTabBar = (props) => (

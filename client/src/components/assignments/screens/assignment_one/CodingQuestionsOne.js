@@ -1,24 +1,36 @@
 import { useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, View } from 'react-native';
+import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import { ColorsBlue } from '../../../../constants/palet';
 import { ASSIGNMENT_EXPLANATION } from '../../../../data/InitialAssignmentExplanation';
 import { ChatContext } from '../../../../store/chat-context';
 import ChatBoxGPT from '../../../chatgpt/ChatBoxGPT';
 import SwitchScreens from '../../BuildComponent.js/SwitchScreens';
 import TextDisplay from '../../BuildComponent.js/TextDisplay';
-import CodeEditorScreen from '../../CodingQuestions/CodeEditor';
 import Icon from '../../../Icon';
 import AssignmentOptionsBar from '../../questions/assignmentOptionsBar';
+import CodeEditorScreen from '../../CodingQuestions/CodeEditorScreen';
 
-function CodingQuestionsOne({isFocused}){
+
+
+const { width, height } = Dimensions.get('window');
+function CodingQuestionsOne({isFocused, text}){
     const keyboardHeight = useRef(new Animated.Value(0)).current;
     const [slideCount, setSlideCount] = useState(0);
     const [typing, setTyping] = useState(true);
     const [close, setClose] = useState(false);
     const scrollViewRef = useRef(null);
     const isFocusedScreen = useIsFocused();
+    const [code, setCode] = useState(`if (toggle == rechts){
+    motor1Aan()
+// Voeg hieronder jouw code toe
+}
+else{
+    motor1Uit()
+// Voeg hieronder jouw code toe
+}`
+);
 
     useEffect(() => {
         console.log(slideCount)
@@ -88,31 +100,37 @@ function CodingQuestionsOne({isFocused}){
                         nextSlideHandler = {nextSlideHandler}
                         prevSlideHandler = {prevSlideHandler}
                         setSlideCount = {setSlideCount}
-                        text = {{text: 'Uitleg', left: '44%' }}
+                        text = {text}
                         noForwardArrow = {true}
                         slideTotal = {1}
                         slideCount= {1}
                         noPlanet = {true}
                     />
 
-                    <CodeEditorScreen close = {close}/>
+                    <CodeEditorScreen 
+                    close = {close}
+                    setCode = {setCode}
+                    code = {code}
+                    section = 'chartToggle'
+                    />
                     {!close ? 
                     <>
                     
                 
                     <ScrollView 
-                    style = {{flex: 1, marginTop: 8}}
+                    style = {{flex: 1}}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                     >
                         
-                        {isFocused && <ChatBoxGPT 
-                        answer={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.answer}
-                        isLastItem={true}
-                        thread_id={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.thread_id}
-                        setTyping={setTyping}
-                        typing={typing}
-                        extraStyle={extraStyle}
+                        {isFocused && 
+                        <ChatBoxGPT 
+                            answer={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.answer}
+                            isLastItem={true}
+                            thread_id={ASSIGNMENT_EXPLANATION.CODINGQUESTIONS_1.thread_id}
+                            setTyping={setTyping}
+                            typing={typing}
+                            extraStyle={extraStyle}
                         />}
     
                     </ScrollView> 
@@ -134,7 +152,8 @@ export default React.memo(CodingQuestionsOne)
 const styles  = StyleSheet.create({
     container: {
         flex: 1,
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        width: width,
     },
     border: {
         borderBottomColor: `rgba(77, 77, 77, 0.5)`,

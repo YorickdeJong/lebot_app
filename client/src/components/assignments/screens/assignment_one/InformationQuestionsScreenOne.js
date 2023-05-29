@@ -115,8 +115,8 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
     }
 
 
-    const slideTotal = 16
-    const SCREENS = useMemo(() => {
+    const slideTotal = 16 // number + 1
+     const SCREENS = useMemo(() => {
       return [
       {
         component: IntroScreenQuestions,

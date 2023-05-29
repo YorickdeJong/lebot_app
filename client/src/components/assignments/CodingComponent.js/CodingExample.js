@@ -11,7 +11,7 @@ import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function CodingExample({nextSlideHandler, prevSlideHandler, slideTotal, slideCount, currentSlidePosition, setTyping, typing, message, slideCountEnd, setSlideCount, index}){
+function CodingExample({nextSlideHandler, prevSlideHandler, text, slideTotal, slideCount, currentSlidePosition, setTyping, typing, message, slideCountEnd, setSlideCount, index}){
     const isScreenFocused = slideCount - 1 === index
 
     const scrollViewRef = useRef(null);
@@ -44,10 +44,10 @@ function CodingExample({nextSlideHandler, prevSlideHandler, slideTotal, slideCou
                         prevSlideHandler = {prevSlideHandler}
                         slideCountEnd = {slideCountEnd}
                         setSlideCount = {setSlideCount}
-                        text = {{text: 'Uitleg', left: '44%' }}
                         slideTotal = {slideTotal}
                         currentSlidePosition = {currentSlidePosition}
                         noPlanet = {true}
+                        text = {text}
                     />
 
 

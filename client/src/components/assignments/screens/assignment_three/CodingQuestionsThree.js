@@ -8,8 +8,8 @@ import { ChatContext } from '../../../../store/chat-context';
 import ChatBoxGPT from '../../../chatgpt/ChatBoxGPT';
 import SwitchScreens from '../../BuildComponent.js/SwitchScreens';
 import TextDisplay from '../../BuildComponent.js/TextDisplay';
-import CodeEditorScreen from '../../CodingQuestions/CodeEditor';
 import Icon from '../../../Icon';
+import CodeEditorScreen from '../../CodingQuestions/CodeEditorScreen';
 
 function CodingQuestionsThree({isFocused}){
     const keyboardHeight = useRef(new Animated.Value(0)).current;

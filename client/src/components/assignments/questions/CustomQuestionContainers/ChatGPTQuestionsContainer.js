@@ -59,7 +59,7 @@ function ChatGPTQuestionsContainer() {
                 keyboardHeight={0}
                 placeholder="Type hier je antwoord..."
                 customThread_id={6}
-                customColor = 'rgba(15, 10, 50, 1)'
+                customColor = 'rgba(15, 15, 60, 1)'
                 />
             }
             {!userprofileCtx.userprofile.class_id &&
