@@ -2,7 +2,9 @@ const { getUsersInClass } = require('../classes/classesInfo.controller');
 const { getClassesPerSchool } = require('../classes/classes.controller');
 
 const pool = require('../../services/postGreSQL');
+const { Mutex } = require('async-mutex');
 
+const mutex = new Mutex();
 const clientPool = new Map(); // Stores database connections per school
 
 function listenToClientClasses(io) {
@@ -68,24 +70,30 @@ function listenToClientClasses(io) {
         
                 // Optionally release the client connection if no more clients for this school
                 // Update the active sockets count
-                const currentCount = activeSockets.get(school_id) || 0;
-        
-                if (currentCount > 1) {
-                    activeSockets.set(school_id, currentCount - 1);
-                } else {
-                    activeSockets.delete(school_id);
-                    const poolData = clientPool.get(school_id);
-                    if (poolData) {
-                        const { client, cleanupNotificationListener } = poolData;
-                        // Only call cleanupNotificationListener and release the client if it hasn't been released yet
-                        if (client) {
-                            cleanupNotificationListener();
-                            client.release();
-                            clientPool.delete(school_id);
+                mutex.runExclusive(() => {
+                    const currentCount = activeSockets.get(school_id) || 0;
+            
+                    if (currentCount > 1) {
+                        activeSockets.set(school_id, currentCount - 1);
+                    } 
+                    else {
+                        activeSockets.delete(school_id);
+                        const poolData = clientPool.get(school_id);
+                        if (poolData) {
+                            const { client, cleanupNotificationListener } = poolData;
+                            // Only call cleanupNotificationListener and release the client if it hasn't been released yet
+                            if (client) {
+                                cleanupNotificationListener();
+                                client.release();
+                                clientPool.delete(school_id);
+                            }
                         }
                     }
-                }
-            } catch (error) {
+                }).catch((error) => {
+                    console.error('Error disconnecting groups socket:', error);
+                });
+            } 
+            catch (error) {
                 console.error('Error disconnecting classes socket:', error);
                 // socket.emit('error', 'Error disconnecting classes socket');
             }

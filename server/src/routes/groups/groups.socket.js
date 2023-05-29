@@ -3,7 +3,9 @@ const { getUsersNamesInGroup } = require('../user_profile/user_profile.controlle
 const { getGroupsPerClassRoom } = require('../groups/groups.controller');
 
 const pool = require('../../services/postGreSQL');
+const { Mutex } = require('async-mutex');
 
+const mutex = new Mutex();
 const clientPool = new Map(); // Stores database connections per school
 
 function listenToClientGroups(io) {
@@ -101,23 +103,26 @@ function listenToClientGroups(io) {
               socket.leave(classroom_id); // Remove socket from the room when disconnected
               // Optionally release the client connection if no more clients for this school
               // Update the active sockets count
-              const currentCount = activeSockets.get(classroom_id) || 0;
-          
-              if (currentCount > 1) {
-                  activeSockets.set(classroom_id, currentCount - 1);
-              } else {
-                  activeSockets.delete(classroom_id);
-                  const poolData = clientPool.get(classroom_id);
-                  if (poolData) {
-                      const { client, cleanupNotificationListener } = poolData;
-                      // Only call cleanupNotificationListener and release the client if it hasn't been released yet
-                      if (client && clientPool.has(classroom_id)) {
-                          cleanupNotificationListener();
-                          client.release();
-                          clientPool.delete(classroom_id);
-                      }
-                  }
-              }
+              mutex.runExclusive(() => {
+                const currentCount = activeSockets.get(classroom_id) || 0;
+                if (currentCount > 1) {
+                    activeSockets.set(classroom_id, currentCount - 1);
+                } 
+                else {
+                    activeSockets.delete(classroom_id);
+                    const poolData = clientPool.get(classroom_id);
+                    if (poolData) {
+                        const { client, cleanupNotificationListener } = poolData;
+                        if (client && clientPool.has(classroom_id)) {
+                            cleanupNotificationListener();
+                            client.release();
+                            clientPool.delete(classroom_id);
+                        }
+                    }
+                }
+            }).catch((error) => {
+                console.error('Error disconnecting groups socket:', error);
+            });
           }
           catch (error) {
               console.error('Error disconnecting groups socket:', error);
@@ -125,7 +130,7 @@ function listenToClientGroups(io) {
             }
         });
     });
-  }
+}
   
   
 async function fetchDataAndNotifyGroups(client, classroom_id, school_id, groupsNamespace) {

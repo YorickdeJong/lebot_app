@@ -54,6 +54,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         backgroundColor: ColorsBlue.blue200,
+        Platform: { 
+            ios: {
+                shadowColor: 'black',
+                shadowOffset: { width: 1, height: 2 },
+                shadowRadius: 3,
+                shadowOpacity: 1,
+            },
+            android: {
+                elevation: 5,
+            }
+        }
+
     },
     innerInputContainer: {
         height: 35,
