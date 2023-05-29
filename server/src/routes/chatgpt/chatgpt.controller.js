@@ -16,8 +16,7 @@ const {
 } = require('../../services/queries/queryChatgpt');
 
 const pool = require('../../services/postGreSQL');
-const { get } = require('http');
-const apiKey = process.env.API_KEY_CHATGPT; 
+const apiKey = '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' //process.env.API_KEY_CHATGPT; 
 
 const getChatHistory = async (req, res) => {
     const client = await pool.connect();
@@ -76,17 +75,29 @@ const postChatgpt = async (req, res) => {
             ]
         } 
         if (thread_id === 6) {
-            messageGPT = "check if the folllowing message contains the following information: De snelheid kan zowel positief als negatief zijn, de afstand kan alleen positief zijn en de verplaatsing kan zowel positief als negatief zijn. Respond with one word only, which is either 'Correct' or 'Onjuist'."  + "'" + fullContext + "'";  //If the following message failed to answer all of these statements or provided a wrong statement, let the user know and begin your response with 'Onjuist', otherwise respond with 'Correct' for the following message: " + "'" + fullContext + "'";
+            const studentAnswer = message; // assuming 'message' contains the student's answer
+    
+            const systemPrompt = `
+            The student is tasked to provide a complete answer about the characteristics of distance and displacement. Specifically, they need to state whether distance and displacement can be positive and/or negative. The full and correct answer should be: 'Displacement can be either positive or negative, while distance can only be positive.'`;
+        
+            const userPrompt = `
+            Based on the student's answer, respond strictly with one of the following keywords: 'Correct', 'Onjuist' (Incorrect), or 'Incompleet-antwoord' (Incomplete Answer). If any part of the correct answer is missing in the student's response, you should respond with 'Incompleet-antwoord'. Student's response: ${studentAnswer}`;
+        
             GPT35TurboMessage = [
                 {
                     role: "system",
-                    content: "Assistant is a really good mathematics, physics and programming teacher and is designed to answer mathetmatics and physics questions and give feedback on the answer."
+                    content: "You are a capable assistant in mathematics, physics, and programming, designed to evaluate student responses to questions about these subjects."
                 },
                 {
                     role: "user",
-                    content: message
+                    content: systemPrompt
+                },
+                {
+                    role: "assistant",
+                    content: userPrompt
                 }
-            ]
+            ];
+        
         }
 
 

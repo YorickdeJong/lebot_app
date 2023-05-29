@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     chatGPTText: {
-        color: ColorsGray.gray400,
+        color: ColorsGray.gray300,
         fontSize: 16,
         fontWeight: '400',
         lineHeight: 30,

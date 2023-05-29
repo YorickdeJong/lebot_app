@@ -1,6 +1,6 @@
 
 import {View, Text, StyleSheet, Image} from 'react-native'
-import { ColorsBlue } from '../../constants/palet'
+import { ColorsBlue, ColorsGray } from '../../constants/palet'
 
 function ChatBoxUser({ question }) {
   return (
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     userText: {
-        color: ColorsBlue.blue50,
+        color: ColorsGray.gray300,
         fontSize: 16,
         fontWeight: '400',
         lineHeight: 24,
