@@ -71,7 +71,7 @@ function TeacherTimeModal() {
         }
         else {
             try {
-                const lessonData = timeCtx.timeData[0].data.filter((lessonIndividual) => lessonIndividual.class_id === class_id && lessonIndividual.lesson_number === parseInt(lesson))
+                const lessonData = timeCtx.timeData[0]?.data.filter((lessonIndividual) => lessonIndividual.class_id === class_id && lessonIndividual.lesson_number === parseInt(lesson))
                 if (lessonData && lessonData.length > 0) {
                     Alert.alert('Deze les bestaat al, kies een ander lesnummer')
                     setShowDeleteButton(false)

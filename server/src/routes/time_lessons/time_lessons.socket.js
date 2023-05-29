@@ -66,7 +66,6 @@ function listenToClientTimeLessons(io) {
         });
 
         socket.on('disconnect', () => {
-            console.log('Client disconnected from time-lessons');
             try {
                 socket.leave(school_id); // Remove socket from the room when disconnected
         
@@ -108,7 +107,15 @@ async function fetchDataAndNotifyTimeLessons(client, school_id, timeLessonsNames
     if (timeLessonsData.status === 404 || timeLessonsData.status === 500) {
         console.log(timeLessonsData.message);
         console.log('fetchDataAndNotifyTimeLessons time lessons data is empty, returning []');
-        timeLessonsNamespace.to(school_id).emit('time-lessons-update', []);
+        timeLessonsNamespace.to(school_id).emit('time-lessons-update', [{
+            "id": -1,
+            "class_id": -1,
+            "duration": -1,
+            "created_at": "",
+            "school_id": -1,
+            "active": false,
+            "lesson_number": -1
+        },]);
         return;
     }
 

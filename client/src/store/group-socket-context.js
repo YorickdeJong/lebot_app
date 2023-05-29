@@ -13,7 +13,12 @@ export const SocketProviderGroups = ({ children, namespace }) => {
     const SOCKET_SERVER_URL = ipAddressComputer + namespace;
   
     useEffect(() => {
-        const newSocket = io(SOCKET_SERVER_URL, { autoConnect: true });
+        const newSocket = io(SOCKET_SERVER_URL, { 
+            autoConnect: true,     
+            reconnectionAttempts: 10,
+            timeout: 10000 
+        });
+        
         setSocket(newSocket);
     
         // Add your listeners here

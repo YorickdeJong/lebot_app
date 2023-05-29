@@ -23,13 +23,11 @@ import TeacherNavigator from './src/navigators/Teacher/Teacher.navigator';
 import GroupTeacherContextProvider from './src/store/group-teacher-context';
 import { SocketProviderGroups } from './src/store/group-socket-context';
 import { SocketProviderClasses } from './src/store/classes-socket-context';
-import { SocketProviderUser } from './src/store/userprofile-socket-context';
 import WifiContextProvider from './src/store/robot-connect-context';
 import { ShowIconContextProvider } from './src/store/show-icons-context';
 import { TimeContextProvider } from './src/store/time-context';
-import { InformationContext, InformationContextProvider } from './src/store/information-context';
+import { InformationContextProvider } from './src/store/information-context';
 import ScrollContextProvider from './src/store/scroll-context';
-import AppExplanation from './src/screens/Authenticated/BeginningScreen/AppExplanation';
 
 // UPON LOGIN TOKEN GETS SET
 function Navigation() {

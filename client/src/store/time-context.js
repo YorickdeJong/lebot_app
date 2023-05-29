@@ -18,7 +18,10 @@ export const TimeContextProvider = ({ children, namespace }) => {
     const [activeTimers, setActiveTimers] = useState({});
     
     useEffect(() => {
-        const newSocket = io(SOCKET_SERVER_URL, { autoConnect: true });
+        const newSocket = io(SOCKET_SERVER_URL, { 
+            autoConnect: true,     
+            reconnectionAttempts: 10,
+            timeout: 10000 });
         setSocket(newSocket);
     
         // Add your listeners here
@@ -100,6 +103,7 @@ export const TimeContextProvider = ({ children, namespace }) => {
     }
 
     function setTimeDataHandler(data_time) {
+        // Takes in an object data_time with class_id, lesson_number, and data
         setTimeData((prevTimeData) => {
             // Check if an object with the same class_id and lesson_number exists in prevTimeData
             const index = prevTimeData.findIndex(
@@ -116,6 +120,19 @@ export const TimeContextProvider = ({ children, namespace }) => {
             } else {
                 // If no matching object is found, add the new data_time object
                 updatedTimeData = [...prevTimeData, data_time];
+            }
+
+            if (updatedTimeData[0].length === 0) {
+                console.log('length is 0 of updatedTimeData')
+                return {
+                    "active": false,
+                    "class_id": -1,
+                    "created_at": '',
+                    "duration": -1,
+                    "id": -1,
+                    "lesson_number": -1,
+                    "school_id": -1,
+                };
             }
 
             updatedTimeData.map((item) => {
