@@ -84,7 +84,6 @@ function listenToClientTimeLessons(io) {
                             // Only call cleanupNotificationListener and release the client if it hasn't been released yet
                             if (client) {
                                 cleanupNotificationListener();
-                                client.release();
                                 clientPool.delete(school_id);
                             }
                         }

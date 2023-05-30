@@ -81,7 +81,10 @@ const postChatgpt = async (req, res) => {
             The student is tasked to provide a complete answer about the characteristics of distance and displacement. Specifically, they need to state whether distance and displacement can be positive and/or negative. The full and correct answer should be: 'Displacement can be either positive or negative, while distance can only be positive.'`;
         
             const userPrompt = `
-            Based on the student's answer, respond strictly with one of the following keywords: 'Correct', 'Onjuist' (Incorrect), or 'Incompleet-antwoord' (Incomplete Answer). If any part of the correct answer is missing in the student's response, you should respond with 'Incompleet-antwoord'. Student's response: ${studentAnswer}`;
+            Based on the student's answer, respond strictly with one of the following keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord'. 
+            If any part of the correct answer is missing in the student's response, you should respond with 'Incompleet-antwoord'. 
+            keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord' .
+            Student's response: ${studentAnswer}`;
         
             GPT35TurboMessage = [
                 {

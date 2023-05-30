@@ -115,7 +115,6 @@ function listenToClientGroups(io) {
                         const { client, cleanupNotificationListener } = poolData;
                         if (client && clientPool.has(classroom_id)) {
                             cleanupNotificationListener();
-                            client.release();
                             clientPool.delete(classroom_id);
                         }
                     }

@@ -48,7 +48,6 @@ function ImageContainer({
     const [alertShown, setAlertShown] = useState(false);
     const [velocity, setVelocity] = useState([]);
 
-
     const fetchData = useCallback(async () => {
         let specificAssignmentImages;
         if (!performedMeasurement){
@@ -220,8 +219,6 @@ function ImageContainer({
       return null;
     }
 
-    console.log('current index: ', currentIndex);
-    console.log('chart length: ', chartLength);
     return (
       <>
         {isLoading ? (
@@ -261,7 +258,7 @@ function ImageContainer({
               activeDotColor={"#999999"}
               index={currentIndex}
               onIndexChanged={(index) => setCurrentIndex(index)}
-              style={{height: 370}}
+              style={{height: chartCtx.trueCount === 1 ? 360 : 560}}
               removeClippedSubviews={false}
               renderPagination={(index, total, context) => {
                 return (

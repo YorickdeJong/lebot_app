@@ -32,14 +32,32 @@ export async function generateAnswerConstantSlope(answer, chartNumber, school_id
     catch (error) {
         console.log('no images yet');
         console.log(error)
+        Alert.alert('Error', 'het is niet gelukt om je antwoord in te voeren')
     }
     
-    console.log('chart data', specificAssignmentMeasurements[chartNumber - 1])
-    const specific_data = specificAssignmentMeasurements[chartNumber - 1].velocity[0];
+    function sumOfFirstSubArray(data) {
+        if (data.length === 0 || !Array.isArray(data)) {
+            throw new Error('First item of the data must be an array');
+        }
+      
+        let firstSubArray = data;
+        let sum = 0;
+    
+        for (let i = 0; i < firstSubArray.length; i++) {
+            if (typeof firstSubArray[i].value === 'number') {
+                sum += firstSubArray[i].value;
+            } else {
+                throw new Error('Value property must be a number');
+            }
+        }
+    
+        return sum;
+    }
 
-    console.log('Specific data:', specific_data);
-    const sum = specific_data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / ( specific_data.length * 0.5 ); // replace 0.7 with measurement frequency
+
+    const specific_data = specificAssignmentMeasurements[chartNumber - 1].velocity_time[0];
+    const sum = sumOfFirstSubArray(specific_data)//specific_data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / ( specific_data.length ); // replace 0.7 with measurement frequency
 
     console.log('Mean:', mean);
 
@@ -59,7 +77,6 @@ export async function generateAnswerConstantSlope(answer, chartNumber, school_id
 export async function generateAnswerMotorQ3(answer, chartNumber, school_id, class_id, group_id, title, assignment_number, subject) {
     let prevAnsweredAssignment;
 
- 
     try {
         prevAnsweredAssignment = await getSpecificAssignmentsDetail( //if subject -> fetch from power data
                 school_id, 
@@ -74,8 +91,10 @@ export async function generateAnswerMotorQ3(answer, chartNumber, school_id, clas
         console.log(error)  
     }
 
-    console.log('prevAnsweredAssignment', prevAnsweredAssignment)
-    const answerQ2 = prevAnsweredAssignment.answers_open_questions[prevAnsweredAssignment.answers_open_questions.length - 1].answer;
+    const filteredData =  prevAnsweredAssignment.answers_open_questions.filter(answer => answer !== null)
+    const answerQ2 = filteredData[filteredData.length - 1].answer;
+    console.log('filtereddata', filteredData)
+    console.log('prevAnswer', answerQ2)
     const tol = 0.05;
 
     console.log('prevAnswer', answerQ2)

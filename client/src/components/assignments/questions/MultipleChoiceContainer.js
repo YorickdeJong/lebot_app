@@ -26,14 +26,13 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
 
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, assignment_id, subject);
 
+            console.log('data', data)
             if (data && data.answers_multiple_choice.length > 0) {
                 const tileColorsFromData = Array.from({ length: multipleChoiceOptions.length }, () => false);
-                
-                data.answers_multiple_choice.forEach((answer) => {
-                    // Check if answer.answer is not an integer, skip
-                    if (!Number.isInteger(answer.answer) || answer.answer === null) {
-                        return;
-                    }
+                const filteredData =  data.answers_multiple_choice.filter(answer => answer !== null)
+                console.log('filteredData', filteredData)
+
+                filteredData.forEach((answer) => {
                     try {
                         tileColorsFromData[answer.answer] = true;
                     }
@@ -44,7 +43,7 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
                 });
 
 
-                setFilteredTry(data.answers_multiple_choice.filter(answer => answer !== null).length)
+                setFilteredTry(filteredData.length)
                 setTileColor(tileColorsFromData);
         
                 const correctAnswersFromData = data.answers_multiple_choice.filter(answer => answer.correct).length;

@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 function AnswerContainer({input, inputContainer, backgroundColor, setInputDetails, maxTries, filteredTry, correctAnswers, validateInput, performedMeasurement, chartNumber, setChartNumber, placeholder}){
-    
+
     return (
         <View style = {{flexDirection: 'row', alignItems: 'center', marginTop: 5,  marginLeft: 17, marginRight: 15, shadowColor: `rgba(0, 0, 0, 1)`,
         shadowOffset: { height: 2, width: 1 },
@@ -43,14 +43,14 @@ function AnswerContainer({input, inputContainer, backgroundColor, setInputDetail
             </View>
             }
             <Icon
-            size = {55}
+            size = {50}
             color = {ColorsBlue.blue1150}
             icon= 'md-checkbox-sharp'
             onPress = {validateInput}
             />
             <Icon
                 icon='md-checkmark'
-                size={41} // Adjust the size to fit within the checkbox
+                size={36} // Adjust the size to fit within the checkbox
                 color={ColorsGray.gray300}
                 onPress={validateInput}
                 addStyle={{position: 'absolute', top: 6.25, right: 8}}

@@ -244,9 +244,9 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
               nextSlideHandler,
               prevSlideHandler,
               slideCount,
-              checkDataCorrectnessHandler: checkDataCorrectnessHandlerMotorQ2,
+              checkDataCorrectnessHandler: checkDataCorrectnessHandlerMotorQ2, //checks correctness of data
               normal_and_multiple_choice: true,
-              generate_answer: generateAnswerConstantSlope,
+              generate_answer: generateAnswerConstantSlope, //generates answer based on measurement
               performedMeasurement: true,
               currentExerciseLesson: 2,
               slideTotal,

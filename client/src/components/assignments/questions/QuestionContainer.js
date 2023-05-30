@@ -29,7 +29,6 @@ function QuestionContainer({
     setInput,
     chatgptAnswer,
     chartAvailable,
-    onRenderedData
     }) {
     
     const [chartNumber, setChartNumber] = useState(null);
@@ -47,11 +46,15 @@ function QuestionContainer({
     useEffect(() => {
         async function fetchData() {
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, questionData.assignment_id, questionData.subject);
+            
             if (data && data.answers_open_questions.length > 0) {
+                console.log('answers user', data)
                 const filteredData =  data.answers_open_questions.filter(answer => answer !== null)
+                console.log('filteredData', filteredData)
                 setFilteredTry(filteredData.length)
                 
-                const correctAnswersFromData = filteredData.answers_open_questions.filter(answer => answer.correct);
+                const correctAnswersFromData = filteredData.filter(answer => answer.correct);
+                console.log('correctAnswersFromData', correctAnswersFromData)
                 setCorrectAnswers(correctAnswersFromData.length)
                 setInput(correctAnswersFromData[0].answer)
                 setChartNumber(correctAnswersFromData[0].chartNumber)
@@ -69,12 +72,14 @@ function QuestionContainer({
     async function sendData(data, correctness, isMultipleChoice, answerNumber) {
         let answers_multiple_choice = null
         let answers_open_questions = null
-        
+
         // change either open questions or multiple choice
-        if (data.length > 1) {
-            answers_multiple_choice = data.map((dataObj, index) => {
-                return { answer: dataObj, correct: correctness[index] }
-            })
+        if (Array.isArray(data)) {
+            if (data.length > 1) {
+                answers_multiple_choice = data.map((dataObj, index) => {
+                    return { answer: dataObj, correct: correctness[index] };
+                });
+            } 
         }
         else{
             //distinguish between answer with both multiple choice and open questions
@@ -107,15 +112,15 @@ function QuestionContainer({
     }
     
     function getBackgroundColor(correctAnswers, tries, maxTries) {
-        if (correctAnswers === 1) {
-            return [ColorsBlue.blue500, ColorsBlue.blue500];
+        if (correctAnswers === 1 ) {
+            return 'rgba(10, 45, 40, 1)';
         }
         
-        if (tries === maxTries) {
-            return correctAnswers === 1 ? [ColorsBlue.blue400, ColorsBlue.blue400]: [ColorsRed.red1000, ColorsRed.red700]
+        if (tries >= maxTries) {
+            return correctAnswers === 1 ? 'rgba(10, 45, 40, 1)': 'rgba(60, 20, 10,1 )'
         }
         
-        return [ColorsGray.gray500, ColorsGray.gray500];
+        return ColorsBlue.blue1150;
     }
     
     function checkTimerActive() {
@@ -206,7 +211,7 @@ function QuestionContainer({
 
 
     const backgroundColor = getBackgroundColor(correctAnswers, filteredTry, maxTries);
-    const inputContainer = [styles.inputContainer];
+    const inputContainer = [styles.inputContainer, {backgroundColor: backgroundColor}];
 
     return (
         <View style = {styles.shadow}>
@@ -360,10 +365,10 @@ const styles= StyleSheet.create({
     
     },
     inputContainer: {
-        height: 45,
+        height: 40,
         paddingLeft: 10,
         color: ColorsGray.gray400,
-        backgroundColor: ColorsBlue.blue1150,
+        // backgroundColor: ColorsBlue.blue1150,
         borderTopLeftRadius: 10, 
         borderBottomLeftRadius: 10,
         marginRight: Platform.OS === 'android' ? 2 : 0,
