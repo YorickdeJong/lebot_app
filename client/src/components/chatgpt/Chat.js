@@ -17,7 +17,6 @@ const paddingChat = heightTextInput + marginBottomTextInput + marginTopTextInput
 
 const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {  
     const chatCtx = useContext(ChatContext)
-    const userprofileCtx = useContext(UserProfileContext)
     const [inputValue, setInputValue] = useState('');
     const flatListRef = useRef(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -26,44 +25,25 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {
     const [typing, setTyping] = useState(true);
 
 
-    // sending message to chatgpt
-    const sendMessage = async () => {
-        setIsLoading(true);
-        const tempInput = inputValue;
-        
-        //clear input
-        setInputValue('');
-        
-        console.log(`Checking current thread ${thread_id}`)
 
-        const chatQuestion = {
+    const sendMessage = async () => {
+      setIsLoading(true);
+      const tempInput = inputValue;
+      setInputValue(''); // clear input
+      console.log(`Checking current thread ${thread_id}`);
+  
+      const chatQuestion = {
           question: tempInput,
           thread_id: thread_id
-        }
-        chatCtx.addChat(chatQuestion);
-
-        //posting message to database
-        let answeredMessage = await postMessage(userprofileCtx.userprofile.id, tempInput, thread_id);
-
-        if (!answeredMessage) {
-            answeredMessage = 'Sorry, I don\'t understand that. Please try again.'
-        }
-        //adding message to chat
-        const botMessage = answeredMessage//answeredMessage.data.choices[0].text;
-        
-        //save chat to local storage
-        const chatAnswer = {
-            answer: botMessage,
-            thread_id: thread_id
-        }
-        
-        chatCtx.addChat(chatAnswer);
-        
-        setIsLoading(false);
-        
-        //scroll to end
-        flatListRef.current.scrollToEnd();
       }
+  
+      // Add the user's question to the chat immediately
+      await chatCtx.addChat(chatQuestion);
+  
+      setIsLoading(false);
+      //scroll to end
+      flatListRef.current.scrollToEnd();
+  }
 
     const renderChat = ({ item, index}) => {
       const isLastItem = index === currentChatData.length - 1; // check if the current item is the last one
@@ -76,7 +56,7 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {
             </View>
           )}
           {item.answer ? (
-            <View style={{ alignItems: 'flex-start', marginLeft: 10, marginVertical: 10 }}>
+            <View style={{  marginLeft: 10, marginVertical: 10 }}>
               <ChatBoxGPT answer={item.answer} 
               isLastItem = {isLastItem}
               thread_id={thread_id}

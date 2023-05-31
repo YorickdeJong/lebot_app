@@ -201,7 +201,7 @@ function ImageContainer({
                   chartToggle={chartCtx.chartToggle}
                   trueCount={chartCtx.trueCount}
                   finalPlot={true}
-                  displayChart={chartCtx.trueCount > 1 ? 460 : 290}
+                  displayChart={chartCtx.trueCount > 1 ? 470 : 290}
                   subject = {subject}
                   isConstant={isConstant}
                 />
@@ -258,7 +258,7 @@ function ImageContainer({
               activeDotColor={"#999999"}
               index={currentIndex}
               onIndexChanged={(index) => setCurrentIndex(index)}
-              style={{height: chartCtx.trueCount === 1 ? 360 : 560}}
+              style={{height: chartCtx.trueCount === 1 ? 380 : 570}}
               removeClippedSubviews={false}
               renderPagination={(index, total, context) => {
                 return (
@@ -268,6 +268,7 @@ function ImageContainer({
                         key={i}
                         style={[
                           styles.dot,
+                          {marginBottom: chartCtx.trueCount === 1 ? 10 : 0},
                           i === index ? { backgroundColor: "#999999" } : { backgroundColor: "#000000" }
                         ]}
                       />
@@ -333,5 +334,6 @@ const styles= StyleSheet.create({
         height: 8,
         borderRadius: 4,
         marginHorizontal: 2,
+        
     },
 })

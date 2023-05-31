@@ -1,6 +1,6 @@
 import { StyleSheet, Text,  TouchableOpacity,  View } from 'react-native';
 import { ColorsBlue, ColorsGray} from '../../../constants/palet';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { BlurView } from 'expo-blur';
 import Icon from '../../Icon';
 import BlurWrapper from '../../UI/BlurViewWrapper';
@@ -49,7 +49,7 @@ function TextDisplay({title, description, showIcon, differentIcon, setCloseHandl
 }
 
 
-export default TextDisplay;
+export default React.memo(TextDisplay);
 
 
 const styles = StyleSheet.create({

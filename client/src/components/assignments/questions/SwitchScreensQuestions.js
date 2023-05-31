@@ -3,6 +3,7 @@ import {  View, StyleSheet } from 'react-native';
 import { ColorsBlue, } from '../../../constants/palet';
 import Icon from '../../Icon';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import React from 'react';
 
 function SwitchScreensQuestions({prevSlideHandler, nextSlideHandler, slideCount, slideCountEnd, addStyle, noForwardArrow}){
 
@@ -42,7 +43,7 @@ function SwitchScreensQuestions({prevSlideHandler, nextSlideHandler, slideCount,
     )
 }
 
-export default SwitchScreensQuestions;
+export default React.memo(SwitchScreensQuestions);
 
 
 const styles = StyleSheet.create({

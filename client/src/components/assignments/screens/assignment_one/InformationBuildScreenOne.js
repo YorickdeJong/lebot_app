@@ -158,7 +158,7 @@ function InformationBuildScreenOne({isFocused}) {
       );
 }
 
-export default InformationBuildScreenOne;
+export default React.memo(InformationBuildScreenOne);
 
 const styles = StyleSheet.create({
     container: {

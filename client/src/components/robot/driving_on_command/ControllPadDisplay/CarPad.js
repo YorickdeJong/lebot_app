@@ -10,6 +10,8 @@ function CarPad({moveHandler}){
     const [moveX, setMoveX] = useState(0);
     const [moveY, setMoveY] = useState(0);
     const [speed, setSpeed] = useState(0);
+    // State variable to handle visual feedback
+    const [isOutOfBounds, setIsOutOfBounds] = useState(false);
 
     const handleMove = (dx, dy) => {
         const maxX = padWidth / 2.5 ;
@@ -19,6 +21,7 @@ function CarPad({moveHandler}){
         const newMoveX = Math.max(-maxX, Math.min(maxX, moveX + dx));
         const newMoveY = Math.max(-maxY, Math.min(maxY, moveY + dy));
         
+
         setMoveX(newMoveX);
         setMoveY(newMoveY);
 
@@ -39,6 +42,12 @@ function CarPad({moveHandler}){
         else if (newMoveX === 0 && newMoveY === 0) {
             setSpeed(0);
         }
+
+        // Check if the move is out of bounds
+        const outOfBounds = newMoveX > maxX || newMoveX < -maxX || newMoveY > maxY || newMoveY < -maxY;
+
+        // Update the state variable
+        setIsOutOfBounds(outOfBounds);
 
         moveHandler(newMoveX / maxX, newMoveY / maxY) 
 
@@ -63,18 +72,22 @@ function CarPad({moveHandler}){
         },
     });
 
+    const padStyles = isOutOfBounds 
+        ? [styles.pad, styles.padOutOfBounds] 
+        : styles.pad;
+
     return(
         <>
             <View
-            style={styles.container}
-            onLayout={({ nativeEvent }) => {
-                const { width, height } = nativeEvent.layout;
-                setPadWidth(width);
-                setPadHeight(height);
-            }}
-            {...panResponder.panHandlers}
+                style={styles.container}
+                onLayout={({ nativeEvent }) => {
+                    const { width, height } = nativeEvent.layout;
+                    setPadWidth(width);
+                    setPadHeight(height);
+                }}
+                {...panResponder.panHandlers}
             >
-                <View style={styles.pad} />
+                <View style={padStyles} />
                 <View style={[styles.stick, { transform: [{ translateX: moveX }, { translateY: moveY }] }]} />
             </View>
             <View style = {styles.speedContainer}>
@@ -86,7 +99,7 @@ function CarPad({moveHandler}){
                 <Text style = {styles.speed}>Speed</Text>
             </View>
         </>
-    )
+    );
 }
 
 
@@ -117,6 +130,11 @@ const styles = StyleSheet.create({
         left: '50%',
         transform: [{ translateX: -40 }, { translateY: -40 }],
         backgroundColor: 'rgba(65, 65, 141, 0.2)',
+    },
+    padOutOfBounds: {
+        // Add the visual feedback styles here. This could be a change in color, border, etc.
+        borderColor: 'red',
+        borderWidth: 2,
     },
     stick: {
         position: 'absolute',

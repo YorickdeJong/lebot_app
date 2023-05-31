@@ -1,5 +1,5 @@
 import { useIsFocused } from '@react-navigation/native';
-import { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Keyboard, Animated, View, StyleSheet, ImageBackground, Text } from 'react-native'
 import Chat from '../../../chatgpt/Chat'
 import { ColorsBlue, ColorsGray, ColorsRed } from '../../../../constants/palet';
@@ -73,7 +73,7 @@ function ChatGPTQuestionsContainer() {
     )
 }
 
-export default ChatGPTQuestionsContainer
+export default React.memo(ChatGPTQuestionsContainer)
 
 
 const styles = StyleSheet.create({

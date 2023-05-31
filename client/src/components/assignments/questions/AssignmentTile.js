@@ -1,6 +1,6 @@
 
 import { View, Text, StyleSheet, Pressable} from "react-native";
-import {useContext, useState} from 'react'
+import React, {useContext, useState} from 'react'
 import { LinearGradient } from "expo-linear-gradient"
 import Icon from "../../Icon";
 import { CarContext } from "../../../store/car-context";
@@ -211,7 +211,7 @@ function AssignmentTile ({onPress, title, subject, icon,
     )
 }
 
-export default AssignmentTile
+export default React.memo(AssignmentTile)
 
 
 const styles = StyleSheet.create({

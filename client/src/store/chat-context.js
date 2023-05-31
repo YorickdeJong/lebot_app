@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { ASSIGNMENT_EXPLANATION } from "../data/InitialAssignmentExplanation";
-import { deleteMessage, getChatHistory, postDescriptionMessage } from "../hooks/chatgpt";
+import { deleteMessage, getChatHistory, postDescriptionMessage, postMessage } from "../hooks/chatgpt";
 import { UserProfileContext } from "./userProfile-context";
 
 
@@ -30,8 +30,8 @@ function ChatContextProvider({ children }) {
     const [descriptions, setDescriptions] = useState([
     ]);
     const userprofileCtx = useContext(UserProfileContext);
-
     const user_id = userprofileCtx.userprofile.id;
+    const [firstDescription, setFirstDescription] = useState(true)
 
     useEffect(() => { 
         loadChatFromStorage();
@@ -39,11 +39,15 @@ function ChatContextProvider({ children }) {
     
     // if chat changes, descriptions are loaded
     useEffect(() => {
+        // Check if the currentThreadId is greater than 5 or the first question has been asked.
         if (currentThreadId > 5) {
             return;
         }
+
+        // If firstQuestionAsked is false, generate the description
         generateDescriptions(currentThreadId)
-    }, [chat])
+
+    }, [chat]) // Add firstQuestionAsked to the dependency array
 
 
     // Load chat data from storage
@@ -139,28 +143,38 @@ function ChatContextProvider({ children }) {
         setCurrentThreadId(thread_id)
     }
 
+
     async function addChat(chatMessage) {
         setChat((prevChat) => {
-
-            // Check if the first message in the chat has the same answer and thread_id as the chatMessage
-            const currentThreadMessage = getChatForThread(chatMessage.thread_id);
-            if (
-                currentThreadMessage.length &&
-                chatMessage.thread_id >= 5 &&
-                currentThreadMessage[0].thread_id === chatMessage.thread_id &&
-                currentThreadMessage[0].answer === chatMessage.answer
-            ) {
-                console.log('Message already set');
-                return prevChat; // Don't add the chatMessage if it's the same as the first message in the chat
-            }
-        
             const newChatHistory = [...prevChat, chatMessage];
             saveChatInStorage(newChatHistory);
             return newChatHistory;
         });
+    
+        console.log('check')
+        // If this is a question from the user, start the process to get an answer from the bot
+        if (chatMessage.question) {
+            console.log('chatMessage.thread_id', chatMessage.thread_id)
+            await getBotAnswer(chatMessage);
+        }
     }
-
-
+    
+    async function getBotAnswer(chatMessage) {
+        //add chatMessage jere
+        const response = await postMessage(userprofileCtx.userprofile.id, chatMessage.question, chatMessage.thread_id);
+        console.log(response)
+        if (response) {
+            const botMessage = response; // Update this line if needed to extract the message from the response
+            const chatAnswer = {
+                answer: botMessage,
+                thread_id: chatMessage.thread_id
+            }
+            addChat(chatAnswer);
+        }
+        else {
+            // Handle the case where no response was received, if necessary
+        }
+    }
     async function deleteThread_ID(thread_id) {
         if (!chat || !Array.isArray(chat)) {
             setChat([]);
@@ -209,7 +223,10 @@ function ChatContextProvider({ children }) {
 
     async function generateDescriptions(currentThreadId) {
         //don't set description if description is already set
-        if (descriptions[currentThreadId] !== 'Begin een chat met ChatGPT!' && descriptions[currentThreadId] !== undefined){
+        console.log('chat', chat)
+        const chatlength = chat.filter(message => message.thread_id === currentThreadId).length
+        console.log(chatlength)
+        if (descriptions[currentThreadId] !== 'Begin een chat met ChatGPT!' && chatlength >= 2){
             console.log('description already set')
             return
         }
@@ -227,22 +244,24 @@ function ChatContextProvider({ children }) {
             console.log('chat is empty')
             return 
         }
+        
 
         // If chat is empty, skip generating description
         const chatSummary = threadChat.map((chat) => (
             {
             question: chat.question, 
-            answer: chat.answer 
+            answer: ''//chat.answer 
         }))
 
 
         const chatParagraph = generateDescription(chatSummary)
-        const message = `Please create a description in dutch of this chat in no more than 5 words: ${JSON.stringify(chatParagraph)} `  
-        const titleRequest = `Please create a title in dutch for this chat in no more than 3 words, don't include punctuations: ${JSON.stringify(chatParagraph)}`
+        const message = `Please provide a succinct description of this chat in Dutch, limited to just 5 words. Here's the chat to describe: ${JSON.stringify(chatParagraph)}`
+        const titleRequest = `Please create a concise title in Dutch for this chat, using strictly 3 words and without any punctuation. Here's the chat content: ${JSON.stringify(chatParagraph)}`
 
-        const description = await postDescriptionMessage(message);
-        const title = await postDescriptionMessage(titleRequest);
-
+        const descriptionResponse = await postDescriptionMessage(message);
+        const description = descriptionResponse.replace(/"/g, '')
+        const titleResponse = await postDescriptionMessage(titleRequest);
+        const title = titleResponse.replace(/"/g, '')
 
         setDescriptions(prevDescriptions => {
             const existingDescriptionIndex = prevDescriptions.findIndex(desc => desc.thread_id === currentThreadId);
@@ -261,6 +280,7 @@ function ChatContextProvider({ children }) {
             }
         }); //save this in storage
         console.log('Description set')
+        setFirstDescription(false)
     }
     
 

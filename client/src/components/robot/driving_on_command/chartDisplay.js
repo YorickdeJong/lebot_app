@@ -51,7 +51,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             [selectedData, dataType] = selectPlotData(chartToggle, chartData);
 
             return (
-                <View style = {{height: displayChart, paddingTop: finalPlot ? 10 : 10, width: '100%'}}>
+                <View style = {{height: displayChart, paddingTop: finalPlot ? 10 : 10, width: '100%', paddingBottom: 100}}>
                     <View>
                             {!(selectedData[0] === undefined) && <GraphDisplay 
                             dataType={dataType[0]}

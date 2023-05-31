@@ -1,5 +1,5 @@
 import {  ImageBackground, ScrollView, StyleSheet,  View, Dimensions } from 'react-native';
-import {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useRef, useState} from 'react';
 import { ColorsBlue, ColorsGray, } from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { BlurView } from 'expo-blur';
@@ -75,7 +75,7 @@ function BatteryScreen({nextSlideHandler, setSlideCount, text, slideTotal, prevS
     )
 }
 
-export default BatteryScreen;
+export default React.memo(BatteryScreen);
 
 const styles = StyleSheet.create({
     container: {

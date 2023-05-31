@@ -3,6 +3,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ColorsBlue } from "../../../constants/palet";
 import LoadingChat from "../../UI/LoadingChat";
 import { BlurView } from "expo-blur";
+import React from "react";
 
 
 
@@ -27,7 +28,7 @@ function WaitingForMeasurementContainer() {
 }
 
 
-export default WaitingForMeasurementContainer
+export default React.memo(WaitingForMeasurementContainer)
 
 const styles = StyleSheet.create({
     loadingContainer: {

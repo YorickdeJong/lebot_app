@@ -3,7 +3,7 @@ import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedba
 import Icon from "../../Icon";
 import ToggleMenu from "../../robot/driving_on_command/ToggleMenu";
 import { ColorsBlue, ColorsGray, ColorsLighterGold, ColorsOrange, ColorsRed, ColorsTile } from "../../../constants/palet";
-import { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import BlurWrapper from "../../UI/BlurViewWrapper";
 import SwitchScreensQuestions from "./SwitchScreensQuestions";
 import { useNavigation } from "@react-navigation/native";
@@ -325,7 +325,7 @@ function AssignmentOptionsBar({
     )
 }
 
-export default AssignmentOptionsBar;
+export default React.memo(AssignmentOptionsBar);
 
 const styles = StyleSheet.create({
     textBlock: {

@@ -9,11 +9,11 @@ import {getSpecificAssignmentsDetail} from '../hooks/assignmentDetails';
 
 export const ASSIGNMENT_EXPLANATION = {
     BUILDSCREEN_1: {
-        answer: `Hey ik zie dat jij nieuw bent binnen ons bedrijf! Welkom! Ik ben een AI systeem van het team dat een ruimte rover gaat bouwen. Als het goed is ben jij samen met een team van 2 andere aangewezen om deze taak te volbrengen. \n\nWe zullen de ruimte rover in 3 fases volbrengen: \n\nFase 1: Hierin testen we de snelheid en versnelling van de motoren. \n\nFase 2: Hierin testen we het elektriciteits netwerk van de rover. \n\nFase 3: Hierin testen we het energieverbruik en efficiëntië van de rover.`,
+        answer: `Hey ik zie dat jij nieuw bent binnen ons bedrijf! Welkom! Ik ben een AI systeem van het team dat een ruimte rover gaat bouwen. Als het goed is ben jij samen met 2 andere aangewezen om deze taak te volbrengen. \n\nWe zullen de ruimte rover in 3 fases volbrengen: \n\nFase 1: Hierin testen we de snelheid en versnelling van de motoren. \n\nFase 2: Hierin testen we het elektriciteits netwerk van de rover. \n\nFase 3: Hierin testen we het energieverbruik en efficiëntië van de rover.`,
         thread_id: 6,
     },
     BUILDSCREEN_2: {
-        answer: `Elke Fase bestaat uit 4 delen die jij en je team moeten volbrengen: \n\nBouwen: Je bouwd de test opstelling waarmee jij aan de slag gaat. \n\nCodeer kennis: Je leert hier hoe je code kan schrijven om je test opstelling te laten werken. \n\nCode schrijven: Hier schrijf je de code voor de test opstelling. \n\nOnderzoek: Gebruik jouw natuur- en wiskunde kennis om de rover te verbeteren.`,
+        answer: `Elke Fase bestaat uit 4 delen die jij en je team moeten volbrengen: \n\nBouwen: Je bouwt de test opstelling waarmee jij aan de slag gaat. \n\nCodeer kennis: Je leert hier hoe je code kan schrijven om je test opstelling te laten werken. \n\nCode schrijven: Hier schrijf je de code voor de test opstelling. \n\nOnderzoek: Gebruik jouw natuur- en wiskunde kennis om de rover te verbeteren.`,
         thread_id: 7,
     },
     BUILDSCREEN_3: {
@@ -25,7 +25,7 @@ export const ASSIGNMENT_EXPLANATION = {
         thread_id: 9
     },
     CODINGSCREEN_1: {
-        answer: 'Zoals je misschien gemerkt hebt, kunnen we de motoren nog niet aan zetten. Om dit te bereiken, moeten we een klein stukje code schrijven. Ik zie in onze systemen dat jij nog niet eerder gecodeerd hebt. Daarom zal ik jou en je team helpen met het schrijven van de code. \n\nJe kan je vragen over programmeren, natuur- en wiskunde stellen in door op het chatgpt icoontje rechtsonderin te klikken. Let wel op dat je mij maximaal 10 vragen per opdracht kan stellen.',
+        answer: 'Zoals je misschien gemerkt hebt, kunnen we de motoren nog niet aan zetten. Om dit te bereiken, moeten we een klein stukje code schrijven. Ik zie in onze systemen dat jij nog niet eerder gecodeerd hebt. Daarom zal ik jou en je team helpen met het schrijven van de code. \n\nJe kan je vragen over programmeren, natuur- en wiskunde stellen door op het chatgpt icoontje rechtsonderin te klikken. Let wel op dat je mij maximaal 10 vragen per opdracht kan stellen.',
         thread_id: 10
     },
     CODINGSCREEN_2: {
@@ -49,13 +49,13 @@ export const ASSIGNMENT_EXPLANATION = {
         
 1. De snelheid is groter dan, of gelijk aan 0.3 en kleiner dan, of gelijk aan 0.4 
         
-2. De snelheid is constant na 1 seconden 
+2. De snelheid is constant na 1 seconde 
         
 3. De maximale verselling is niet lager dan 0.3 m/s$^2$ 
         
 4. De afgelegde afstand na 5 seconde is hoger dan 2 meter 
         
-5. De motor staat na dan 1 seconden still 
+5. De motor staat still na 1 seconde
         `,
         thread_id: 15,
     },

@@ -16,7 +16,7 @@ function AppExplanation() {
     const [typing, setTyping] = useState(true);
     const flatListRef = useRef(1);
     const [isScrolling, setIsScrolling] = useState(false);
-    const [slideCount, setSlideCount] = useState(0);
+    const [slideCount, setSlideCount] = useState(1);
     const scrollPositionRef = useRef(0);
     const [explanationState, setExplanationState] = useState({
         screenOne: [false, false],

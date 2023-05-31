@@ -75,21 +75,33 @@ const postChatgpt = async (req, res) => {
             ]
         } 
         if (thread_id === 6) {
-            const studentAnswer = message; // assuming 'message' contains the student's answer
-    
+            const studentAnswer = message
+            let userPrompt
+            console.log('fullContext', fullContext.length)
+            if (fullContext.length >= 6){
+                userPrompt = `Based on the student's answer, begin your response strictly with one of the following phrases: 'Heel Goed! ', 'Helaas Onjuist! '. 
+                Please give an explanation in strictly less than 10 sentences about why the student answer is correct or incorrect and give the correct answer. 
+                In your answer you must include an explanation about vectors and constantsRespond in Dutch and a kind tone, in a manner where you speak to the student. 
+                Students answer. Student's response: ${studentAnswer}`
+            }
+            else {
+                userPrompt = `
+                Based on the student's answer, respond strictly with one of the following keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord'. 
+                If any part of the correct answer is missing in the student's response, you should respond with 'Incompleet-antwoord'. 
+                keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord' .
+                Student's response: ${studentAnswer}`;
+            }
+
+
             const systemPrompt = `
             The student is tasked to provide a complete answer about the characteristics of distance and displacement. Specifically, they need to state whether distance and displacement can be positive and/or negative. The full and correct answer should be: 'Displacement can be either positive or negative, while distance can only be positive.'`;
         
-            const userPrompt = `
-            Based on the student's answer, respond strictly with one of the following keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord'. 
-            If any part of the correct answer is missing in the student's response, you should respond with 'Incompleet-antwoord'. 
-            keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord' .
-            Student's response: ${studentAnswer}`;
+            
         
             GPT35TurboMessage = [
                 {
                     role: "system",
-                    content: "You are a capable assistant in mathematics, physics, and programming, designed to evaluate student responses to questions about these subjects."
+                    content: "You are a capable Dutch assistant in mathematics, physics, and programming, designed to help students understand their questions."
                 },
                 {
                     role: "user",

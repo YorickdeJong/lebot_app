@@ -2,7 +2,7 @@ import { VictoryLine, VictoryChart, VictoryTheme, VictoryZoomContainer, VictoryS
 import { ColorsBlue, ColorsBrownWood, ColorsGray, ColorsGreen, ColorsPurple, ColorsRed } from "../../../../constants/palet";
 import {StyleSheet, View, Text, Button} from 'react-native'
 import Icon from "../../../Icon";
-import { useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel, finalPlot, motorNumber, trueCount}) {
     const ColorPoints = [ColorsRed.red700, ColorsBrownWood.wood500, ColorsGreen.green900,  ColorsPurple.purple600, ]
@@ -32,9 +32,9 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
 
 
     const paddingCountOne = { top: finalPlot ? 40 : 20, bottom: finalPlot ? 55 : 0, left: 48, right: 35 }
-    const paddingCountTwo = { top: finalPlot ? 40 : 30, bottom: finalPlot ? 120 : 170, left: 48, right: 35 }
+    const paddingCountTwo = { top: finalPlot ? 30 : 30, bottom: finalPlot ? 130 : 120, left: 48, right: 35 }
 
-    const [zoomDomain, setZoomDomain] = useState({ x: [0, finalPlot ? xMax + 0.5 : 0.5], y: [finalPlot ? yMin - cutoff : 0, isFinite(yMax) ? yMax + cutoff : 0.5] });
+    const [zoomDomain, setZoomDomain] = useState({ x: [0, xMax + 0.5], y: [yMin - cutoff, yMax + cutoff] });
 
     const handleZoomIn = () => {
       // Implement your logic to calculate the new zoom domain for zooming in
@@ -185,7 +185,7 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
     );
 }
 
-export default ChartDataPlot;
+export default React.memo(ChartDataPlot);
 
 const styles = StyleSheet.create({
     container: {

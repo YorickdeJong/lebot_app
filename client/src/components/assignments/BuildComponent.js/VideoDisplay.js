@@ -1,7 +1,7 @@
 import { StyleSheet,  View } from 'react-native';
 import { ColorsBlue, ColorsGray, ColorsRed,  } from '../../../constants/palet';
 import {Video} from 'expo-av';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Icon from '../../Icon';
 
 
@@ -57,7 +57,7 @@ function VideoDisplay({video}){
     );
 }
 
-export default VideoDisplay;
+export default React.memo(VideoDisplay);
 
 
 const styles = StyleSheet.create({

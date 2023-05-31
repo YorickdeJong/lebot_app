@@ -47,11 +47,12 @@ function ChatBoxGPT({ answer, isLastItem, thread_id, setTyping, typing, customCo
 
     const shadowOuterContainer = {
         shadowColor: customColor ? null: `rgba(0, 0, 0, 1)`, 
-        shadowOpacity: customColor ? 0 : 1, 
+        shadowOpacity: customColor ? null : 1, 
         backgroundColor: customColor? null : ColorsBlue.blue1390, //Colors.blue1390
-        borderColor: customColor ? ColorsBlue.blue1390 : `rgba(77, 77, 77, 0.25)`, //Colors.blue1390 
+        borderColor: customColor ? null: `rgba(77, 77, 77, 0.25)`, //Colors.blue1390 
         marginRight: customColor ? 18 : 8,
         paddingBottom: customColor ? 0 : 15,
+        borderWidth: customColor ? 0 :  1
     }
 
     return (
@@ -113,13 +114,8 @@ const styles = StyleSheet.create({
     },
     outerContainer: {
         marginTop: 8,
-        borderWidth: 1,
         marginHorizontal: 8,
         borderRadius: 20,
-        shadowColor: `rgba(0, 0, 0, 1)`,
-        shadowOffset: { height: 2, width: 1 },
-        shadowRadius: 3,
-        shadowOpacity: 1,
         elevation: 4,
         flex: 1,
     },

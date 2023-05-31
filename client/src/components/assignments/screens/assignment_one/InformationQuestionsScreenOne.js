@@ -404,7 +404,7 @@ Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
             questions: [
               "Reflecteer op jullie eerste bevindingen",
               "Welke nieuwe kennis heb je opgedaan?",
-              "Hoe zou je aanpak veranderen met jouw nieuwe kennis?",
+              "Hoe zou je je aanpak veranderen met jouw nieuwe kennis?",
               "",
               "Zijn jullie het nog steeds met elkaar eens over jullie oorspronkelijke bevindingen? Waarom wel/niet?",
             ],

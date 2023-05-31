@@ -49,6 +49,39 @@ function Controller({ navigation, route }) {
         }
     }, [socketCtx.power]);
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (socketCtx.power) {
+                let newKeyStroke = '';
+    
+                let moveX = moveXReceived.current;
+                let moveY = moveYReceived.current;
+    
+                if (-1 <= moveX && moveX <= 1 && -1 < moveY && moveY <= -0.1) {
+                    newKeyStroke = Math.abs(moveY.toFixed(2)) + ' w';
+                } 
+                else if (moveX === 1 && -1 <= moveY && moveY <= 1) {
+                    newKeyStroke = Math.abs(moveX.toFixed(2)) + ' d';
+                } 
+                else if (moveX === -1 && -1 <= moveY && moveY <= 1) {
+                    newKeyStroke = Math.abs(moveX.toFixed(2)) + ' a';
+                } 
+                else if (-1 <= moveX && moveX <= 1 && 0.1 < moveY && moveY <= 1) {
+                    newKeyStroke = Math.abs(moveY.toFixed(2)) + ' s';
+                } 
+                else if (moveX === 0 && moveY === 0) {
+                    newKeyStroke = Math.abs(moveY.toFixed(2)) + ' x';
+                }
+    
+                if (newKeyStroke) {
+                    throttledEmitDriveCommand(newKeyStroke);
+                }
+            }
+        }, 100);
+    
+        return () => clearInterval(interval);
+    }, [socketCtx.power, throttledEmitDriveCommand]);
+
     const throttledEmitDriveCommand = useCallback(
         throttle((command) => {
             socketCtx.socket.current.emit('driveCommand', { command });

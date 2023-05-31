@@ -2,6 +2,7 @@
 import {  View } from 'react-native';
 import { ColorsBlue, } from '../../../constants/palet';
 import Icon from '../../Icon';
+import React from 'react';
 
 function SwitchScreens({prevSlideHandler, nextSlideHandler, slideCount, slideCountEnd}){
 
@@ -32,5 +33,5 @@ function SwitchScreens({prevSlideHandler, nextSlideHandler, slideCount, slideCou
     )
 }
 
-export default SwitchScreens;
+export default React.memo(SwitchScreens);
 

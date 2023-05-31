@@ -177,7 +177,7 @@ function InformationCodingScreenOne({isFocused}) {
     );
 }
 
-export default InformationCodingScreenOne;
+export default React.memo(InformationCodingScreenOne);
 
 const styles = StyleSheet.create({
 
