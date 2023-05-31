@@ -7,9 +7,11 @@ import Icon from '../../../Icon';
 import { ChatContext } from '../../../../store/chat-context';
 import { UserProfileContext } from '../../../../store/userProfile-context';
 import { AssignmentDetailsContext } from '../../../../store/assignment-Details-context';
+import { getSpecificAssignmentsDetail } from '../../../../hooks/assignmentDetails';
+import { TimeContext } from '../../../../store/time-context';
 
 
-function ChatGPTQuestionsContainer() {
+function ChatGPTQuestionsContainer({questionData}) {
     const keyboardHeight = useRef(new Animated.Value(0)).current;
     const chatCtx = useContext(ChatContext)
     const userprofileCtx = useContext(UserProfileContext)
@@ -18,10 +20,25 @@ function ChatGPTQuestionsContainer() {
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
     const addAssignmentDetails = assignmentDetailsCtx.addAssignmentDetails;
     const [isCorrect, setIsCorrect] = useState(false)
+    const timeCtx = useContext(TimeContext);
     const maxTries = 2;
 
     useEffect(() => {
-
+        async function fetchData() {
+            const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, questionData.assignment_id, questionData.subject);
+            
+            if (data && data.answers_open_questions.length > 0) {
+                console.log('answers user', data)
+                const filteredData =  data.answers_open_questions.filter(answer => answer !== null)
+                console.log('filteredData', filteredData)
+                setFilteredTry(filteredData.length)
+                
+                const correctAnswersFromData = filteredData.filter(answer => answer.correct);
+                console.log('correctAnswersFromData', correctAnswersFromData)
+                setIsCorrect(correctAnswersFromData.length)
+            }
+        }
+        fetchData();
     }, [])
 
     useEffect(() => {
@@ -65,7 +82,7 @@ function ChatGPTQuestionsContainer() {
         let answers_open_questions = null
         let answers_multiple_choice = null
 
-        answers_open_questions = { answer: 'chatgpt', correct: correctness,  chartNumber: chartNumber }
+        answers_open_questions = { answer: 'chatgpt', correct: correctness }
 
         const assignment_id = questionData.assignment_id
         const subject = questionData.subject
@@ -99,20 +116,53 @@ function ChatGPTQuestionsContainer() {
         return ColorsBlue.blue1150;
     }
 
-    async function validateInput(message) { //SHOULD BE TRIGGERED WHEN USER SENDS A MESSAGE 
-        console.log('message', message.answer)
-        if (message.answer.includes('Correct' || 'correct')){
+    async function validateInput(message, inputValue) { //SHOULD BE TRIGGERED WHEN USER SENDS A MESSAGE 
+        // console.log('message', message.answer)
+
+        if (!school_id || !class_id || !group_id) {
+            Alert.alert('Voeg eerst een klas en group toe om vragen te kunnen beantwoorden')
+            return 
+        }
+ 
+        if (!checkTimerActive()){
+            return
+        }
+
+        if (isCorrect === 1 || filteredTry === maxTries) {
+            Alert.alert('Je hebt deze vraag al beantwoord')
+            return
+        }
+
+        console.log(inputValue)
+        if (inputValue === '') {
+            Alert.alert('Type eerst een antwoord')
+            return
+        }
+
+        if (message.includes('Correct' || 'correct')){
             await sendData(true)
+            setIsCorrect(true)
         }
         else {
             await sendData(false)
+            setIsCorrect(false)
         }
 
         setFilteredTry(filteredTry + 1)
     }
 
 
-    
+    function checkTimerActive() {
+        const activeLesson = timeCtx.filterActiveTimers(class_id);
+        const {subject, planeet} = lessonSelection(activeLesson)
+        
+
+        if (activeLesson !== null) {
+            Alert.alert('Discussie Tijd!', `Discussieer met elkaar over het onderwerp ${subject} ${planeet}`)
+            return false
+        }
+        return true
+    }
 
     const backgroundColor = getBackgroundColor(isCorrect, filteredTry, maxTries);
     const inputContainer = [styles.inputContainer, {backgroundColor: backgroundColor}];
@@ -124,9 +174,12 @@ function ChatGPTQuestionsContainer() {
                 size={28}
                 onPress={() => chatCtx.deleteThread_ID(6)}
                 color = {ColorsRed.red600}
-                addStyle = {{position: 'absolute', top: 12, right: '3%'}}
+                addStyle = {{position: 'absolute', top: '9%', right: '4%'}}
                 differentDir={true}
             />
+            <View style = {{position: 'absolute', top: '12%', left: '8%'}}>
+                <Text style = {{fontSize: 20, color: ColorsGray.gray500}}>Pogingen {filteredTry}/{maxTries}</Text>
+            </View>
             {userprofileCtx.userprofile.class_id &&
                 <Chat 
                 inputContainer = {inputContainer}
@@ -150,10 +203,30 @@ function ChatGPTQuestionsContainer() {
 
 export default React.memo(ChatGPTQuestionsContainer)
 
+function lessonSelection(lesson_number) {
+    switch (lesson_number) {
+        case 1:
+            return {subject: 'Coderen Theorie', planeet: null}
+        case 2: 
+            return {subject: 'Beweging', planeet: 'Ga naar planeet 2 van de opdrachten over Fase 1'}
+        case 3:
+            return {subject: 'Reflecteer', planeet: 'Ga naar planeet 14'}
+        case 4:
+            return {subject: 'Schakelingen', planeet: 'Ga naar planeet 2 van de opdrachten over Fase 2'}
+        case 5:
+            return {subject: 'Reflecteer', planeet: 'Ga naar planeet 11 van de opdrachten over Fase 2'}
+        case 6: 
+            return {subject: 'Energie en Vermogen', planeet: 'Ga naar planeet 2 van de opdrachten over Fase 3'}
+        case 7:
+            return {subject: 'Reflecteer', planeet: 'Ga naar planeet 11 van de opdrachten over Fase 3'}
+        default:
+            return {subject: 'Unknown', planeet: null}; // default case
+    }       
+}
 
 const styles = StyleSheet.create({
     container: {
-        minHeight: 120,
+        minHeight: 150,
         paddingTop: 40,
         borderWidth: 1,
         borderColor: `rgba(77, 77, 77, 0.2)`,

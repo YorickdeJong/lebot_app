@@ -11,6 +11,7 @@ export const ChatContext = createContext({
     thread_ids: [],
     currentThreadId: null,
     descriptions: [],
+    currentBotMessage: '',
     addThread_ID: (newThread_id) => {},
     setThreadId: (thread_id) => {},
     addChat: (chat) => {},
@@ -32,6 +33,7 @@ function ChatContextProvider({ children }) {
     const userprofileCtx = useContext(UserProfileContext);
     const user_id = userprofileCtx.userprofile.id;
     const [firstDescription, setFirstDescription] = useState(true)
+    const currentBotMessage = useRef('')
 
     useEffect(() => { 
         loadChatFromStorage();
@@ -154,9 +156,8 @@ function ChatContextProvider({ children }) {
         console.log('check')
         // If this is a question from the user, start the process to get an answer from the bot
         if (chatMessage.question) {
-            console.log('chatMessage.thread_id', chatMessage.thread_id)
-            const botMessage = await getBotAnswer(chatMessage);
-            return botMessage
+            await getBotAnswer(chatMessage);
+
         }
 
     }
@@ -164,9 +165,10 @@ function ChatContextProvider({ children }) {
     async function getBotAnswer(chatMessage) {
         //add chatMessage jere
         const response = await postMessage(userprofileCtx.userprofile.id, chatMessage.question, chatMessage.thread_id);
-        console.log(response)
         if (response) {
             const botMessage = response; // Update this line if needed to extract the message from the response
+            console.log('botMessage', response)
+            currentBotMessage.current = botMessage
             const chatAnswer = {
                 answer: botMessage,
                 thread_id: chatMessage.thread_id
@@ -174,9 +176,10 @@ function ChatContextProvider({ children }) {
             addChat(chatAnswer);
         }
         else {
-            // Handle the case where no response was received, if necessary
+            Alert.alert('Niet gelukt om een antwoord te krijgen')
         }
     }
+
     async function deleteThread_ID(thread_id) {
         if (!chat || !Array.isArray(chat)) {
             setChat([]);
@@ -318,6 +321,7 @@ function ChatContextProvider({ children }) {
         chat,
         thread_ids,
         currentThreadId,
+        currentBotMessage,
         addThread_ID,
         setThreadId,
         addChat,

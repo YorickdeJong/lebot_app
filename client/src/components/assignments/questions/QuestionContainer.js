@@ -29,6 +29,7 @@ function QuestionContainer({
     setInput,
     chatgptAnswer,
     chartAvailable,
+    removeTries,
     }) {
     
     const [chartNumber, setChartNumber] = useState(null);
@@ -232,9 +233,9 @@ function QuestionContainer({
                         <View style = {styles.questionContainer}>
 
                             {((normal_and_multiple_choice || !questionData.multiple_choice) && !CustomContainer) &&
-                                <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 40}}>
+                                <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20}}>
                                     <Text style = {[styles.tries, {marginTop: 5, color: ColorsGray.gray300}]}>Credits: €{questionData.currency}</Text>
-                                    <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>
+                                    {!removeTries && <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>}
                                 </View>
                             }
                             
@@ -276,7 +277,7 @@ function QuestionContainer({
                                 />
                             }
 
-                            {normal_and_multiple_choice &&
+                            {normal_and_multiple_choice && correctAnswers === 1 &&
                             <>
                                 <View style = {[styles.border, {marginHorizontal: 15, marginBottom: 10, marginTop: 20}]}/>
                                 <View style={[styles.descriptionContainer, {marginTop: 10}]}>
@@ -288,7 +289,7 @@ function QuestionContainer({
                             </>
                             }
 
-                            {(questionData.multiple_choice || normal_and_multiple_choice) && 
+                            {(questionData.multiple_choice || (normal_and_multiple_choice && correctAnswers === 1)) && 
                                 <MultipleChoiceContainer 
                                     multipleChoiceOptions={questionData.options}
                                     multipleChoiceAnswers={questionData.answers_multiple_choice}
@@ -322,8 +323,11 @@ function QuestionContainer({
                                 checkTimerActive={checkTimerActive}
                             />}
                         </View>
+                        
+                        {/* Question 5 MOTOR */}
+                        {
 
-
+                        }
                         {/* Add chatgpt container here. Students have 2 tries. After 2 tries the answer is wrong, but they can still chat */}
                     </View>
             </View>

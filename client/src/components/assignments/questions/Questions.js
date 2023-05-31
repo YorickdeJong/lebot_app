@@ -39,6 +39,7 @@ function Questions({
     chatgptAnswer,
     currentExerciseLesson,
     slideTotal,
+    removeTries
 }){
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
 
@@ -232,6 +233,7 @@ function Questions({
                                 currentExerciseLesson = {currentExerciseLesson}
                                 chatgptAnswer = {chatgptAnswer}
                                 chartAvailable = {chartAvailable}
+                                removeTries = {removeTries}
                                 />
                                 
                                 
@@ -245,7 +247,9 @@ function Questions({
                                 />
                                 
                                 {chatgptAnswer && 
-                                    <ChatGPTQuestionsContainer />
+                                    <ChatGPTQuestionsContainer 
+                                        questionData = {questionData}
+                                    />
                                 }
                             </>
                         }   

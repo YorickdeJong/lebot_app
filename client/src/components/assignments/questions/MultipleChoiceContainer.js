@@ -151,7 +151,7 @@ function MultipleChoiceContainer({multipleChoiceOptions, checkTimerActive, multi
     
     return (
         <View style = {{marginTop: 5}}>
-            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 40}}>
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 20}}>
                 <Text style = {[styles.tries, {marginTop: 5}]}>Credits: €{currency}</Text>
                 <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTries}</Text>
             </View>

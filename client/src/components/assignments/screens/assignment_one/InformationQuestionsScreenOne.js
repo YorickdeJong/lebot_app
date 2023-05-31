@@ -175,6 +175,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
             chatgptAnswer: true,
             currentExerciseLesson: 2,
             slideTotal,
+            removeTries: true
           },
       },
       {

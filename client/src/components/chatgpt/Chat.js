@@ -38,11 +38,12 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor, valida
         }
     
         // Add the user's question to the chat immediately
-        const chatgptAnswer = await chatCtx.addChat(chatQuestion);
-    
+        await chatCtx.addChat(chatQuestion);
+        const chatgptAnswer = chatCtx.currentBotMessage.current
+        console.log('chatgptAnswer', chatgptAnswer)
         // check answer if user uses chatgpt for answer questions
         if (validateInput) {
-          validateInput(chatgptAnswer)
+          validateInput(chatgptAnswer, inputValue)
         }
 
         setIsLoading(false);

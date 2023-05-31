@@ -50,12 +50,14 @@ const postChatgpt = async (req, res) => {
 
         const chatHistoryResult = await client.query(getCurrentChatHistoryQuery, [user_id, thread_id]);
         let chatHistoryRows = chatHistoryResult.rows;
-        if (chatHistoryRows.length > 3) {
+        const lengthChat = chatHistoryRows.length
+        if (lengthChat > 3) {
             chatHistoryRows = chatHistoryRows.slice(-3);
         }
         const context = chatHistoryRows.map((row) => row.question + '\n' + row.answer).join('\n');
         const fullContext = context + '\n' + message;
 
+        console.log('fulltext', fullContext)
         
         let GPT35TurboMessage;
         if (thread_id <= 5) {
@@ -75,8 +77,8 @@ const postChatgpt = async (req, res) => {
         if (thread_id === 6) {
             const studentAnswer = message
             let userPrompt
-            console.log('fullContext', fullContext.length)
-            if (fullContext.length >= 6){
+            console.log('fullContext', lengthChat)
+            if (lengthChat >= 6){
                 userPrompt = `Based on the student's answer, begin your response strictly with one of the following phrases: 'Heel Goed! ', 'Helaas Onjuist! '. 
                 Please give an explanation in strictly less than 10 sentences about why the student answer is correct or incorrect and give the correct answer. 
                 In your answer you must include an explanation about vectors and constantsRespond in Dutch and a kind tone, in a manner where you speak to the student. 
