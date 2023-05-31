@@ -5,6 +5,7 @@ import { ColorsBlue } from '../../../../constants/palet';
 import { BlurView } from 'expo-blur';
 import { LinearGradient } from 'expo-linear-gradient';
 import Icon from '../../../Icon';
+import BlurWrapper from '../../../UI/BlurViewWrapper';
 
 function ModalOptions({toggleModal, setToggleModal, chooseEqualityHandler, currentIndex}) {
 
@@ -16,7 +17,7 @@ function ModalOptions({toggleModal, setToggleModal, chooseEqualityHandler, curre
         animationType='fade'
         transparent
         >
-          <BlurView style={styles.modalContainer} intensity={20}>
+          <BlurWrapper style={styles.modalContainer} intensity={20} customColor={'rgba(30, 30, 80, 1)'}>
                 <View style = {styles.shadow}>
                     <LinearGradient 
                     style = {[styles.modal, ]}
@@ -76,7 +77,7 @@ function ModalOptions({toggleModal, setToggleModal, chooseEqualityHandler, curre
                     </View>
                     </LinearGradient>
                 </View>
-            </BlurView>
+            </BlurWrapper>
         </Modal>
 
     )
@@ -91,7 +92,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     modal: {
-        borderRadius: 5,
+        borderRadius: 20,
         borderWidth: 0.7,
         borderColor: ColorsBlue.blue700,
         flex: 1,

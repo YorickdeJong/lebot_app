@@ -66,7 +66,7 @@ function InformationCodingScreenOne({isFocused}) {
         showIconCtx.setShowIconsHandler('chatgpt')
     }
 
-    const slideTotal = 3
+    const slideTotal = 4
     const SCREENS = [
         { 
           component: BatteryScreen,

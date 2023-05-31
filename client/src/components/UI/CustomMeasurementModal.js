@@ -56,7 +56,7 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
                 break;
             case '3':
                 //free driving
-                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${50} vel_ramp:=${vel_ramp} user_id:=${id} school_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${100} vel_ramp:=${vel_ramp} user_id:=${id} school_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
                 break;
             case '4':
                 //power_movement

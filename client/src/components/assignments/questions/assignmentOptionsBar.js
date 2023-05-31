@@ -83,7 +83,7 @@ function AssignmentOptionsBar({
 
     let progressBarItems = [];
     for (let i = 1; i <= slideTotal - 1; i++) {
-        if (slideTotal === 1){ 
+        if (slideTotal === 2){ 
             progressBarItems.push(
                 <TouchableOpacity 
                 onPress = {() => {}}

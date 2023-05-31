@@ -14,7 +14,6 @@ function QuestionB({filteredTryOpenQuestions, numberAnsweredCorrectMotors, getBa
         reqFour: null,
         reqFive: null,
     });
-
     const userprofileCtx = useContext(UserProfileContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
 
@@ -22,14 +21,7 @@ function QuestionB({filteredTryOpenQuestions, numberAnsweredCorrectMotors, getBa
         if (!school_id || !class_id || !group_id) {
             Alert.alert('Voeg eerst een klas en group toe om vragen te kunnen beantwoorden')
         }
-
-        // const hasEmptyField = requirement.some(requirementonk => indexObject.answer === '');
-
-        // if (hasEmptyField) {
-        //   Alert.alert('Vul alle velden in');
-        //   return;
-        // }
-
+                                                                                                                                                                                               
         if (filteredTryOpenQuestions >= maxTriesTwo) {
             Alert.alert("Je hebt geen pogingen meer over!");
             return;
@@ -97,6 +89,22 @@ function QuestionB({filteredTryOpenQuestions, numberAnsweredCorrectMotors, getBa
                 break;
         }
     }
+
+
+
+
+    function getBackgroundColor(correctAnswers, tries, maxTries) {
+        if (correctAnswers === 1 ) {
+            return 'rgba(10, 45, 40, 1)';
+        }
+        
+        if (tries >= maxTries) { 
+            return correctAnswers === 1 ? 'rgba(10, 45, 40, 1)': 'rgba(60, 20, 10,1 )'
+        }
+        
+        return ColorsBlue.blue1100;
+    }
+
 
     const backgroundColor = getBackgroundColor(numberAnsweredCorrectMotors, filteredTryOpenQuestions, maxTriesTwo);
     const inputContainer = [styles.inputContainer, { backgroundColor }];
@@ -193,6 +201,9 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         shadowColor: ColorsBlue.blue1300,
         shadowOpacity: 0.5,
-        paddingLeft: 5
+
+        borderWidth: 0.45,
+        borderColor: ColorsBlue.blue700,
+        textAlign: 'center'
     },
 })

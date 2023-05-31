@@ -10,11 +10,12 @@ import SwitchScreens from './SwitchScreens';
 import { BlinkContext } from '../../../store/animation-context';
 import { ShowIconsContext } from '../../../store/show-icons-context';
 import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
+import ImageRendering from './ImageRendering';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 
-function BatteryScreen({nextSlideHandler, setSlideCount, text, slideTotal, prevSlideHandler, slideCount, index, setTyping, typing, message, video, currentSlidePosition, isFocused, slideCountEnd, setIcon, screenType}){
+function BatteryScreen({nextSlideHandler, setSlideCount, text, instructions, slideTotal, prevSlideHandler, slideCount, index, setTyping, typing, message, video, currentSlidePosition, isFocused, slideCountEnd, setIcon, screenType}){
     const isScreenFocused = slideCount - 1 === index
     
     
@@ -56,9 +57,13 @@ function BatteryScreen({nextSlideHandler, setSlideCount, text, slideTotal, prevS
                         >
 
                             <>
-                                <VideoDisplay 
+                                {!instructions && <VideoDisplay 
                                     video = {video}/>
-                                
+                                }
+
+                                {!instructions && 
+                                    <ImageRendering />
+                                }
                                 <ChatBoxGPT 
                                 answer={message.answer}
                                 isLastItem={true}

@@ -128,54 +128,74 @@ function ImageContainer({
       console.log('chatCtx: ', chartCtx.finalChartData)
         const {recordNumber} = chartCtx.finalChartData[currentIndex];
         console.log('CURRENTCHARTDATA: ', recordNumber);
-        // const recordNumber = currentChartData.recordNumber;
 
-        if (subject === "MOTOR"){
-            if (!recordNumber) {
-              Alert.alert('Produce data before deleting an image');
-              return;
-            }
-            await deleteMeasurementResult(recordNumber)
-              .then(() => {
-                console.log(`deleted image with record_number: ${recordNumber}`);
-                chartCtx.setFinalChartData(
-                  chartCtx.finalChartData.filter(
-                    (data) => data.recordNumber !== recordNumber
-                  )
-                );
-                console.log(`deleted image from local app wide state`);
-                setIsLoading(false);
-              })
-              .catch((error) => {
-                console.log(error);
-                setIsLoading(false);
-              });
-             
-        }
+        Alert.alert(
+          'Let Op!',
+          'Weet je zeker dat je deze meting wilt verwijderen?',
+          [
+              {
+                  text: 'No',
+                  onPress: () => {},
+                  style: 'cancel',
+              },
+              {
+                  text: 'Yes',
+                  onPress: async () => {
+                      try {
+                        if (subject === "MOTOR"){
+                            if (!recordNumber) {
+                              Alert.alert('Produce data before deleting an image');
+                              return;
+                            }
+                            await deleteMeasurementResult(recordNumber)
+                              .then(() => {
+                                console.log(`deleted image with record_number: ${recordNumber}`);
+                                chartCtx.setFinalChartData(
+                                  chartCtx.finalChartData.filter(
+                                    (data) => data.recordNumber !== recordNumber
+                                  )
+                                );
+                                console.log(`deleted image from local app wide state`);
+                                setIsLoading(false);
+                              })
+                              .catch((error) => {
+                                console.log(error);
+                                setIsLoading(false);
+                              });
+                            
+                        }
 
-        if (subject === "CAR"){
-            if (!recordNumber) {
-              Alert.alert('Produce data before deleting an image');
-              return;
-            }
-            await deletePowerMeasurementResult(recordNumber)
-              .then(() => {
-                console.log(`deleted image with record_number: ${recordNumber}`);
-                chartCtx.setFinalChartData(
-                  chartCtx.finalChartData.filter(
-                    (data) => data.recordNumber !== recordNumber
-                  )
-                );
-                console.log(`deleted image from local app wide state`);
-                setIsLoading(false);
-              })
-              .catch((error) => {
-                console.log('failed to delete', error);
-                setIsLoading(false);
-            });
-            
-        }
-    
+                        if (subject === "CAR"){
+                            if (!recordNumber) {
+                              Alert.alert('Produce data before deleting an image');
+                              return;
+                            }
+                            await deletePowerMeasurementResult(recordNumber)
+                              .then(() => {
+                                console.log(`deleted image with record_number: ${recordNumber}`);
+                                chartCtx.setFinalChartData(
+                                  chartCtx.finalChartData.filter(
+                                    (data) => data.recordNumber !== recordNumber
+                                  )
+                                );
+                                console.log(`deleted image from local app wide state`);
+                                setIsLoading(false);
+                              })
+                              .catch((error) => {
+                                console.log('failed to delete', error);
+                                setIsLoading(false);
+                            });
+                            
+                        }
+                      }
+                      catch(error) {
+                          Alert.alert('Het is niet gelukt om de meting te verwijderen')
+                          return
+                      }
+                  }
+                }
+              ]
+          )
     }, [subject, chartCtx.finalChartData, currentIndex]);
   
     function renderImage({ item, index }) {

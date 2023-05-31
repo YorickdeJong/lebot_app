@@ -14,7 +14,7 @@ function Signs({number, left, right, double, unit, quantity, quantityDouble, uni
             <Text> </Text>
             {left && 
                 <>
-                    <Text style = {styles.question}>{((parseFloat(customAnswer) - parseFloat(customAnswer) / 10))} {unit}</Text>
+                    <Text style = {styles.question}>{((parseFloat(customAnswer) - parseFloat(customAnswer) / 10).toFixed(3))} {unit}</Text>
                     <Text> </Text>
                     <View style = {{width: 30}}>
                         <Icon 
@@ -48,7 +48,7 @@ function Signs({number, left, right, double, unit, quantity, quantityDouble, uni
                         differentDir
                         />
                     </View>
-                    <Text style = {styles.question}>{(parseFloat(customAnswer) + parseFloat(customAnswer) / 10).toFixed(2)} {unit}</Text>
+                    <Text style = {styles.question}>{(parseFloat(customAnswer) + parseFloat(customAnswer) / 10).toFixed(3)} {unit}</Text>
 
                 </>
             }

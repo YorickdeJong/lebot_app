@@ -202,6 +202,8 @@ function SocketContextProvider({children}) {
             // Add a new listener
             socket.current.on('terminalOutput', (data) => {
                 if (data && data.data) {
+                    // Print terminal output raspi
+                    console.log(data.data)
                     responseOutput(data.data);
                 } 
                 else {

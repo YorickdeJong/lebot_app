@@ -10,7 +10,26 @@ import { getSpecificAssignmentsDetail } from "../../../../hooks/assignmentDetail
 import QuestionB from "./QuestionB";
 
 
-function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTry, questions, subject, assignment_number, assignment_id, title, setFilteredTry, multipleChoiceAnswers, sendData, getBackgroundColor, openQuestionAnswer}) {
+function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, subject, assignment_number, assignment_id, title, setFilteredTry, multipleChoiceAnswers, sendData, getBackgroundColor, openQuestionAnswer}) {
+    const [answersStudent, setAnswersStudent] = useState([])
+    
+    useEffect(() => {
+        async function fetchData() {
+            const studentAnswerQ2 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 34, 'MOTOR');
+            const studentAnswerQ5 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 36, 'MOTOR');
+    
+            const studentAnswerQ2Filtered = studentAnswerQ2.answers_open_questions.filter(answer => answer !== null)
+            const studentAnswerQ5Filtered = studentAnswerQ5.answers_open_questions.filter(answer => answer !== null)
+
+            const arrayAnswers = [studentAnswerQ2Filtered[studentAnswerQ2Filtered.length - 1].answer, 
+            studentAnswerQ5Filtered[studentAnswerQ5Filtered.length - 1].answer]
+            setAnswersStudent(arrayAnswers)
+        }
+        fetchData()
+  
+      }, [])
+    
+    
 
     const [toggleModal, setToggleModal] = useState(false);
     const [indexEquality, setIndexEquality] = useState([
@@ -39,9 +58,10 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, assignment_id, subject);
             
             if (data && data.answers_open_questions.length > 0) {
-                setFilteredTry(data.answers_multiple_choice.filter(answer => answer !== null).length)
-                setFilteredTryOpenQuestions(data.answers_open_questions.filter(answer => answer !== null).length)
-                data.answers_multiple_choice.forEach((innerArray) => {
+                const filteredData = data.answers_multiple_choice.filter(answer => answer !== null)
+                setFilteredTry(filteredData.length)
+                // setFilteredTryOpenQuestions(filteredData.length)
+                filteredData.forEach((innerArray) => {
                         innerArray.forEach((element) => {
                         // Find the corresponding indexEquality element and update it
                             const indexEqualityElement = indexEquality.find(
@@ -50,6 +70,7 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
                                 item.index === element.answer.index
                             );
                     
+                            console.log('element', element)
                             if (indexEqualityElement) {
                                 indexEqualityElement.answer = element.answer.answer;
                                 indexEqualityElement.color = element.correct ? ColorsGreen.green500 : ColorsRed.red500;
@@ -57,7 +78,7 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
                         });
                   });
                   setNumberAnsweredCorrectSigns(indexEquality.filter((element) => element.color === ColorsGreen.green500).length);
-                  setNumberAnsweredCorrectMotors(data.answers_open_questions.filter((element) => element.correct === true).length);
+                  setNumberAnsweredCorrectMotors(filteredData.filter((element) => element.correct === true).length);
                   
                   // Set the updated indexEquality state
                   setIndexEquality([...indexEquality]);
@@ -149,7 +170,6 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
     }
 
     function chooseEqualityHandler(questionNumber, index, answer) {
-        console.log('asnwer', answer, 'questionNumber', questionNumber, 'index', index)
         setIndexEquality(prevIndexEquality => prevIndexEquality.map(row => {
             if (row.questionNumber === questionNumber && row.index === index) {
                 return {
@@ -170,21 +190,26 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
                 <Text style = {[styles.tries, {marginTop: 5}]}>Aantal goed: {numberAnsweredCorrectSigns}/{8}</Text>
             </View>
             
+            <View style = {[styles.border, {marginHorizontal: 15}]}/>
+
             <View style={styles.descriptionContainer}>
                 <Text style = {styles.question}>
                     {questions[1]}
                 </Text>
             </View>
-            <View style = {{marginHorizontal: 27, marginVertical: 20}}>
+
+            <View style = {[styles.border, {marginHorizontal: 15}]}/>
+
+            <View style = {{marginHorizontal: 10, marginVertical: 20}}>
                 <Signs 
                     number = {1}
                     left 
                     right 
                     unit = "m/s²"
-                    quantity = "agem"
+                    quantity = "a const"
                     onPress = {toggleModalHandler}
                     indexEquality = {indexEquality.filter(row => row.questionNumber === 1)}  
-                    customAnswer = {(parseFloat(answersStudent[2])).toFixed(2)}
+                    customAnswer = {(parseFloat(answersStudent[1]))}
                 />
 
                 <Signs 
@@ -194,7 +219,7 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
                     quantity = "vgem"
                     onPress = {toggleModalHandler}
                     indexEquality = {indexEquality.filter(row => row.questionNumber === 2)} 
-                    customAnswer = {(parseFloat(answersStudent[1])).toFixed(2)}
+                    customAnswer = {(parseFloat(answersStudent[0]))}
                 />
 
                 <Signs 
@@ -207,7 +232,7 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
                     valueDouble = {15}
                     onPress = {toggleModalHandler}
                     indexEquality = {indexEquality.filter(row => row.questionNumber === 3)}  
-                    customAnswer = {15 * (parseFloat(answersStudent[0])).toFixed(2)}
+                    customAnswer = {15.0 * parseFloat(answersStudent[0])}
                 />
 
                 <Signs 
@@ -228,10 +253,10 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
                     quantity = "v"
                     unitDouble={"t"}
                     quantityDouble={"s"}
-                    valueDouble = {1}
+                    valueDouble = {2}
                     onPress = {toggleModalHandler}
                     indexEquality = {indexEquality.filter(row => row.questionNumber === 5)} 
-                    customAnswer = {1.0}
+                    customAnswer = {0}
                 />
             </View>
             
@@ -249,6 +274,8 @@ function ProjectOneCustomContainer({answersStudent, checkTimerActive, filteredTr
                     {questions[1]}
                 </Text>
             </View>
+
+            <View style = {[styles.border, {marginHorizontal: 12}]}/>
 
             <QuestionB 
                 numberAnsweredCorrectMotors = {numberAnsweredCorrectMotors}
@@ -274,14 +301,14 @@ export default ProjectOneCustomContainer;
 const styles= StyleSheet.create({
     descriptionContainer: {
         flexDirection: 'row',
-        marginLeft: 12,
-        marginRight: 12,
+        marginLeft: 15,
+        marginRight: 15,
         marginVertical: 4,
     },
     question: {
         fontSize: 16,
         color: ColorsGray.gray400,
-        lineHeight: 21
+        lineHeight: 26
     },
     tries: {
         fontSize: 20,
@@ -306,10 +333,9 @@ const styles= StyleSheet.create({
         textAlign: 'center',
     },
     border: {
-        borderWidth: 1,
-        borderColor: `rgba(77, 77, 77, 0.5)`,
-        marginTop: 5,
-        marginBottom: 12,
-    }, 
+        borderWidth: 0.6,
+        borderColor: `rgba(33, 33, 55, 0.7)`,
+        marginVertical: 10,
+    },
 
 })

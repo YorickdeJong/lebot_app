@@ -28,7 +28,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
     const [typing, setTyping] = useState(true);
     const { chartToggle, setChartToggleHandler } = useContext(ChartContext)
     const userprofileCtx = useContext(UserProfileContext);
-    const [answersStudent, setAnswersStudent] = useState([])
+
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
     const showIconCtx = useContext(ShowIconsContext);
     const flatListRef = useRef(1);
@@ -43,20 +43,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
     const screenFocussed = useIsFocused();
 
 
-    useEffect(() => {
-      async function fetchData() {
-          const studentAnswerQ2 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 34, 'MOTOR');
-          const studentAnswerQ4 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 36, 'MOTOR');
-          const studentAnswerQ5 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 37, 'MOTOR');
-  
-          const arrayAnswers = [studentAnswerQ2.answers_open_questions[studentAnswerQ2.answers_open_questions.length - 1].answer, 
-          studentAnswerQ4.answers_open_questions[studentAnswerQ4.answers_open_questions.length - 1].answer, 
-          studentAnswerQ5.answers_open_questions[studentAnswerQ5.answers_open_questions.length - 1].answer]
-          setAnswersStudent(arrayAnswers)
-      }
-      fetchData()
 
-    }, [])
 
     //If chart toggle of distance and or velocity is true, set chart toggle to false here
     useEffect(() => {
@@ -162,9 +149,6 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
       {
         component: Questions,
         props: {
-            title: "Verplaatsing en Afstand",
-            description:
-            "Stel jezelf de volgende vragen:\n\n- Wat is verplaatsing en wat is afstand?\n\n- Is er een verschil tussen verplaatsing en afstand?\n\n- Kan de snelheid negatief zijn?\n\nVergeet niet dat je ChatGPT vragen kan stellen!",
             questions: sortedQuestions,
             assignmentNumber: 1,
             isFocused,
@@ -175,7 +159,8 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
             chatgptAnswer: true,
             currentExerciseLesson: 2,
             slideTotal,
-            removeTries: true
+            removeTries: true,
+            questionTitle: 'Afstand en verplaatsing'
           },
       },
       {
@@ -199,9 +184,6 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
       {
         component: Questions,
         props: {
-            title: "Grafieken: (s, t) - (v, t)",
-            description:
-            "In dit onderdeel ga jij je begrip voor afstand, snelheid en versnelling verbeteren. Maak observaties wat er gebeurt als de motor sneller of langzamer gaat draaien",
             questions: sortedQuestions,
             assignmentNumber: 2,
             isFocused,
@@ -213,6 +195,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
             customMeasurement: true,
             currentExerciseLesson: 2,
             slideTotal,
+            questionTitle: 'Verschillende Richting'
           },
       },
       {
@@ -251,6 +234,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
               performedMeasurement: true,
               currentExerciseLesson: 2,
               slideTotal,
+              questionTitle: 'Lineaire lijnen'
             },
         },
         {
@@ -269,6 +253,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
               generate_answer: generateAnswerMotorQ3,
               currentExerciseLesson: 2,
               slideTotal,
+              questionTitle: 'Lineaire lijnen'
             },
         },
         {
@@ -291,9 +276,6 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
         {
           component: Questions,
           props: {
-              title: "Snelheid en Versnelling",
-              description:
-              "Wat weet je over de snelheid als er een constante versnelling plaatsvindt?",
               questions: sortedQuestions,
               assignmentNumber: 5,
               isFocused,
@@ -307,6 +289,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
               slideTotal,
               generate_answer: generateAnswerMotorQ5,
               normal_and_multiple_choice: true,
+              questionTitle: 'Constante versnelling'
             },
         },
         {
@@ -343,6 +326,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
               normal_and_multiple_choice: true,
               currentExerciseLesson: 3,
               slideTotal,
+              questionTitle: 'Netto Kracht'
             },
         },
         {
@@ -365,22 +349,22 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
           {
             component: Questions,
             props: {
-              title: "Kapotte Motoren",
-              description: `Gebasseerd op de data die jij hebt verzameld, kan je bepalen welke motor kapot is. Niet elke motor is hetzelfde, daarom rekenen we met marges van ± 10%. In de haakjes, (), staat jouw gevonden waarde 
-  
-1. De gemiddelde versnelling ligt tussen de ${((parseFloat(answersStudent[2]) - 0.06).toFixed(2))} en ${((parseFloat(answersStudent[2]) + 0.06).toFixed(2))} m/s². \nJouw test: a = ${answersStudent[2]} ± 0.06 m/s²
+  //               title: "Kapotte Motoren",
+  //               description: `Gebasseerd op de data die jij hebt verzameld, kan je bepalen welke motor kapot is. Niet elke motor is hetzelfde, daarom rekenen we met marges van ± 10%. In de haakjes, (), staat jouw gevonden waarde 
+    
+  // 1. De gemiddelde versnelling ligt tussen de ${((parseFloat(answersStudent[2]) - 0.06).toFixed(2))} en ${((parseFloat(answersStudent[2]) + 0.06).toFixed(2))} m/s². \nJouw test: a = ${answersStudent[2]} ± 0.06 m/s²
 
-2. De gemiddelde snelheid tijdens de meeting is niet lager dan ${((parseFloat(answersStudent[1]) - 0.04).toFixed(2))} m/s. \nJouw test: vgem = ${answersStudent[1]} ± 0.04 m/s
+  // 2. De gemiddelde snelheid tijdens de meeting is niet lager dan ${((parseFloat(answersStudent[1]) - 0.04).toFixed(2))} m/s. \nJouw test: vgem = ${answersStudent[1]} ± 0.04 m/s
 
-3. De afgelegde afstand na 15 seconde is hoger dan ${(15 * (parseFloat(answersStudent[0])  - answersStudent[0] / 10).toFixed(2))} m \nJouw test: s = ${answersStudent[0]} m/s • 15 s → ${15 * (parseFloat(answersStudent[0])  - answersStudent[0] / 10).toFixed(2)} ± ${answersStudent[0]} m
+  // 3. De afgelegde afstand na 15 seconde is hoger dan ${(15 * (parseFloat(answersStudent[0])  - answersStudent[0] / 10).toFixed(2))} m \nJouw test: s = ${answersStudent[0]} m/s • 15 s → ${15 * (parseFloat(answersStudent[0])  - answersStudent[0] / 10).toFixed(2)} ± ${answersStudent[0]} m
 
-4. De maximale snelheid is niet hoger dan ${0.33} m/s \n*Waarde gevonden door andere crew*
+  // 4. De maximale snelheid is niet hoger dan ${0.33} m/s \n*Waarde gevonden door andere crew*
 
-5. Als gaspedaal wordt losgelaten, staat de motor in minder dan ${1.1} seconde stil. \n*Waarde gevonden door andere crew*     
+  // 5. Als gaspedaal wordt losgelaten, staat de motor in minder dan ${1.1} seconde stil. \n*Waarde gevonden door andere crew*     
 
-Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
-            
-            `, 
+  // Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
+              
+  //             `, 
               questions: sortedQuestions,
               assignmentNumber: 7,
               isFocused,
@@ -390,10 +374,10 @@ Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
               slideCount,
               CustomContainer: ProjectOneCustomContainer,
               performedMeasurement: true,
-              answersStudent,
               customMeasurement: true,
               currentExerciseLesson: 3,
               slideTotal,
+              questionTitle: 'Kapotte motoren'
             },
         },
         {

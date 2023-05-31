@@ -102,7 +102,7 @@ else{
                         setSlideCount = {setSlideCount}
                         text = {text}
                         noForwardArrow = {true}
-                        slideTotal = {1}
+                        slideTotal = {2}
                         slideCount= {1}
                         noPlanet = {true}
                     />

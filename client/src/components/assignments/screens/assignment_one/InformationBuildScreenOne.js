@@ -35,7 +35,7 @@ function InformationBuildScreenOne({isFocused}) {
         setTyping(true);
     }
       
-    const slideTotal = 3
+    const slideTotal = 4
 
     const SCREENS = [
         { 

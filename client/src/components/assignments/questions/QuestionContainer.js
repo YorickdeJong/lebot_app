@@ -30,6 +30,7 @@ function QuestionContainer({
     chatgptAnswer,
     chartAvailable,
     removeTries,
+    questionTitle
     }) {
     
     const [chartNumber, setChartNumber] = useState(null);
@@ -227,7 +228,7 @@ function QuestionContainer({
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         >
-                            <Text style = {styles.headerText}>{completionStatus ? "Vraag Voltooid" : `Vraag ${assignmentNumber}`}</Text>
+                            <Text style = {styles.headerText}>{completionStatus ? "Vraag Voltooid" : `${assignmentNumber}: ${questionTitle}`}</Text>
                         </LinearGradient>
                             
                         <View style = {styles.questionContainer}>
@@ -382,7 +383,7 @@ const styles= StyleSheet.create({
     },
     headerText: {
         color: ColorsGray.gray500,
-        fontSize: 25,
+        fontSize: 23,
         paddingTop: 6,
         paddingRight: 0,
         textAlign: 'center',

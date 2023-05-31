@@ -22,6 +22,8 @@ const thinkScreenRouter = require('./routes/think_screen/think_screen.router')
 
 app.use(cors());
 app.use(express.json()); //allows us to get json from end points
+app.use(express.static('public'));
+
 
 app.use('/api/v1/assignments', assignmentRoutes);
 app.use('/api/v1/assignmentDetails', assignmentDetailsRoutes);
