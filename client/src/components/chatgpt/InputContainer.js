@@ -4,11 +4,12 @@ import { TextInput } from 'react-native-gesture-handler';
 import { ColorsBlue, ColorsGray, ColorsTile } from '../../constants/palet';
 import Icon from '../Icon';
 
-function InputContainer({inputValue, setInputValue, sendMessage, marginBottomTextInput, heightTextInput, marginTopTextInput, placeholder}) {
+function InputContainer({inputValue, setInputValue, sendMessage, marginBottomTextInput, inputContainer, heightTextInput, marginTopTextInput, placeholder}) {
     
-    
+    console.log('input', inputContainer)
+    const input = inputContainer ? inputContainer : styles.inputContainer
     return(
-        <View style = {[styles.inputContainer, {marginBottom: marginBottomTextInput + 5, height: heightTextInput, marginTop: marginTopTextInput}]}>
+        <View style = {[input, {marginBottom: marginBottomTextInput + 5, height: heightTextInput, marginTop: marginTopTextInput}]}>
             <TextInput
                 value={inputValue} 
                 onChangeText={setInputValue} 

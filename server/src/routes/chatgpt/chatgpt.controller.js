@@ -55,11 +55,9 @@ const postChatgpt = async (req, res) => {
         }
         const context = chatHistoryRows.map((row) => row.question + '\n' + row.answer).join('\n');
         const fullContext = context + '\n' + message;
-        console.log(fullContext);
 
         
         let GPT35TurboMessage;
-        let messageGPT;
         if (thread_id <= 5) {
             const messageAnswer = 'Beantwoord in het nederlands de volgende vraag in maximaal 10 zinnen: ' + fullContext
             //messageGPT = 'respond with a question or a hint in dutch that makes the user think about their problem. If you think that the user gets it, respond with the actual answer. Here is the full conversation context: ' + "'" + fullContext + "'";

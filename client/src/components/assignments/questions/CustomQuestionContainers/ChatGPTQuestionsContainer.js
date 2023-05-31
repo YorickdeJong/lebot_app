@@ -1,17 +1,28 @@
 import { useIsFocused } from '@react-navigation/native';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Keyboard, Animated, View, StyleSheet, ImageBackground, Text } from 'react-native'
+import { Keyboard, Animated, View, StyleSheet, ImageBackground, Text, Alert } from 'react-native'
 import Chat from '../../../chatgpt/Chat'
 import { ColorsBlue, ColorsGray, ColorsRed } from '../../../../constants/palet';
 import Icon from '../../../Icon';
 import { ChatContext } from '../../../../store/chat-context';
 import { UserProfileContext } from '../../../../store/userProfile-context';
+import { AssignmentDetailsContext } from '../../../../store/assignment-Details-context';
 
 
 function ChatGPTQuestionsContainer() {
     const keyboardHeight = useRef(new Animated.Value(0)).current;
     const chatCtx = useContext(ChatContext)
     const userprofileCtx = useContext(UserProfileContext)
+    const {school_id, class_id, group_id} = userprofileCtx.userprofile;
+    const [filteredTry, setFilteredTry] = useState(0);
+    const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
+    const addAssignmentDetails = assignmentDetailsCtx.addAssignmentDetails;
+    const [isCorrect, setIsCorrect] = useState(false)
+    const maxTries = 2;
+
+    useEffect(() => {
+
+    }, [])
 
     useEffect(() => {
 
@@ -21,14 +32,15 @@ function ChatGPTQuestionsContainer() {
         return () => {
             keyboardWillShowSub.remove();
             keyboardWillHideSub.remove();
-        }
+            }
+
     }, []);
 
     const keyboardWillShow = (event) => {
         Animated.parallel([
         Animated.timing(keyboardHeight, {
             duration: event.duration,
-            toValue: event.endCoordinates.height + 2,
+            toValue: event.endCoordinates.height / 1.3,
             useNativeDriver: false
         }),
     ]).start();
@@ -43,6 +55,67 @@ function ChatGPTQuestionsContainer() {
         }),
         ]).start();
     };
+    
+
+    // add send data 
+    // filter on Onjuist Correct bijna correct -> add to open answers 
+    // validate answer 
+    //define useEffect to getspefic assignment details
+    async function sendData(correctness) {
+        let answers_open_questions = null
+        let answers_multiple_choice = null
+
+        answers_open_questions = { answer: 'chatgpt', correct: correctness,  chartNumber: chartNumber }
+
+        const assignment_id = questionData.assignment_id
+        const subject = questionData.subject
+        
+        try {
+            addAssignmentDetails({
+                school_id,
+                class_id,
+                group_id,
+                assignment_id,
+                subject,
+                answers_multiple_choice,
+                answers_open_questions
+            });
+        } 
+        catch (error) {
+            Alert.alert('Er is iets misgegaan met het beantwoorden van de vraag')
+            console.log(error);
+        }
+    }
+
+    function getBackgroundColor(correctAnswers, tries, maxTries) {
+        if (correctAnswers === 1 ) {
+            return 'rgba(10, 45, 40, 1)';
+        }
+        
+        if (tries >= maxTries) {
+            return correctAnswers === 1 ? 'rgba(10, 45, 40, 1)': 'rgba(60, 20, 10,1 )'
+        }
+        
+        return ColorsBlue.blue1150;
+    }
+
+    async function validateInput(message) { //SHOULD BE TRIGGERED WHEN USER SENDS A MESSAGE 
+        console.log('message', message.answer)
+        if (message.answer.includes('Correct' || 'correct')){
+            await sendData(true)
+        }
+        else {
+            await sendData(false)
+        }
+
+        setFilteredTry(filteredTry + 1)
+    }
+
+
+    
+
+    const backgroundColor = getBackgroundColor(isCorrect, filteredTry, maxTries);
+    const inputContainer = [styles.inputContainer, {backgroundColor: backgroundColor}];
 
     return (
         <Animated.View style = {[styles.container, {marginBottom: keyboardHeight ? keyboardHeight : 20}]}>
@@ -56,6 +129,8 @@ function ChatGPTQuestionsContainer() {
             />
             {userprofileCtx.userprofile.class_id &&
                 <Chat 
+                inputContainer = {inputContainer}
+                validateInput = {validateInput}
                 keyboardHeight={0}
                 placeholder="Type hier je antwoord..."
                 customThread_id={6}
@@ -99,5 +174,29 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         lineHeight: 26,
 
-    }
+    },
+    inputContainer: {
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        // backgroundColor: ColorsBlue.blue1150,
+        shadowOffset: { height: 3, width: 1 },
+        shadowRadius: 3,
+        shadowColor: ColorsBlue.blue1400,
+        shadowOpacity: 1,
+        elevation: 2,
+        marginHorizontal: 15,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: `rgba(77, 77, 77, 0.15)`,
+        shadowColor: `rgba(1, 1, 1, 1)`,
+        shadowOffset: {height: 2, width: 1},
+        shadowOpacity: 1,
+        shadowRadius: 3,
+        elevation: 5,
+    },
 })

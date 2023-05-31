@@ -155,8 +155,10 @@ function ChatContextProvider({ children }) {
         // If this is a question from the user, start the process to get an answer from the bot
         if (chatMessage.question) {
             console.log('chatMessage.thread_id', chatMessage.thread_id)
-            await getBotAnswer(chatMessage);
+            const botMessage = await getBotAnswer(chatMessage);
+            return botMessage
         }
+
     }
     
     async function getBotAnswer(chatMessage) {

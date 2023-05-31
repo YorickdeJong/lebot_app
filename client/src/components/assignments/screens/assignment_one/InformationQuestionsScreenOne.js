@@ -8,7 +8,7 @@ import { ColorsBlue } from '../../../../constants/palet';
 import Questions from '../../questions/Questions';
 import { ChartContext } from '../../../../store/chart-context';
 import { checkDataCorrectnessHandlerMotorQ2 } from '../../questions/verifyDataFunctions';
-import { generateAnswerConstantSlope, generateAnswerMotorQ3, generateAnswerMotorQ5 } from '../../questions/generateAnswers';
+import { generateAnswerConstantSlope, generateAnswerMotorQ3, generateAnswerMotorQ5, generateAnswerMotorQ6 } from '../../questions/generateAnswers';
 import { getSpecificAssignmentsDetail } from '../../../../hooks/assignmentDetails';
 import { UserProfileContext } from '../../../../store/userProfile-context';
 import ProjectOneCustomContainer from '../../questions/CustomQuestionContainers/ProjectOneCustomContainer';
@@ -301,9 +301,11 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
               prevSlideHandler,
               slideCount,
               performedMeasurement: true,
-              customMeasurement: true,
+              // customMeasurement: true,
               currentExerciseLesson: 2,
               slideTotal,
+              generate_answer: generateAnswerMotorQ5,
+              normal_and_multiple_choice: true,
             },
         },
         {
@@ -336,7 +338,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
               nextSlideHandler,
               prevSlideHandler,
               slideCount,
-              generate_answer: generateAnswerMotorQ5,
+              generate_answer: generateAnswerMotorQ6,
               normal_and_multiple_choice: true,
               currentExerciseLesson: 3,
               slideTotal,

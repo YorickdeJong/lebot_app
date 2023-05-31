@@ -15,7 +15,7 @@ const marginBottomTextInput = 10;
 const marginTopTextInput = 10;
 const paddingChat = heightTextInput + marginBottomTextInput + marginTopTextInput; 
 
-const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {  
+const Chat = ({keyboardHeight, placeholder, customThread_id, customColor, validateInput, inputContainer}) => {  
     const chatCtx = useContext(ChatContext)
     const [inputValue, setInputValue] = useState('');
     const flatListRef = useRef(null);
@@ -27,22 +27,27 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {
 
 
     const sendMessage = async () => {
-      setIsLoading(true);
-      const tempInput = inputValue;
-      setInputValue(''); // clear input
-      console.log(`Checking current thread ${thread_id}`);
-  
-      const chatQuestion = {
-          question: tempInput,
-          thread_id: thread_id
-      }
-  
-      // Add the user's question to the chat immediately
-      await chatCtx.addChat(chatQuestion);
-  
-      setIsLoading(false);
-      //scroll to end
-      flatListRef.current.scrollToEnd();
+        setIsLoading(true);
+        const tempInput = inputValue;
+        setInputValue(''); // clear input
+        console.log(`Checking current thread ${thread_id}`);
+    
+        const chatQuestion = {
+            question: tempInput,
+            thread_id: thread_id
+        }
+    
+        // Add the user's question to the chat immediately
+        const chatgptAnswer = await chatCtx.addChat(chatQuestion);
+    
+        // check answer if user uses chatgpt for answer questions
+        if (validateInput) {
+          validateInput(chatgptAnswer)
+        }
+
+        setIsLoading(false);
+        //scroll to end
+        flatListRef.current.scrollToEnd();
   }
 
     const renderChat = ({ item, index}) => {
@@ -89,6 +94,7 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {
               />
             </View>
             <InputContainer
+              validateInput = {validateInput}
               placeholder={placeholder}
               setInputValue={setInputValue}
               inputValue={inputValue}
@@ -96,6 +102,7 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor}) => {
               heightTextInput={heightTextInput}
               marginBottomTextInput={marginBottomTextInput}
               marginTopTextInput={marginTopTextInput}
+              inputContainer = {inputContainer}
             />
         </Animated.View>
     );

@@ -65,7 +65,15 @@ export async function generateAnswerConstantSlope(answer, chartNumber, school_id
     const lowerBound = answer * (1 - tolerance);
     const upperBound = answer * (1 + tolerance);
 
-    const isWithinTolerance = mean >= lowerBound && mean <= upperBound;
+    //check if answer is positive or negative
+    let isWithinTolerance;
+    if (mean < 0) {
+        isWithinTolerance = mean <= lowerBound && mean >= upperBound;
+    }
+    else {
+        isWithinTolerance = mean  >= lowerBound && mean <= upperBound;
+    }
+
 
     console.log('Is within tolerance:', isWithinTolerance);
 
@@ -110,40 +118,127 @@ export async function generateAnswerMotorQ3(answer, chartNumber, school_id, clas
 
 
 export async function generateAnswerMotorQ5(answer, chartNumber, school_id, class_id, group_id, title, assignment_number, subject) {
-    let prevAnsweredAssignment;
+    let specificAssignmentMeasurements;
 
 
     try {
-        prevAnsweredAssignment = await getSpecificAssignmentsDetail( //if subject -> fetch from power data
-                school_id, 
-                class_id, 
-                group_id,
-                36,
-                subject
-            );
+        specificAssignmentMeasurements = await getSpecificMeasurementResult( //if subject -> fetch from power data
+            school_id, 
+            class_id, 
+            group_id,
+            title,
+            assignment_number,
+            subject
+        );
     }
     catch(error) {
         console.log('no images yet');
         console.log(error)  
+        Alert.alert('Er is iets mis gegaan met het beantwoorden van de vraag')
+        return 
     }
 
-    console.log('prevAnsweredAssignment', prevAnsweredAssignment)
-    const answerQ5 = prevAnsweredAssignment.answers_open_questions[prevAnsweredAssignment.answers_open_questions.length - 1].answer;
-    const tol = 0.05;
+    function sumOfAcceleration(data, begin, end) {
+        if (data.length === 0 || !Array.isArray(data)) {
+            throw new Error('First item of the data must be an array');
+        }
+      
+        let firstSubArray = data;
+        let sum = 0;
+        let acceleration;
+        let velocityDifference;
+        let timeDifference;
 
-    console.log('prevAnswer', answerQ5)
-    const lowerBound = answerQ5 * (1 - tol) * 1.5;
-    const upperBound = answerQ5 * (1 + tol) * 1.5;
+        for (let i = begin; i < firstSubArray.length - end; i++) {
+            if (typeof firstSubArray[i].value === 'number') {
+                velocityDifference = firstSubArray[i + 1].value - firstSubArray[i].value;
+                timeDifference = firstSubArray[i + 1].time - firstSubArray[i].time;
+                acceleration =  velocityDifference / timeDifference
+                sum += acceleration;
+            } 
+            else {
+                throw new Error('Value property must be a number');
+            }
+        }
+        return sum;
+    }
 
-    const isWithinTolerance = answer  >= lowerBound && answer <= upperBound;
+
+    const begin = 1;
+    const end = 5
+    const specific_data = specificAssignmentMeasurements[chartNumber - 1].velocity_time[0];
+    const sum = sumOfAcceleration(specific_data, begin, end)//specific_data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const mean = sum / ( specific_data.length - begin - end ); // replace 0.7 with measurement frequency
+
+    console.log('mean', mean)
+    const tolerance = 0.15;
+    const lowerBound = answer * (1 - tolerance);
+    const upperBound = answer * (1 + tolerance);
+
+    let isWithinTolerance;
+    if (mean < 0) {
+        isWithinTolerance = mean <= lowerBound && mean >= upperBound;
+    }
+    else {
+        isWithinTolerance = mean  >= lowerBound && mean <= upperBound;
+    }
 
     console.log('is within tolerance:', isWithinTolerance)
     console.log('answer:', answer)
     return isWithinTolerance;
-
-
 }
 
+
+
+
+export async function generateAnswerMotorQ6(answer, chartNumber, school_id, class_id, group_id, title, assignment_number, subject){
+        let prevAnsweredAssignment;
+        try {
+            prevAnsweredAssignment = await getSpecificAssignmentsDetail( //if subject -> fetch from power data
+                    school_id, 
+                    class_id, 
+                    group_id,
+                    36,
+                    subject
+                );
+        }
+        catch(error) {
+            console.log('no images yet');
+            console.log('faioed to get previous assignment answer', error)  
+            Alert.alert('Er is iets mis gegaan met het beantwoorden van de vraag')
+            return 
+        }
+
+        console.log('prev answer', prevAnsweredAssignment)
+        //add a check if chart data is empty or not
+        if (!prevAnsweredAssignment){
+            Alert.alert('Beantwoord eerst vraag 5!')
+            return false;
+        }
+
+        console.log('length',  prevAnsweredAssignment.answers_open_questions.length - 1)
+        const weight = 0.25
+        const answerQ6 = prevAnsweredAssignment.answers_open_questions[prevAnsweredAssignment.answers_open_questions.length - 1].answer * weight;
+        console.log('answerQ6', answerQ6)
+        
+        const tol = 0.02;
+        console.log('prevAnswer', answerQ6)
+        const lowerBound = answerQ6 * (1 - tol);
+        const upperBound = answerQ6 * (1 + tol);
+
+        let isWithinTolerance
+        if (answerQ6 < 0) {
+            isWithinTolerance = answer <= lowerBound && answer >= upperBound;
+        } 
+        else {
+            isWithinTolerance = answer >= lowerBound && answer <= upperBound;
+        }
+
+
+        console.log('is within tolerance:', isWithinTolerance)
+        console.log('answer:', answer)
+        return isWithinTolerance;
+}
 
 
 export async function generateAnswerCarQ4(answer, chartNumber, school_id, class_id, group_id, title, assignment_number, subject){
@@ -161,6 +256,8 @@ export async function generateAnswerCarQ4(answer, chartNumber, school_id, class_
     catch(error) {
         console.log('no images yet');
         console.log(error)  
+        Alert.alert('Er is iets mis gegaan met het beantwoorden van de vraag')
+        return 
     }
 
     try{
@@ -199,7 +296,7 @@ export async function generateAnswerCarQ4(answer, chartNumber, school_id, class_
     const lowerBound = answerQ3 * (1 - tol) * max_vel;
     const upperBound = answerQ3 * (1 + tol) * max_vel;
 
-    const isWithinTolerance = answer  >= lowerBound && answer <= upperBound;
+    const isWithinTolerance = mean  >= lowerBound && mean <= upperBound;
 
     console.log('is within tolerance:', isWithinTolerance)
     console.log('answer:', answer)

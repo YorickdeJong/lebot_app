@@ -82,7 +82,7 @@ function AssignmentOptionsBar({
     }
 
     let progressBarItems = [];
-    for (let i = 1; i <= slideTotal; i++) {
+    for (let i = 1; i <= slideTotal - 1; i++) {
         if (slideTotal === 1){ 
             progressBarItems.push(
                 <TouchableOpacity 
@@ -112,7 +112,7 @@ function AssignmentOptionsBar({
                 );
             }
         }
-        else if (i === slideTotal) { // last item
+        else if (i === slideTotal - 1) { // last item
             if (i <= slideCount) {
                 progressBarItems.push(
                     <TouchableOpacity 
