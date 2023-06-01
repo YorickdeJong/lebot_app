@@ -89,7 +89,8 @@ function InformationBuildScreenOne({isFocused}) {
               isFocused,
               setSlideCount,
               slideTotal,
-              text: {text : 'Opstelling', left: '37%'}
+              text: {text : 'Opstelling', left: '37%'},
+              instructions: true
             }
           },
     ]

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ColorsBlue, ColorsGray, ColorsGreen, ColorsRed } from "../../../../constants/palet";
 import { View, StyleSheet, Text, Alert, TouchableOpacity } from "react-native";
 import Icon from "../../../Icon"
@@ -295,7 +295,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
     )
 }
 
-export default ProjectOneCustomContainer;
+export default React.memo(ProjectOneCustomContainer);
 
 
 const styles= StyleSheet.create({

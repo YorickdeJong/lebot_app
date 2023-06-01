@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
         shadowRadius: 5,
         shadowColor: ColorsBlue.blue1300,
         shadowOpacity: 0.5,
-
         borderWidth: 0.45,
         borderColor: ColorsBlue.blue700,
         textAlign: 'center'

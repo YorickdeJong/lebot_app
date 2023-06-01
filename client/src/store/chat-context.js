@@ -167,7 +167,6 @@ function ChatContextProvider({ children }) {
         const response = await postMessage(userprofileCtx.userprofile.id, chatMessage.question, chatMessage.thread_id);
         if (response) {
             const botMessage = response; // Update this line if needed to extract the message from the response
-            console.log('botMessage', response)
             currentBotMessage.current = botMessage
             const chatAnswer = {
                 answer: botMessage,

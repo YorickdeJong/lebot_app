@@ -49,7 +49,7 @@ function Assignment({title, tabIndex, currentIndex, subject}) {
     )
 }
 
-export default Assignment
+export default React.memo(Assignment)
 
 
 const styles = StyleSheet.create({
