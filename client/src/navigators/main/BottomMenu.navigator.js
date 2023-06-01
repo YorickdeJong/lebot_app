@@ -15,6 +15,8 @@ import { ShowIconsContext } from '../../store/show-icons-context';
 import { TimeContext } from '../../store/time-context';
 import { UserProfileContext } from '../../store/userProfile-context';
 import { InformationContext } from '../../store/information-context';
+import { getFocusedRouteNameFromRoute } from '@react-navigation/native';
+
 //test
 const Bottom = createBottomTabNavigator();
 
@@ -74,7 +76,7 @@ function BottomMenu() {
                 />
               )
           },
-          }}
+        }}
         >
 
          <Bottom.Screen 

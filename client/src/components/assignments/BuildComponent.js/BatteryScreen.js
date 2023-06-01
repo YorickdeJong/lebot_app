@@ -61,9 +61,9 @@ function BatteryScreen({nextSlideHandler, setSlideCount, text, instructions, sli
                                     video = {video}/>
                                 }
 
-                                {/* {instructions && 
+                                {instructions && 
                                     <ImageRendering />
-                                } */}
+                                }
                                 <ChatBoxGPT 
                                 answer={message.answer}
                                 isLastItem={true}

@@ -70,12 +70,12 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
     return(    
         <View style={styles.shadowContainer}>
             <BlurView style = {styles.upperContainer} intensity={10} tint="dark">
-                <View style = {{padding: 10, paddingTop: 16}}>
+                <View style = {{padding: 10}}>
                     <View style = {styles.upperIcons}>
 
                         <Icon 
                         icon = {"md-arrow-back-circle"} 
-                        size={40}
+                        size={35}
                         color={ColorsBlue.blue200}
                         onPress = {() => navigation.goBack()}
                         addStyle={addStyleIcon}
@@ -84,7 +84,7 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
                             <Animated.View style = {{opacity: blinkCtx.shouldBlinkPowerButton ? opacityInterpolationPower.current : 1}}> 
                                 <Icon 
                                 icon = {midIcon ? midIcon : (socketCtx.power && socketCtx.isConnected ? "pause-circle-outline" : "power")}
-                                size={45}
+                                size={42}
                                 color={blinkCtx.shouldBlinkPowerButton ? 'gold' :  ColorsBlue.blue200}
                                 onPress = {midIconHandler}
                                 differentDir={true}
@@ -135,11 +135,11 @@ const styles = StyleSheet.create({
                 shadowColor: ColorsBlue.blue1400,
             },
         }),
-        flex: 0.7
+        flex: 0.6
     },
     upperContainer: {
         borderColor: ColorsBlue.blue1400,
-        borderWidth: Platform.OS === 'android' ? 1.2 :0.5,
+        borderWidth: Platform.OS === 'android' ? 1.2 : 0.5,
         borderRadius: 20,
         overflow: 'hidden',
         flex: 1
@@ -148,12 +148,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 5,
         marginHorizontal: 10,
     },
     stopContainer: {
-        width: 50,
-        height: 25,
+        width: 45,
+        height: 20,
         borderRadius: 20,
         borderWidth: 2,
         borderColor: ColorsBlue.blue200,
@@ -166,8 +165,8 @@ const styles = StyleSheet.create({
         elevation: 4
     },
     stopCircle: {
-        width: 23,
-        height: 23,
+        width: 18,
+        height: 18,
         borderRadius: 20,
         backgroundColor: ColorsBlue.blue200,
     },

@@ -35,6 +35,8 @@ export async function generateAnswerConstantSlope(answer, chartNumber, school_id
         Alert.alert('Error', 'het is niet gelukt om je antwoord in te voeren')
     }
     
+    const begin = 3
+    const end = 5
     function sumOfFirstSubArray(data) {
         if (data.length === 0 || !Array.isArray(data)) {
             throw new Error('First item of the data must be an array');
@@ -43,7 +45,7 @@ export async function generateAnswerConstantSlope(answer, chartNumber, school_id
         let firstSubArray = data;
         let sum = 0;
     
-        for (let i = 0; i < firstSubArray.length; i++) {
+        for (let i = begin; i < firstSubArray.length - end; i++) {
             if (typeof firstSubArray[i].value === 'number') {
                 sum += firstSubArray[i].value;
             } else {
@@ -57,7 +59,7 @@ export async function generateAnswerConstantSlope(answer, chartNumber, school_id
 
     const specific_data = specificAssignmentMeasurements[chartNumber - 1].velocity_time[0];
     const sum = sumOfFirstSubArray(specific_data)//specific_data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const mean = sum / ( specific_data.length ); // replace 0.7 with measurement frequency
+    const mean = sum / ( specific_data.length - begin - end); // replace 0.7 with measurement frequency
 
     console.log('Mean:', mean);
 

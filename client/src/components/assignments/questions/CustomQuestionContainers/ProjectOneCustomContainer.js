@@ -194,7 +194,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
 
             <View style={styles.descriptionContainer}>
                 <Text style = {styles.question}>
-                    {questions[1]}
+                    {questions[0]}
                 </Text>
             </View>
 

@@ -1,4 +1,4 @@
-import { VictoryLine, VictoryChart, VictoryTheme, VictoryZoomContainer, VictoryScatter, VictoryAxis, VictoryGroup, ZoomHelpers, VictoryContainer } from "victory-native";
+import { VictoryChart, VictoryLine, VictoryAxis, VictoryScatter, VictoryGroup, VictoryZoomContainer, VictoryContainer, VictoryTheme } from 'victory-native';
 import { ColorsBlue, ColorsBrownWood, ColorsGray, ColorsGreen, ColorsPurple, ColorsRed } from "../../../../constants/palet";
 import {StyleSheet, View, Text, Button} from 'react-native'
 import Icon from "../../../Icon";
@@ -8,6 +8,7 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
     const ColorPoints = [ColorsRed.red700, ColorsBrownWood.wood500, ColorsGreen.green900,  ColorsPurple.purple600, ]
     const panFactor = 0.2;
 
+    console.log('chartData', chartData)
     const customTheme = {
         ...VictoryTheme.material,
         axis: {

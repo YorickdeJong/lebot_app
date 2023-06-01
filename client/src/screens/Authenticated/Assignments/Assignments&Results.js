@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, FlatList, StyleSheet, ImageBackground, View, Dimensions } from "react-native";
+import { Text, FlatList, StyleSheet, ImageBackground, View, Dimensions, Alert } from "react-native";
 import {assignments} from "../../../data/AssignmentData";
 import AssignmentTile from "../../../components/assignments/questions/AssignmentTile";
 import { ColorsBlue } from "../../../constants/palet";
@@ -82,11 +82,15 @@ function AssignmentsResults() {
                 setSelectFase(1);
                 break;
             case 2:
-                setSelectFase(2);
-                break;
+                Alert.alert('Vorige Fase niet voltooid', 'Voltooi eerst de vorige fase')
+                return
+                // setSelectFase(2);
+                // break;
             case 3:
-                setSelectFase(3);
-                break;
+                Alert.alert('Vorige Fase niet voltooid', 'Voltooi eerst de vorige fase')
+                return
+                // setSelectFase(3);
+                // break;
         }
     }
     return (

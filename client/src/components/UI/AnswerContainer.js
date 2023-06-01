@@ -6,7 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 
 
-function AnswerContainer({input, inputContainer, backgroundColor, setInputDetails, maxTries, filteredTry, correctAnswers, validateInput, performedMeasurement, chartNumber, setChartNumber, placeholder}){
+function AnswerContainer({input, inputContainer, setInputDetails, maxTries, filteredTry, correctAnswers, validateInput, performedMeasurement, chartNumber, setChartNumber, placeholder}){
 
     return (
         <View style = {{flexDirection: 'row', alignItems: 'center', marginTop: 5,  marginLeft: 17, marginRight: 15, shadowColor: `rgba(0, 0, 0, 1)`,
@@ -32,7 +32,7 @@ function AnswerContainer({input, inputContainer, backgroundColor, setInputDetail
             style = {{flex: 1.1, marginRight: 2, backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent',
             }}>
                 <TextInput 
-                style = {[inputContainer, {paddingLeft: 5, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, borderColor: 'rgba(77,77,77, 0.2)'}]}
+                style = {[inputContainer, {paddingLeft: 5, borderTopLeftRadius: 0, borderBottomLeftRadius: 0}]}
                 placeholder = "Meting nr."
                 placeholderTextColor={ColorsGray.gray300}
                 onChangeText={setChartNumber}

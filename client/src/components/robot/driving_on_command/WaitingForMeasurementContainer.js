@@ -32,7 +32,7 @@ export default React.memo(WaitingForMeasurementContainer)
 
 const styles = StyleSheet.create({
     loadingContainer: {
-        height: 460,
+        flex: 1,
         margin: 2,
         borderRadius: 20,
         borderColor: 'rgba(0, 0, 0, 1)',
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
                 shadowColor: ColorsBlue.blue1400,
             },
         }),
-        height: height > 750 ? 460 : 370,
+        height: height > 750 ? 520 : 400,
     },
     loadingContainer: {
         flex: 1,

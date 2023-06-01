@@ -70,10 +70,12 @@ export default React.memo(DriveLayout)
 const styles = StyleSheet.create({
     background: {
         flex: 1,
+        paddingTop: '10%'
     },
     container: {
         backgroundColor: ColorsBlue.blue1100, 
         flex: 1,
+
     },
     loadingContainer: {
         flex: 1,
@@ -101,6 +103,6 @@ const styles = StyleSheet.create({
                 borderWidth: 1.2
             }
         }),
-        height: height > 750 ? 460 : 370,
+        height: height > 750 ? 520 : 400,
     },
 })

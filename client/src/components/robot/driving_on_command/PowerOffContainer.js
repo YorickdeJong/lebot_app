@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
             },
 
         }),
-        height: height > 750 ? 460 : 370,
+        height: height > 750 ? 520 : 400,
     },
     powerOffContianer: {
         flex: 1,

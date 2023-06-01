@@ -114,15 +114,19 @@ function QuestionContainer({
     }
     
     function getBackgroundColor(correctAnswers, tries, maxTries) {
+        if (tries > 0 && correctAnswers === 0) {
+            return ['rgba(80, 20, 10,1 )', 2.3]
+        }
+
         if (correctAnswers === 1 ) {
-            return 'rgba(10, 45, 40, 1)';
+            return ['rgba(10, 45, 40, 1)', 2.3];
         }
         
         if (tries >= maxTries) {
-            return correctAnswers === 1 ? 'rgba(10, 45, 40, 1)': 'rgba(60, 20, 10,1 )'
+            return correctAnswers === 1 ? ['rgba(10, 45, 40, 1)', 2.3]: ['rgba(80, 20, 10,1 )', 2.3]
         }
-        
-        return ColorsBlue.blue1150;
+
+        return ['rgba(77,77,77, 0.2)', 1];
     }
     
     function checkTimerActive() {
@@ -212,8 +216,8 @@ function QuestionContainer({
 
 
 
-    const backgroundColor = getBackgroundColor(correctAnswers, filteredTry, maxTries);
-    const inputContainer = [styles.inputContainer, {backgroundColor: backgroundColor}];
+    const [borderColor, borderWidth] = getBackgroundColor(correctAnswers, filteredTry, maxTries);
+    const inputContainer = [styles.inputContainer, {borderColor: borderColor, borderWidth: borderWidth}];
 
     return (
         <View style = {styles.shadow}>
@@ -265,7 +269,6 @@ function QuestionContainer({
                                 <AnswerContainer 
                                     input = {input}
                                     inputContainer={inputContainer}
-                                    backgroundColor = {backgroundColor}
                                     setInputDetails = {setInputDetails}
                                     validateInput = {validateInput}
                                     performedMeasurement = {performedMeasurement}
@@ -373,7 +376,7 @@ const styles= StyleSheet.create({
         height: 40,
         paddingLeft: 10,
         color: ColorsGray.gray400,
-        // backgroundColor: ColorsBlue.blue1150,
+        backgroundColor: ColorsBlue.blue1150,
         borderTopLeftRadius: 10, 
         borderBottomLeftRadius: 10,
         marginRight: Platform.OS === 'android' ? 2 : 0,

@@ -52,17 +52,7 @@ function Assignments() {
           name = "Controller"
           options= {{
             title: 'Controller',
-            headerLeft: ({tintColor}) => {
-            return (
-              <Icon 
-              icon = 'arrow-back-circle'
-              size = {30}
-              color = {tintColor}
-              onPress = {() => {
-                navigation.goBack()
-              }}/>
-              )
-            }
+            headerShown: false
         }}/> 
 
         <Stack.Screen 
