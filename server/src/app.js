@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const path = require('path');
 
 const authenticateRoutes = require('./routes/authenticate/authenticate_user.router');
 const userRoutes = require('./routes/user_profile/user_profile.router');
@@ -23,7 +24,7 @@ const thinkScreenRouter = require('./routes/think_screen/think_screen.router')
 
 app.use(cors());
 app.use(express.json()); //allows us to get json from end points
-app.use(express.static('server/src/public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use('/api/v1/assignments', assignmentRoutes);
