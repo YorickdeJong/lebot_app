@@ -72,7 +72,7 @@ function Assignments() {
           headerBackground: null
         }}
           >
-          {(props) => <AssignmentTab {...props} subject = {props.route.params.subject} initialIndex={props.route.params.initialIndex} title={props.route.params.title} />}
+          {(props) => <AssignmentTab {...props} subject = {props.route.params.subject} initialIndex={props.route.params.initialIndex} title={props.route.params.title} initSlideCount={props.route.params.initSlideCount}/>}
         </Stack.Screen>
       </Stack.Navigator>
     )

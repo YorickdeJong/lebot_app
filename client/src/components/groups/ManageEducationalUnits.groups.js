@@ -16,7 +16,7 @@ import { Image } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
 
-function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandler, addUserHandler, classroom_id, className, data, setDbUpdate, tabNav}){
+function  ManageEducationalUnits({user_role, tileType, deletehHandler, editHandler, addUserHandler, classroom_id, className, data, setDbUpdate, tabNav}){
     const navigation = useNavigation();
     const userprofileCtx = useContext(UserProfileContext)
     const user_class_id = userprofileCtx.userprofile.class_id
@@ -50,6 +50,18 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
             animation.stop();
         };
     }, []);
+
+
+    function navigateToAppHandler() {
+        if (user_class_id !== '' && user_group_id !== ''){
+            Alert.alert('Voeg een klas en/of groep toe voordat je verder kan!')
+            return;
+        }
+
+        informationCtx.setShowBeginningScreen(false)
+        navigation.navigate('BottomMenu', {screen: 'Assignments'})
+    }
+
 
     function renderGroups({item, index}) {   
         //Don't display tiles that do not have the selected classroom
@@ -129,6 +141,7 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
         )
     }
 
+
     return (
         <LinearGradient style = {styles.container}
         colors={[ColorsBlue.blueblack1600, ColorsBlue.blueblack1500, ]}
@@ -148,11 +161,11 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
                     renderItem = {renderGroups}
                     />
                     {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Class'  && !explanationState && 
-                        <View style = {{position: 'absolute', top: height > 750 ? '50%' : '55%', left: '12%'}}>  
+                        <View style = {{position: 'absolute', top: height > 750 ? '45%' : '50%', left: '12%'}}>  
                             <View style = {{}}>
                                 <TextBubbleLeft
                                     title = 'Kies je klas en groep'
-                                    text = {`• Je deelt alle antwoorden en metingen met je groepsleden\n• Werk samen als een team! \n• Brainstorm met elkaar, dit zal jullie helpen om de juiste antwoorden te vinden!`}
+                                    text = {`• Je deelt alle antwoorden en metingen met je groepsleden\n• Werk samen als een team! \n• Brainstorm met elkaar, dit zal jullie helpen om de juiste antwoorden te vinden! \n• Druk op het hoofd icoon om een klas of groep toe te voegen`}
                                     setExplanationState={setExplanationState.bind(this, true)}
 
                                 />
@@ -166,17 +179,36 @@ function ManageEducationalUnits({user_role, tileType, deletehHandler, editHandle
                             </View>
                         </View>
                     } 
-                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Group' &&
+                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Group' && !explanationState && 
+                        <View style = {{position: 'absolute', top: height > 750 ? '45%' : '50%', left: '12%'}}>
+                            <View style = {{}}>
+                                    <TextBubbleLeft
+                                        title = 'Kies je groep'
+                                        text = {`• Als je een groep hebt gekozen, dan kan je jouw gegevens zien door op de groep te drukken`}
+                                        setExplanationState={setExplanationState.bind(this, true)}
+
+                                    />
+                                </View>
+                                <View style = {{ position: 'absolute', left: '-10%', top: '89%',}}>
+                                    <Image
+                                        style={styles.profilePicture}
+                                        source={require("./../../../assets/robotIcon.png")}
+                                        resizeMode="cover"
+                                        />
+                                </View>
+                        </View>
+                    } 
+                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'IndividualGroup' &&
                         <Animated.View style = {{position: 'absolute', bottom: height > 750 ? '20%' : '10%', left: '28%', padding: 15, backgroundColor: ColorsBlue.blue1325,
                             borderRadius: 10, borderColor: 'rgba(77,77,77,0.3)', borderWidth: 1, shadowColor: 'rgba(0,0,0,1)',
                             shadowRadius: 4, shadowOffset: {width: 2, height: 3}, shadowOpacity: 1, elevation: 4, opacity: fadeAnim}}>
                             <TouchableOpacity 
-                                onPress={() => {informationCtx.setShowBeginningScreen(false), navigation.navigate('BottomMenu', {screen: 'Assignments'})}}
+                                onPress={() => navigateToAppHandler()}
                             >
                                 <Text style = {{fontSize: 27, color: ColorsGray.gray300}}>Naar de App</Text>
                             </TouchableOpacity>
                         </Animated.View>
-                    } 
+                    }
                 </View>
             </ImageBackground>
         <TeacherModal

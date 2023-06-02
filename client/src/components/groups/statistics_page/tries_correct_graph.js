@@ -1,18 +1,23 @@
 
 import { VictoryLine, VictoryChart, VictoryTheme, VictoryZoomContainer, VictoryScatter, VictoryAxis, VictoryArea, VictoryBar } from "victory-native";
 import { ColorsBlue, ColorsBrownWood, ColorsGray, ColorsGreen, ColorsPurple, ColorsRed } from "../../../constants/palet";
-import {StyleSheet, View, Text} from 'react-native'
+import {StyleSheet, View, Text, Dimensions} from 'react-native'
 
 
 
-
+const screenWidth = Dimensions.get('window').width;
 function TriesCorrectGraph({groupData, title, left}) {
     const ColorPoints = [ColorsRed.red700, ColorsBrownWood.wood500, ColorsGreen.green900,  ColorsPurple.purple600, ]
 
+    console.log(groupData)
+
+    const xData = groupData.map(point => point.tries);
+    const yData = groupData.map(point => point.correct);
     const xMin = 0
-    const xMax = 40
+    const xMax = Math.max(...xData);
     const yMin = 0
-    const yMax = 40
+    const yMax = Math.max(...yData);
+
 
     const cutoff = 0.1;
 
@@ -49,6 +54,7 @@ function TriesCorrectGraph({groupData, title, left}) {
                 tickLabels: { fill:  ColorsGray.gray600  },
                 }}
             />
+
             <VictoryAxis
                 label={"Pogingen"}
                 style={{
@@ -95,8 +101,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 15,
         height: 380,
-        width: 340,
-        backgroundColor: ColorsBlue.blue1400,
+        width: screenWidth - 20,
+        backgroundColor: ColorsBlue.blue1325,
     },
     title: {
         position: 'absolute',

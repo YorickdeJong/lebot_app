@@ -23,8 +23,8 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function InformationQuestionsScreenOne({ assignmentTopic, isFocused }) {
-    const [slideCount, setSlideCount] = useState(0);
+function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCount }) {
+    const [slideCount, setSlideCount] = useState(initSlideCount);
     const [typing, setTyping] = useState(true);
     const { chartToggle, setChartToggleHandler } = useContext(ChartContext)
     const userprofileCtx = useContext(UserProfileContext);

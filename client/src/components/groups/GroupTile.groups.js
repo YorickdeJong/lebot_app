@@ -72,14 +72,14 @@ function GroupCategoryTile({groupNames, navigationHandler, fadeAnim, groupMember
             deletehHandler(class_id);
     };
 
-    let color = [ColorsBlue.blue1300, ColorsBlue.blue1000]
+    let color = [ColorsBlue.blue1250, 'rgba(20, 20, 60, 1)']
     const class_condition = tileType === 'Class' && user_class_id === class_id
     const group_condition = tileType === 'Group' && user_group_id === group_id
     if (class_condition) {
-        color = [ColorsBlue.blue1400, ColorsBlue.blue1000, ColorsBlue.blue600]
+        color = [ColorsBlue.blue1250, 'rgba(20, 30, 80, 1)']
     }
     if (group_condition) {
-        color = [ColorsBlue.blue1300, ColorsBlue.blue1000, ColorsBlue.blue600]
+        color = [ColorsBlue.blue1250, 'rgba(20, 30, 80, 1)']
     }
 
 

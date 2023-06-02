@@ -17,7 +17,7 @@ function getFirstCompletedAssignment(assignmentDetailsCtx, title, length) {
 }
 
 // DISPLAYS INDIVIDUAL ASSIGNMENTS
-function Assignment({title, tabIndex, currentIndex, subject}) {
+function Assignment({title, tabIndex, currentIndex, subject, initSlideCount}) {
     const assignmentCtx = useContext(AssignmentContext); //how to now the subject here?
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext)
     const assignmentTopic = assignmentCtx.filterSpecificTitle("Vragen Opdracht");
@@ -27,23 +27,35 @@ function Assignment({title, tabIndex, currentIndex, subject}) {
 
     !isFocused && console.log('not focussed')
 
-    
+    console.log('slideCount', initSlideCount)
     return (
 
             isFocused &&
                 <>
-                    {subject === 'MOTOR' && <InformationQuestionsScreenOne 
-                    assignmentTopic={assignmentTopic} 
-                    assignmentNumber={assignmentNumber}
-                    isFocused={isFocused}/>}
-                    {subject === 'LED' && <InformationQuestionsScreenTwo
-                    assignmentTopic={assignmentTopic} 
-                    assignmentNumber={assignmentNumber}
-                    isFocused={isFocused}/>}
-                    {subject === 'CAR' && <InformationQuestionsScreenThree
-                    assignmentTopic={assignmentTopic} 
-                    assignmentNumber={assignmentNumber}
-                    isFocused={isFocused}/>}
+                    {subject === 'MOTOR' && 
+                        <InformationQuestionsScreenOne 
+                            assignmentTopic={assignmentTopic} 
+                            assignmentNumber={assignmentNumber}
+                            isFocused={isFocused}
+                            initSlideCount = {initSlideCount ? initSlideCount : 0}
+                        />
+                    }
+                    {subject === 'LED' && 
+                        <InformationQuestionsScreenTwo
+                            assignmentTopic={assignmentTopic} 
+                            assignmentNumber={assignmentNumber}
+                            isFocused={isFocused}
+                            initSlideCount = {initSlideCount ? initSlideCount : 0}
+                        />
+                    }
+                    {subject === 'CAR' && 
+                        <InformationQuestionsScreenThree
+                            assignmentTopic={assignmentTopic} 
+                            assignmentNumber={assignmentNumber}
+                            isFocused={isFocused}
+                            initSlideCount = {initSlideCount ? initSlideCount : 0}
+                        />
+                    }
 
                 </>
     )

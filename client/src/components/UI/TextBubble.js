@@ -9,7 +9,7 @@ export function TextBubbleLeft({text, setExplanationState, title}) {
     return (
         <View style={[styles.item, styles.itemIn]}>
             <View style={[styles.balloon, {backgroundColor: ColorsBlue.blue1100}]}>
-                <Text style = {{paddingTop: 5, color: ColorsGray.gray200, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>{title}</Text>
+                <Text style = {{paddingTop: 5, color: ColorsGray.gray200, fontSize: 20, textAlign: 'center', fontWeight: 'bold', marginBottom: 10}}>{title}</Text>
                 <Text style={{paddingTop: 5, color: ColorsGray.gray300, lineHeight: 26, fontWeight: '302', fontSize: 15}}>{text}</Text>
                 <TouchableOpacity
                 onPress={setExplanationState}>

@@ -9,8 +9,11 @@ import CodeExampleScreen from '../../screens/Authenticated/Assignments/CodeExamp
 import { ColorsBlue } from '../../constants/palet';
 
 // DISPLAYS ASSIGNMENTS
-function AssignmentTab({title, initialIndex, subject}){
+function AssignmentTab({title, initialIndex, subject, initSlideCount}){
+    console.log('initSlideCount', initSlideCount)
+    console.log('title', title)
     const [index, setIndex] = useState(initialIndex);
+
     
     const [routes] = useState([
       { key: 'first', title: 'Test Opstelling' },
@@ -65,6 +68,7 @@ function AssignmentTab({title, initialIndex, subject}){
             tabIndex={3}
             currentIndex={index}
             subject={subject}
+            initSlideCount = {initSlideCount}
             />;
         }
     };

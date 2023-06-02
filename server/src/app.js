@@ -20,7 +20,7 @@ const classRouter = require('./routes/classes/classes.router')
 const classInfoRouter = require('./routes/classes/classesInfo.router')
 const lessonsTimeRouter = require('./routes/time_lessons/time_lessons.router')
 const thinkScreenRouter = require('./routes/think_screen/think_screen.router')
-
+const robotWifiRouter = require('./routes/robotWifi/robotWifi.router')
 
 app.use(cors());
 app.use(express.json()); //allows us to get json from end points
@@ -43,5 +43,6 @@ app.use('/api/v1/classes', classRouter);
 app.use('/api/v1/classes-info', classInfoRouter);
 app.use('/api/v1/time-lessons', lessonsTimeRouter);
 app.use('/api/v1/brainstorm-text', thinkScreenRouter);
+app.use('/api/v1/robot-wifi', robotWifiRouter);
 
 module.exports = app
