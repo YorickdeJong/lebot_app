@@ -9,8 +9,6 @@ const screenWidth = Dimensions.get('window').width;
 function TriesCorrectGraph({groupData, title, left}) {
     const ColorPoints = [ColorsRed.red700, ColorsBrownWood.wood500, ColorsGreen.green900,  ColorsPurple.purple600, ]
 
-    console.log(groupData)
-
     const xData = groupData.map(point => point.tries);
     const yData = groupData.map(point => point.correct);
     const xMin = 0

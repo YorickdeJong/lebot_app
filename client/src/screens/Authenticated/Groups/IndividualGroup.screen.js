@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { InformationContext } from '../../../store/information-context';
 import { TextBubbleLeft } from '../../../components/UI/TextBubble';
+import { getRobotWifi } from '../../../hooks/robotWifi';
 
 
 const {height, width} = Dimensions.get('window');
@@ -19,7 +20,11 @@ function IndividualGroup() {
     const [explanationState, setExplanationState] = useState(false);
     const informationCtx = useContext(InformationContext)
     const userprofileCtx = useContext(UserProfileContext);
-    const {user_role, id, class_id, group_id, school_id} = userprofileCtx.userprofile;
+    const {user_role, class_id, group_id, school_id} = userprofileCtx.userprofile;
+    const [robotCredentials, setRobotCredentials] = useState({
+        robot_wifi_name: '',
+        robot_password: ''
+    });
     const [tries, setTries] = useState([]);
     const [correct, setCorrect] = useState([]);
     const [triesAndCounts, setTriesAndCounts] = useState([
@@ -40,7 +45,6 @@ function IndividualGroup() {
         }
     ]);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
-    const userprofile = useContext(UserProfileContext);
     const fadeAnim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 0
     const navigation = useNavigation();
 
@@ -77,6 +81,9 @@ function IndividualGroup() {
             const triesPhaseOne = assignmentDetailsCtx.getTriesAssignmentsPerPhase('MOTOR', assignments)
             const correctPhaseOne = assignmentDetailsCtx.getCorrectAnswerCount('MOTOR', assignments)
             const triesAndCountsPhaseOne = assignmentDetailsCtx.getCorrectAndTriesCount('MOTOR', assignments)
+            const wifiCredentials = await getRobotWifi(school_id, class_id, group_id);
+
+            setRobotCredentials(wifiCredentials);
             setTries(prevData => [...prevData, triesPhaseOne])
             setCorrect(prevData => [...prevData, correctPhaseOne])
             setTriesAndCounts(prevData => prevData.map(item => {
@@ -120,8 +127,6 @@ function IndividualGroup() {
     
     const renderItem = (title, initialIndex, subject, { item, index }) => {
         function navigateToAssignmentHandler() {
-
-            const slideCount = index + 1;
             navigation.navigate('BottomMenu', {
                 screen: 'Assignments',
                 params: {
@@ -144,6 +149,7 @@ function IndividualGroup() {
         );
     }
 
+
     const assignmentSlidesFaseOne = [3, 5, 7, 8,  10, 12, 14]
     const assignmentSlidesFaseTwo = [3, 5, 7, 8, 9]
     const assignmentSlidesFaseThree = [3, 5, 7, 8,  10, 12, 14, 16]
@@ -162,15 +168,19 @@ function IndividualGroup() {
                 
                 <View style = {styles.groupInfo}>
                     <Text style = {styles.groupInfoText}>Groupsnaam: {group_name}</Text>
+                    <View style = {styles.border} />
                     <Text style = {styles.groupInfoText}>Klas: {class_name}</Text>
+                    <View style = {styles.border} />
                     <Text style = {styles.groupInfoText}>Groupsleden: {group_members.join(', ')}</Text>
-                    <Text style = {styles.groupInfoText}>Wifi Naam: Robot 1</Text>
-                    <Text style = {styles.groupInfoText}>Wifi Wachtwoord: Robot 1</Text>
+                    <View style = {styles.border} />
+                    <Text style = {styles.groupInfoText}>Wifi Naam: {robotCredentials.robot_id}</Text>
+                    <View style = {styles.border} />
+                    <Text style = {styles.groupInfoText}>Wifi Wachtwoord: {robotCredentials.password}</Text>
                 </View>
                 <FlatList 
                     horizontal
                     data = {triesAndCounts}
-                    keyExtractor = {(item, index) => index}
+                    keyExtractor = {(item, index) => 'tries' + index}
                     showsHorizontalScrollIndicator = {false}
                     renderItem = {renderCharts} 
                     pagination = {true}
@@ -181,7 +191,7 @@ function IndividualGroup() {
                     <FlatList
                         data={assignmentSlidesFaseOne}
                         renderItem={renderItem.bind(this, 'Onderzoek', 3, 'MOTOR')}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item, index) => 'fase-1-' + index}
                         numColumns={4}
                     />
                 </View>
@@ -191,7 +201,7 @@ function IndividualGroup() {
                     <FlatList
                         data={assignmentSlidesFaseTwo}
                         renderItem={renderItem.bind(this, 'Onderzoek', 3, 'LED')}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item, index) => 'fase-2-' + index}
                         numColumns={4}
                     />
                 </View>
@@ -201,7 +211,7 @@ function IndividualGroup() {
                     <FlatList
                         data={assignmentSlidesFaseThree}
                         renderItem={renderItem.bind(this, 'Onderzoek', 3, 'CAR')}
-                        keyExtractor={(item) => item.id}
+                        keyExtractor={(item, index) => 'fase-3-' + index}
                         numColumns={4}
                     />
                 </View>
@@ -249,6 +259,12 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
     },
+    border: {
+        borderColor: ColorsGray.gray700,
+        borderWidth: 0.6,
+        marginVertical: 8,
+        marginHorizontal: 10,
+    },
     groupInfo: {
         marginHorizontal: 10,
         borderColor: `rgba(77, 77, 77, 0.17)`,
@@ -260,14 +276,14 @@ const styles = StyleSheet.create({
         elevation: 2,
         borderRadius: 20,
         padding: 15,
-        backgroundColor: ColorsBlue.blue1250,
+        backgroundColor: ColorsBlue.blue1200,
         marginVertical: 8
     },
     groupInfoText: {
         fontSize: 16,
         color: ColorsBlue.blue100,
         marginLeft: 15,
-        marginVertical: 8
+        marginVertical: 8,
     },
     assignmentInfo: {
         marginHorizontal: 10,
@@ -280,7 +296,7 @@ const styles = StyleSheet.create({
         elevation: 2,
         borderRadius: 20,
         padding: 15,
-        backgroundColor: ColorsBlue.blue1250,
+        backgroundColor: ColorsBlue.blue1200,
         marginTop: 8,
         alignItems: 'center',
 
