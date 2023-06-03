@@ -1,3 +1,4 @@
+const { ifError } = require('assert');
 const pool = require('../../services/postGreSQL')
 const crypto = require('crypto');
 const algorithm = 'aes-256-cbc'; 
@@ -192,7 +193,7 @@ const assignSchoolToRobots = async (req, res) => {
     } 
     catch (error) {
         await client.query('ROLLBACK');
-        res.status(500).send('An error occurred while updating robots');
+        res.status(500).send('An error occurred while updating robots', error);
     } 
     finally {
       client.release();

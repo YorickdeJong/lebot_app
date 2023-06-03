@@ -11,6 +11,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { InformationContext } from '../../../store/information-context';
 import { TextBubbleLeft } from '../../../components/UI/TextBubble';
 import { getRobotWifi } from '../../../hooks/robotWifi';
+import { Platform } from 'react-native';
 
 
 const {height, width} = Dimensions.get('window');
@@ -83,7 +84,9 @@ function IndividualGroup() {
             const triesAndCountsPhaseOne = assignmentDetailsCtx.getCorrectAndTriesCount('MOTOR', assignments)
             const wifiCredentials = await getRobotWifi(school_id, class_id, group_id);
 
-            setRobotCredentials(wifiCredentials);
+            if (wifiCredentials) {
+                setRobotCredentials(wifiCredentials);
+            }
             setTries(prevData => [...prevData, triesPhaseOne])
             setCorrect(prevData => [...prevData, correctPhaseOne])
             setTriesAndCounts(prevData => prevData.map(item => {
@@ -142,10 +145,12 @@ function IndividualGroup() {
         }
         // add an onpress function to navigate to the assignment
         return (
-            <TouchableOpacity style={styles.item}
-            onPress = {() => navigateToAssignmentHandler()}>
-              <Text style={styles.title}>{index + 1}</Text>
-            </TouchableOpacity>
+            <View style = {styles.shadow}>
+                <TouchableOpacity style={styles.item}
+                onPress = {() => navigateToAssignmentHandler()}>
+                <Text style={styles.title}>{index + 1}</Text>
+                </TouchableOpacity>
+            </View>
         );
     }
 
@@ -316,13 +321,13 @@ const styles = StyleSheet.create({
         zIndex: 3,
     },
     item: {
-        backgroundColor: 'rgba(30, 55, 140, 1)',
+        backgroundColor: 'rgba(30, 60, 100, 1)',
         justifyContent: 'center',
         borderColor: 'rgba(77,77,77,1)',
         borderWidth: 1,
-        marginVertical: 10,
-        marginHorizontal: 15,
-        borderRadius: 30,
+        marginRight: 3,
+        marginBottom: 3,
+        borderRadius: 23,
         width: 45, 
         height: 45
       },
@@ -330,5 +335,23 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: ColorsBlue.blue100,
         textAlign: 'center'
+    },
+    shadow: {
+        ...Platform.select({
+            ios: {
+                shadowColor: `rgba(0, 0, 0, 1)`,
+                shadowOffset: {height: 3, width: 1},
+                shadowOpacity: 1,
+                shadowRadius: 4,
+            },
+            android: {
+                backgroundColor: 'rgba(0, 0, 0, 1)',
+                borderRadius:24,
+                width: 48, 
+                height: 48,
+            }
+        }),
+        marginVertical: 10,
+        marginHorizontal: 15,
     },
 })
