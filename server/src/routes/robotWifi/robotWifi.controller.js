@@ -192,8 +192,9 @@ const assignSchoolToRobots = async (req, res) => {
         res.status(200).send('Successfully updated robots');
     } 
     catch (error) {
+        console.log('error', error)
         await client.query('ROLLBACK');
-        res.status(500).send('An error occurred while updating robots', error);
+        res.status(500).send('An error occurred while updating robots');
     } 
     finally {
       client.release();
