@@ -206,7 +206,7 @@ export default React.memo(ThinkScreen)
 const styles = StyleSheet.create({
     questionsText: {
         fontSize: 15,
-        color: ColorsGray.gray500,
+        color: ColorsGray.gray300,
         textAlign: 'center',
         marginVertical: 5,
         marginHorizontal: 20
@@ -273,7 +273,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 23,
         fontWeight: '300',
-        color: ColorsGray.gray400,
+        color: ColorsGray.gray300,
         textAlign: 'center',
 
     },

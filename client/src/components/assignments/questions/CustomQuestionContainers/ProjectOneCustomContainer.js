@@ -10,7 +10,7 @@ import { getSpecificAssignmentsDetail } from "../../../../hooks/assignmentDetail
 import QuestionB from "./QuestionB";
 
 
-function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, subject, assignment_number, assignment_id, title, setFilteredTry, multipleChoiceAnswers, sendData, getBackgroundColor, openQuestionAnswer}) {
+function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, subject, assignment_number, assignment_id, title, correctAnswers, multipleChoiceAnswers, sendData, getBackgroundColor, input, setInput, validateInput}) {
     const [answersStudent, setAnswersStudent] = useState([])
     
     useEffect(() => {
@@ -44,8 +44,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
     ]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [numberAnsweredCorrectSigns, setNumberAnsweredCorrectSigns] = useState(0);
-    const [numberAnsweredCorrectMotors, setNumberAnsweredCorrectMotors] = useState(0);
-    const [filteredTryOpenQuestions, setFilteredTryOpenQuestions] = useState(0);
+    const [filteredTryEqualities, setFilteredTryEqualities] = useState(0);
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
     const userprofileCtx = useContext(UserProfileContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
@@ -59,7 +58,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
             
             if (data && data.answers_open_questions.length > 0) {
                 const filteredData = data.answers_multiple_choice.filter(answer => answer !== null)
-                setFilteredTry(filteredData.length)
+                setFilteredTryEqualities(filteredData.length)
                 // setFilteredTryOpenQuestions(filteredData.length)
                 filteredData.forEach((innerArray) => {
                         innerArray.forEach((element) => {
@@ -70,7 +69,6 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                                 item.index === element.answer.index
                             );
                     
-                            console.log('element', element)
                             if (indexEqualityElement) {
                                 indexEqualityElement.answer = element.answer.answer;
                                 indexEqualityElement.color = element.correct ? ColorsGreen.green500 : ColorsRed.red500;
@@ -78,7 +76,6 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                         });
                   });
                   setNumberAnsweredCorrectSigns(indexEquality.filter((element) => element.color === ColorsGreen.green500).length);
-                  setNumberAnsweredCorrectMotors(filteredData.filter((element) => element.correct === true).length);
                   
                   // Set the updated indexEquality state
                   setIndexEquality([...indexEquality]);
@@ -120,11 +117,11 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                     onPress: async () => {
                         try {
                             // increment tries
-                            if (filteredTry < maxTriesOne) {
+                            if (filteredTryEqualities < maxTriesOne) {
                                 assignmentDetailsCtx.incrementTriesMultipleChoice(subject, assignment_number, title);
                             }
                             
-                            setFilteredTry(filteredTry + 1);
+                            setFilteredTryEqualities(filteredTryEqualities + 1);
                             const correctness = indexEquality.map((element, index) => 
                             element.answer === multipleChoiceAnswers[index])       
                             
@@ -138,7 +135,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                             setIndexEquality(updatedIndexEquality);
                             
                             const correctNumber = correctness.filter(correct => correct === true).length
-                            
+                            setNumberAnsweredCorrectSigns(correctNumber)
                             // if all answers are correct, show alert
                             if (correctNumber === 8) {           
                                 Alert.alert('Antwoord is goed!')
@@ -186,7 +183,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
     return (
         <View>
             <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 32}}>
-                <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTriesOne}</Text>
+                <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTryEqualities ? filteredTryEqualities : 0 }/{maxTriesOne}</Text>
                 <Text style = {[styles.tries, {marginTop: 5}]}>Aantal goed: {numberAnsweredCorrectSigns}/{8}</Text>
             </View>
             
@@ -198,7 +195,6 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                 </Text>
             </View>
 
-            <View style = {[styles.border, {marginHorizontal: 15}]}/>
 
             <View style = {{marginHorizontal: 10, marginVertical: 20}}>
                 <Signs 
@@ -265,23 +261,27 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
             </TouchableOpacity>
 
             <View style = {{marginHorizontal: 12}}>
-                <View style = {styles.border}/>
+                <View style = {[styles.border, {borderWidth: 0.5}]}/>
             </View>
 
-            <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTryOpenQuestions ? filteredTryOpenQuestions : 0 }/{maxTriesTwo}</Text>
+            <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTriesTwo}</Text>
             <View style={styles.descriptionContainer}>
                 <Text style = {styles.question}>
                     {questions[1]}
                 </Text>
             </View>
 
-            <View style = {[styles.border, {marginHorizontal: 12}]}/>
+            <View style = {{marginVertical: 12,}}/>
 
             <QuestionB 
-                numberAnsweredCorrectMotors = {numberAnsweredCorrectMotors}
-                filteredTryOpenQuestions = {filteredTryOpenQuestions}
+
                 getBackgroundColor = {getBackgroundColor}
                 maxTriesTwo = {maxTriesTwo}
+                input = {input}
+                setInput = {setInput}
+                validateInput = {validateInput}
+                filteredTry = {filteredTry}
+                correctAnswers = {correctAnswers}
             />
 
 
@@ -312,10 +312,10 @@ const styles= StyleSheet.create({
     },
     tries: {
         fontSize: 20,
-        fontWeight: '200',
+        fontWeight: '300',
         textAlign: 'center',
         marginBottom: 10,
-        color: ColorsBlue.blue50,
+        color: ColorsGray.gray400,
         textShadowColor: ColorsBlue.blue1400,
         textShadowOffset: {height: 2, width: 0},
         textShadowRadius: 3,
@@ -334,7 +334,7 @@ const styles= StyleSheet.create({
     },
     border: {
         borderWidth: 0.6,
-        borderColor: `rgba(33, 33, 55, 0.7)`,
+        borderColor: `rgba(33, 33, 100, 0.7)`,
         marginVertical: 10,
     },
 

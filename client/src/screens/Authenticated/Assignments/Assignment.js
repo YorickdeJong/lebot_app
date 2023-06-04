@@ -25,9 +25,6 @@ function Assignment({title, tabIndex, currentIndex, subject, initSlideCount}) {
     const [assignmentNumber, setAssignmentNumber] = useState(assignmentStartingNumber) //TODO make default to be the first not yet completed assignment
     const isFocused = tabIndex === currentIndex;
 
-    !isFocused && console.log('not focussed')
-
-    console.log('slideCount', initSlideCount)
     return (
 
             isFocused &&

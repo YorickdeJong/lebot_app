@@ -178,7 +178,7 @@ function ChatGPTQuestionsContainer({questionData}) {
                 differentDir={true}
             />
             <View style = {{position: 'absolute', top: '12%', left: '8%'}}>
-                <Text style = {{fontSize: 20, color: ColorsGray.gray500}}>Pogingen {filteredTry}/{maxTries}</Text>
+                <Text style = {{fontSize: 20, color: ColorsGray.gray400}}>Pogingen {filteredTry}/{maxTries}</Text>
             </View>
             {userprofileCtx.userprofile.class_id &&
                 <Chat 

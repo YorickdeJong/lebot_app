@@ -128,7 +128,7 @@ function IndividualGroup() {
         )
     }
     
-    const renderItem = (title, initialIndex, subject, { item, index }) => {
+    const renderItem = (title, initialIndex, subject, style, { item, index }) => {
         function navigateToAssignmentHandler() {
             navigation.navigate('BottomMenu', {
                 screen: 'Assignments',
@@ -146,7 +146,7 @@ function IndividualGroup() {
         // add an onpress function to navigate to the assignment
         return (
             <View style = {styles.shadow}>
-                <TouchableOpacity style={styles.item}
+                <TouchableOpacity style={style}
                 onPress = {() => navigateToAssignmentHandler()}>
                 <Text style={styles.title}>{index + 1}</Text>
                 </TouchableOpacity>
@@ -158,6 +158,11 @@ function IndividualGroup() {
     const assignmentSlidesFaseOne = [3, 5, 7, 8,  10, 12, 14]
     const assignmentSlidesFaseTwo = [3, 5, 7, 8, 9]
     const assignmentSlidesFaseThree = [3, 5, 7, 8,  10, 12, 14, 16]
+
+    const itemOne = [styles.item, { backgroundColor: 'rgba(30, 60, 100, 1)' }]
+    const itemTwo = [styles.item, { backgroundColor: 'rgba(20, 55, 140, 1)' }]
+    const itemThree = [styles.item, { backgroundColor: 'rgba(30, 60, 180, 1)' }]
+
     return (
         <LinearGradient style = {styles.container}
         colors={[ColorsBlue.blueblack1600, ColorsBlue.blueblack1500]}
@@ -171,16 +176,40 @@ function IndividualGroup() {
             >
             <ScrollView style = {{flex: 1}}>
                 
-                <View style = {styles.groupInfo}>
-                    <Text style = {styles.groupInfoText}>Groupsnaam: {group_name}</Text>
-                    <View style = {styles.border} />
-                    <Text style = {styles.groupInfoText}>Klas: {class_name}</Text>
-                    <View style = {styles.border} />
-                    <Text style = {styles.groupInfoText}>Groupsleden: {group_members.join(', ')}</Text>
-                    <View style = {styles.border} />
-                    <Text style = {styles.groupInfoText}>Wifi Naam: {robotCredentials.robot_id}</Text>
-                    <View style = {styles.border} />
-                    <Text style = {styles.groupInfoText}>Wifi Wachtwoord: {robotCredentials.password}</Text>
+                <View style={styles.groupInfo}>
+                    <View style={styles.row}>
+                        <Text style={styles.groupInfoLabel}>Groupsnaam:</Text>
+                        <Text style={styles.groupInfoText}>{group_name}</Text>
+                    </View>
+                    <View style={styles.border} />
+
+                    <View style={styles.row}>
+                        <Text style={styles.groupInfoLabel}>Klas:</Text>
+                        <Text style={styles.groupInfoText}>{class_name}</Text>
+                    </View>
+                    <View style={styles.border} />
+
+                    <View style={styles.row}>
+                        <Text style={styles.groupInfoLabel}>Groupsleden:</Text>
+                        <Text style={styles.groupInfoText}>{group_members.join(', ')}</Text>
+                    </View>
+                    <View style={styles.border} />
+
+                    <View style={styles.row}>
+                        <Text style={styles.groupInfoLabel}>Wifi Naam:</Text>
+                        <TouchableOpacity>
+                            <Text style={[styles.groupInfoText, {zIndex: 100}]} selectable={true}>{robotCredentials.robot_id}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.border} />
+
+                    <View style={styles.row}>
+                        <Text style={styles.groupInfoLabel}>Wifi Wachtwoord:</Text>
+                        <TouchableOpacity>
+                            <Text style={styles.groupInfoText} selectable={true}>{robotCredentials.password}</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.border} />
                 </View>
                 <FlatList 
                     horizontal
@@ -191,31 +220,31 @@ function IndividualGroup() {
                     pagination = {true}
                 />
                 {/* Display all assignments here */}
-                <View style = {styles.assignmentInfo}>
+                <View style = {[styles.assignmentInfo, { backgroundColor: ColorsBlue.blue1200,}]}>
                     <Text style = {styles.header}>Opdrachten Fase 1</Text>
                     <FlatList
                         data={assignmentSlidesFaseOne}
-                        renderItem={renderItem.bind(this, 'Onderzoek', 3, 'MOTOR')}
+                        renderItem={renderItem.bind(this,  'Onderzoek', 3, 'MOTOR', itemOne,)}
                         keyExtractor={(item, index) => 'fase-1-' + index}
                         numColumns={4}
                     />
                 </View>
 
-                <View style = {styles.assignmentInfo}>
+                <View style = {[styles.assignmentInfo, { backgroundColor: ColorsBlue.blue1100,}]}>
                     <Text style = {styles.header}>Opdrachten Fase 2</Text>
                     <FlatList
                         data={assignmentSlidesFaseTwo}
-                        renderItem={renderItem.bind(this, 'Onderzoek', 3, 'LED')}
+                        renderItem={renderItem.bind(this, 'Onderzoek', 3, 'LED', itemTwo)}
                         keyExtractor={(item, index) => 'fase-2-' + index}
                         numColumns={4}
                     />
                 </View>
 
-                <View style = {[styles.assignmentInfo, { marginBottom: 100}]}>
+                <View style = {[styles.assignmentInfo, { marginBottom: 100, backgroundColor: ColorsBlue.blue900,}]}>
                     <Text style = {styles.header}>Opdrachten Fase 3</Text>
                     <FlatList
                         data={assignmentSlidesFaseThree}
-                        renderItem={renderItem.bind(this, 'Onderzoek', 3, 'CAR')}
+                        renderItem={renderItem.bind(this, 'Onderzoek', 3, 'CAR', itemThree)}
                         keyExtractor={(item, index) => 'fase-3-' + index}
                         numColumns={4}
                     />
@@ -284,10 +313,20 @@ const styles = StyleSheet.create({
         backgroundColor: ColorsBlue.blue1200,
         marginVertical: 8
     },
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    groupInfoLabel: {
+        fontSize: 16,
+        color: ColorsGray.gray300,
+        marginLeft: 15,
+        marginVertical: 8,
+    },
     groupInfoText: {
         fontSize: 16,
-        color: ColorsBlue.blue100,
-        marginLeft: 15,
+        color: ColorsBlue.blue200,
+        marginRight: 20,
         marginVertical: 8,
     },
     assignmentInfo: {
@@ -301,10 +340,9 @@ const styles = StyleSheet.create({
         elevation: 2,
         borderRadius: 20,
         padding: 15,
-        backgroundColor: ColorsBlue.blue1200,
+        paddingBottom: 20,
         marginTop: 8,
         alignItems: 'center',
-
     },
     header: {
         fontSize: 22,
@@ -321,7 +359,6 @@ const styles = StyleSheet.create({
         zIndex: 3,
     },
     item: {
-        backgroundColor: 'rgba(30, 60, 100, 1)',
         justifyContent: 'center',
         borderColor: 'rgba(77,77,77,1)',
         borderWidth: 1,
@@ -331,6 +368,7 @@ const styles = StyleSheet.create({
         width: 45, 
         height: 45
       },
+      
     title: {
         fontSize: 16,
         color: ColorsBlue.blue100,

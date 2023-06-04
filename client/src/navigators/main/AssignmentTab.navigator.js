@@ -10,8 +10,6 @@ import { ColorsBlue } from '../../constants/palet';
 
 // DISPLAYS ASSIGNMENTS
 function AssignmentTab({title, initialIndex, subject, initSlideCount}){
-    console.log('initSlideCount', initSlideCount)
-    console.log('title', title)
     const [index, setIndex] = useState(initialIndex);
 
     

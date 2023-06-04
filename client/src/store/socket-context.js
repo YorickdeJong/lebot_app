@@ -9,13 +9,13 @@ export const SocketContext = createContext({
     output: '',
     dir: '',
     isConnected: false,
+    isConnectedViaSSH: false,
     os: '',
     isLoading: false, 
     power: false,
     isMeasurementStarted: false,
     robotConnectedToWifi: false,
     CreateSocketConnection: (socket) => {},
-    Connect: () => {},
     Disconnect: () => {},
     Command: (input, command) => {},
     responseOutput: (output) => {},
@@ -32,6 +32,7 @@ function SocketContextProvider({children}) {
     // const [socket, setSocket] = useState(null);
     const socket = useRef(null); //use useRef to not trigger a rerender
     const [isConnected, setIsConnected] = useState(false);
+    const [isConnectedViaSSH, setIsConnectedViaSSH] = useState(false);
     const output = useRef('');
     const dir = useRef('');
     const [os, setOs] = useState('')
@@ -47,23 +48,8 @@ function SocketContextProvider({children}) {
     // It also cleans up these listeners when socket.current changes.
     useEffect(() => {
         if (socket.current) {
-            socket.current.on('connection', () => {
-                console.log('Connected to server');
-            });
-
-            socket.current.on('sshConnectionStatus', (data) => {
-                console.log('SSH Connection Status: ' + data.connected);
-                setIsConnected(data.connected);
-                if (data && !data.connected) {
-                    setPower(false);
-                    Disconnect();
-                    console.log('Connection message: ' + data.message);
-                } 
-            });
-
             if (!isMeasurementStarted) {
                 socket.current.on('measurementStarted', (data) => {
-                    console.log(`DATA MESSAGE: ${data.message}`)
                     if(data.message === 'Measurement started') {
                         console.log('Measurement Started, DATA RECEIVED')
                         setIsMeasurementStarted(true)
@@ -73,113 +59,125 @@ function SocketContextProvider({children}) {
 
             // Return a cleanup function to remove listeners when socket.current changes or the component unmounts.
             return () => {
-                socket.current.off('connection');
-                socket.current.off('sshConnectionStatus');
+                socket.current.off('command')
+                socket.current.off('terminalOutput');  // Remove the 'terminalOutput' listener
+
                 if (!isMeasurementStarted) {
                     socket.current.off('measurementStarted');
                 }
-                socket.current.off('terminalOutput');  // Remove the 'terminalOutput' listener
             };
         }
-    }, [socket.current, isMeasurementStarted, Disconnect]);
+    }, [socket.current, isMeasurementStarted, power]);
+
+
 
     function CreateSocketConnection() {
+        console.log('creating socket connection')
+    
+        if (socket.current) {
+            socket.current.disconnect();
+            socket.current = null;  // set to null so a new socket can be created
+        }
+    
         try {
-            if (!socket.current) {
-                socket.current = io(SOCKET_SERVER_URL);
-                console.log('Socket created');
-    
-                // Connection successful
-                socket.current.once('connect', () => {
-                    console.log('Connected to server');
+            console.log('creating socket connection 2')
+            socket.current = io(SOCKET_SERVER_URL); //here connection is automatically established to the backend
+            
+            socket.current.on('connectionStatus', (data) => {
+                console.log('received connection status', data.connected)
+                if (data && data.connected){
                     setIsConnected(true);
-                    // Automatically attempt to reconnect
-                    EstablishSocketConnection();
-                });
-    
-                // Connection lost
-                socket.current.on('disconnect', () => {
+                    sshToRemoteDevice()
+                    console.log('Socket connection created to remote device');
+                }
+                else {
+                    setIsConnected(false)
+                    console.log('failed to create socket connection')
+                }
+            })
+            
+            // Connection lost
+            socket.current.on('disconnect', (data) => {
+                if (!data.connected) {
                     console.log('Disconnected');
-                    setIsConnected(false);
-                    Disconnect();
-                });
+                    DisconnectClientSide();
+                }
+            });
     
-                // Reconnection attempt
-                socket.current.on('reconnecting', (attemptNumber) => {
-                    console.log(`Reconnecting attempt ${attemptNumber}`);
-                });
+            // Reconnection attempt
+            socket.current.on('reconnecting', (attemptNumber) => {
+                console.log('trying to reconnect')
+            });
     
-                // Inside your CreateSocketConnection function
-                socket.current.on('reconnect_failed', () => {
-                    console.log('Failed to reconnect');
-                    setIsConnected(false);
-
-                    // Implement a backoff algorithm for reconnection
-                    let attemptInterval = 1000; // Start with a 1 second interval
-                    const maxInterval = 60 * 1000; // Max interval is 1 minute
-
-                    const reconnectionAttempt = setInterval(() => {
-                        if (attemptInterval < maxInterval) {
-                            attemptInterval *= 2; // Double the interval each time
-                        }
-                        // Try to reconnect
-                        socket.current.connect();
-
-                    }, attemptInterval);
-                });
-            }
+            socket.current.on('reconnect_failed', () => {
+                console.log('Failed to reconnect');
+            });
+    
         } 
         catch (error) {
             console.error('Failed to create socket connection:', error);
         }
     }
 
-    function Connect() {
-        const config = { //TODO make these values statewide
-            host: ipAddressRaspberryPi,     
-            port: 22,
-            username: "ubuntu",
-            password: "password",
+    function sshToRemoteDevice(Connected) {
+        console.log('check ssh connection')
+        let retryIntervalId;
+        const config = {
+          host: ipAddressRaspberryPi,
+          port: 22,
+          username: "ubuntu",
+          password: "password",
         }
-        try{
+      
+        try {
             socket.current.emit('connectToRemoteDevice',  config );
-            setIsConnected(true);
+            socket.current.on('sshConnectionStatus', (data) => {
+                console.log('data', data.connected)
+                if (data && data.connected) {
+                    setIsConnectedViaSSH(true);
+                    clearInterval(retryIntervalId);  // Stop the retry interval
+                    retryCount = 0;  // Reset retry count
+                }
+                else {
+                    if (retryIntervalId === null) {  // Start the retry interval only if it's not already running
+                        retryIntervalId = setInterval(() => {
+                            socket.current.emit('retrySSHConnection');
+                            retryCount++;
+                        }, 2000);
+                    }
+                    else {
+                        console.error('Failed to reconnect after maximum retries');
+                        clearInterval(retryIntervalId);  // Stop the retry interval
+                        retryIntervalId = null;
+                    }
+                    setIsConnectedViaSSH(false)
+                    setPower(false);
+                }
+            });
         }
         catch(error) {
-            console.log(error);
-            output.current = 'Connection Failed'
-            setIsConnected(false);
+          console.log('FAILED TO CONNECT SSH', error);
+          setIsConnectedViaSSH(false);
         }
-
     }
-    
-    function Disconnect() {
-        if (isConnected) {
+
+    function DisconnectClientSide() {
             try{
                 console.log('Disconnecting Client from ssh socket');
-                socket.current.disconnect();
+                socket.current.disconnect(); //disconnects socket from client side
                 setIsConnected(false);
             }
             catch(error) {
                 console.log(error);
                 output.current = 'Failed to disconnect'
             }
-        }
-    }
-
-    function EstablishSocketConnection() {
-        try {
-            Connect(); //set assignment number and title
-            setIsConnected(true);
-        }
-        catch (error){
-            setPower(false);
-        }
     }
 
 
     function Command(inputType, command) {
         try {
+            console.log('Connected: ' + isConnected);
+            console.log('isConnectedViaSSH: ' + isConnectedViaSSH);
             console.log('command: ' + command);
             socket.current.emit('command', {command: command}); //TODOProblem
             listenForTerminalOutput();  // Listen for terminal output when the script starts
@@ -257,13 +255,13 @@ function SocketContextProvider({children}) {
         output: output,
         dir: dir, 
         isConnected: isConnected,
+        isConnectedViaSSH: isConnectedViaSSH,
         os: os,
         isLoading: isLoading,
         power,
         isMeasurementStarted,
         CreateSocketConnection: CreateSocketConnection,
-        Connect: Connect,
-        Disconnect: Disconnect,
+        DisconnectClientSide: DisconnectClientSide,
         Command: Command,
         responseOutput: responseOutput,
         responseDir: responseDir,
@@ -271,7 +269,7 @@ function SocketContextProvider({children}) {
         Loading: Loading,
         setPower,
         setIsMeasurementStarted,
-        EstablishSocketConnection
+        sshToRemoteDevice
     } 
 
     return <SocketContext.Provider value={value}>{children}</SocketContext.Provider>

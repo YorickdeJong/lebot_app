@@ -9,7 +9,7 @@ import {getSpecificAssignmentsDetail} from '../hooks/assignmentDetails';
 
 export const ASSIGNMENT_EXPLANATION = {
     BUILDSCREEN_1: {
-        answer: `Hey ik zie dat jij nieuw bent binnen ons bedrijf! Welkom! Ik ben een AI systeem van het team dat een ruimte rover gaat bouwen. Als het goed is ben jij samen met 2 andere aangewezen om deze taak te volbrengen. \n\nWe zullen de ruimte rover in 3 fases volbrengen: \n\nFase 1: Hierin testen we de snelheid en versnelling van de motoren. \n\nFase 2: Hierin testen we het elektriciteits netwerk van de rover. \n\nFase 3: Hierin testen we het energieverbruik en efficiëntië van de rover.`,
+        answer: `Hey ik zie dat jij nieuw bent binnen ons bedrijf! Welkom! Ik ben een AI systeem van het team dat een ruimte rover gaat bouwen. Als het goed is ben jij samen met 2 andere aangewezen om deze taak te volbrengen. §We zullen de ruimte rover in 3 fases volbrengen: \n\nFase 1: Hierin testen we de snelheid en versnelling van de motoren. \n\nFase 2: Hierin testen we het elektriciteits netwerk van de rover. \n\nFase 3: Hierin testen we het energieverbruik en efficiëntië van de rover.`,
         thread_id: 6,
     },
     BUILDSCREEN_2: {
@@ -25,15 +25,15 @@ export const ASSIGNMENT_EXPLANATION = {
         thread_id: 9
     },
     CODINGSCREEN_1: {
-        answer: 'Zoals je misschien gemerkt hebt, kunnen we de motoren nog niet aan zetten. Om dit te bereiken, moeten we een klein stukje code schrijven. Ik zie in onze systemen dat jij nog niet eerder gecodeerd hebt. Daarom zal ik jou en je team helpen met het schrijven van de code. \n\nJe kan je vragen over programmeren, natuur- en wiskunde stellen door op het chatgpt icoontje rechtsonderin te klikken. Let wel op dat je mij maximaal 10 vragen per opdracht kan stellen.',
+        answer: 'Zoals je misschien gemerkt hebt, kunnen we de motoren nog niet aan zetten. Om dit te bereiken, moeten we een klein stukje code schrijven. Ik zie in onze systemen dat jij nog niet eerder gecodeerd hebt. Daarom zal ik jou en je team helpen met het schrijven van de code. §Je kan je vragen over programmeren, natuur- en wiskunde stellen door op het chatgpt icoontje rechtsonderin te klikken. Let wel op dat je mij maximaal 10 vragen per opdracht kan stellen.',
         thread_id: 10
     },
     CODINGSCREEN_2: {
-        answer: "Hierboven zie je een Aan en Uit knop. De lamp gaat aan als je op 'Aan' klikt en gaat uit als je op 'Uit', logisch. Zo'n knop kunnen we ook gebruiken om de motoren aan en uit te zetten! \n\nHoe kunnen we hier code voor schrijven? We gaan hiervoor een zogenaamde 'if-else statement' voor gebruiken. Daar heb je waarschijnlijk nog nooit van gehoord. \n\nLaten we op de volgende pagina kijken hoe een if-else statement werkt.",
+        answer: "Hierboven zie je een Aan en Uit knop. De lamp gaat aan als je op 'Aan' klikt en gaat uit als je op 'Uit', logisch. Zo'n knop kunnen we ook gebruiken om de motoren aan en uit te zetten! §Hoe kunnen we hier code voor schrijven? We gaan hiervoor een zogenaamde 'if-else statement' voor gebruiken. Daar heb je waarschijnlijk nog nooit van gehoord. §Laten we op de volgende pagina kijken hoe een if-else statement werkt.",
         thread_id: 11
     },
     CODINGSCREEN_3: {
-        answer: `In het bovenstaande blok is een if-else statement geschreven. Een if-else statement kan je vergelijken met een 'waar of niet waar' uitspraak. Als de uitspraak waar is, dan voeren we de actie uit die in de if-statement staat. \n\nIs de uitspraak niet waar is? Dan voeren we de actie uit die in de else-statement staat. \n\nAls we op de bovenstaande 'Aan'knop drukken, dan is de uitspraak tussen de haakjes van de if-statement waar, dus wordt dat stukje code uitgevoerd en gaat de lamp aan. Andersom, gaat de lamp uit.`,
+        answer: `In het bovenstaande blok is een if-else statement geschreven. Een if-else statement kan je vergelijken met een 'waar of niet waar' uitspraak. Als de uitspraak waar is, dan voeren we de actie uit die in de if-statement staat. §Is de uitspraak niet waar is? Dan voeren we de actie uit die in de else-statement staat. §Als we op de bovenstaande 'Aan'knop drukken, dan is de uitspraak tussen de haakjes van de if-statement waar, dus wordt dat stukje code uitgevoerd en gaat de lamp aan. Andersom, gaat de lamp uit.`,
         thread_id: 12
     },
     CODINGQUESTIONS_1: {
@@ -41,7 +41,7 @@ export const ASSIGNMENT_EXPLANATION = {
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_11: {
-        answer: `Goed gedaan! Jullie hebben de motoren aan de praat gekregen! Het is nu tijd voor onderzoek. Het is aan jou en je team de taak om uit te zoeken wat de bewegingseigenschappen zijn van de motoren. \n\nVerder is het belangrijk dat jullie kennis op gelijke hoogte is. Op het volgende scherm gaan jullie brainstormen over snelheid en versnelling. \n\nDoor tests goed uit te voeren, kan je geld verdienen om uit te geven in de rover shop. Hier kan je de rover upgraden, in project 3 ga je namelijk racen tegen andere crews. `,
+        answer: `Goed gedaan! Jullie hebben de motoren aan de praat gekregen! Het is nu tijd voor onderzoek. Het is aan jou en je team de taak om uit te zoeken wat de bewegingseigenschappen zijn van de motoren. §Verder is het belangrijk dat jullie kennis op gelijke hoogte is. Op het volgende scherm gaan jullie brainstormen over snelheid en versnelling. §Door tests goed uit te voeren, kan je geld verdienen om uit te geven in de rover shop. Hier kan je de rover upgraden, in project 3 ga je namelijk racen tegen andere crews. `,
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_12: {

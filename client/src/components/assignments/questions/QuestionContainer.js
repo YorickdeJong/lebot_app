@@ -50,15 +50,12 @@ function QuestionContainer({
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, questionData.assignment_id, questionData.subject);
             
             if (data && data.answers_open_questions.length > 0) {
-                console.log('answers user', data)
                 const filteredData =  data.answers_open_questions.filter(answer => answer !== null)
-                console.log('filteredData', filteredData)
                 setFilteredTry(filteredData.length)
                 
                 const correctAnswersFromData = filteredData.filter(answer => answer.correct);
-                console.log('correctAnswersFromData', correctAnswersFromData)
                 setCorrectAnswers(correctAnswersFromData.length)
-                setInput(correctAnswersFromData[0].answer)
+                setInput(filteredData[filteredData.length - 1].answer)
                 setChartNumber(correctAnswersFromData[0].chartNumber)
             }
         }
@@ -69,6 +66,7 @@ function QuestionContainer({
         setShowDescription(false);
     }, [questionData])
     
+  
     
     //define useEffect to getspefic assignment details
     async function sendData(data, correctness, isMultipleChoice, answerNumber) {
@@ -156,8 +154,13 @@ function QuestionContainer({
     function setInputDetails(textInput) {
         setInput(textInput);
     }
+    
+    console.log('input', input)
 
-    async function validateInput() {
+    async function validateInput(noChart) {
+        console.log('input', input)
+        console.log('filteredTry', filteredTry)
+        console.log('questionData', questionData.answer)
         if (!school_id || !class_id || !group_id) {
             Alert.alert('Voeg eerst een klas en group toe om vragen te kunnen beantwoorden')
             return 
@@ -173,7 +176,7 @@ function QuestionContainer({
         }
 
 
-        if (input === '' || (performedMeasurement && chartNumber === null)) {
+        if (input === '' || (!noChart && performedMeasurement && chartNumber === null)) {
             Alert.alert('Vul alle velden in')
             return
         }
@@ -246,7 +249,7 @@ function QuestionContainer({
                             
                             {!CustomContainer && 
                                 <>
-                                    <View style = {[styles.border, {marginHorizontal: 15}]}/>
+                                    <View style = {[styles.border, {marginHorizontal: 20}]}/>
                                         <View style = {{alignItems: 'center'}}>
                                             <View style={styles.descriptionContainer}>
                                                 <Text style = {styles.question}>
@@ -254,7 +257,7 @@ function QuestionContainer({
                                                 </Text>
                                             </View>
                                         </View>
-                                    <View style = {[styles.border, {marginTop: 20, marginHorizontal: 15, marginBottom: 10}]}/>
+                                    {questionData.multiple_choice  && <View style = {[styles.border, {marginTop: 20, marginHorizontal: 20, marginBottom: 10, borderWidth: 0.2}]}/>}
                                 </>
                             }
                             
@@ -283,13 +286,13 @@ function QuestionContainer({
 
                             {normal_and_multiple_choice && correctAnswers === 1 &&
                             <>
-                                <View style = {[styles.border, {marginHorizontal: 15, marginBottom: 10, marginTop: 20}]}/>
+                                <View style = {[styles.border, {marginHorizontal: 15, marginBottom: 10, marginTop: 20,  borderWidth: 0.5}]}/>
                                 <View style={[styles.descriptionContainer, {marginTop: 10}]}>
                                     <Text style = {styles.question}>
                                         {questions[1]}
                                     </Text>
                                 </View>
-                                <View style = {[styles.border, {marginHorizontal: 15, marginBottom: 15}]}/>
+                                <View style = {[styles.border, {marginHorizontal: 15, marginBottom: 15, marginTop: 20, borderWidth: 0.5}]}/>
                             </>
                             }
 
@@ -325,6 +328,10 @@ function QuestionContainer({
                                 openQuestionAnswer = {questionData.answer}
                                 performedMeasurement = {performedMeasurement}
                                 checkTimerActive={checkTimerActive}
+                                setInput = {setInput}
+                                input = {input}
+                                validateInput = {validateInput}
+                                correctAnswers = {correctAnswers}
                             />}
                         </View>
                         
@@ -375,7 +382,7 @@ const styles= StyleSheet.create({
     inputContainer: {
         height: 40,
         paddingLeft: 10,
-        color: ColorsGray.gray400,
+        color: ColorsGray.gray300,
         backgroundColor: ColorsBlue.blue1150,
         borderTopLeftRadius: 10, 
         borderBottomLeftRadius: 10,
@@ -385,12 +392,12 @@ const styles= StyleSheet.create({
         borderWidth: 1,
     },
     headerText: {
-        color: ColorsGray.gray500,
-        fontSize: 23,
+        color: ColorsGray.gray300,
+        fontSize: 21,
         paddingTop: 6,
         paddingRight: 0,
         textAlign: 'center',
-        fontWeight: '302',
+        fontWeight: 'bold',
     },
     questionContainer: {
         marginHorizontal: 7,
@@ -407,7 +414,7 @@ const styles= StyleSheet.create({
     },
     question: {
         fontSize: 16,
-        color: ColorsGray.gray500,
+        color: ColorsGray.gray400,
         lineHeight: 29
     },
     outerContainer: {
@@ -417,12 +424,12 @@ const styles= StyleSheet.create({
     },
     border: {
         borderWidth: 0.6,
-        borderColor: `rgba(33, 33, 55, 0.7)`,
+        borderColor: `rgba(33, 33, 100, 0.7)`,
         marginTop: 10,
     },
     tries: {
         fontSize: 20,
-        fontWeight: '200',
+        fontWeight: '300',
         textAlign: 'center',
         marginBottom: 10,
         color: ColorsGray.gray400,

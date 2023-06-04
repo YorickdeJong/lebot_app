@@ -1,7 +1,7 @@
 
 import { useNavigation } from "@react-navigation/native";
 import { useContext, useState } from "react";
-import { View, StyleSheet, Text, Modal, ImageBackground } from "react-native";
+import { View, StyleSheet, Text, Modal, ImageBackground, Alert } from "react-native";
 import { FlatList } from "react-native-gesture-handler";
 import SettingsTile from "../../../components/settings/SettingsTile";
 import LoadingOverlay from "../../../components/UI/LoadingOverlay";
@@ -9,19 +9,21 @@ import { ColorsBlue } from "../../../constants/palet";
 import { settingsData } from "../../../data/settingsData";
 import { AuthContext } from "../../../store/auth-context";
 import { ColorContext } from "../../../store/color-context";
+import { SocketContext } from "../../../store/socket-context";
 
 function Settings() {
     const colorCtx = useContext(ColorContext)
     const authCtx = useContext(AuthContext)
     const navigation = useNavigation()
     const [isLoading, setIsLoading] = useState(true);
+    const socketCtx = useContext(SocketContext);
 
     function settingsGrid({item, index}) {
         
         function onPressHandler() {
 
             switch(item.type) {
-                case 'UserProfile':
+                case 'Profiel':
                     navigation.replace('userProfile');
                     break;
 
@@ -37,6 +39,33 @@ function Settings() {
                 case 'LogOut':
                     authCtx.logout();
                     break;
+
+                case 'Zet Rover Uit':
+                    Alert.alert(
+                        'Alert',
+                        'Weet je zeker dat je de rover wilt uitzetten?',
+                        [
+                            {
+                                text: 'Nee',
+                                onPress: () => {},
+                                style: 'cancel',
+                            },
+                            {
+                                text: 'Ja',
+                                onPress: () => {
+                                    try {
+                                        socketCtx.Command('', 'sudo shutdown -h now'); // maybe this should be an echo command
+                                    }
+                                    catch(error){
+                                        Alert.alert('Er is iets fout gegaan', 'Ben je verbonden met de rover?')
+                                        console.log('failed to add groep', error)
+                                    }
+                                },
+                            },
+                        ],
+                    );
+                    break;
+
                 }
         }
         return (

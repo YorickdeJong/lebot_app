@@ -67,6 +67,9 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
         elevation: 4
     }
 
+    // console.log('isConnected', socketCtx.isConnected)
+
+
     return(    
         <View style={styles.shadowContainer}>
             <BlurView style = {styles.upperContainer} intensity={10} tint="dark">
@@ -83,7 +86,7 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
                         
                             <Animated.View style = {{opacity: blinkCtx.shouldBlinkPowerButton ? opacityInterpolationPower.current : 1}}> 
                                 <Icon 
-                                icon = {midIcon ? midIcon : (socketCtx.power && socketCtx.isConnected ? "pause-circle-outline" : "power")}
+                                icon = {midIcon ? midIcon : (socketCtx.power && socketCtx.isConnected && socketCtx.isConnectedViaSSH ? "pause-circle-outline" : "power")}
                                 size={42}
                                 color={blinkCtx.shouldBlinkPowerButton ? 'gold' :  ColorsBlue.blue200}
                                 onPress = {midIconHandler}

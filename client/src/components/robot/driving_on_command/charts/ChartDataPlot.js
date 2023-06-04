@@ -8,7 +8,6 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
     const ColorPoints = [ColorsRed.red700, ColorsBrownWood.wood500, ColorsGreen.green900,  ColorsPurple.purple600, ]
     const panFactor = 0.2;
 
-    console.log('chartData', chartData)
     const customTheme = {
         ...VictoryTheme.material,
         axis: {

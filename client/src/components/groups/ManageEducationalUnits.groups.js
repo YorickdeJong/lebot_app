@@ -52,17 +52,6 @@ function  ManageEducationalUnits({user_role, tileType, deletehHandler, editHandl
     }, []);
 
 
-    function navigateToAppHandler() {
-        if (user_class_id !== '' && user_group_id !== ''){
-            Alert.alert('Voeg een klas en/of groep toe voordat je verder kan!')
-            return;
-        }
-
-        informationCtx.setShowBeginningScreen(false)
-        navigation.navigate('BottomMenu', {screen: 'Assignments'})
-    }
-
-
     function renderGroups({item, index}) {   
         //Don't display tiles that do not have the selected classroom
         function navigationHandler(tile) {
@@ -198,17 +187,7 @@ function  ManageEducationalUnits({user_role, tileType, deletehHandler, editHandl
                                 </View>
                         </View>
                     } 
-                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'IndividualGroup' &&
-                        <Animated.View style = {{position: 'absolute', bottom: height > 750 ? '20%' : '10%', left: '28%', padding: 15, backgroundColor: ColorsBlue.blue1325,
-                            borderRadius: 10, borderColor: 'rgba(77,77,77,0.3)', borderWidth: 1, shadowColor: 'rgba(0,0,0,1)',
-                            shadowRadius: 4, shadowOffset: {width: 2, height: 3}, shadowOpacity: 1, elevation: 4, opacity: fadeAnim}}>
-                            <TouchableOpacity 
-                                onPress={() => navigateToAppHandler()}
-                            >
-                                <Text style = {{fontSize: 27, color: ColorsGray.gray300}}>Naar de App</Text>
-                            </TouchableOpacity>
-                        </Animated.View>
-                    }
+
                 </View>
             </ImageBackground>
         <TeacherModal

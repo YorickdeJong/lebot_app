@@ -125,7 +125,6 @@ function ImageContainer({
     }, [assignment_number, isFocused, chartCtx.finalChartData]);
   
     const deleteImageHandler = useCallback(async () => {
-      console.log('chatCtx: ', chartCtx.finalChartData)
         const {recordNumber} = chartCtx.finalChartData[currentIndex];
         console.log('CURRENTCHARTDATA: ', recordNumber);
 

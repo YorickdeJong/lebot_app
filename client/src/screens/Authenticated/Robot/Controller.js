@@ -29,10 +29,18 @@ function Controller({ navigation, route }) {
     const socketMeasurement = useSocketMeasurementResults(shouldConnectMeasurement, userprofileCtx.userprofile.id);
 
     const powerHandler = useCallback(() => {
-        if (!socketCtx.isConnected) {
-            Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk')
+        console.log('isConnected', socketCtx.isConnected)
+        console.log('SSH CONNECTED', socketCtx.isConnectedViaSSH)
+        if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
+            Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk, ik probeer je opnieuw te verbinden')
+            socketCtx.CreateSocketConnection();
             // Try to reconnect
-            socketCtx.socket.current.connect();;
+            // try {
+            
+            // }
+            // catch (err) {
+            //     console.log(err);
+            // }
             return 
         }
         socketCtx.setPower((prevPower) => !prevPower);

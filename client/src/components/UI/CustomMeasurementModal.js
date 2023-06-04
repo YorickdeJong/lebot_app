@@ -44,7 +44,6 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
         7: 100% of max speed
         */
         let startScriptCommand = null
-        socketCtx.Connect();
         switch (type) {
             case '1':
                 //constant velocity

@@ -7,7 +7,6 @@ import React from 'react';
 
 function SwitchScreensQuestions({prevSlideHandler, nextSlideHandler, slideCount, slideCountEnd, addStyle, noForwardArrow}){
 
-    console.log(!noForwardArrow &&0)
     return(
         <View style = {addStyle}>
             <View style = {styles.leftSlider}>

@@ -216,13 +216,13 @@ const styles = StyleSheet.create({
     text: {
         color: ColorsGray.gray300,
         fontSize: 16,
-        fontWeight: '200',
+        fontWeight: '300',
         textAlign: 'center',
         lineHeight: 23,
     },
     tries: {
         fontSize: 20,
-        fontWeight: '200',
+        fontWeight: '300',
         textAlign: 'center',
         marginBottom: 10,
         color: ColorsGray.gray300,

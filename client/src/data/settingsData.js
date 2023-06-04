@@ -7,7 +7,7 @@ export const settingsData =
         {
             iconColor: [ColorsGreen.green700,  ColorsBlue.blue1000],
             textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
-            type: "UserProfile",
+            type: "Profiel",
             icon: 'person-circle',
             id: 1,
         }, 
@@ -30,6 +30,13 @@ export const settingsData =
             textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
             type: "LogOut",
             icon: 'log-out',
+            id: 4,
+        },
+        {
+            iconColor: [ColorsGreen.green700,  ColorsBlue.blue1000],
+            textColor: [ColorsGreen.green900,  ColorsBlue.blue1000],
+            type: "Zet Rover Uit",
+            icon: 'power',
             id: 4,
         }
     ]

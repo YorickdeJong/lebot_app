@@ -5,7 +5,6 @@ import Icon from '../../../Icon';
 
 
 function Signs({number, left, right, double, unit, quantity, quantityDouble, unitDouble, customAnswer, customText, onPress, indexEquality, valueDouble}) {
-    console.log('INDEX', indexEquality)
     return (
         <View style = {{flexDirection: 'row', alignItems: 'center', marginVertical: 8,  marginLeft: 11, marginRight: 9}}>
             <Text style = {styles.question}>
@@ -99,9 +98,9 @@ const styles= StyleSheet.create({
         marginVertical: 4,
     },
     question: {
-        fontSize: 18,
+        fontSize: 17,
         color: ColorsGray.gray400,
-        lineHeight: 21
+        lineHeight: 25
     },
 
 })

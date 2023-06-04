@@ -1,114 +1,67 @@
 
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import {View, Text, TextInput, StyleSheet} from 'react-native';
 import { ColorsBlue, ColorsGray } from '../../../../constants/palet';
 import Icon from '../../../Icon';
 import { UserProfileContext } from '../../../../store/userProfile-context';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-function QuestionB({filteredTryOpenQuestions, numberAnsweredCorrectMotors, getBackgroundColor, maxTriesTwo, validateInput}) {
+function QuestionB({filteredTry, correctAnswers, getBackgroundColor, maxTriesTwo, validateInput, setInput, input}) {
     const [motorNumber, setMotorNumber] = useState("");
-    const [requirement, setRequirement] = useState({
-        reqOne: null,
-        reqTwo: null,
-        reqThree: null,
-        reqFour: null,
-        reqFive: null,
-    });
+    const [requirement, setRequirement] = useState([ 0, 0, 0, 0, 0]);
+
     const userprofileCtx = useContext(UserProfileContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
 
-    function checkAnswerHandler() {
-        if (!school_id || !class_id || !group_id) {
-            Alert.alert('Voeg eerst een klas en group toe om vragen te kunnen beantwoorden')
+    //make useEffect that sets motorNumber and reuirement based on input
+    useEffect(() => {
+        if(input) {
+            const inputArray = input.split(",");
+            setMotorNumber(inputArray[0])
+            setRequirement(inputArray.slice(1))
         }
-                                                                                                                                                                                               
-        if (filteredTryOpenQuestions >= maxTriesTwo) {
-            Alert.alert("Je hebt geen pogingen meer over!");
-            return;
-        }
+    }, [input])
 
-        Alert.alert(
-            '',
-            'Weet je zeker dat je dit antwoord wilt kiezen?',
-            [
-                {
-                    text: 'No',
-                    onPress: () => {console.log('pressed')},
-                    style: 'cancel',
-                },
-                {
-                    text: 'Yes',
-                    onPress: async () => {
-                        try {
-                            setFilteredTry(filteredTry + 1);
-                         
-                            
-                            const correctNumber = correctness.filter(correct => correct === true).length
-                            
-                            // if all answers are correct, show alert
-                            if (correctNumber === 8) {           
-                                Alert.alert('Antwoord is goed!')
-                            }
-                            else {
-                                // haal te verdienen muntjes van vraag af
-                                Alert.alert('Jouw antwoord is nog niet helemaal goed!')
-                            }
-                            
-
-                            // Send the data after the tile color has been updated
-                            await sendData(indexEquality, correctness, true);
-                        }   
-                        catch(error) {
-                            console.log(error);
-                            Alert.alert('Er is iets mis gegaan bij het beantwoorden van de vraag!')
-                        }
-                    }
-                }
-            ]
-        )
+    function requirementHandler(index) {
+        let newRequirement = [...requirement];
+        newRequirement[index] = newRequirement[index] === 1 ? 0 : 1;
+        setRequirement(newRequirement);
+        const newInput = [motorNumber, ...newRequirement].join(",");  // Use newRequirement instead of requirement
+        setInput(newInput);
     }
-
-    function requirementHandler(type){
-        switch(type){
-            case 1:
-                setRequirement({...requirement, reqOne: motorNumber});
-                break;
-            case 2:
-                setRequirement({...requirement, reqTwo: motorNumber});
-                break;
-            case 3:
-                setRequirement({...requirement, reqThree: motorNumber});
-                break;
-            case 4:
-                setRequirement({...requirement, reqFour: motorNumber});
-                break;
-            case 5:
-                setRequirement({...requirement, reqFive: motorNumber});
-                break;
-            default:
-                break;
-        }
-    }
-
-
 
 
     function getBackgroundColor(correctAnswers, tries, maxTries) {
         if (correctAnswers === 1 ) {
-            return 'rgba(10, 45, 40, 1)';
+            return ['rgba(10, 45, 40, 1)', 2];
         }
         
         if (tries >= maxTries) { 
-            return correctAnswers === 1 ? 'rgba(10, 45, 40, 1)': 'rgba(60, 20, 10,1 )'
+            return correctAnswers === 1 ? ['rgba(10, 45, 40, 1)', 2.3]: ['rgba(80, 20, 10,1 )', 2.3]
         }
         
-        return ColorsBlue.blue1100;
+        return [ColorsBlue.blue700, 0.45];
     }
 
 
-    const backgroundColor = getBackgroundColor(numberAnsweredCorrectMotors, filteredTryOpenQuestions, maxTriesTwo);
-    const inputContainer = [styles.inputContainer, { backgroundColor }];
+    const [borderColor, borderWidth] = getBackgroundColor(correctAnswers, filteredTry, maxTriesTwo);
+    const inputContainer = [styles.inputContainer, { borderColor: borderColor, borderWidth: borderWidth}];
 
+    const tiles = requirement.map((value, index) => {
+        return (
+            <View style={{ flex: 1 }} key={index}>
+            <TouchableOpacity
+                style={inputContainer}
+                disabled={correctAnswers === 1 || filteredTry === maxTriesTwo}
+                onPress={() => requirementHandler(index)}
+            >
+                <Text style={{ color: ColorsGray.gray300, textAlign: 'center' }}>
+                {value}
+                </Text>
+            </TouchableOpacity>
+            </View>
+        ); 
+    });
 
     return (
         <View style = {{flexDirection: 'row', alignItems: 'center', marginTop: 5,  marginLeft: 11, marginRight: 9}}>
@@ -116,74 +69,22 @@ function QuestionB({filteredTryOpenQuestions, numberAnsweredCorrectMotors, getBa
                 <TextInput 
                 style = {inputContainer}
                 placeholder = "Motor nr."
-                placeholderTextColor={ColorsGray.gray600}
+                placeholderTextColor={ColorsGray.gray300}
                 onChangeText={setMotorNumber}
                 value = {motorNumber}
                 keyboardType="number-pad"
-                editable={numberAnsweredCorrectMotors === 1 || filteredTryOpenQuestions === maxTriesTwo ? false : true}
+                editable={correctAnswers === 1 || filteredTry === maxTriesTwo ? false : true}
                 />
             </View>
-            <View style = {{flex: 1}}>
-                <TextInput 
-                style = {inputContainer}
-                placeholder = "1."
-                placeholderTextColor={ColorsGray.gray600}
-                onChangeText={requirementHandler.bind(this, 1)}
-                value = {requirement.reqOne}
-                keyboardType="number-pad"
-                editable={numberAnsweredCorrectMotors === 1 || filteredTryOpenQuestions === maxTriesTwo ? false : true}
-                />
-            </View>
-            <View style = {{flex: 1}}>
-                <TextInput 
-                style = {inputContainer}
-                placeholder = "2."
-                placeholderTextColor={ColorsGray.gray600}
-                onChangeText={requirementHandler.bind(this, 2)}
-                value = {requirement.reqOne}
-                keyboardType="number-pad"
-                editable={numberAnsweredCorrectMotors === 1 || filteredTryOpenQuestions === maxTriesTwo ? false : true}
-                />
-            </View>
-            <View style = {{flex: 1}}>
-                <TextInput 
-                style = {inputContainer}
-                placeholder = "3."
-                placeholderTextColor={ColorsGray.gray600}
-                onChangeText={requirementHandler.bind(this, 3)}
-                value = {requirement.reqOne}
-                keyboardType="number-pad"
-                editable={numberAnsweredCorrectMotors === 1 || filteredTryOpenQuestions === maxTriesTwo ? false : true}
-                />
-            </View>
-            <View style = {{flex: 1}}>
-                <TextInput 
-                style = {inputContainer}
-                placeholder = "4."
-                placeholderTextColor={ColorsGray.gray600}
-                onChangeText={requirementHandler.bind(this, 4)}
-                value = {requirement.reqOne}
-                keyboardType="number-pad"
-                editable={numberAnsweredCorrectMotors === 1 || filteredTryOpenQuestions === maxTriesTwo ? false : true}
-                />
-            </View>
-            <View style = {{flex: 1}}>
-                <TextInput 
-                style = {inputContainer}
-                placeholder = "5."
-                placeholderTextColor={ColorsGray.gray600}
-                onChangeText={requirementHandler.bind(this, 5)}
-                value = {requirement.reqOne}
-                keyboardType="number-pad"
-                editable={numberAnsweredCorrectMotors === 1 || filteredTryOpenQuestions === maxTriesTwo ? false : true}
-                />
-            </View>
-            <Icon 
-            size = {36}
-            color = {ColorsBlue.blue200}
-            icon= 'checkbox'
-            onPress = {checkAnswerHandler}/>
+            {tiles}
+            <Icon
+                size={34}
+                color={ColorsBlue.blue400}
+                icon='checkbox'
+                onPress={validateInput.bind(this, true)}
+            />
         </View>
+        
     )   
 }
 
@@ -195,14 +96,14 @@ const styles = StyleSheet.create({
         marginRight: 5,
         height: 30,
         borderRadius: 5, 
-        backgroundColor: ColorsBlue.blue200,
+        color: ColorsGray.gray300,
         elevation: 2,
         shadowOffset: {height:2, width:0 },
         shadowRadius: 5,
         shadowColor: ColorsBlue.blue1300,
         shadowOpacity: 0.5,
-        borderWidth: 0.45,
-        borderColor: ColorsBlue.blue700,
-        textAlign: 'center'
+        textAlign: 'center',
+        justifyContent: 'center',
+        backgroundColor: ColorsBlue.blue1100,
     },
 })

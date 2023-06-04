@@ -47,8 +47,6 @@ function ChatScreen() {
 
         //check if current chat has been answered
         const currentThreadId = chatCtx.thread_ids[chatCtx.thread_ids.length - 1];
-        console.log(currentThreadId)
-        console.log(chatCtx.chat)
         
         const currentChat = chatCtx.chat.filter(chat => chat.thread_id === currentThreadId);
 

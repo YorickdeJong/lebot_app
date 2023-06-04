@@ -28,6 +28,7 @@ import { ShowIconContextProvider } from './src/store/show-icons-context';
 import { TimeContextProvider } from './src/store/time-context';
 import { InformationContextProvider } from './src/store/information-context';
 import ScrollContextProvider from './src/store/scroll-context';
+import NetInfo from "@react-native-community/netinfo";
 
 // UPON LOGIN TOKEN GETS SET
 function Navigation() {
@@ -65,27 +66,53 @@ function Navigation() {
 
 //CONTAINS ALL SCREENS, DISTINGUISHES BETWEEN LOGIN AND AUTHORIZED
 function Root({}) {
-  const [isTryingLogin, setIsTryingLogin] = useState(true);
-  const authCtx = useContext(AuthContext);
-  const colorCtx = useContext(ColorContext)
-  const { Disconnect, CreateSocketConnection, } = useContext(SocketContext);
-  const userprofileCtx = useContext(UserProfileContext);
-  const {user_role} = userprofileCtx.userprofile;
+    const [isTryingLogin, setIsTryingLogin] = useState(true);
+    const authCtx = useContext(AuthContext);
+    const colorCtx = useContext(ColorContext)
+    const { setIsConnected, setIsConnectedViaSSH, socket, CreateSocketConnection, } = useContext(SocketContext);
+    const userprofileCtx = useContext(UserProfileContext);
+    const {user_role} = userprofileCtx.userprofile;
 
 
+    // Call CreateConnection on mount
+    useEffect(() => {
+      if (user_role === 'teacher' || user_role === 'admin') {
+          return;
+      }
+      
+      let unsubscribe;
 
-  // Call CreateConnection on mount
-  useEffect(() => {
-        if (user_role === 'teacher' || user_role === 'admin') {
-            return
+      unsubscribe = NetInfo.addEventListener(state => {
+        console.log("Connection type", state.type);
+        console.log("Is connected?", state.isConnected);
+        if (state.isConnected) {
+          // Close the existing socket connection and create a new one.
+          CreateSocketConnection();
         }
-        // Create socket connection on component mount
-        CreateSocketConnection();
-        return () => {
-          Disconnect();
-          // subscription.remove();
-        };
-    }, []);
+      });
+
+      // Create socket connection on component mount
+      CreateSocketConnection();
+    
+
+      return () => {
+          if (socket.current) {
+              setIsConnected(false)
+              setIsConnectedViaSSH(false)
+              socket.current.off('ConnectionStatus');
+              socket.current.off('disconnect');
+              socket.current.off('reconnecting');
+              socket.current.off('reconnect_failed');
+              socket.current.off('sshConnectionStatus');
+          }
+
+          // Unsubscribe the listener when the component is unmounted
+          if (unsubscribe) {
+            unsubscribe();
+          }
+
+      };
+  }, []);
 
 
     // move to auth context

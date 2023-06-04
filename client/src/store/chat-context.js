@@ -227,7 +227,6 @@ function ChatContextProvider({ children }) {
 
     async function generateDescriptions(currentThreadId) {
         //don't set description if description is already set
-        console.log('chat', chat)
         const chatlength = chat.filter(message => message.thread_id === currentThreadId).length
         console.log(chatlength)
         if (descriptions[currentThreadId] !== 'Begin een chat met ChatGPT!' && chatlength >= 2){

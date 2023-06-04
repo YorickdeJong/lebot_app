@@ -2,39 +2,50 @@ import React, { useCallback, useEffect, useState } from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../constants/palet'
 
-function ChatBoxGPT({ answer, isLastItem, thread_id, setTyping, typing, customColor}) {
+function ChatBoxGPT({ answer: initialAnswer, isLastItem, thread_id, setTyping, typing, customColor}) {
+    const [answerPieces, setAnswerPieces] = useState(initialAnswer.split('§').map(piece => piece.trim()));
+    const [activeIndex, setActiveIndex] = useState(0);
     const [displayText, setDisplayText] = useState('');
 
     const updateText = useCallback(() => {
         let timer = null;
-        if (isLastItem && typing && displayText.length < answer.length) {
-            timer = setTimeout(() => setDisplayText(answer.slice(0, displayText.length + 1)), 15);
+        if (isLastItem && typing && displayText.length < answerPieces[activeIndex].length) {
+            timer = setTimeout(() => setDisplayText(answerPieces[activeIndex].slice(0, displayText.length + 1)), 15);
         } 
         else {
             setTyping(false);
-            setDisplayText(answer);
+            setDisplayText(answerPieces[activeIndex]);
         }
         return timer;
-    }, [displayText, answer, isLastItem, typing]);
+    }, [displayText, answerPieces, activeIndex, isLastItem, typing]);
 
     useEffect(() => {
         let timer = updateText();
     
-        if (displayText.length === answer.length) {
-            setDisplayText(answer);
+        if (displayText.length === answerPieces[activeIndex].length) {
+            setDisplayText(answerPieces[activeIndex]);
             setTyping(true);
         }
         return () => {
             if(timer) clearTimeout(timer);
         }
-    }, [displayText, typing, updateText]);
-
-
+    }, [displayText, typing, updateText, answerPieces, activeIndex]);
 
     const showFullText = useCallback(() => {
+        setTyping(true);
+        setDisplayText(answerPieces[activeIndex]);
+
+        // Show next text bubble when user gives input
+        if (activeIndex < answerPieces.length - 1) {
+            setActiveIndex(activeIndex + 1);
+            setDisplayText('');
+        }
+    }, [answerPieces, activeIndex]);
+
+    const showFullTextBubble = useCallback(() =>{
         setTyping(false);
-        setDisplayText(answer);
-    }, [answer]);
+        setDisplayText(answerPieces[activeIndex]);
+    }, [answerPieces])
 
     const shadowCustom = {
         shadowColor: `rgba(0, 0, 0, 1)`,
@@ -55,34 +66,52 @@ function ChatBoxGPT({ answer, isLastItem, thread_id, setTyping, typing, customCo
         borderWidth: customColor ? 0 :  1
     }
 
-    return (
-        <View style = {{flex: 1}}>
-            <View style = {[styles.outerContainer, shadowOuterContainer]}>
-                <Image
-                style={[styles.profilePicture, {left: customColor ? '1%' : '4.5%'}]}
-                source={thread_id > 5 ?
-                    require(
-                        "./../../../assets/robotIcon.png"
-                    ) :require("./../../../assets/chatgptLogo.png")
-                }
-                resizeMode="cover"
-                />
-                    <View style = {[customColor && shadowCustom, {flex: 1, marginLeft: 50, backgroundColor: customColor}]}>
+    const renderBubbles = useCallback(() => {
+        let viewedBubbles = answerPieces.slice(0, activeIndex + 1);
+        return viewedBubbles.map((piece, index) => (
+            <React.Fragment key={index}>
+                <View style={[styles.outerContainer, shadowOuterContainer]}>
+                    <Image
+                        style={[styles.profilePicture, {left: customColor ? '1%' : '4.5%'}]}
+                        source={thread_id > 5 ?
+                            require(
+                                "./../../../assets/robotIcon.png"
+                            ) :require("./../../../assets/chatgptLogo.png")
+                        }
+                        resizeMode="cover"
+                    />
+                    <View style={[customColor && shadowCustom, {flex: 1, marginLeft: 50, backgroundColor: customColor}]}>
                         <TouchableOpacity onPress={showFullText}>
                             <View style={[styles.chatGPTTextBox]}>
-                                <Text style={styles.chatGPTText}>{isLastItem ? displayText : answer}</Text>
+                                <Text style={styles.chatGPTText}>{isLastItem && index === activeIndex ? displayText : piece}</Text>
                             </View>
                         </TouchableOpacity>
-                </View> 
-            </View>
-            { displayText.length < answer.length &&
-                <View style = {{marginTop: 40}}>
-                    <TouchableOpacity onPress = {() => showFullText()} style = {{position: 'absolute', bottom: '3%', left: '45%'}}>
-                        <Text style = {[styles.chatGPTText, {fontSize: 18}]}>Skip</Text>
-                    </TouchableOpacity>
+                    </View>  
                 </View>
-            }
-
+                {
+                    index === activeIndex && index < answerPieces.length - 1 && displayText.length === piece.length ?
+                    <View style={{marginTop: 40}}>
+                        <TouchableOpacity onPress={() => showFullText()} style={{position: 'absolute', bottom: '3%', left: '45%'}}>
+                            <Text style={[styles.chatGPTText, {fontSize: 18}]}>Verder</Text>
+                        </TouchableOpacity>
+                    </View>
+                    :
+                    index === activeIndex && displayText.length < piece.length && 
+                    <View style={{marginTop: 40}}>
+                        <TouchableOpacity onPress={() => typing ? showFullTextBubble() : showFullText()} style={{position: 'absolute', bottom: '3%', left: '45%'}}>
+                            <Text style={[styles.chatGPTText, {fontSize: 18}]}>
+                                Skip
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                }
+            </React.Fragment>
+        ));
+    }, [answerPieces, activeIndex, displayText, typing]);
+    
+    return (
+        <View style={{flex: 1}}>
+            {renderBubbles()}
         </View>
     );
 }

@@ -14,7 +14,7 @@ function InputContainer({inputValue, setInputValue, sendMessage, marginBottomTex
                 onChangeText={setInputValue} 
                 style={styles.textInput}
                 placeholder = {placeholder}   
-                placeholderTextColor = {ColorsGray.gray500}//ColorsBlue.blue400} 
+                placeholderTextColor = {ColorsGray.gray400}//ColorsBlue.blue400} 
                 />
             <View style = {{justiyContent: 'center', alignItems: 'center', marginRight: 5}}>
                 <Icon 

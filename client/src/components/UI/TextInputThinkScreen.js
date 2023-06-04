@@ -7,7 +7,7 @@ import { ColorsBlue, ColorsGray } from '../../constants/palet'
 function TextInputThinkScreen({questions, inputText, setInputText, height}) {
     return (
         <View style={[styles.textInput, {flex: 1, minHeight:  height / 3.5 }]}>
-        <Text style = {[styles.text, {color: ColorsGray.gray400, paddingBottom: 10}]}>{questions}</Text>
+        <Text style = {[styles.text, {color: ColorsGray.gray300, paddingBottom: 10}]}>{questions}</Text>
         <View style = {{borderBottomColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}/>
                 <TextInput
                     style={{flex: 1, lineHeight: 24, fontSize: 14, color: ColorsGray.gray300}}

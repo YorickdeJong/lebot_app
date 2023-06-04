@@ -35,15 +35,15 @@ function TriesCorrectGraph({groupData, title, left}) {
 
     return (
     <View style = {styles.container}>
-        <Text style={[styles.title, {top: '7%', left: left}]}>
+        <Text style={[styles.title, {top: '3.5%', left: left}]}>
             {title}
         </Text>
-        <Text style={[styles.yLabel, {top: 30}]}>Correct</Text>
+        <Text style={[styles.yLabel, {top: '14%'}]}>Correct</Text>
         <VictoryChart 
             theme={customTheme}
             domain={{x: [xMin, xMax + xMax / 14], y: [yMin, yMax + cutoff]}}
             containerComponent={<VictoryZoomContainer />}
-            padding={{right:80, left: 30, top: 55, bottom: 60}} //Add padding here
+            padding={{right:80, left: 30, top: 60, bottom: 60}} //Add padding here
             >
             <VictoryAxis
                 dependentAxis
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
         padding: 15,
         height: 380,
         width: screenWidth - 20,
-        backgroundColor: ColorsBlue.blue1325,
+        backgroundColor: ColorsBlue.blue1300,
     },
     title: {
         position: 'absolute',
