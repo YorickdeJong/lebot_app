@@ -104,7 +104,7 @@ function ImageContainer({
               setChartAvailable(false);
               setIsLoading(false);
         }
-    }, [school_id, class_id, group_id, title, assignment_number, subject, performedMeasurement]);
+    }, [school_id, class_id, group_id, title, assignment_number, subject, performedMeasurement, slideCount]);
 
 
     useEffect(() => {
@@ -122,7 +122,7 @@ function ImageContainer({
         }
     
         fetchData();
-    }, [assignment_number, isFocused, chartCtx.finalChartData]);
+    }, [assignment_number, isFocused, chartCtx.finalChartData, slideCount]);
   
     const deleteImageHandler = useCallback(async () => {
         const {recordNumber} = chartCtx.finalChartData[currentIndex];

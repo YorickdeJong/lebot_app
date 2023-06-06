@@ -8,18 +8,48 @@ import { UserProfileContext } from "../../../../store/userProfile-context";
 import { AssignmentDetailsContext } from "../../../../store/assignment-Details-context";
 import { getSpecificAssignmentsDetail } from "../../../../hooks/assignmentDetails";
 import QuestionB from "./QuestionB";
+import ModalMotorCriteria from "./ModalMotorCriteria";
+import { CarContext } from "../../../../store/car-context";
 
 
-function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, subject, assignment_number, assignment_id, title, correctAnswers, multipleChoiceAnswers, sendData, getBackgroundColor, input, setInput, validateInput}) {
+function ProjectOneCustomContainer({
+    checkTimerActive, 
+    filteredTry, 
+    questions, 
+    subject, 
+    assignment_number, 
+    assignment_id, 
+    title, 
+    correctAnswers, 
+    multipleChoiceAnswers, 
+    sendData, 
+    getBackgroundColor, 
+    input, 
+    setInput, 
+    validateInput,
+    toggleInfoModal,
+    setToggleInfoModal,
+    currency
+    }) {
     const [answersStudent, setAnswersStudent] = useState([])
-    
+
     useEffect(() => {
         async function fetchData() {
             const studentAnswerQ2 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 34, 'MOTOR');
             const studentAnswerQ5 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 36, 'MOTOR');
     
-            const studentAnswerQ2Filtered = studentAnswerQ2.answers_open_questions.filter(answer => answer !== null)
-            const studentAnswerQ5Filtered = studentAnswerQ5.answers_open_questions.filter(answer => answer !== null)
+            let studentAnswerQ2Filtered, studentAnswerQ5Filtered;
+
+            studentAnswerQ2Filtered = studentAnswerQ2.answers_open_questions.filter(answer => answer !== null)
+            studentAnswerQ5Filtered = studentAnswerQ5.answers_open_questions.filter(answer => answer !== null)
+
+            if (Math.abs(studentAnswerQ2Filtered) > 0.42) {
+                studentAnswerQ2Filtered = studentAnswerQ2Filtered > 0 ? 0.35 : -0.35
+            }
+
+            if (Math.abs(studentAnswerQ5Filtered) > 0.018) {
+                studentAnswerQ5Filtered = studentAnswerQ5Filtered > 0 ? 0.015 : -0.015
+            }
 
             const arrayAnswers = [studentAnswerQ2Filtered[studentAnswerQ2Filtered.length - 1].answer, 
             studentAnswerQ5Filtered[studentAnswerQ5Filtered.length - 1].answer]
@@ -48,7 +78,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
     const userprofileCtx = useContext(UserProfileContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
-
+    const carCtx = useContext(CarContext);
     const maxTriesOne = 4;
     const maxTriesTwo = 2;
     
@@ -139,6 +169,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                             // if all answers are correct, show alert
                             if (correctNumber === 8) {           
                                 Alert.alert('Antwoord is goed!')
+                                carCtx.editMoney(currency)
                             }
                             else {
                                 // haal te verdienen muntjes van vraag af
@@ -182,7 +213,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
     //set input container like: motornumber,eis1,eis2,etc.
     return (
         <View>
-            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 32}}>
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 18}}>
                 <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTryEqualities ? filteredTryEqualities : 0 }/{maxTriesOne}</Text>
                 <Text style = {[styles.tries, {marginTop: 5}]}>Aantal goed: {numberAnsweredCorrectSigns}/{8}</Text>
             </View>
@@ -202,7 +233,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                     left 
                     right 
                     unit = "m/s²"
-                    quantity = "a const"
+                    quantity = "a"
                     onPress = {toggleModalHandler}
                     indexEquality = {indexEquality.filter(row => row.questionNumber === 1)}  
                     customAnswer = {(parseFloat(answersStudent[1]))}
@@ -215,7 +246,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                     quantity = "vgem"
                     onPress = {toggleModalHandler}
                     indexEquality = {indexEquality.filter(row => row.questionNumber === 2)} 
-                    customAnswer = {(parseFloat(answersStudent[0]))}
+                    customAnswer = {(parseFloat(answersStudent[0])) * 0.8}
                 />
 
                 <Signs 
@@ -228,7 +259,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                     valueDouble = {15}
                     onPress = {toggleModalHandler}
                     indexEquality = {indexEquality.filter(row => row.questionNumber === 3)}  
-                    customAnswer = {15.0 * parseFloat(answersStudent[0])}
+                    customAnswer = {15.0 * 0.80 * parseFloat(answersStudent[0])}
                 />
 
                 <Signs 
@@ -263,8 +294,12 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
             <View style = {{marginHorizontal: 12}}>
                 <View style = {[styles.border, {borderWidth: 0.5}]}/>
             </View>
-
-            <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTriesTwo}</Text>
+            
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 18}}>
+                <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTriesTwo}</Text>
+                <Text style = {[styles.tries, {marginTop: 5, color: ColorsGray.gray300}]}>Credits: €{currency}</Text>
+            </View>
+            
             <View style={styles.descriptionContainer}>
                 <Text style = {styles.question}>
                     {questions[1]}
@@ -274,7 +309,7 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
             <View style = {{marginVertical: 12,}}/>
 
             <QuestionB 
-
+                currency = {currency}
                 getBackgroundColor = {getBackgroundColor}
                 maxTriesTwo = {maxTriesTwo}
                 input = {input}
@@ -290,6 +325,12 @@ function ProjectOneCustomContainer({checkTimerActive, filteredTry, questions, su
                 setToggleModal={setToggleModal}
                 chooseEqualityHandler={chooseEqualityHandler}
                 currentIndex = {currentIndex}
+            />
+            <ModalMotorCriteria 
+                toggleInfoModal={toggleInfoModal}
+                setToggleInfoModal={setToggleInfoModal}
+                acceleration = {parseFloat(answersStudent[1])}
+                meanSpeed = {parseFloat(answersStudent[0])}
             />
         </View>
     )
@@ -314,7 +355,7 @@ const styles= StyleSheet.create({
         fontSize: 20,
         fontWeight: '300',
         textAlign: 'center',
-        marginBottom: 10,
+        marginBottom: 15,
         color: ColorsGray.gray400,
         textShadowColor: ColorsBlue.blue1400,
         textShadowOffset: {height: 2, width: 0},

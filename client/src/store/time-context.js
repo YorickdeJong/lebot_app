@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { ipAddressComputer } from '../data/ipaddresses.data';
 import io from 'socket.io-client';
-import { updateTimeLesson } from '../hooks/time-lessons.hook';
+import { getSpecificTimeLesson, updateTimeLesson } from '../hooks/time-lessons.hook';
 
 export const TimeContext = createContext();
 
@@ -70,27 +70,31 @@ export const TimeContextProvider = ({ children, namespace }) => {
     
         // Set up the timer to update the state when it's done
         const timer = setTimeout(async () => {
-            // Update activeTimers to remove the completed timer
-            setActiveTimers((prevActiveTimers) => {
-                const updatedTimers = { ...prevActiveTimers };
-                delete updatedTimers[class_id];
-                return updatedTimers;
-            });
-            try {
-                const updatedLesson = await updateTimeLesson(
-                    specificLesson.id,
-                    class_id,
-                    specificLesson.duration,
-                    specificLesson.school_id,
-                    false, // Set active to false
-                    specificLesson.lesson_number
-                );
-            } 
-            catch (error) {
-                console.error('Failed to update time lesson:', error);
+            // Check if the timer still exists
+            if (activeTimers[class_id]) {
+                // Update activeTimers to remove the completed timer
+                setActiveTimers((prevActiveTimers) => {
+                    const updatedTimers = { ...prevActiveTimers };
+                    delete updatedTimers[class_id];
+                    return updatedTimers;
+                });
+                try {
+                    const lessonExists = await getSpecificTimeLesson(specificLesson.id);
+                    const updatedLesson = await updateTimeLesson( //problem is here, put request is made regardless of existance, maybe add error handling in the backend for this? 
+                        specificLesson.id,
+                        class_id,
+                        specificLesson.duration,
+                        specificLesson.school_id,
+                        false, // Set active to false
+                        specificLesson.lesson_number
+                    );
+                } 
+                catch (error) {
+                    console.error('Failed to update time lesson:', error);
+                }
+            } else {
+                console.log(`Timer for class_id: ${class_id} was already deleted.`);
             }
-            
-
         }, duration * 1000);
     
         setActiveTimers((prevActiveTimers) => ({

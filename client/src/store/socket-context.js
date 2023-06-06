@@ -92,6 +92,7 @@ function SocketContextProvider({children}) {
                 }
                 else {
                     setIsConnected(false)
+                    setIsConnectedViaSSH(false)
                     console.log('failed to create socket connection')
                 }
             })
@@ -166,6 +167,7 @@ function SocketContextProvider({children}) {
                 console.log('Disconnecting Client from ssh socket');
                 socket.current.disconnect(); //disconnects socket from client side
                 setIsConnected(false);
+                setIsConnectedViaSSH(false)
             }
             catch(error) {
                 console.log(error);
@@ -187,6 +189,7 @@ function SocketContextProvider({children}) {
             responseOutput('Error: ' + err.message);
             socket.current(null); // Reset socket to trigger reconnection
             setIsConnected(false);
+            setIsConnectedViaSSH(false)
             showAlert('Geen connectie met de robot!');
             setPower(false);
         }

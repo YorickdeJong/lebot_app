@@ -9,7 +9,6 @@ import Icon from '../Icon';
 function ChatSelectionTile({thread_id, navigateToChatHandler}) {
     const chatCtx = useContext(ChatContext)
     const {description, title}  = chatCtx.getDescriptionsForThreadId(thread_id) //Zo hier naar kijken, waarom zouden we niet gwn het object passen
-    console.log(description, title)
 
     function deleteChatHandler() {
         chatCtx.deleteThread_ID(thread_id)

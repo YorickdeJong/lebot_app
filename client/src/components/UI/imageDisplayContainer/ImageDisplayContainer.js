@@ -22,7 +22,7 @@ function ImageDisplayContainer({image, slideCount}) {
         acceleration: false
     })
 
-    const imageTwo = 1
+    const imageTwo = 0.7
     const imageThree = 1
 
     useEffect(() => {

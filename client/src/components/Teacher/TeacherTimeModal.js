@@ -129,7 +129,7 @@ function TeacherTimeModal() {
         ])
     }
 
-    async function handleDelete() {
+    async function handleDelete(lessonId) { //maybe pass current lesson id here
         Alert.alert(
             '',
             'Weet u zeker dat u deze tijd voor de klas wilt verwijderen?',
@@ -144,8 +144,14 @@ function TeacherTimeModal() {
                     onPress: async () => {
                         timeCtx.setChangedTimeData(false)
                         try {
-                            console.log('Curerentlessonid', currentLessonId)
-                            await deleteTimeLesson(currentLessonId)
+                            const active = false    
+                            console.log('lesson id', lessonId)
+                            console.log('current lesson id', currentLessonId)
+                            const chooseLessonId = currentLessonId ? currentLessonId : lessonId
+                            console.log('chosen lesson id', chooseLessonId)
+                            await updateTimeLesson(chooseLessonId, class_id, duration, school_id, active, lesson) // stop lesson first
+                            await deleteTimeLesson(chooseLessonId) // then delete lesson
+                            setCurrentLessonId(null)
                             timeCtx.setChangedTimeData(true)
                             Alert.alert('Tijd voor klas verwijderd!')
                         }
@@ -269,7 +275,7 @@ function TeacherTimeModal() {
                                                 icon="close-circle"
                                                 size={20}
                                                 color={ColorsGray.gray700}
-                                                onPress={() => {setCurrentLessonId(time.id), handleDelete()}}
+                                                onPress={() => {setCurrentLessonId(time.id), handleDelete(time.id)}}
                                                 />
                                             </View>
                                     </TouchableOpacity>

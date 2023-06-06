@@ -84,7 +84,7 @@ export async function generateAnswerConstantSlope(answer, chartNumber, school_id
 }
 
 
-export async function generateAnswerMotorQ3(answer, chartNumber, school_id, class_id, group_id, title, assignment_number, subject) {
+export async function generateAnswerMotorQ4(answer, chartNumber, school_id, class_id, group_id, title, assignment_number, subject) {
     let prevAnsweredAssignment;
 
     try {
@@ -102,19 +102,24 @@ export async function generateAnswerMotorQ3(answer, chartNumber, school_id, clas
     }
 
     const filteredData =  prevAnsweredAssignment.answers_open_questions.filter(answer => answer !== null)
-    const answerQ2 = filteredData[filteredData.length - 1].answer;
-    console.log('filtereddata', filteredData)
-    console.log('prevAnswer', answerQ2)
+    const answerQ3 = filteredData[filteredData.length - 1].answer;
+    const answerQ4 = answerQ3 * 600;
+
     const tol = 0.05;
 
-    console.log('prevAnswer', answerQ2)
-    const lowerBound = answerQ2 * (1 - tol) * 600;
-    const upperBound = answerQ2 * (1 + tol) * 600;
+    const lowerBound = answer * (1 - tol);
+    const upperBound = answer * (1 + tol);
 
-    const isWithinTolerance = answer  >= lowerBound && answer <= upperBound;
+    if (answerQ4 < 0) {
+        isWithinTolerance = answerQ4 <= lowerBound && answerQ4 >= upperBound;
+    }
+    else {
+        isWithinTolerance = answerQ4  >= lowerBound && answerQ4 <= upperBound;
+    }
 
+    console.log('answer', answerQ4)
+    console.log('prevAnswer', answerQ3)
     console.log('is within tolerance:', isWithinTolerance)
-    console.log('answer:', answer)
     return isWithinTolerance;
 }
 
@@ -219,7 +224,7 @@ export async function generateAnswerMotorQ6(answer, chartNumber, school_id, clas
         }
 
         console.log('length',  prevAnsweredAssignment.answers_open_questions.length - 1)
-        const weight = 0.25
+        const weight = 0.1
         const answerQ6 = prevAnsweredAssignment.answers_open_questions[prevAnsweredAssignment.answers_open_questions.length - 1].answer * weight;
         console.log('answerQ6', answerQ6)
         

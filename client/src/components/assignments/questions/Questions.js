@@ -3,7 +3,7 @@ import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, Dimensions, TouchableOpacity, View, Alert } from 'react-native'
-import { ColorsBlue, ColorsGreen } from '../../../constants/palet'
+import { ColorsBlue, ColorsGray, ColorsGreen } from '../../../constants/palet'
 import { ChartContext } from '../../../store/chart-context'
 import Icon from '../../Icon'
 import ImageContainer from './ImageContainer'
@@ -42,6 +42,7 @@ function Questions({
     removeTries,
     questionTitle
 }){
+    console.log(slideCount - 1 + " " + index)   
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
 
     const chartCtx = useContext(ChartContext);
@@ -67,7 +68,7 @@ function Questions({
     const questionData = questions[assignmentNumber - 1]; //Filter for correct subject
     
     const [close, setClose] = useState(false);
-
+    const [toggleInfoModal, setToggleInfoModal] = useState(false);
 
     // New color interpolation code to show data button
     useEffect(() => {
@@ -155,11 +156,13 @@ function Questions({
     }
 
     return(
-            <Animated.View style={{flex: 1, marginBottom: keyboardHeight, width: SCREEN_WIDTH,}}>
+            <Animated.View style={{flex: 1, marginBottom: keyboardHeight, width: SCREEN_WIDTH}}>
 
                     <ScrollView style = {{flex: 1}}
                     showsVerticalScrollIndicator={false}>
-                
+                        <View style = {{paddingBottom: 20}}>
+
+                                {index === slideCount - 1 &&
                                 <ImageContainer 
                                 assignment_number={questionData.assignment_number}
                                 tokens={questionData.tokens}
@@ -183,7 +186,7 @@ function Questions({
                                 currentSlidePosition = {currentSlidePosition}
                                 isKeyboardOpen = {isKeyboardOpen}
                             />
-                            
+                            }
 
 
                             { 
@@ -236,6 +239,8 @@ function Questions({
                                 chartAvailable = {chartAvailable}
                                 removeTries = {removeTries}
                                 questionTitle = {questionTitle}
+                                setToggleInfoModal = {setToggleInfoModal}
+                                toggleInfoModal = {toggleInfoModal}
                                 />
                                 
                                 
@@ -248,6 +253,7 @@ function Questions({
                                     
                                 />
                                 
+                                
                                 {chatgptAnswer && 
                                     <ChatGPTQuestionsContainer 
                                         questionData = {questionData}
@@ -255,7 +261,19 @@ function Questions({
                                 }
                             </>
                         }   
+                        </View>
                     </ScrollView>  
+                    {slideCount === slideTotal - 2 &&
+                    <View style = {{position: 'absolute', bottom: '2%', right: '5%'}}>
+                        <Icon 
+                            icon = "plus-circle"
+                            size = {30}
+                            color = {ColorsGray.gray200}
+                            onPress = {() => setToggleInfoModal(true)}
+                            differentDir={true}
+                        />
+                    </View>
+                    }
             </Animated.View>
 )
 }

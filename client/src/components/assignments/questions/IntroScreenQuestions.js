@@ -15,7 +15,7 @@ import { useIsFocused } from '../../../hooks/isFocused.hooks'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, onRenderedData, onRenderedImage, currentSlidePosition, slideIndex, slideTotal, slideCount, setSlideCount, setTyping, typing, answer, thread_id, index, description, isFocused, video, slideCountEnd, setIcon, screenType}){    
+function IntroScreenQuestions({nextSlideHandler, text, prevSlideHandler, onRenderedData, onRenderedImage, currentSlidePosition, slideIndex, slideTotal, slideCount, setSlideCount, setTyping, typing, answer, thread_id, index, description, isFocused, video, slideCountEnd, setIcon, screenType}){    
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
 
     const scrollViewRef = useRef(null)
@@ -43,7 +43,7 @@ function IntroScreenQuestions({nextSlideHandler, prevSlideHandler, onRenderedDat
                     prevSlideHandler = {prevSlideHandler}
                     slideCountEnd = {slideCountEnd}
                     setSlideCount = {setSlideCount}
-                    text = {{text: 'Uitleg', left: '44%' }}
+                    text = {text}
                     slideTotal = {slideTotal}
                     currentSlidePosition = {currentSlidePosition}
                 />

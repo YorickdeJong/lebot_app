@@ -8,10 +8,9 @@ import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 import { StatusBar } from 'react-native';
 
 const statusBarHeight = StatusBar.currentHeight;
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('screen');
 
 function Begin() {
-    console.log('height status bar: ', statusBarHeight);
     const [blinkOpacity] = useState(new Animated.Value(1));
     const [loaded] = useFonts({
         Ubuntu: require('./../../../assets/fonts/Ubuntu-Regular.ttf'),
@@ -48,6 +47,7 @@ function Begin() {
         return () => {
             clearTimeout(timeoutId);
             loopAnimation.stop();
+            blinkOpacity.setValue(1); // reset the Animated.Value
         };
     }, []);
 

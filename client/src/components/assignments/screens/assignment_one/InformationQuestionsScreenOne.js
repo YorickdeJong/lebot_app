@@ -8,7 +8,7 @@ import { ColorsBlue } from '../../../../constants/palet';
 import Questions from '../../questions/Questions';
 import { ChartContext } from '../../../../store/chart-context';
 import { checkDataCorrectnessHandlerMotorQ2 } from '../../questions/verifyDataFunctions';
-import { generateAnswerConstantSlope, generateAnswerMotorQ3, generateAnswerMotorQ5, generateAnswerMotorQ6 } from '../../questions/generateAnswers';
+import { generateAnswerConstantSlope, generateAnswerMotorQ4, generateAnswerMotorQ5, generateAnswerMotorQ6 } from '../../questions/generateAnswers';
 import { getSpecificAssignmentsDetail } from '../../../../hooks/assignmentDetails';
 import { UserProfileContext } from '../../../../store/userProfile-context';
 import ProjectOneCustomContainer from '../../questions/CustomQuestionContainers/ProjectOneCustomContainer';
@@ -122,6 +122,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             screenType: "Motor",
             slideCount,
             slideTotal,
+            text: {text: 'Introductie', left: '38%'}
           },
       },
       {
@@ -160,7 +161,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             currentExerciseLesson: 2,
             slideTotal,
             removeTries: true,
-            questionTitle: 'Afstand en verplaatsing'
+            questionTitle: 'Afstand en verplaatsing',
           },
       },
       {
@@ -179,6 +180,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             ExplanationAnimation: ExplanationAnimation,
             video: require("./../../../../../assets/instructions/starting_measurement.mp4"),
             slideTotal,
+            text: {text: 'Meten', left: '43%'}
           },
       },
       {
@@ -213,6 +215,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             slideCount,
             ExplanationAnimation: ExplanationAnimation,
             slideTotal,
+            text: {text: 'Lineaire lijnen', left: '35%'}
           },
         },
         {
@@ -250,7 +253,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               nextSlideHandler,
               prevSlideHandler,
               slideCount,
-              generate_answer: generateAnswerMotorQ3,
+              generate_answer: generateAnswerMotorQ4,
               currentExerciseLesson: 2,
               slideTotal,
               questionTitle: 'Lineaire lijnen'
@@ -271,6 +274,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               slideCount,
               ExplanationAnimation: ExplanationAnimation,
               slideTotal,
+              text: {text: 'Acceleratie', left: '37%'}
             },
         },
         {
@@ -307,6 +311,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               slideCount,
               ExplanationAnimation: ExplanationAnimation,
               slideTotal,
+              text: {text: 'Krachten & Versnelling', left: '25%'}
             },
         },
         {
@@ -344,6 +349,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               setSlideCount,
               slideCount,
               slideTotal,
+              text: {text: 'Onderzoek', left: '39%'}
             },
           },
           {

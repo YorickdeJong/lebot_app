@@ -85,9 +85,6 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
         )
     }, [carCtx.carProperties, carCtx.upgradeLog]) 
 
-    useEffect(() => {
-
-    }, [carCtx.carProperties, carCtx.upgradeLog])
 
     return (
         <View style = {[styles.shadow, { backgroundColor: Platform.OS === 'android' && 'rgba(1, 1, 1, 0.4)'}]}>

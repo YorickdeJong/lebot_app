@@ -14,12 +14,32 @@ function ConnectRobotModal({}) {
     const [wifiName, setWifiName] = useState('')
     const [wifiPassword, setWifiPassword] = useState('')
     const [loading, setLoading] = useState(false);
+    const [isNotSchoolNetwork, setIsNotSchoolNetwork] = useState(false);
+    const [networkType, setNetworkType] = useState("wpa2-personal");
+    const [wifiUsername, setWifiUsername] = useState("");
 
     // Connects raspi to wifi network via ssh
     async function handleConnect() {
+        if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
+            Alert.alert("Niet verbonden met de robot!", "Verbind eerst met de robot, daarna kan je de robot verbinden met het wifi netwerk.");
+            return;
+        }
+        if (wifiName === "" || wifiPassword === "" || (!isNotSchoolNetwork && wifiUsername === "")) {
+            Alert.alert("Vul alle velden in!");
+            return;
+        }
         // Connects rolio wifi adapter to wifi
         setLoading(true);
-        const command = `cd Documents/lebot_robot_code/catkin_work && sudo ./update_netplan.sh ${wifiName} ${wifiPassword}`;
+        
+        
+        let command;
+        if (networkType === "wpa2-enterprise") {
+            command = `cd Documents/lebot_robot_code/catkin_work && sudo ./update_netplan_school.sh ${networkType} ${wifiName} ${wifiUsername} ${wifiPassword}`;
+        }
+        else {
+            command = `cd Documents/lebot_robot_code/catkin_work && sudo ./update_netplan.sh ${wifiName} ${wifiPassword}`;
+        }
+
 
         // Create a promise that resolves when the expected response is received
         const waitForResponse = new Promise((resolve, reject) => {
@@ -53,25 +73,34 @@ function ConnectRobotModal({}) {
             setLoading(false);
             
             if (success) {
-                Alert.alert("Verbinding gemaakt met het wifi netwerk! Robot herstart, even geduld aub. Connect straks weer met het robot netwerk");
+                Alert.alert("Verbinding gemaakt met het wifi netwerk!', 'Robot herstart, even geduld aub. Connect straks weer met het robot netwerk");
             } 
             else {
-                Alert.alert("Verbinding maken met wifi mislukt! Check of je wifi naam en wachtwoord correct zijn.");
+                Alert.alert("Verbinding maken met wifi mislukt!', 'Check of je wifi naam en wachtwoord correct zijn.");
             }
         } 
         catch (error) {
             setLoading(false);
             console.log(error);
-            Alert.alert("Verbinding maken met wifi mislukt! Check je of je wifi naam en wachtwoord correct zijn.");
+            Alert.alert("Verbinding maken met wifi mislukt!', 'Check je of je wifi naam en wachtwoord correct zijn.");
         }
     }
 
     function closeHandler(){
         WifiCtx.showModalHandler(false);
-        socketCtx.Disconnect();
     }
-    console.log(WifiCtx.showModal)
+    
+    function switchWifiHandler(){
+        setIsNotSchoolNetwork(!isNotSchoolNetwork);
+        if (isNotSchoolNetwork){
+            setNetworkType("wpa2-enterprise");
+        }
+        else {
+            setNetworkType("wpa2-personal");
+        }
+    }0
 
+    console.log('wifi type', networkType)
 
     return (
         <Modal
@@ -92,7 +121,7 @@ function ConnectRobotModal({}) {
                     )
                 }
                 <View style={styles.modal}>
-                    <Text style={{fontSize: 21, marginBottom: 15, color: ColorsBlue.blue50}}>Connect Wifi Robot</Text>
+                    <Text style={{fontSize: 21, marginBottom: 15, color: ColorsBlue.blue50}}>{!isNotSchoolNetwork ? 'School Netwerk' : 'Normaal Wifi' }</Text>
                     <View style={styles.closeIcon}>
                         <Icon 
                         icon="close-circle"
@@ -107,7 +136,16 @@ function ConnectRobotModal({}) {
                     value={wifiName}
                     onChangeText={setWifiName}
                     style={styles.input}
+                    autoCapitalize="none"
                     />
+                    {!isNotSchoolNetwork && <TextInput
+                    placeholder="Gebruikersnaam"
+                    placeholderTextColor={ColorsBlue.blue200}
+                    value={wifiUsername}
+                    onChangeText={setWifiUsername}
+                    style={styles.input}
+                    autoCapitalize="none"
+                    /> }
                     <TextInput
                     placeholder="Wifi Wachtwoord"
                     placeholderTextColor={ColorsBlue.blue200}
@@ -115,10 +153,17 @@ function ConnectRobotModal({}) {
                     onChangeText={setWifiPassword}
                     secureTextEntry={true}
                     style={styles.input}
+                    autoCapitalize="none"
                     />
-                    {!loading && <TouchableOpacity onPress={() => handleConnect()} style={styles.createButton}>
-                        <Text style={styles.buttonText}>{'Connect'}</Text>
-                    </TouchableOpacity>
+                    {!loading && 
+                        <TouchableOpacity onPress={() => handleConnect()} style={styles.createButton}>
+                            <Text style={styles.buttonText}>{'Connect'}</Text>
+                        </TouchableOpacity>
+                    }
+                    {!loading && 
+                        <TouchableOpacity onPress={() => switchWifiHandler()} style={[styles.createButton, {backgroundColor: ColorsBlue.blue700}]}>
+                            <Text style={styles.buttonText}>{!isNotSchoolNetwork ? 'Normaal Netwerk' : 'School Netwerk' }</Text>
+                        </TouchableOpacity>
                     }
                 </View>
             </BlurWrapper>
@@ -132,7 +177,7 @@ export default ConnectRobotModal
 const styles = StyleSheet.create({
     modal: {
         width: '70%',
-        height: Platform.OS === 'ios' ? 220 : 230,
+        paddingVertical: 20,
         borderRadius: 20,
         borderWidth: 0.7,
         borderColor: ColorsBlue.blue700,
@@ -164,6 +209,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         width: 180,
+        marginBottom: 10
     },
     buttonText: {
         color: 'white',

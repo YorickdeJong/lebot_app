@@ -14,7 +14,7 @@ import { useIsFocused } from '../../../hooks/isFocused.hooks';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-function Explanation({nextSlideHandler, prevSlideHandler, currentSlidePosition, slideTotal, index, slideCount, setTyping, typing, answer, thread_id, video, isFocused, slideCountEnd, topic, ExplanationAnimation, setSlideCount}) {
+function Explanation({nextSlideHandler, text, prevSlideHandler, currentSlidePosition, slideTotal, index, slideCount, setTyping, typing, answer, thread_id, video, isFocused, slideCountEnd, topic, ExplanationAnimation, setSlideCount}) {
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
     const scrollViewRef = useRef(null);
 
@@ -34,9 +34,9 @@ function Explanation({nextSlideHandler, prevSlideHandler, currentSlidePosition, 
                     prevSlideHandler = {prevSlideHandler}
                     slideCountEnd = {slideCountEnd}
                     setSlideCount = {setSlideCount}
-                    text = {{text: 'Uitleg', left: '44%' }}
                     slideTotal = {slideTotal}
                     currentSlidePosition ={currentSlidePosition}
+                    text = {text}
                 />
 
                     {isScreenFocused && <ScrollView 

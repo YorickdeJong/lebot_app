@@ -1,28 +1,33 @@
 
-import {Modal, View, StyleSheet, Text, Platform} from 'react-native';
+import {Modal, View, StyleSheet, Text, Platform, Alert} from 'react-native';
 import Icon from '../../components/Icon';
 import BlurWrapper from '../../components/UI/BlurViewWrapper';
 import { ColorsBlue, ColorsGray } from '../../constants/palet';
 import { useContext, useEffect, useState } from 'react';
 import { TimeContext } from '../../store/time-context';
 import { UserProfileContext } from '../../store/userProfile-context';
+import { getAllTimeLessonsForClass } from '../../hooks/time-lessons.hook';
 
 function CountDownModal({lesson}) {
     const timeCtx = useContext(TimeContext);
     const [timeLeft, setTimeLeft] = useState(0);
     const userprofileCtx = useContext(UserProfileContext)
-    const class_id = userprofileCtx.userprofile.class_id
+    const {school_id, class_id} = userprofileCtx.userprofile.class_id
     const currentActiveLessonData = timeCtx.filterSpecificLesson(class_id)
 
     useEffect(() => {
-        if (currentActiveLessonData && currentActiveLessonData.duration !== 10000) {
+        if (currentActiveLessonData && currentActiveLessonData.active && currentActiveLessonData.duration !== 10000) {
+            Alert.alert('Brainstorm sessie is gestart', '')
             const interval = setInterval(() => {
                 const time = timeCtx.calculateTimeLeft(currentActiveLessonData);
                 setTimeLeft(time);
             }, 1000); // Update every second
         
             return () => {
-            clearInterval(interval);
+                clearInterval(interval);
+                if (!(currentActiveLessonData && currentActiveLessonData.active)) {
+                    Alert.alert('Brainstorm sessie is gestopt', '')
+                }
             };
         }
       }, [currentActiveLessonData]);

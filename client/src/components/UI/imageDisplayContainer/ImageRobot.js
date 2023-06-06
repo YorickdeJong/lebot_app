@@ -15,7 +15,7 @@ function ImageRobot({setImageCount, imageCount, fadeAnim, upgradedTab, setUpgrad
         <>
         {/* Cast button */}
             <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '1.1%', left: '5.15%', 
-            zIndex: 3, height: '4%', width: '6%', backgroundColor: ColorsBlue.blue1400}}>
+            zIndex: 3, height: '4%', width: '6%', backgroundColor: ColorsBlue.blue1250}}>
                 <TouchableOpacity
                     style = {styles.touchableArea}
                     onPress = {() => setImageCount(0)}
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
         width: '26%', 
         borderRadius: 20, 
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue400
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     confirmButtonsLeft: {
         position:'absolute', 
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         width: '34.5%', 
         borderBottomLeftRadius: 13,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue400
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     confirmButtonsRight: {
         position:'absolute', 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
         width: '34.5%', 
         borderBottomRightRadius: 13,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue400
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     acceleration: {
         position:'absolute', 
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
         width: '26.6%', 
         borderRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue400
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     snelheid: {
         position:'absolute', 
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
         width: '26.6%', 
         borderRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue400
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     afstand: {
         position:'absolute', 
@@ -186,6 +186,6 @@ const styles = StyleSheet.create({
         width: '26.6%', 
         borderRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue400
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     }
 })

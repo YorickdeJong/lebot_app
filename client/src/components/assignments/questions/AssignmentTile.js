@@ -39,12 +39,12 @@ function AssignmentTile ({onPress, title, subject, icon,
             currentStatus = carCtx.upgradeLog.Speed[id - 1] ? status[1] : ": €" + status[0]
             rewardColor = iconColor;
             borderColor =  completionStatus ? ColorsBlue.blue1400 : ColorsBlue.blue1400;
-            shadowOpacity = 0.2
+            shadowOpacity = 0.3
             colorText = textColor
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light' 
             intensity = completionStatus ? 60 : 12
-            customColor = completionStatus ? 'rgba(25,40,70,0.8)' : 'rgba(55,60,104,0.8)'
+            customColor = completionStatus ? 'rgba(25,40,70,0.8)' : 'rgba(60, 60,104, 0.7)'
             break;
 
         case 'Acc':
@@ -53,12 +53,12 @@ function AssignmentTile ({onPress, title, subject, icon,
             currentStatus = carCtx.upgradeLog.Acc[id - 1] ? status[1] : (": €" + status[0]);
             rewardColor = iconColor;
             borderColor = completionStatus ? ColorsBlue.blue1400 : ColorsBlue.blue1400;
-            shadowOpacity = 0.2
+            shadowOpacity = 0.3
             colorText = textColor
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light'
             intensity = completionStatus ? 60 : 12
-            customColor = completionStatus ? 'rgba(25,30,70,0.8)' : 'rgba(55,60,104,0.8)'
+            customColor = completionStatus ? 'rgba(25,30,70,0.8)' : 'rgba(55,60,114,0.7)'
             break;
 
         case 'Afstand':
@@ -67,12 +67,12 @@ function AssignmentTile ({onPress, title, subject, icon,
             currentStatus = carCtx.upgradeLog.Handling[id - 1] ? status[1] : (": €" + status[0]);
             rewardColor = iconColor;
             borderColor = completionStatus ? ColorsBlue.blue1400 : ColorsBlue.blue1400;
-            shadowOpacity = 0.2
+            shadowOpacity = 0.3
             colorText = textColor
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light'
             intensity = completionStatus ? 60 : 12
-            customColor = completionStatus ? 'rgba(25,30,70,0.8)' : 'rgba(55,60,104,0.8)'
+            customColor = completionStatus ? 'rgba(25,30,70,0.8)' : 'rgba(38, 4, 97,0.8)'
             break;
 
         case 'Wheels':
@@ -81,7 +81,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             currentStatus = carCtx.upgradeLog.Wheels[id - 1] ? status[1] : (": €" + status[0]);
             rewardColor = iconColor
             borderColor = completionStatus ? ColorsOrange.orange800 : ColorsOrange.orange600;
-            shadowOpacity = 0.2
+            shadowOpacity = 0.3
             colorText = textColor
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light'
@@ -95,14 +95,14 @@ function AssignmentTile ({onPress, title, subject, icon,
             colors = completionStatus ? colorDark : colorLight;
             currentStatus = completionStatus ? "COMPLETED" : ": €" + completionData.acquiredCurrency + "/" + completionData.totalCurrency;
             borderColor = completionStatus ? ColorsBlue.blue400 : ColorsBlue.blue700;
-            shadowOpacity = 0.5
+            shadowOpacity = 1
             rewardColor = ColorsBlue.blue50; //CHANGE 
             finishedAssignmentsColor = ColorsBlue.blue50; //CHANGE
             colorText = ColorsBlue.blue50;
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
-            customColor = 'rgba(10, 22, 70, 0.8)'
+            customColor = 'rgba(6, 28, 70, 1)'
             break;
 
         case 'LED': 
@@ -118,7 +118,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
-            customColor = 'rgba(10, 22, 70, 0.8)'
+            customColor = 'rgba(8, 25, 80, 1)'
             break;
 
         case 'CAR':
@@ -134,7 +134,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
-            customColor = 'rgba(10, 22, 70, 0.8)'
+            customColor = 'rgba(8, 25, 80, 1)'
             break;
     }
 

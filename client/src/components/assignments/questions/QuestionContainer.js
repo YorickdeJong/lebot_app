@@ -30,12 +30,15 @@ function QuestionContainer({
     chatgptAnswer,
     chartAvailable,
     removeTries,
-    questionTitle
+    questionTitle,
+    toggleInfoModal,
+    setToggleInfoModal,
     }) {
     
     const [chartNumber, setChartNumber] = useState(null);
     const [correctAnswers, setCorrectAnswers] = useState(0); //make it such that this is set to data from context 
     const userprofileCtx = useContext(UserProfileContext);
+    const carCtx = useContext(CarContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
     const completionStatus = assignmentDetailsCtx.getCompletionStatusAssignment(questionData.assignment_number, questionData.title)
@@ -44,7 +47,8 @@ function QuestionContainer({
     const [filteredTry, setFilteredTry] = useState(0);
     const maxTries = 3;
     const timeCtx = useContext(TimeContext);
-    
+    const [unitText, setUnitText] = useState('eenheid')
+
     useEffect(() => {
         async function fetchData() {
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, questionData.assignment_id, questionData.subject);
@@ -56,6 +60,7 @@ function QuestionContainer({
                 const correctAnswersFromData = filteredData.filter(answer => answer.correct);
                 setCorrectAnswers(correctAnswersFromData.length)
                 setInput(filteredData[filteredData.length - 1].answer)
+                setUnitText(filteredData[filteredData.length - 1].unit)
                 setChartNumber(correctAnswersFromData[0].chartNumber)
             }
         }
@@ -69,7 +74,7 @@ function QuestionContainer({
   
     
     //define useEffect to getspefic assignment details
-    async function sendData(data, correctness, isMultipleChoice, answerNumber) {
+    async function sendData(data, correctness, isMultipleChoice, unit) {
         let answers_multiple_choice = null
         let answers_open_questions = null
 
@@ -87,7 +92,7 @@ function QuestionContainer({
                 answers_multiple_choice =  { answer: data, correct: correctness }
             }
             else {
-                answers_open_questions = { answer: data, correct: correctness, chartNumber: chartNumber, answerNumber: answerNumber }
+                answers_open_questions = { answer: data, correct: correctness, unit: unit, chartNumber: chartNumber, } //add units
             }
         }
         
@@ -190,25 +195,33 @@ function QuestionContainer({
         setFilteredTry(filteredTry + 1)
         //calculates answer based on users findings
         if (generate_answer) {
-            // call generate answers here                                                                                                                               
-            const isCorrect = await generate_answer(input, chartNumber, school_id, class_id, group_id, questionData.title, questionData.assignment_number, questionData.subject)
-            if (isCorrect) {
-                setCorrectAnswers(correctAnswers + 1);
-                Alert.alert('Antwoord Correct!');
-                //Add different color to answer container + display answer in answer container
+            if (unitText === questionData.answer) {
+                // call generate answers here                                                                                                                               
+                const isCorrect = await generate_answer(input, chartNumber, school_id, class_id, group_id, questionData.title, questionData.assignment_number, questionData.subject)
+                if (isCorrect) {
+                    setCorrectAnswers(correctAnswers + 1);
+                    Alert.alert('Antwoord Correct!');
+                    carCtx.editMoney(questionData.currency) 
+                    //add tokens here
+                }
+                else {
+                    Alert.alert('Antwoord Incorrect!');
+                }
+                await sendData(input, isCorrect, false, unitText)
             }
             else {
-                Alert.alert('Antwoord Incorrect!');
+                Alert.alert('foute eenheid');
+                await sendData(input, isCorrect, false, unitText)
             }
-            await sendData(input, isCorrect, false)
             
         }
         else{
             let isCorrect = false;
-            if (input === questionData.answer){
+            if (input === questionData.answer){ //add here that input should be input + units
                 isCorrect = true;
                 setCorrectAnswers(correctAnswers + 1);
                 Alert.alert('Antwoord Correct!');
+                carCtx.editMoney(questionData.currency) 
             }   
             else{
                 Alert.alert('Antwoord Incorrect!');
@@ -281,6 +294,8 @@ function QuestionContainer({
                                     chartNumber = {chartNumber}
                                     setChartNumber = {setChartNumber}
                                     placeholder = {"Jouw Antwoord"}
+                                    setUnitText = {setUnitText}
+                                    unitText = {unitText}
                                 />
                             }
 
@@ -332,6 +347,9 @@ function QuestionContainer({
                                 input = {input}
                                 validateInput = {validateInput}
                                 correctAnswers = {correctAnswers}
+                                toggleInfoModal = {toggleInfoModal}
+                                setToggleInfoModal = {setToggleInfoModal}
+                                currency={questionData.currency}
                             />}
                         </View>
                         

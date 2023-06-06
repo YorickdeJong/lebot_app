@@ -1,5 +1,7 @@
 
-
+const getTimeLessonsByIdQuery = `
+    SELECT * FROM time_lesson WHERE id = $1;
+`
 
 const getTimeLessonsByClassQuery = `
     SELECT * FROM time_lesson WHERE lesson_number = $1 AND class_id = $2 AND school_id = $3;
@@ -49,5 +51,6 @@ module.exports = {
     createTimeLessonQuery,
     updateTimeLessonQuery,
     deleteTimeLessonQuery,
-    deleteAllLessonsForClassQuery
+    deleteAllLessonsForClassQuery,
+    getTimeLessonsByIdQuery
 }

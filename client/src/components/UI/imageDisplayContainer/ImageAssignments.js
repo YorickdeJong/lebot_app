@@ -76,12 +76,11 @@ function ImageAssignments({imageCount, setImageCount, fadeAnim}) {
             </>
             }
             {imageCount > 2 && imageCount < 6 &&
-                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '8.25%', left: '6.92%', zIndex: 3}}>
-                    <Icon 
-                        size = {21}
-                        color = {ColorsBlue.blue1400}
-                        onPress = {() => {setImageCount(0)}}
-                        icon = 'home'
+                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '8%', left: '6.8%', 
+                zIndex: 3, height: '4%', width: '6%', backgroundColor: ColorsBlue.blue1200}}>
+                    <TouchableOpacity
+                        style = {styles.touchableArea}
+                        onPress = {() => setImageCount(0)}
                     />
                 </Animated.View>
             }
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
         width: '20.5%', 
         borderRadius: 17, 
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     tileMiddleLeft: {
         position:'absolute', 
@@ -166,7 +165,7 @@ const styles = StyleSheet.create({
         width: '26%', 
         borderRadius: 20, 
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     tileMiddleRight: {
         position:'absolute', 
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
         width: '25.5%', 
         borderRadius: 20, 
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     tileRight: {
         position:'absolute', 
@@ -190,7 +189,7 @@ const styles = StyleSheet.create({
         width: '15.5%', 
         borderRadius: 20, 
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     confirmButtonsLeft: {
         position:'absolute', 
@@ -202,7 +201,7 @@ const styles = StyleSheet.create({
         width: '34.5%', 
         borderBottomLeftRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     confirmButtonsRight: {
         position:'absolute', 
@@ -214,7 +213,7 @@ const styles = StyleSheet.create({
         width: '34.5%', 
         borderBottomRightRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     faseOne: {
         position:'absolute', 
@@ -226,7 +225,7 @@ const styles = StyleSheet.create({
         width: '26.6%', 
         borderRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     faseTwo: {
         position:'absolute', 
@@ -238,7 +237,7 @@ const styles = StyleSheet.create({
         width: '26.6%', 
         borderRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     faseThree: {
         position:'absolute', 
@@ -250,7 +249,7 @@ const styles = StyleSheet.create({
         width: '26.6%', 
         borderRadius: 20,
         zIndex: 2,
-        backgroundColor: ColorsBlue.blue200
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
 
 })

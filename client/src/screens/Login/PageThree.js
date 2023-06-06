@@ -19,9 +19,9 @@ function LandingPageThree() {
         resizeMode='cover'
         >
             <View style={styles.titleContainer}>
-                <Text style={styles.title}>• Leer door te doen</Text>
-                <Text style={styles.title}>• Train je analystische denkvermogen</Text>
-                <Text style={styles.title}>• Ontdek jouw passie voor wetenschap</Text>
+                <Text style={styles.title}>Leer door te doen</Text>
+                <Text style={styles.title}>Train je analystische denkvermogen</Text>
+                <Text style={styles.title}>Ontdek jouw passie voor wetenschap</Text>
             </View>
         </ImageBackground>
 
@@ -40,12 +40,12 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 20,
         color: ColorsGray.gray300, //ColorsBlue.blue50,
-        fontWeight: '300',
-        marginLeft: 20,
-        marginBottom: 15
+        fontWeight: 'bold',
+        marginBottom: 30,
+        textAlign: 'center'
     },
     titleContainer: {
-        marginBottom: 60,
+        marginBottom: 40,
     },
 
 })

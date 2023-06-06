@@ -45,18 +45,7 @@ export const ASSIGNMENT_EXPLANATION = {
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_12: {
-        answer: `We hebben helaas net te horen gekregen dat onze leverancier 4 motoren heeft geleverd, waarvan er 1 kapot is. Echter weten we niet welke dat zijn. Gelukkig heb jij net een aantal tests gedaan aan een goed werkende motor. Hierdoor waren we instaat om een aantal criteria op te stellen waaraan de motor moet voldoen: 
-        
-1. De snelheid is groter dan, of gelijk aan 0.3 en kleiner dan, of gelijk aan 0.4 
-        
-2. De snelheid is constant na 1 seconde 
-        
-3. De maximale verselling is niet lager dan 0.3 m/s$^2$ 
-        
-4. De afgelegde afstand na 5 seconde is hoger dan 2 meter 
-        
-5. De motor staat still na 1 seconde
-        `,
+        answer: `We hebben helaas net te horen gekregen dat 1 van de motoren kapot is gegaan. Gelukkig heb jij samen met je team al metingen gedaan met goed werkende motoren. Hierdoor kon ik een paar eisen vaststellen voor een goed werkende motor§ Op de volgende pagina kan je deze eisen bekijken door op het plus icoontje te drukken.`,
         thread_id: 15,
     },
     ASSIGNMENTQUESTIONSINTRO_21: {
@@ -80,3 +69,14 @@ export const ASSIGNMENT_EXPLANATION = {
         thread_id: 19,
     }
 };
+
+
+// 1. De snelheid is groter dan, of gelijk aan acceleration[0] en kleiner dan, of gelijk aan 0.4 
+                    
+// 2. De gemiddelde snelheid is groter dan  
+        
+// 3. De afgelegde afstand na 15 seconden is groter dan 
+        
+// 4. De maximale snelheid is groter dan 0.3 m/s
+        
+// 5. De motor staat still na 1 seconde`,

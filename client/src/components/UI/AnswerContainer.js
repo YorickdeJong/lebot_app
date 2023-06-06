@@ -1,12 +1,29 @@
 
-import {View, Text, StyleSheet, TextInput} from 'react-native';
+import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native';
 import Icon from '../Icon';
 import { ColorsBlue, ColorsGray } from '../../constants/palet';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useState } from 'react';
+import UnitsModal from './UnitsModal';
 
 
 
-function AnswerContainer({input, inputContainer, setInputDetails, maxTries, filteredTry, correctAnswers, validateInput, performedMeasurement, chartNumber, setChartNumber, placeholder}){
+function AnswerContainer({
+    input, 
+    inputContainer, 
+    setInputDetails, 
+    maxTries, 
+    filteredTry, 
+    correctAnswers, 
+    validateInput, 
+    performedMeasurement,
+    chartNumber, 
+    setChartNumber, 
+    placeholder, 
+    setUnitText, 
+    unitText
+}){
+    const [showModal, setShowModal] = useState(false)
 
     return (
         <View style = {{flexDirection: 'row', alignItems: 'center', marginTop: 5,  marginLeft: 17, marginRight: 15, shadowColor: `rgba(0, 0, 0, 1)`,
@@ -15,7 +32,7 @@ function AnswerContainer({input, inputContainer, setInputDetails, maxTries, filt
         shadowOpacity: 1,
         }}>
             <View 
-            style = {{flex: 2.7,  marginRight: 6,  backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent',
+            style = {{flex: 1.6,  marginRight: 6,  backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent',
             borderTopLeftRadius: 10, 
             borderBottomLeftRadius: 10, }}>
                 <TextInput 
@@ -27,12 +44,21 @@ function AnswerContainer({input, inputContainer, setInputDetails, maxTries, filt
                 editable={correctAnswers === 1 || filteredTry === maxTries ? false : true}
                 />
             </View>
+            <View  style = {{flex: 1.3, marginRight: 5.5, backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent'}}
+            >
+                <TouchableOpacity 
+                style = {[inputContainer, { borderTopLeftRadius: 0, borderBottomLeftRadius: 0, paddingLeft: 0, justifyContent: 'center'}]}
+                onPress = {() => setShowModal(true)}
+                >
+                        <Text style = {{color: ColorsGray.gray400, textAlign: 'center'}}>{unitText}</Text>
+                </TouchableOpacity>
+            </View>
             {performedMeasurement &&
             <View 
-            style = {{flex: 1.1, marginRight: 2, backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent',
+            style = {{flex: 1.1, marginRight: 2, backgroundColor: Platform.OS === 'android' ? 'rgba(0, 0, 0, 1)' : 'transparent', 
             }}>
                 <TextInput 
-                style = {[inputContainer, {paddingLeft: 5, borderTopLeftRadius: 0, borderBottomLeftRadius: 0}]}
+                style = {[inputContainer, {paddingLeft: 0, borderTopLeftRadius: 0, borderBottomLeftRadius: 0, textAlign: 'center'}]}
                 placeholder = "Meting nr."
                 placeholderTextColor={ColorsGray.gray300}
                 onChangeText={setChartNumber}
@@ -55,6 +81,11 @@ function AnswerContainer({input, inputContainer, setInputDetails, maxTries, filt
                 onPress={validateInput}
                 addStyle={{position: 'absolute', top: 6.25, right: 8}}
                 addBorder
+            />
+            <UnitsModal 
+                showModal={showModal}
+                setShowModal={setShowModal}
+                setUnitText={setUnitText}
             />
         </View>
     )

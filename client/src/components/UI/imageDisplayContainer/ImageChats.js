@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         borderRadius: 20, 
         zIndex: 2,
         left: '2.3%',
-        backgroundColor: ColorsBlue.blue1200
+        backgroundColor: 'rgv(255, 255, 255, 0.3'
     },
     touchableArea: {
         width: '100%',

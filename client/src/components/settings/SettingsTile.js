@@ -24,7 +24,7 @@ function SettingsTile({type, index, icon, onPress}){
         shadowOpacity: 1,
         backgroundColor: 'rgba(1,1,1,1)',
         elevation: 10,
-        marginBottom: (Platform.OS === 'android' && index === 3) ? 5 : 0
+        marginBottom: (Platform.OS === 'android' && index === 4) ? 5 : 0
     }
 
     return (

@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import ModalCredentials from './ModalCredentials';
 
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('screen');
 function LandingPageOne({blinkOpacity}){
 
     const navigation = useNavigation();
@@ -114,7 +114,7 @@ function LandingPageOne({blinkOpacity}){
             />
         </Animated.View>
 
-        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: '6%', right: 50 }}>
+        <Animated.View style={{ opacity: blinkOpacity, position: 'absolute', bottom: '3%', right: 50 }}>
             <Icon
                 size={25}
                 icon="arrow-down-bold-circle-outline"

@@ -69,7 +69,7 @@ function Root({}) {
     const [isTryingLogin, setIsTryingLogin] = useState(true);
     const authCtx = useContext(AuthContext);
     const colorCtx = useContext(ColorContext)
-    const { setIsConnected, setIsConnectedViaSSH, socket, CreateSocketConnection, } = useContext(SocketContext);
+    const { socket, CreateSocketConnection, } = useContext(SocketContext);
     const userprofileCtx = useContext(UserProfileContext);
     const {user_role} = userprofileCtx.userprofile;
 
@@ -97,8 +97,6 @@ function Root({}) {
 
       return () => {
           if (socket.current) {
-              setIsConnected(false)
-              setIsConnectedViaSSH(false)
               socket.current.off('ConnectionStatus');
               socket.current.off('disconnect');
               socket.current.off('reconnecting');

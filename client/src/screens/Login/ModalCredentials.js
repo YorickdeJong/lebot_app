@@ -89,7 +89,7 @@ function ModalCredentials({ isStopActive, setIsStopActive, isLogin}) {
                 <TouchableWithoutFeedback onPress={() => setIsStopActive(false)}>
                     <View style={styles.outerContainer}>
                     <TouchableWithoutFeedback onPress={() => {}}>
-                        <View tint="dark" style={[styles.modalBackground, {height: isLogin ? 250 : 195, backgroundColor: 'rgba(100, 100, 100, 0.3)'}]}>
+                        <View tint="dark" style={[styles.modalBackground, {height: isLogin ? 280 : 195, backgroundColor: 'rgba(100, 120, 180, 0.2)'}]}>
                             <Text style={[styles.text, {marginBottom: 10, fontWeight: '500'}]}>{isLogin ? 'Login' : 'Register'}</Text>
     
                             <TouchableOpacity style={styles.button} onPress = {isLogin ? redirectLoginHandler.bind(this, 'teacher') : redirectRegisterHandler.bind(this, 'teacher')}>
@@ -124,7 +124,7 @@ export default ModalCredentials;
 const styles = StyleSheet.create({
     outerContainer: {
         flex: 1,
-        alignItems: 'center',
+        // alignItems: 'center',
         justifyContent: 'center',
         shadowOffset: { height: 2, width: 0 },
         shadowRadius: 5,
@@ -133,8 +133,7 @@ const styles = StyleSheet.create({
         marginTop: verticalScale(30),
     },
     modalBackground: {
-        height: 250,
-        width: 250,
+        marginHorizontal: 60,
         borderRadius: 10,
         overflow: 'hidden',
         borderWidth: 1,

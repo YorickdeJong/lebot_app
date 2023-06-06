@@ -75,6 +75,17 @@ export async function getAllTimeLessonsForClass(school_id, class_id) {
     }
 }
 
+export async function getSpecificTimeLesson(time_lesson_id) {
+    try {
+        const response = await axios.get(`${url}/${time_lesson_id}`);
+        return response.data;
+    }
+    catch (error) {
+        console.log('error while fetching specific time lesson', error);
+        throw error;
+    }
+}
+
 export async function createTimeLesson(class_id, duration, school_id, active, lesson) {
     try {
         const response = await axios.post(url, {
@@ -104,7 +115,7 @@ export async function updateTimeLesson(time_lesson_id, class_id, duration, schoo
         return response.data;
     } 
     catch (error) {
-        console.log('error while updating time lesson', error);
+        console.log('error while updating time lesson', error.message);
         throw error;
     }
 }

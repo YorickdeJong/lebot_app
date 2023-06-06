@@ -30,14 +30,12 @@ function GroupTeacherScreen({ navigation, route }) {
     }
 
     const [data, initialize] = useFetchGroupsDataSocket(true, user_id, classroom_id, school_id);
-    const [dataUser, initializeUser] = useUserSocket(true, group_ids); // remove this function 
 
     useFocusEffect(
         useCallback(() => {
             
             console.log('ClassesStudent component focused');
             initialize(); // Add this line to call initialize when the component is focused
-            initializeUser();
             return () => {
                 console.log('ClassesStudent component blurred');
             };
@@ -105,7 +103,6 @@ function GroupTeacherScreen({ navigation, route }) {
             className={class_name}
             classroom_id={classroom_id}
             data={data}
-            dataUser={dataUser}
             setDbUpdate={setDbUpdate}
         />
     ) 
