@@ -97,10 +97,7 @@ const createTimeLesson = async (req, res) => {
         console.log(error);
         return res.status(500).json({ error: 'Failed to create time lesson' });
     }
-    finally {
-        client.release();
-    }
-
+    
     try {
         const { rows } = await client.query(createTimeLessonQuery, values);
         if (rows.length > 0) {

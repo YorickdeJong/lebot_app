@@ -76,18 +76,23 @@ export const TimeContextProvider = ({ children, namespace }) => {
                     delete updatedTimers[class_id];
                     return updatedTimers;
                 });
-                try {
-                    const updatedLesson = await updateTimeLesson( //problem is here, put request is made regardless of existance, maybe add error handling in the backend for this? 
-                        specificLesson.id,
-                        class_id,
-                        specificLesson.duration,
-                        specificLesson.school_id,
-                        false, // Set active to false
-                        specificLesson.lesson_number
-                    );
-                } 
-                catch (error) {
-                    console.error('Failed to update time lesson:', error);
+
+                const lessonExists = await getSpecificTimeLesson(specificLesson.id);
+
+                if (lessonExists && lessonExists.active === true) {
+                    try {
+                        const updatedLesson = await updateTimeLesson( //problem is here, put request is made regardless of existance, maybe add error handling in the backend for this? 
+                            specificLesson.id,
+                            class_id,
+                            specificLesson.duration,
+                            specificLesson.school_id,
+                            false, // Set active to false
+                            specificLesson.lesson_number
+                        );
+                    } 
+                    catch (error) {
+                        console.error('Failed to update time lesson:', error);
+                    }
                 }
         }, duration * 1000);
     

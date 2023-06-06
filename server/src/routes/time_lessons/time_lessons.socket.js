@@ -83,7 +83,7 @@ function listenToClientTimeLessons(io) {
                         if (poolData) {
                             const { client, cleanupNotificationListener } = poolData;
                             // Only call cleanupNotificationListener and release the client if it hasn't been released yet
-                            if (client && clientPool.has(school_id)) {
+                            if (client && clientPool.has(classroom_id)) {
                                 cleanupNotificationListener();
                                 clientPool.delete(school_id);
                             }
