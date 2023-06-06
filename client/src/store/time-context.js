@@ -79,7 +79,6 @@ export const TimeContextProvider = ({ children, namespace }) => {
                     return updatedTimers;
                 });
                 try {
-                    const lessonExists = await getSpecificTimeLesson(specificLesson.id);
                     const updatedLesson = await updateTimeLesson( //problem is here, put request is made regardless of existance, maybe add error handling in the backend for this? 
                         specificLesson.id,
                         class_id,

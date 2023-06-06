@@ -102,7 +102,7 @@ const updateTimeLesson = async (req, res) => {
     const client = await pool.connect();
 
     try {
-        const { rows } = await client.query(getTimeLessonsByIdQuery, [lesson, class_id, school_id])
+        const { rows } = await client.query(getTimeLessonsByIdQuery, [time_lesson_id])
         if (rows.length === 0) {
             console.log('time lesson does not exists')
             return res.status(400).json({ error: 'Time lesson does not exists' });
