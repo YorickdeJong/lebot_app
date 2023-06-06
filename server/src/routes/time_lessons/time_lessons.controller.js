@@ -58,9 +58,10 @@ const getAllTimeLessonsId = async (req, res) => {
     const time_lesson_id = req.params.id;
     const client = await pool.connect();
     const values = [time_lesson_id]
+    console.log('values', values)
     try {
         const { rows } = await client.query(getTimeLessonsByIdQuery, values);
-    
+        console.log('rows', rows)
         if (rows.length === 0) {
             console.log('time lesson does not exist')
             return res.status(400).json({ error: 'Time lesson does not exist' });
