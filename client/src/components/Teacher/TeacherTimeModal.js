@@ -54,7 +54,10 @@ function TeacherTimeModal() {
             return
         }
 
-        
+        if (duration % 1 !== 0) {
+            Alert.alert('Geen geldige tijd', 'vul een heel getal in')
+            return
+        }
         if (currentActiveLessonData || showDeleteButton) {
             
             try {
@@ -111,8 +114,19 @@ function TeacherTimeModal() {
                     text: 'Ja',
                     onPress: async () => {
                         try {
+
+                            // Clear any existing timer for this lesson
+                            if (timeCtx.activeTimers[currentLessonId]) {
+                                clearTimeout(timeCtx.activeTimers[currentLessonId].timer);
+                                timeCtx.setActiveTimers(prevActiveTimers => {
+                                    const updatedTimers = { ...prevActiveTimers };
+                                    delete updatedTimers[currentLessonId];
+                                    return updatedTimers;
+                                });
+                            }
+
                             const active = false
-                            await updateTimeLesson(currentLessonId, class_id, duration, school_id, active, lesson)
+                            await updateTimeLesson(currentLessonId, class_id, null, school_id, active, lesson)
                             timeCtx.setChangedTimeData(true)
                             Alert.alert('Les gestopt!')
                         }
@@ -129,7 +143,7 @@ function TeacherTimeModal() {
         ])
     }
 
-    async function handleDelete(lessonId) { //maybe pass current lesson id here
+    async function handleDelete(lessonId, lesson) { //maybe pass current lesson id here
         Alert.alert(
             '',
             'Weet u zeker dat u deze tijd voor de klas wilt verwijderen?',
@@ -143,12 +157,22 @@ function TeacherTimeModal() {
                     text: 'Ja',
                     onPress: async () => {
                         timeCtx.setChangedTimeData(false)
+                        const active = false    
+                        const duration = null
+                        const chooseLessonId = currentLessonId ? currentLessonId : lessonId
+
+                        // Clear any existing timer for this lesson
+                        if (timeCtx.activeTimers[chooseLessonId]) {
+                            clearTimeout(timeCtx.activeTimers[chooseLessonId].timer);
+                            timeCtx.setActiveTimers(prevActiveTimers => {
+                                const updatedTimers = { ...prevActiveTimers };
+                                delete updatedTimers[chooseLessonId];
+                                return updatedTimers;
+                            });
+                        }
+
                         try {
-                            const active = false    
-                            console.log('lesson id', lessonId)
-                            console.log('current lesson id', currentLessonId)
-                            const chooseLessonId = currentLessonId ? currentLessonId : lessonId
-                            console.log('chosen lesson id', chooseLessonId)
+
                             await updateTimeLesson(chooseLessonId, class_id, duration, school_id, active, lesson) // stop lesson first
                             await deleteTimeLesson(chooseLessonId) // then delete lesson
                             setCurrentLessonId(null)
@@ -275,7 +299,7 @@ function TeacherTimeModal() {
                                                 icon="close-circle"
                                                 size={20}
                                                 color={ColorsGray.gray700}
-                                                onPress={() => {setCurrentLessonId(time.id), handleDelete(time.id)}}
+                                                onPress={() => {setCurrentLessonId(time.id), handleDelete(time.id, time.lesson)}}
                                                 />
                                             </View>
                                     </TouchableOpacity>

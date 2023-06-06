@@ -2,6 +2,7 @@ const { Router } = require('express');
 const {
     getAllTimeLessonsForSchool,
     getAllTimeLessonsForSchoolSocket,
+    getAllTimeLessonsId,
     createTimeLesson,
     updateTimeLesson,
     deleteTimeLesson,
@@ -10,6 +11,7 @@ const {
 const router = Router();
 
 router.get('/school', getAllTimeLessonsForSchool);
+router.get('/:id', getAllTimeLessonsForSchool);
 router.post('/', createTimeLesson);
 router.put('/:id', updateTimeLesson);
 router.delete('/:id', deleteTimeLesson);

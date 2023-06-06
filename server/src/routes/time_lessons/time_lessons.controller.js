@@ -52,9 +52,33 @@ const getAllTimeLessonsForSchool = async (req, res) => {
     finally {
         client.release();
     }
-  };
+};
 
-
+const getAllTimeLessonsId = async (req, res) => {
+    const time_lesson_id = req.params.id;
+    const client = await pool.connect();
+    const values = [time_lesson_id]
+    try {
+        const { rows } = await client.query(getTimeLessonsByIdQuery, values);
+    
+        if (rows.length === 0) {
+            console.log('time lesson does not exist')
+            return res.status(400).json({ error: 'Time lesson does not exist' });
+        }
+        else {
+            console.log('got time lesson')
+            return res.status(200).json(rows);
+        }
+    } 
+    catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: 'Failed to get time lesson' });
+    } 
+    finally {
+        client.release();
+    }
+};
+  
 const createTimeLesson = async (req, res) => {
     const { class_id, duration, school_id, active, lesson } = req.body;
     const values = [class_id, duration, school_id, active, lesson];
@@ -71,6 +95,9 @@ const createTimeLesson = async (req, res) => {
     catch(error){
         console.log(error);
         return res.status(500).json({ error: 'Failed to create time lesson' });
+    }
+    finally {
+        client.release();
     }
 
     try {
@@ -112,7 +139,6 @@ const updateTimeLesson = async (req, res) => {
         console.log(error);
         return res.status(500).json({ error: 'Failed to update time lesson' });
     }
-
     
     try {
         const { rows } = await client.query(updateTimeLessonQuery, values);
@@ -182,9 +208,11 @@ const deleteAllLessonsForClass = async (req, res) => {
 
 module.exports = {
     getAllTimeLessonsForSchool,
+    getAllTimeLessonsId,
     getAllTimeLessonsForSchoolSocket,
     createTimeLesson,
     updateTimeLesson,
     deleteTimeLesson,
-    deleteAllLessonsForClass
+    deleteAllLessonsForClass,
+
 };

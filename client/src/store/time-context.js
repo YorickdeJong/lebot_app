@@ -70,8 +70,6 @@ export const TimeContextProvider = ({ children, namespace }) => {
     
         // Set up the timer to update the state when it's done
         const timer = setTimeout(async () => {
-            // Check if the timer still exists
-            if (activeTimers[class_id]) {
                 // Update activeTimers to remove the completed timer
                 setActiveTimers((prevActiveTimers) => {
                     const updatedTimers = { ...prevActiveTimers };
@@ -91,9 +89,6 @@ export const TimeContextProvider = ({ children, namespace }) => {
                 catch (error) {
                     console.error('Failed to update time lesson:', error);
                 }
-            } else {
-                console.log(`Timer for class_id: ${class_id} was already deleted.`);
-            }
         }, duration * 1000);
     
         setActiveTimers((prevActiveTimers) => ({
@@ -215,6 +210,8 @@ export const TimeContextProvider = ({ children, namespace }) => {
         showTimeModal,
         timeData,
         changedTimeData,
+        activeTimers,
+        setActiveTimers,
         filterActiveTimers,
         filterTimeDataClass,
         setChangedTimeData,

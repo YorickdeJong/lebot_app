@@ -63,9 +63,9 @@ function listenToClientGroups(io) {
             console.log('Releasing client');
             client.release();
         };
-      }
+    }
       
-      socket.on('initialize', async ({ user_id: userId, classroom_id: classroomId, school_id: schoolId }) => {
+    socket.on('initialize', async ({ user_id: userId, classroom_id: classroomId, school_id: schoolId }) => {
           user_id = userId;
           classroom_id = classroomId;
           school_id = schoolId;

@@ -66,6 +66,7 @@ function listenToClientTimeLessons(io) {
         });
 
         socket.on('disconnect', () => {
+            console.log('Client disconnected from time_lessons');
             try {
                 socket.leave(school_id); // Remove socket from the room when disconnected
         
@@ -82,14 +83,14 @@ function listenToClientTimeLessons(io) {
                         if (poolData) {
                             const { client, cleanupNotificationListener } = poolData;
                             // Only call cleanupNotificationListener and release the client if it hasn't been released yet
-                            if (client) {
+                            if (client && clientPool.has(school_id)) {
                                 cleanupNotificationListener();
                                 clientPool.delete(school_id);
                             }
                         }
                     }
                 }).catch((error) => {
-                        console.error('Error disconnecting groups socket:', error);
+                        console.error('Error disconnecting time lessons socket:', error);
                 });
             } 
             catch (error) {
