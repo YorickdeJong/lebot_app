@@ -134,8 +134,8 @@ function SocketContextProvider({children}) {
             socket.current.emit('connectToRemoteDevice',  config );
             socket.current.on('sshConnectionStatus', (data) => {
                 console.log('data', data.connected)
+                setIsConnectedViaSSH(data.connected);
                 if (data && data.connected) {
-                    setIsConnectedViaSSH(true);
                     clearInterval(retryIntervalId);  // Stop the retry interval
                     retryCount = 0;  // Reset retry count
                 }
@@ -151,7 +151,6 @@ function SocketContextProvider({children}) {
                         clearInterval(retryIntervalId);  // Stop the retry interval
                         retryIntervalId = null;
                     }
-                    setIsConnectedViaSSH(false)
                     setPower(false);
                 }
             });

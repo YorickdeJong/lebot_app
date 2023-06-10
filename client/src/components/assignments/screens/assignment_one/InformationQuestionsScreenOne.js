@@ -101,8 +101,10 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
       showIconCtx.setShowIconsHandler('robotStore')
     }
 
+    // vraag 6: '',
+    // vraag 7: 'Verschillende Richting'
 
-    const slideTotal = 16 // number + 1
+    const slideTotal = 17 // number + 1
      const SCREENS = useMemo(() => {
       return [
       {
@@ -133,35 +135,20 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             slideCount,
             isFocused,
             topic: "Beweging",
+            
             questions: [
-              "Wat weet jij over snelheid en versnelling? Welke wiskunde komt terug die je al geleerd hebt?",
-              "Welke kennis heb je al?",
-              "Waarom zou je deze kennis nodig hebben?",
+              "\nDiscussieer met je team over de volgende onderwerpen: \n\n• Snelheid en Versnelling \n• Lineaire Lijnen en Hellingen \n• (s,t) en (v,t) Grafieken\n",
+              "Welke kennis heb je al?",                                                                                                                                                                                                                                                                                                                                                                                                                                   
               "Welke vergelijkingen zou je kunnen gebruiken?",
+              "",
               "Zijn jullie het eens met elkaar? Waarom wel/niet?",
             ],
+
             setSlideCount,
             slideTotal,
             assignmentNumber: 0,
             subject: "MOTOR",
             slideCount,
-          },
-      },
-      {
-        component: Questions,
-        props: {
-            questions: sortedQuestions,
-            assignmentNumber: 1,
-            isFocused,
-            setSlideCount,
-            nextSlideHandler,
-            prevSlideHandler,
-            slideCount,
-            chatgptAnswer: true,
-            currentExerciseLesson: 2,
-            slideTotal,
-            removeTries: true,
-            questionTitle: 'Afstand en verplaatsing',
           },
       },
       {
@@ -187,17 +174,16 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
         component: Questions,
         props: {
             questions: sortedQuestions,
-            assignmentNumber: 2,
+            assignmentNumber: 1,
             isFocused,
             setSlideCount,
             nextSlideHandler,
             prevSlideHandler,
             slideCount,
-            performedMeasurement: true,
-            customMeasurement: true,
-            currentExerciseLesson: 2,
+            currentExerciseLesson: 1,
             slideTotal,
-            questionTitle: 'Verschillende Richting'
+            questionTitle: "Afstand en Snelheid",
+            showZeroVelocityPlot: true,
           },
       },
       {
@@ -217,8 +203,25 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             slideTotal,
             text: {text: 'Lineaire lijnen', left: '35%'}
           },
-        },
-        {
+      },
+      {
+        component: Questions,
+        props: {
+            questions: sortedQuestions,
+            assignmentNumber: 2,
+            isFocused,
+            setSlideCount,
+            nextSlideHandler,
+            prevSlideHandler,
+            slideCount,
+            performedMeasurement: true,
+            normal_and_multiple_choice: true,
+            currentExerciseLesson: 2,
+            slideTotal,
+            questionTitle: 'Lineaire lijnen'
+          },
+      },
+      {
           component: Questions,
           props: {
               title: "Formule Opstellen",
@@ -235,12 +238,30 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               normal_and_multiple_choice: true,
               generate_answer: generateAnswerConstantSlope, //generates answer based on measurement
               performedMeasurement: true,
-              currentExerciseLesson: 2,
+              currentExerciseLesson: 3,
               slideTotal,
-              questionTitle: 'Lineaire lijnen'
+              questionTitle: "Lineaire lijnen"
             },
-        },
-        {
+      },
+      {
+          component: Explanation,
+          props: {
+              nextSlideHandler,
+              prevSlideHandler,
+              typing,
+              setTyping,
+              answer: TheoryExplanation.ProjectOneConstantAcceleration,
+              thread_id: 7,
+              topic: "",
+              isFocused,
+              setSlideCount,
+              slideCount,
+              ExplanationAnimation: ExplanationAnimation,
+              slideTotal,
+              text: {text: 'Acceleratie', left: '37%'}
+            },
+      },
+      {
           component: Questions,
             props: {
               title: "Agelegde afstand",
@@ -253,47 +274,12 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               nextSlideHandler,
               prevSlideHandler,
               slideCount,
+              normal_and_multiple_choice: true,
+              performedMeasurement: true,
               generate_answer: generateAnswerMotorQ4,
               currentExerciseLesson: 2,
               slideTotal,
-              questionTitle: 'Lineaire lijnen'
-            },
-        },
-        {
-          component: Explanation,
-          props: {
-              nextSlideHandler,
-              prevSlideHandler,
-              typing,
-              setTyping,
-              answer: TheoryExplanation.ProjectOneConstantAcceleration,
-              thread_id: 7,
-              topic: "Constante Versnelling",
-              isFocused,
-              setSlideCount,
-              slideCount,
-              ExplanationAnimation: ExplanationAnimation,
-              slideTotal,
-              text: {text: 'Acceleratie', left: '37%'}
-            },
-        },
-        {
-          component: Questions,
-          props: {
-              questions: sortedQuestions,
-              assignmentNumber: 5,
-              isFocused,
-              setSlideCount,
-              nextSlideHandler,
-              prevSlideHandler,
-              slideCount,
-              performedMeasurement: true,
-              // customMeasurement: true,
-              currentExerciseLesson: 2,
-              slideTotal,
-              generate_answer: generateAnswerMotorQ5,
-              normal_and_multiple_choice: true,
-              questionTitle: 'Constante versnelling'
+              questionTitle: 'Constante Versnelling'
             },
         },
         {
@@ -317,9 +303,23 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
         {
           component: Questions,
           props: {
-              title: "Resulterende Kracht",
-              description:
-              "Wat betekent de resulterende kracht? Weet je welke formule daarbij hoort en waar deze formule vandaan komt? Hint: De versnelling is constant.",
+              questions: sortedQuestions,
+              assignmentNumber: 5,
+              isFocused,
+              setSlideCount,
+              nextSlideHandler,
+              prevSlideHandler,
+              slideCount,
+              currentExerciseLesson: 2,
+              slideTotal,
+              generate_answer: generateAnswerMotorQ5,
+              normal_and_multiple_choice: true,
+              questionTitle: 'Netto Kracht'
+            },
+        },
+        {
+          component: Questions,
+          props: {
               questions: sortedQuestions,
               assignmentNumber: 6,
               isFocused,
@@ -328,12 +328,30 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               prevSlideHandler,
               slideCount,
               generate_answer: generateAnswerMotorQ6,
-              normal_and_multiple_choice: true,
               currentExerciseLesson: 3,
               slideTotal,
-              questionTitle: 'Netto Kracht'
+              questionTitle: 'Afstand en verplaatsing',
+              chatgptAnswer: true,
+              removeTries: true,
             },
         },
+        {
+        component: Questions,
+        props: {
+            questions: sortedQuestions,
+            assignmentNumber: 7,
+            isFocused,
+            setSlideCount,
+            nextSlideHandler,
+            prevSlideHandler,
+            slideCount,
+            generate_answer: generateAnswerMotorQ6,
+            currentExerciseLesson: 3,
+            slideTotal,
+            questionTitle: 'Afstand en verplaatsing',
+            performedMeasurement: true
+          },
+      },
         {
           component: IntroScreenQuestions,
           props: {
@@ -355,24 +373,8 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
           {
             component: Questions,
             props: {
-  //               title: "Kapotte Motoren",
-  //               description: `Gebasseerd op de data die jij hebt verzameld, kan je bepalen welke motor kapot is. Niet elke motor is hetzelfde, daarom rekenen we met marges van ± 10%. In de haakjes, (), staat jouw gevonden waarde 
-    
-  // 1. De gemiddelde versnelling ligt tussen de ${((parseFloat(answersStudent[2]) - 0.06).toFixed(2))} en ${((parseFloat(answersStudent[2]) + 0.06).toFixed(2))} m/s². \nJouw test: a = ${answersStudent[2]} ± 0.06 m/s²
-
-  // 2. De gemiddelde snelheid tijdens de meeting is niet lager dan ${((parseFloat(answersStudent[1]) - 0.04).toFixed(2))} m/s. \nJouw test: vgem = ${answersStudent[1]} ± 0.04 m/s
-
-  // 3. De afgelegde afstand na 15 seconde is hoger dan ${(15 * (parseFloat(answersStudent[0])  - answersStudent[0] / 10).toFixed(2))} m \nJouw test: s = ${answersStudent[0]} m/s • 15 s → ${15 * (parseFloat(answersStudent[0])  - answersStudent[0] / 10).toFixed(2)} ± ${answersStudent[0]} m
-
-  // 4. De maximale snelheid is niet hoger dan ${0.33} m/s \n*Waarde gevonden door andere crew*
-
-  // 5. Als gaspedaal wordt losgelaten, staat de motor in minder dan ${1.1} seconde stil. \n*Waarde gevonden door andere crew*     
-
-  // Geef ook de bijbehorende ongelijkheidstekens aan die bij de eisen horen.
-              
-  //             `, 
               questions: sortedQuestions,
-              assignmentNumber: 7,
+              assignmentNumber: 8,
               isFocused,
               setSlideCount,
               nextSlideHandler,
@@ -397,8 +399,8 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             questions: [
               "Reflecteer op jullie eerste bevindingen",
               "Welke nieuwe kennis heb je opgedaan?",
-              "Hoe zou je je aanpak veranderen met jouw nieuwe kennis?",
               "",
+              "Hoe zou je je aanpak veranderen met jouw nieuwe kennis?",
               "Zijn jullie het nog steeds met elkaar eens over jullie oorspronkelijke bevindingen? Waarom wel/niet?",
             ],
             slideCountEnd: true,
@@ -410,7 +412,7 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
           }
         },
       ]
-    },[nextSlideHandler, prevSlideHandler, typing, setTyping, isFocused, setSlideCount, slideCount, slideTotal]);;
+    },[nextSlideHandler, prevSlideHandler, typing, setTyping, isFocused, setSlideCount, slideCount, slideTotal]);
 
 
 

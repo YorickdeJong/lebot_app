@@ -3,7 +3,7 @@ import { StyleSheet, View, StatusBar, Alert, Text, Modal, TouchableWithoutFeedba
 import Icon from "../../Icon";
 import ToggleMenu from "../../robot/driving_on_command/ToggleMenu";
 import { ColorsBlue, ColorsGray, ColorsLighterGold, ColorsOrange, ColorsRed, ColorsTile } from "../../../constants/palet";
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useState, useRef, useMemo, useCallback } from "react";
 import BlurWrapper from "../../UI/BlurViewWrapper";
 import SwitchScreensQuestions from "./SwitchScreensQuestions";
 import { useNavigation } from "@react-navigation/native";
@@ -49,37 +49,35 @@ function AssignmentOptionsBar({
     const scrollCtx = useContext(ScrollContext)
 
 
-    const toggleModalOpen = () => {
-        setIsStopActive(!isStopActive); 
+    const toggleModalOpen = useCallback(() => {
+        setIsStopActive(!isStopActive);
         return;
-    };
+    }, [isStopActive]);
 
-    const toggleModalClose = () => {
+    const toggleModalClose = useCallback(() => {
         setIsStopActive(false);
         return;
-    };
+    }, []);
 
-
-
-
-    const toggleOptions = () => {
+    const toggleOptions = useCallback(() => {
         if (optionsVisible) {
             setOptionsVisible(false);
         } else {
             measureMetingPosition();
             setOptionsVisible(true);
-        }  
-    };
+        }
+    }, [optionsVisible, measureMetingPosition]);
 
-    const measureMetingPosition = () => {
+    const measureMetingPosition = useCallback(() => {
         metingRef.current.measureInWindow((x, y, width, height) => {
-          setMetingPosition({ x, y: y + height });
+            setMetingPosition({ x, y: y + height });
         });
-    };
+    }, []);
 
-    function homeNavigatorHandler(){
-        navigation.navigate('Assignments', {screen: 'AssignmentsResults'})
-    }
+    const homeNavigatorHandler = useCallback(() => {
+        navigation.navigate('Assignments', {screen: 'AssignmentsResults'});
+    }, [navigation]);
+    
 
     let progressBarItems = [];
     for (let i = 1; i <= slideTotal - 1; i++) {
@@ -151,12 +149,11 @@ function AssignmentOptionsBar({
     }
     
 
-    function OptionsBox() {
+    const OptionsBox = (() => {
         return (
             <TouchableWithoutFeedback onPress={() => setOptionsVisible(false)}>
                 <View style={styles.modalBackground}>
-                    <TouchableWithoutFeedback onPress={() => {}}
-                    style = {{flex: 1, borderRadius: 20, overflow: 'hidden'}}>
+                    <TouchableWithoutFeedback onPress={() => {}}>
                         <BlurWrapper
                             intensity={50}
                             tint="dark"
@@ -193,8 +190,9 @@ function AssignmentOptionsBar({
                 </View>
             </TouchableWithoutFeedback>
         );
-      }
+    })
 
+    console.log('chartAvaliable', chartAvailable)
     return(
         <View style = {styles.shadow}>
             <View style = {[styles.upperIcons]}>   
@@ -227,7 +225,7 @@ function AssignmentOptionsBar({
 
                         {/* Measurement Text */}
                         {chartAvailable && performedMeasurement && 
-                            <TouchableOpacity onPress={toggleOptions} style = {{position: 'absolute', top: 2 , left: '39%'}}>
+                            <TouchableOpacity onPress={toggleOptions} style = {{position: 'absolute', top: 1.5 , left: '39%'}}>
                             
 
                                 <View ref={metingRef} style = {{flexDirection: 'row'}}>
@@ -237,7 +235,7 @@ function AssignmentOptionsBar({
                                     <Icon 
                                     icon = "menu-down" 
                                     size={23}
-                                    color={ ColorsBlue.blue50 }//ColorsLighterGold.gold400}
+                                    color={ ColorsBlue.blue50 }
                                     onPress = {toggleOptions}
                                     differentDir={true}
                                     />
@@ -286,8 +284,8 @@ function AssignmentOptionsBar({
                     {chartAvailable && 
                         <>
                         {/* Toggle Container */}
-                        <View style = {{position: 'absolute', top: 7, left: '24%'}}>
-                            <TouchableOpacity onPress={toggleModalOpen} 
+                        <View style = {{position: 'absolute', top: 3, left: '25.5%'}}>
+                            {/* <TouchableOpacity onPress={toggleModalOpen} 
                             >
                                     <View style={styles.stopContainer}>
                                         <View
@@ -297,7 +295,14 @@ function AssignmentOptionsBar({
                                         ]}
                                         />
                                     </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
+                            <Icon
+                                size = { 22}
+                                icon = {'settings'}
+                                onPress={toggleModalOpen}
+                                color = {ColorsBlue.blue600}
+                            />
+
                         </View>
 
                         {/* Toggle Modal */}

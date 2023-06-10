@@ -68,18 +68,18 @@ function GroupTeacherScreen({ navigation, route }) {
                     onPress: async () => {
                         try {
                             groupTeacherCtx.deleteGroupHandler(group_id);
-
+                            console.log('check 1')
                             if (groupTeacherCtx.checkIfGroupIsEmpty(group_id)) {
                                 //delete group from user profile
                                 await updateGroupIDForUsers(group_id)
                                 //delete group from group_users
                                 await deleteGroupInfo(group_id); //deletes all users from group
                             }
-                            
+                            console.log('check 2')
+                            console.log(group_id)
                             await deleteGroupByID(group_id);
                             // also need to delete all user profiles from group and class when deleting
-                            
-                            initialize();
+                            console.log('check 3')
                             setDbUpdate(true);
                             Alert.alert('Groep verwijderd!');
                             return;

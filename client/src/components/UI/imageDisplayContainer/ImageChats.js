@@ -52,7 +52,7 @@ function ImageChat({setImageCount, imageCount, fadeAnim}) {
         {imageCount === 1 && 
         <TouchableOpacity 
             onPress = {() => NavigateHandler()}
-            style = {{position: 'absolute', bottom: '10.6%', right: '41%', zIndex: 10,}}
+            style = {{position: 'absolute', bottom: '20.6%', right: '41%', zIndex: 10,}}
             >
                 <Animated.View style = {{ opacity:fadeAnim}}>
                     <Text style = {styles.text}>Begin</Text>
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         borderRadius: 20, 
         zIndex: 2,
         left: '2.3%',
-        backgroundColor: 'rgv(255, 255, 255, 0.3'
+        backgroundColor: 'rgba(180, 180, 200, 0.1)'
     },
     touchableArea: {
         width: '100%',
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     },
     text: {
         color: ColorsGray.gray300,
-        fontSize: 22,
+        fontSize: 24,
         fontWeight: 'bold',
     }
 })

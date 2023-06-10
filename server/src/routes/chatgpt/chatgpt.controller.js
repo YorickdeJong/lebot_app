@@ -30,7 +30,6 @@ const getChatHistory = async (req, res) => {
     catch (error){
         console.log('Failed to get chatgpt')
         return
-        // return res.status(500).json({error: 'Failed to get chatgpt'});
     }
 
     finally{
@@ -62,7 +61,6 @@ const postChatgpt = async (req, res) => {
         let GPT35TurboMessage;
         if (thread_id <= 5) {
             const messageAnswer = 'Beantwoord in het nederlands de volgende vraag in maximaal 10 zinnen: ' + fullContext
-            //messageGPT = 'respond with a question or a hint in dutch that makes the user think about their problem. If you think that the user gets it, respond with the actual answer. Here is the full conversation context: ' + "'" + fullContext + "'";
             GPT35TurboMessage = [
                 {
                     role: "system",
@@ -78,38 +76,59 @@ const postChatgpt = async (req, res) => {
             const studentAnswer = message
             let userPrompt
             console.log('fullContext', lengthChat)
-            if (lengthChat >= 6){
-                userPrompt = `Based on the student's answer, begin your response strictly with one of the following phrases: 'Heel Goed! ', 'Helaas Onjuist! '. 
-                Please give an explanation in strictly less than 10 sentences about why the student answer is correct or incorrect and give the correct answer. 
-                In your answer you must include an explanation about vectors and constantsRespond in Dutch and a kind tone, in a manner where you speak to the student. 
-                Students answer. Student's response: ${studentAnswer}`
-            }
-            else {
-                userPrompt = `
-                Based on the student's answer, respond strictly with one of the following keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord'. 
-                If any part of the correct answer is missing in the student's response, you should respond with 'Incompleet-antwoord'. 
-                keywords: 'Correct', 'Onjuist', or 'Incompleet-antwoord' .
-                Student's response: ${studentAnswer}`;
-            }
-
-
-            const systemPrompt = `
-            The student is tasked to provide a complete answer about the characteristics of distance and displacement. Specifically, they need to state whether distance and displacement can be positive and/or negative. The full and correct answer should be: 'Displacement can be either positive or negative, while distance can only be positive.'`;
+            // if (lengthChat >= 6) {
+            //     userPrompt = `Based on the student's answer, respond strictly with one of the following phrases only: 'Heel Goed! ', 'Helaas Onjuist! '. 
+            //     Please give an explanation in strictly less than 10 sentences about why the student answer is correct or incorrect and give the correct answer. 
+            //     In your answer you must include an explanation about vectors and constantsRespond in Dutch and a kind tone, in a manner where you speak to the student. 
+            //     Students answer. Student's response: ${studentAnswer}`
+            // }
+            // else {
+                // userPrompt = `
+                // Based on the content of the student's answer, respond strictly with one of the following keywords only: 'Correct', 'Incorrect', or 'Incompleet'. 
+                // If the student's answer does not contain all the necessary information, even if part of it is correct, you should respond with 'Incompleet'. 
+                // keywords: 'Correct', 'Incorrect', or 'Incompleet'.
+                // Student's response: ${studentAnswer}`;
+                // }
+                
+                // let systemPrompt
+                // if (thread_id && lengthChat < 4) {
+                    //     systemPrompt =  "You are a capable Dutch assistant in mathematics, physics, and programming, designed to answer students' questions with strictly 1 word only."
+                    // } 
+                    // else {
+                        //     systemPrompt = "You are a capable Dutch assistant in mathematics, physics, and programming, designed to help students understand their questions."
+                        // }
+                        
+            userPrompt = `Please respond in dutch to the student's response. Your answer should be in dutch and only contain either 'Correct' or 'Incorrect'.  Students response: 
+            ${studentAnswer}. `;
         
+            const assistantPrompt = `
+            The student is tasked to provide a complete answer about the characteristics of distance and displacement. 
+            Specifically, they need to state that distance can only be positive and that displacement can be either positive or negative. 
+            The correct answer must contain these points.
+            Your answer should be in dutch and only contain either 'Correct' or 'Incorrect'.
+            `;
             
-        
+
+            
+            let systemPrompt = `
+            You are a capable Dutch assistant in mathematics, physics, and programming. Your task is to evaluate the student's answer based on the following criteria. 
+            The student should have an answer that resembles gives correct insights of displacement and distance. In this context the student should give an answer about if displacement and distance can be negative and / or positive.
+            If both of these points are correctly present in the student's answer, respond with 'Correct'. If either or both are missing, respond with 'Incorrect'. If the answer contains incorrect information, respond with 'Incorrect'. 
+            You are strictly required to respond with one word only, in Dutch: 'Correct' or 'Incorrect'.
+            `;
+
             GPT35TurboMessage = [
                 {
                     role: "system",
-                    content: "You are a capable Dutch assistant in mathematics, physics, and programming, designed to help students understand their questions."
-                },
-                {
-                    role: "user",
                     content: systemPrompt
                 },
                 {
-                    role: "assistant",
+                    role: "user",
                     content: userPrompt
+                },
+                {
+                    role: "assistant",
+                    content: assistantPrompt
                 }
             ];
         

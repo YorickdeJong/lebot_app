@@ -2,11 +2,19 @@ import { VictoryChart, VictoryLine, VictoryAxis, VictoryScatter, VictoryGroup, V
 import { ColorsBlue, ColorsBrownWood, ColorsGray, ColorsGreen, ColorsPurple, ColorsRed } from "../../../../constants/palet";
 import {StyleSheet, View, Text, Button} from 'react-native'
 import Icon from "../../../Icon";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel, finalPlot, motorNumber, trueCount}) {
     const ColorPoints = [ColorsRed.red700, ColorsBrownWood.wood500, ColorsGreen.green900,  ColorsPurple.purple600, ]
     const panFactor = 0.2;
+    const paddingCountOne = { top: finalPlot ? 40 : 20, bottom: finalPlot ? 55 : 0, left: 48, right: 35 }
+    const paddingCountTwo = { top: finalPlot ? 30 : 30, bottom: finalPlot ? 130 : 120, left: 48, right: 35 }
+
+    useEffect(() => {
+        if (finalPlot){
+            setZoomDomain({ x: [0, xMax + 0.5], y: [yMin - cutoff, yMax + cutoff] });
+        }
+    }, [])
 
     const customTheme = {
         ...VictoryTheme.material,
@@ -22,7 +30,7 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
         }
     }
 
-    let cutoff;
+    let cutoff = 0;
     if (Math.abs(yMax) > Math.abs(yMin)) {
         cutoff = Math.abs(yMax) / 8;
     } 
@@ -30,9 +38,6 @@ function ChartDataPlot({chartData, yMin, yMax, xMin, xMax, title, xlabel, ylabel
         cutoff = Math.abs(yMin) / 8;
     }
 
-
-    const paddingCountOne = { top: finalPlot ? 40 : 20, bottom: finalPlot ? 55 : 0, left: 48, right: 35 }
-    const paddingCountTwo = { top: finalPlot ? 30 : 30, bottom: finalPlot ? 130 : 120, left: 48, right: 35 }
 
     const [zoomDomain, setZoomDomain] = useState({ x: [0, xMax + 0.5], y: [yMin - cutoff, yMax + cutoff] });
 

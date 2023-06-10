@@ -18,7 +18,7 @@ import Icon from '../../Icon';
 import { useNavigation } from '@react-navigation/native';
 
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get('screen');
 
 
 function QuestionsMap({ numTiles, onPress, slideCount }) {
@@ -28,7 +28,7 @@ function QuestionsMap({ numTiles, onPress, slideCount }) {
     const navigation = useNavigation();
     const tileSize = 38
     const centerX = width / 2;
-    const centerY = 0.82 * height / 2 ;
+    const centerY = height > 750 ? 0.82 * height / 2 : height / 2.6;
     const ellipticalFactor = 1.7;
     const maxOrbitRadius = height / (2.7 * ellipticalFactor)
     const homeNavigatorHandler = useCallback(() => { // Use useCallback to prevent unnecessary renders
@@ -59,7 +59,7 @@ function QuestionsMap({ numTiles, onPress, slideCount }) {
     const angleOffsets = useMemo(() => {
         const angles = [];
         for (let i = 0; i < numTiles; i++) {
-            const angleOffset = (2 * Math.PI * i * (4.4)) / numTiles;
+            const angleOffset = (2 * Math.PI * i * (4.13  / 15)) ;
             angles.push(angleOffset);
         }
         return angles;
@@ -196,7 +196,7 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
-        paddingTop: 15,
+        // paddingTop: 15,
     },
     pressed: {
         opacity: 0.3,

@@ -1,6 +1,6 @@
 
-import {  ImageBackground, ScrollView, StyleSheet,  View, Text, TextInput, Dimensions, Keyboard, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import {  ImageBackground, ScrollView, StyleSheet,  View, Text, TextInput, Dimensions, Keyboard, TouchableWithoutFeedback, TouchableOpacity, KeyboardAvoidingView, Alert } from 'react-native';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
 import { ColorsBlue, ColorsGray,} from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -16,13 +16,29 @@ import AssignmentOptionsBar from './assignmentOptionsBar';
 import { useIsFocused } from '../../../hooks/isFocused.hooks';
 import { createBrainstormText, getBrainstormText, updateBrainstormText } from '../../../hooks/thinkScreen.hooks';
 import { UserProfileContext } from '../../../store/userProfile-context';
+import MultipleChoiceOptions from '../../UI/MultipleChoiceOptions';
+import { getSpecificAssignmentsDetail } from '../../../hooks/assignmentDetails';
+import { AssignmentDetailsContext } from '../../../store/assignment-Details-context';
 
 const {height, width} = Dimensions.get('window');
 
-function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlidePosition, prevSlideHandler, slideTotal, slideCount, questions, index, slideCountEnd, setSlideCount}) {
+function ThinkScreen({
+    nextSlideHandler, 
+    assignmentNumber, 
+    subject,
+    currentSlidePosition, 
+    prevSlideHandler, 
+    slideTotal, 
+    slideCount, 
+    questions, 
+    index, 
+    slideCountEnd, 
+    setSlideCount}) {
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
     const userprofileCtx = useContext(UserProfileContext);
     const user_id = userprofileCtx.userprofile.id;
+    const {school_id, class_id, group_id} = userprofileCtx.userprofile;
+    
     const [isCloseIcon, setIsCloseIcon] = useState(false);
     const [inputTextOne, setInputTextOne] = useState('');
     const [inputTextTwo, setInputTextTwo] = useState('');
@@ -34,24 +50,67 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
     const inputTextFourRef = useRef('');
     const [yesButton, setYesButton] = useState(false);
     const [noButton, setNoButton] = useState(false);
+
+    // multiple choice
+    const multipleChoiceOptions = ['y = ax + b', 'ρ = m / V', 'a = dv / dt', 'F = m • a', 'P = U • I', 'Fv = C • u', 'v = ds / dt',  'I = G • U', ] 
+    const multipleChoiceAnswers = ['true', 'false', 'true', 'true', 'false', 'false', 'true', 'false']
+    const lenghtMultipleChoice = multipleChoiceOptions.length;
+    const boolArray = Array.from({length: lenghtMultipleChoice }, () => false);
+    const [tileColor,  setTileColor] = useState(boolArray);
+    const maxTries = multipleChoiceAnswers.filter(multiple => multiple === 'true').length; //calculate amount of maxTries a student has
+    const [filteredTry, setFilteredTry] = useState(0);
+    const [correctAnswers, setCorrectAnswers] = useState(0);
+    const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
+    const addAssignmentDetails = assignmentDetailsCtx.addAssignmentDetails;
+
+    const fetchText = useCallback(async () => {
+
+        // fetches multipleChoice data 
+        const assignment_id = 1;
+        const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, assignment_id, subject);
+
+        if (data && data.answers_multiple_choice.length > 0) {
+            const tileColorsFromData = Array.from({ length: multipleChoiceOptions.length }, () => false);
+            const filteredData =  data.answers_multiple_choice.filter(answer => answer !== null)
+
+            filteredData.forEach((answer) => {
+                try {
+                    tileColorsFromData[answer.answer] = true;
+                }
+                catch(error) {
+                    console.log(error);
+                    console.log('index likely out of bounds')
+                }
+            });
+
+
+            setFilteredTry(filteredData.length)
+            setTileColor(tileColorsFromData);
     
-
-    useEffect(() => {
-        async function fetchText() {
-
-            const response = await getBrainstormText(user_id, assignmentNumber, subject);
-
-            if (response){
-                const {text_one, text_two, text_three, text_four} = response
-                setInputTextOne(text_one);
-                setInputTextTwo(text_two);
-                setInputTextThree(text_three);
-                setInputTextFour(text_four);
-            }
+            const correctAnswersFromData = data.answers_multiple_choice.filter(answer => answer.correct).length;
+            setCorrectAnswers(correctAnswersFromData);
         }
 
+        // fetches brainstorm data
+        const response = await getBrainstormText(user_id, assignmentNumber, subject);
+        if (response){
+            const {text_one, text_two, text_three, text_four} = response
+            setInputTextOne(text_one);
+            setInputTextTwo(text_two);
+            setInputTextThree(text_three);
+            setInputTextFour(text_four);
+
+        }
+    }, [ user_id, assignmentNumber, subject, school_id, class_id, group_id, multipleChoiceOptions.length]);
+
+    useEffect(() => {
+        if (index !== slideCount - 1) {
+            return 
+        }
+
+
         fetchText();
-    }, []);
+    }, [index, slideCount]);
 
 
     
@@ -71,7 +130,7 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
     }, []); 
 
 
-    function handleAgreementChoice(type) {
+    const handleAgreementChoice = useCallback((type) => {
         switch(type) {
             case 'yes':
                 setYesButton(!yesButton);
@@ -82,11 +141,37 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
                 setYesButton(false);
             break;
         }
-    }
+    }, [yesButton, noButton]);
+
+   //define useEffect to getspefic assignment details
+   const sendData = useCallback(async (data, correctness) => {
+        console.log('data', data)
+        console.log('correctness', correctness)
+
+
+        let answers_open_questions = null
+        const answers_multiple_choice =  { answer: data, correct: correctness }
+        const assignment_id = 1;
+
+        try {
+            addAssignmentDetails({
+                school_id,
+                class_id,
+                group_id,
+                assignment_id,
+                subject,
+                answers_multiple_choice,
+                answers_open_questions
+            });
+        } 
+        catch (error) {
+            Alert.alert('Er is iets misgegaan met het beantwoorden van de vraag')
+            console.log(error);
+        }
+    }, [addAssignmentDetails, school_id, class_id, group_id, subject]);
 
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style = {styles.container}>
 
                     <AssignmentOptionsBar 
@@ -99,7 +184,8 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
                         slideTotal = {slideTotal}
                         currentSlidePosition = {currentSlidePosition}
                     />
-                    {isScreenFocused && <ScrollView style = {{flex: 1}}>
+                    {isScreenFocused && 
+                    <ScrollView style = {{flex: 1}}>
                         <View style = {{flex: 1}}>
                             
                             {isCloseIcon && 
@@ -113,7 +199,6 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
                                 </View>
                             }
 
-                        
                                 <KeyboardAwareScrollView>
                                 {!isCloseIcon && 
                                     <LinearGradient
@@ -122,7 +207,7 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
                                         start={{ x: 0, y: 0 }}
                                         end={{ x: 1, y: 1 }}
                                         > 
-                                            <Text style = {[styles.text,  {fontSize: 17,  marginHorizontal: 30, marginVertical: 10}]}>{questions[0]}</Text>
+                                            <Text style = {[styles.text,  {fontSize: 17,  marginHorizontal: 20, marginVertical: 10}]}>{questions[0]}</Text>
                                 
                                         </LinearGradient>
                                 }
@@ -135,21 +220,37 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
                                             height = {height}
                                         />
                                 }
-
-                                {questions[2] && 
-                                    <TextInputThinkScreen 
-                                        questions = {questions[2]}
-                                        inputText = {inputTextTwo}
-                                        setInputText = {setInputTextTwo}
-                                        height = {height}
+                                
+                                { questions[2] &&
+                                <View style={[styles.textInput, {flex: 1, minHeight: height / 2.5, paddingBottom: 10 }]}>
+                                    <Text style = {[styles.text, {color: ColorsGray.gray300, paddingBottom: 10}]}>{questions[2]}</Text>
+                                    <View style = {{borderBottomColor: 'gray', borderBottomWidth: 1, marginBottom: 10}}/>
+                                    <MultipleChoiceOptions 
+                                        timer = {false}
+                                        tileColor = {tileColor}
+                                        setTileColor = {setTileColor}
+                                        correctAnswers = {correctAnswers} 
+                                        setCorrectAnswers = {setCorrectAnswers}
+                                        filteredTry = {filteredTry} 
+                                        setFilteredTry = {setFilteredTry}
+                                        maxTries = {lenghtMultipleChoice} 
+                                        checkTimerActive = {false} 
+                                        sendData = {sendData} 
+                                        title = {'ThinkScreen'}
+                                        assignment_number = {assignmentNumber}
+                                        subject = {subject}
+                                        multipleChoiceOptions = {multipleChoiceOptions}
+                                        multipleChoiceAnswers = {multipleChoiceAnswers}
                                     />
+                                </View>
                                 }
 
+                                {/* Add multiple choice container here */}
                                 {questions[3] && 
                                     <TextInputThinkScreen 
                                         questions = {questions[3]}
                                         inputText = {inputTextThree}
-                                        setInputText = {setInputTextThree}
+                                        setInputText = {setInputTextTwo}
                                         height = {height}
                                     />
                                 }
@@ -197,7 +298,6 @@ function ThinkScreen({nextSlideHandler, assignmentNumber, subject, currentSlideP
                     </ScrollView>
                     }
             </View>
-        </TouchableWithoutFeedback>
     )
 }
 

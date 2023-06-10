@@ -135,7 +135,7 @@ export default React.memo(ToggleMenu)
 const styles = StyleSheet.create({
     textContainer: {
         marginBottom: 0, 
-        borderRadius: 5,
+        borderRadius: 20,
         elevation: 3,
         borderWidth: 0.7,
         borderColor: ColorsBlue.blue700,

@@ -39,18 +39,16 @@ function Explanation({nextSlideHandler, text, prevSlideHandler, currentSlidePosi
                     text = {text}
                 />
 
-                    {isScreenFocused && <ScrollView 
+                    {isScreenFocused && 
+                    <ScrollView 
                     style = {{flex:1 }}
                     ref={scrollViewRef}
                     onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                     >
 
-                            {/* {video && <VideoDisplay 
-                            video = {video}/>}
-                            
-                            {!video && <ExplanationAnimation/>} */}
                         
-                            {isFocused && <ChatBoxGPT 
+                            {isFocused && 
+                            <ChatBoxGPT 
                             answer={answer}
                             isLastItem={true}
                             thread_id={thread_id}
@@ -61,7 +59,7 @@ function Explanation({nextSlideHandler, text, prevSlideHandler, currentSlidePosi
             
 
                             
-                        </ScrollView> 
+                    </ScrollView> 
                     }  
         </View>
     )

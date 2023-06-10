@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
-import { useEffect, useState } from "react";
-import { ImageBackground, View, Text, StyleSheet, Dimensions } from "react-native"
+import { useEffect, useRef, useState } from "react";
+import { ImageBackground, View, Text, StyleSheet, Dimensions, Animated } from "react-native"
 import { FlatList, ScrollView } from "react-native-gesture-handler"
 import PartsButton from "../../../components/robot/store/partsButton";
 import PartsContainer from "../../../components/robot/store/partsContainer";
@@ -18,6 +18,27 @@ function RobotStore() {
     const [type, setType] = useState("afstand")
     const [showModalTemp, setShowModalTemp] = useState(true)
     const isFocused = useIsFocused();
+    const animationRef = useRef(new Animated.Value(-30)).current;  // Initial value for animation
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.timing(animationRef, {
+                toValue: -270,
+                duration: 700,  // Duration of animation
+                useNativeDriver: false,  // You need to set this as false as layout props aren't supported on the native thread
+            }),
+            Animated.timing(animationRef, {
+                toValue: 30,
+                duration: 1000,  // Duration of animation
+                useNativeDriver: false,  // You need to set this as false as layout props aren't supported on the native thread
+            }),
+            Animated.timing(animationRef, {
+                toValue: 0,
+                duration: 500,  // Duration of animation
+                useNativeDriver: false,  // You need to set this as false as layout props aren't supported on the native thread
+            })
+        ]).start();
+    }, []);
 
 
     useEffect(() => {
@@ -40,35 +61,6 @@ function RobotStore() {
                 break;
         }
     }
-    const upgradeData = [
-        {
-          type: "speed",
-          upgradeType: "Snelheid",
-          textColor: ColorsRed.red300,
-          data: speedData,
-          Completed: true,
-          backgroundColors: "rgba(255, 255, 255, 0.05)",
-          borderColors: ColorsBlue.blue1400,
-        },
-        {
-          type: "acceleration",
-          upgradeType: "Versnelling",
-          textColor: ColorsPurple.purple300,
-          data: accelData,
-          Completed: false,
-          backgroundColors: "rgba(255, 255, 255, 0.05)",
-          borderColors: ColorsBlue.blue1400,
-        },
-        {
-          type: "afstand",
-          upgradeType: "Afstand",
-          textColor: ColorsOrange.orange300,
-          data: handlingData,
-          Completed: true,
-          backgroundColors: "rgba(255, 255, 255, 0.05)",
-          borderColors: ColorsBlue.blue1400,
-        },
-    ];
 
     return (
     <View style = {styles.outerContainer}>
@@ -101,6 +93,7 @@ function RobotStore() {
                             Completed = {false}
                             backgroundColors = 'rgba(255, 255, 255, 0.05)'
                             borderColors = {ColorsBlue.blue1400}
+
                             />
                         }
                     
@@ -123,6 +116,7 @@ function RobotStore() {
                             Completed = {false}
                             backgroundColors = 'rgba(255, 255, 255, 0.05)'
                             borderColors = {ColorsBlue.blue1400}
+                            animationRef = {animationRef}
                             />
                         }
 

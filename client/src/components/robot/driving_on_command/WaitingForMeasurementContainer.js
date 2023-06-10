@@ -3,25 +3,56 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ColorsBlue } from "../../../constants/palet";
 import LoadingChat from "../../UI/LoadingChat";
 import { BlurView } from "expo-blur";
-import React from "react";
+import React, { useEffect } from "react";
+import { Text } from "react-native";
 
 
 
 const { height } = Dimensions.get('window')
-function WaitingForMeasurementContainer() {
-    
+function WaitingForMeasurementContainer({isMeasurementStarted, setBeginMeasurement, measurementType}) {
+    const [countDown, setCountDown] = React.useState(3)
     const extraStyles = {        
         textShadowColor: ColorsBlue.blue1400, 
         textShadowOffset: { width: 1, height: 3 },
         textShadowRadius: 3} 
 
+    useEffect(() => {
+        if (isMeasurementStarted && measurementType === 'free_driving') {
+            console.log('measurement started')
+            const interval = setInterval(() => {
+                setCountDown(prevCountDown => {
+                    if (prevCountDown <= 1) { // Check if countDown is 0 or less
+                        clearInterval(interval) // Clear interval if countdown reached 0
+                        setBeginMeasurement(true) // Stop the measurement
+                        return 0; // Return 0 to prevent countDown from going below 0
+                    } else {
+                        return prevCountDown - 1 // Decrease the countdown
+                    }
+                });
+            }, 1000) // Removed the array brackets around 1000
+            // 
+            return () => clearInterval(interval)
+        }
+        if (isMeasurementStarted && measurementType !== 'free_driving') {
+            setBeginMeasurement(true)
+        }
+
+    }, [isMeasurementStarted])
+
     return (
         <View style={styles.shadowContainer}>
             <BlurView style = {styles.loadingContainer} intensity={2} tint="dark">
+                {!isMeasurementStarted && 
                 <LoadingChat 
-                message = "Measurement will start shortly" 
-                extraStyles = {extraStyles}
+                    message = "Meting wordt gestart" 
+                    extraStyles = {extraStyles}
                 />
+                }
+                {isMeasurementStarted && measurementType === 'free_driving' &&
+                    <View style = {{justifyContent: 'center', flex: 1}}>
+                        <Text style = {styles.text}>METING KAN WORDEN GESTART IN {`\n\n`}{countDown}</Text>
+                    </View>
+                }
             </BlurView>
         </View>
     )
@@ -50,7 +81,16 @@ const styles = StyleSheet.create({
                 shadowColor: ColorsBlue.blue1400,
             },
         }),
-        height: height > 750 ? 520 : 400,
+        flex: height > 750 ? 4.8 : 4
+    },
+    text: {
+        color: ColorsBlue.blue100,
+        fontSize: 21,
+        textAlign: 'center',
+        textShadowColor: ColorsBlue.blue1400, 
+        textShadowOffset: { width: 1, height: 3 },
+        textShadowRadius: 3
+
     },
     loadingContainer: {
         flex: 1,

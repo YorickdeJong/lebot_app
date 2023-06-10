@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { ColorsBlue, ColorsGray, ColorsGreen, ColorsRed } from "../../../../constants/palet";
 import { View, StyleSheet, Text, Alert, TouchableOpacity } from "react-native";
 import Icon from "../../../Icon"
@@ -10,6 +10,7 @@ import { getSpecificAssignmentsDetail } from "../../../../hooks/assignmentDetail
 import QuestionB from "./QuestionB";
 import ModalMotorCriteria from "./ModalMotorCriteria";
 import { CarContext } from "../../../../store/car-context";
+import { s } from "react-native-size-matters";
 
 
 function ProjectOneCustomContainer({
@@ -35,14 +36,26 @@ function ProjectOneCustomContainer({
 
     useEffect(() => {
         async function fetchData() {
+            let failedToFilter = false;
+            let arrayAnswers
             const studentAnswerQ2 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 34, 'MOTOR');
             const studentAnswerQ5 = await getSpecificAssignmentsDetail(school_id, class_id, group_id, 36, 'MOTOR');
     
             let studentAnswerQ2Filtered, studentAnswerQ5Filtered;
 
-            studentAnswerQ2Filtered = studentAnswerQ2.answers_open_questions.filter(answer => answer !== null)
-            studentAnswerQ5Filtered = studentAnswerQ5.answers_open_questions.filter(answer => answer !== null)
+            try {
+                studentAnswerQ2Filtered = studentAnswerQ2.answers_open_questions.filter(answer => answer !== null)
+                studentAnswerQ5Filtered = studentAnswerQ5.answers_open_questions.filter(answer => answer !== null)
+            }
+            catch (error) {
+                studentAnswerQ2Filtered = 0.34;
+                studentAnswerQ5Filtered = 0.014;
+                failedToFilter = true;
+            }
 
+            console.log('StudentAnswerQ2', studentAnswerQ2Filtered)
+
+            // set answers if student's values are too incorrect
             if (Math.abs(studentAnswerQ2Filtered) > 0.42) {
                 studentAnswerQ2Filtered = studentAnswerQ2Filtered > 0 ? 0.35 : -0.35
             }
@@ -51,8 +64,15 @@ function ProjectOneCustomContainer({
                 studentAnswerQ5Filtered = studentAnswerQ5Filtered > 0 ? 0.015 : -0.015
             }
 
-            const arrayAnswers = [studentAnswerQ2Filtered[studentAnswerQ2Filtered.length - 1].answer, 
-            studentAnswerQ5Filtered[studentAnswerQ5Filtered.length - 1].answer]
+            if (failedToFilter) {
+                arrayAnswers = [studentAnswerQ2Filtered, studentAnswerQ5Filtered]
+            }
+            else {
+                arrayAnswers = [
+                    studentAnswerQ2Filtered[studentAnswerQ2Filtered.length - 1].answer, 
+                    studentAnswerQ5Filtered[studentAnswerQ5Filtered.length - 1].answer
+                ]
+            }
             setAnswersStudent(arrayAnswers)
         }
         fetchData()
@@ -82,8 +102,8 @@ function ProjectOneCustomContainer({
     const maxTriesOne = 4;
     const maxTriesTwo = 2;
     
-    useEffect(() => {
-        async function fetchData() {
+    const fetchData = useCallback(async () => {
+        try {
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, assignment_id, subject);
             
             if (data && data.answers_open_questions.length > 0) {
@@ -111,6 +131,12 @@ function ProjectOneCustomContainer({
                   setIndexEquality([...indexEquality]);
             }
         }
+        catch (error) {
+            return;
+        }
+    }, [school_id, class_id, group_id, assignment_id, subject, indexEquality]);
+    
+    useEffect(() => {
         fetchData();
     }, [])
 
@@ -210,6 +236,13 @@ function ProjectOneCustomContainer({
         setToggleModal(false);
     }
 
+    const formatText = (text) => {
+        const splitText = text.split('¿');
+        return splitText.map((text, index) => 
+            <Text key={index} style={index % 2 === 1 ? styles.boldText : styles.regularText}>{text}</Text>
+        );
+    }
+    
     //set input container like: motornumber,eis1,eis2,etc.
     return (
         <View>
@@ -222,7 +255,7 @@ function ProjectOneCustomContainer({
 
             <View style={styles.descriptionContainer}>
                 <Text style = {styles.question}>
-                    {questions[0]}
+                    {formatText(questions[0])}
                 </Text>
             </View>
 
@@ -290,35 +323,38 @@ function ProjectOneCustomContainer({
             <TouchableOpacity onPress={() => checkAnswerHandler()} style = {styles.createButton}>
                 <Text style={styles.buttonText}>{'Check Antwoord'}</Text>
             </TouchableOpacity>
+            {(numberAnsweredCorrectSigns === 8 || filteredTryEqualities === 4) &&
+                <>
+                    <View style = {{marginHorizontal: 12}}>
+                        <View style = {[styles.border, {borderWidth: 0.5}]}/>
+                    </View>
+                    
+                    <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 18}}>
+                        <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTriesTwo}</Text>
+                        <Text style = {[styles.tries, {marginTop: 5, color: ColorsGray.gray300}]}>Credits: €{currency}</Text>
+                    </View>
+                    
+                    <View style={styles.descriptionContainer}>
+                        <Text style = {styles.question}>
+                            {questions[1]}
+                        </Text>
+                    </View>
 
-            <View style = {{marginHorizontal: 12}}>
-                <View style = {[styles.border, {borderWidth: 0.5}]}/>
-            </View>
-            
-            <View style = {{flexDirection: 'row', justifyContent: 'space-between', marginHorizontal: 18}}>
-                <Text style = {[styles.tries, {marginTop: 5}]}>Pogingen: {filteredTry ? filteredTry : 0 }/{maxTriesTwo}</Text>
-                <Text style = {[styles.tries, {marginTop: 5, color: ColorsGray.gray300}]}>Credits: €{currency}</Text>
-            </View>
-            
-            <View style={styles.descriptionContainer}>
-                <Text style = {styles.question}>
-                    {questions[1]}
-                </Text>
-            </View>
+                    <View style = {{marginVertical: 12,}}/>
 
-            <View style = {{marginVertical: 12,}}/>
-
-            <QuestionB 
-                currency = {currency}
-                getBackgroundColor = {getBackgroundColor}
-                maxTriesTwo = {maxTriesTwo}
-                input = {input}
-                setInput = {setInput}
-                validateInput = {validateInput}
-                filteredTry = {filteredTry}
-                correctAnswers = {correctAnswers}
-            />
-
+                    
+                    <QuestionB 
+                        currency = {currency}
+                        getBackgroundColor = {getBackgroundColor}
+                        maxTriesTwo = {maxTriesTwo}
+                        input = {input}
+                        setInput = {setInput}
+                        validateInput = {validateInput}
+                        filteredTry = {filteredTry}
+                        correctAnswers = {correctAnswers}
+                    />
+                </>
+            }
 
             <ModalOptions 
                 toggleModal={toggleModal}
@@ -378,5 +414,11 @@ const styles= StyleSheet.create({
         borderColor: `rgba(33, 33, 100, 0.7)`,
         marginVertical: 10,
     },
-
+    boldText: {
+        fontWeight: 'bold',
+        color: ColorsBlue.blue600
+    },
+    regularText: {
+        fontWeight: 'normal',
+    }
 })

@@ -1,5 +1,5 @@
     import { LinearGradient } from "expo-linear-gradient"
-import { Alert, StyleSheet, View } from "react-native"
+import { Alert, Animated, StyleSheet, View } from "react-native"
 import { FlatList } from "react-native-gesture-handler"
 import { ColorsBlue, ColorsDarkerBlue, ColorsTile } from "../../../constants/palet"
 import AssignmentTile from "../../assignments/questions/AssignmentTile"
@@ -11,7 +11,7 @@ import { CarContext } from "../../../store/car-context"
 import { changeUserCarDetails } from "../../../hooks/carDetails"
 import BlurWrapper from "../../UI/BlurViewWrapper"
 
-const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundColors, borderColors, textColor}) => {
+const UpgradeContainer = React.memo(({animationRef, upgradeType, Completed, data, backgroundColors, borderColors, textColor}) => {
     const carCtx = useContext(CarContext);
 
     // Set colors for upgradeTab, once an item is bot the sqaure becomes 
@@ -103,14 +103,16 @@ const UpgradeContainer = React.memo(({upgradeType, Completed, data, backgroundCo
                 </View>
                 <View style = {styles.outerFlatlist}>
                     <View style={styles.flatList}>
-                    <FlatList 
-                        horizontal
-                        data={data}
-                        keyExtractor = {(item) => item.id}
-                        numColumns = {1}
-                        renderItem = {renderUpgrades} 
-                        showsHorizontalScrollIndicator={false}
-                    />
+                        <Animated.View style = {{flex: 1, marginLeft: animationRef}}>
+                            <FlatList 
+                                horizontal
+                                data={data}
+                                keyExtractor = {(item) => item.id}
+                                numColumns = {1}
+                                renderItem = {renderUpgrades} 
+                                showsHorizontalScrollIndicator={false}
+                            />
+                        </Animated.View>
                     </View>
                 </View>
             </BlurWrapper>

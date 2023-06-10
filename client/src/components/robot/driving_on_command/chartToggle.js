@@ -1,5 +1,5 @@
 import { StyleSheet, View, Text, TouchableOpacity} from "react-native"
-import { ColorsBlue } from "../../../constants/palet";
+import { ColorsBlue, ColorsGreen, ColorsRed } from "../../../constants/palet";
 
 
 function ChartToggle({ graphName, toggleChart, toggleChartSettings, extraStyle, notShowBorder }) {
@@ -10,10 +10,11 @@ function ChartToggle({ graphName, toggleChart, toggleChartSettings, extraStyle, 
                 <Text style={styles.text}>{graphName}</Text>
                 </View>
                 <TouchableOpacity onPress={toggleChartSettings} style={{ marginRight: 10 }}>
-                <View style={styles.stopContainer}>
+                <View style={[styles.stopContainer, {borderColor: !toggleChart ? ColorsRed.red600 : ColorsGreen.green700 }]}>
                     <View
                     style={[
                         styles.stopCircle,
+                        {backgroundColor: !toggleChart ? ColorsRed.red600 : ColorsGreen.green700 },
                         toggleChart ? styles.stopCircleActive : {},
                     ]}
                     />
@@ -52,7 +53,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         borderWidth: 2,
         marginLeft: 30,
-        borderColor: ColorsBlue.blue100,
         
     },
     stopCircle: {
@@ -60,7 +60,6 @@ const styles = StyleSheet.create({
         height: 16,
         borderRadius: 16,
         marginRight: 2,
-        backgroundColor: ColorsBlue.blue200,
     },
     stopCircleActive: {
         transform: [{ translateX: 20 }],

@@ -41,11 +41,11 @@ export const ASSIGNMENT_EXPLANATION = {
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_11: {
-        answer: `Goed gedaan! Jullie hebben de motoren aan de praat gekregen! Het is nu tijd voor onderzoek. Het is aan jou en je team de taak om uit te zoeken wat de bewegingseigenschappen zijn van de motoren. §Verder is het belangrijk dat jullie kennis op gelijke hoogte is. Op het volgende scherm gaan jullie brainstormen over snelheid en versnelling. §Door tests goed uit te voeren, kan je geld verdienen om uit te geven in de rover shop. Hier kan je de rover upgraden, in project 3 ga je namelijk racen tegen andere crews. `,
+        answer: `Goed gedaan! Jullie hebben de motoren aan de praat gekregen! Het is nu tijd voor ¿onderzoek¿. Het is aan jou en je team de taak om uit te zoeken wat de bewegingseigenschappen zijn van de motoren. §Verder is het belangrijk dat jullie kennis op gelijke hoogte is. Op het volgende scherm gaan jullie ¿brainstormen over snelheid, versnelling en de bijbehorende wiskunde¿. §¿Door tests goed uit te voeren, kan je geld verdienen om uit te geven in de rover shop.¿ Hier kan je de rover upgraden, in project 3 ga je namelijk racen tegen andere crews. `,
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_12: {
-        answer: `We hebben helaas net te horen gekregen dat 1 van de motoren kapot is gegaan. Gelukkig heb jij samen met je team al metingen gedaan met goed werkende motoren. Hierdoor kon ik een paar eisen vaststellen voor een goed werkende motor§ Op de volgende pagina kan je deze eisen bekijken door op het plus icoontje te drukken.`,
+        answer: `We hebben helaas net te horen gekregen dat ¿1 van de motoren kapot is gegaan¿. Gelukkig heb jij samen met je team al metingen gedaan met goed werkende motoren. Hierdoor kon ik een paar ¿eisen vaststellen voor een goed werkende motor¿§ Op de volgende pagina kan je deze ¿eisen bekijken door op het plus icoontje te drukken.¿`,
         thread_id: 15,
     },
     ASSIGNMENTQUESTIONSINTRO_21: {

@@ -69,7 +69,7 @@ function Root({}) {
     const [isTryingLogin, setIsTryingLogin] = useState(true);
     const authCtx = useContext(AuthContext);
     const colorCtx = useContext(ColorContext)
-    const { socket, CreateSocketConnection, } = useContext(SocketContext);
+    const { socket, CreateSocketConnection, isConnected, isConnectedViaSSH} = useContext(SocketContext);
     const userprofileCtx = useContext(UserProfileContext);
     const {user_role} = userprofileCtx.userprofile;
 
@@ -110,7 +110,7 @@ function Root({}) {
           }
 
       };
-  }, []);
+  }, [isConnected, isConnectedViaSSH]);
 
 
     // move to auth context

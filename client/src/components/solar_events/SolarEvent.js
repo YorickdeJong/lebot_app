@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Image, Animated, Easing, StyleSheet, ImageBackground, Text, Alert} from 'react-native';
+import { View, Image, Animated, Easing, StyleSheet, ImageBackground, Text, Alert, Dimensions} from 'react-native';
 import { ColorsBlue, ColorsGreen, ColorsOrange } from '../../constants/palet';
 import SolarModal from './SolarModal';
 import ButtonList from '../UI/ButtonList.UI';
 
+const { width, height } = Dimensions.get('window');
 function SolarEvent({ isFocused , prevSlideHandler, }) {
     const fadeAnim = new Animated.Value(1);
     
@@ -249,10 +250,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     image: {
-        width: '100%',
+        width: width,
         height: '100%',
-        resizeMode: 'cover',
-        position: 'absolute',
+        resizeMode: 'contain',
     },
     title: {
         fontSize: 28,

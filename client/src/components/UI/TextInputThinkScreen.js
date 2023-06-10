@@ -1,6 +1,7 @@
 
 import {View, Text, StyleSheet, TextInput, Dimensions} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../constants/palet'
+import React from 'react'
 
 
 
@@ -22,7 +23,7 @@ function TextInputThinkScreen({questions, inputText, setInputText, height}) {
     )
 }
 
-export default TextInputThinkScreen
+export default React.memo(TextInputThinkScreen)
 
 const styles = StyleSheet.create({
     textInput: {

@@ -51,6 +51,7 @@ export async function deleteGroupUser(user_id) {
 export async function deleteGroupInfo(group_id) {
   try {
     const response = await axios.delete(groupUserUrl +  `/group/${group_id}`);
+    console.log('deleted all users from group')
     return response.data[0];
   } 
   catch (error) {

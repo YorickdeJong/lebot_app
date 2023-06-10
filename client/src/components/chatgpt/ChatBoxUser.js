@@ -1,12 +1,19 @@
 
-import {View, Text, StyleSheet, Image} from 'react-native'
+import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../constants/palet'
 
 function ChatBoxUser({ question }) {
   return (
     <View style={styles.textBox}>
         <View style={styles.userTextBox}>
-            <Text style={styles.userText}>{question}</Text>
+            <TouchableOpacity>
+                <Text 
+                style={styles.userText}
+                selectable={true}
+                >
+                {question}
+                </Text>
+            </TouchableOpacity>
         </View>
         <View>
             <Image

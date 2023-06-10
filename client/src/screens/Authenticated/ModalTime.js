@@ -12,7 +12,7 @@ function CountDownModal({lesson}) {
     const timeCtx = useContext(TimeContext);
     const [timeLeft, setTimeLeft] = useState(0);
     const userprofileCtx = useContext(UserProfileContext)
-    const {school_id, class_id} = userprofileCtx.userprofile.class_id
+    const {class_id} = userprofileCtx.userprofile
     const currentActiveLessonData = timeCtx.filterSpecificLesson(class_id)
 
     useEffect(() => {

@@ -19,12 +19,12 @@ function BlinkContextProvider({ children }) {
             const anim = Animated.loop(
                 Animated.timing(colorAnimation, {
                     toValue: 1,
-                    duration: 2000,
+                    duration: 800,
                     easing: Easing.linear,
                     useNativeDriver: false,
                 }),
                 {
-                    iterations: 3,
+                    iterations: 6,
                 }
             ).start(() => {
                 // Callback function to set shouldBlink to false once the animation is finished

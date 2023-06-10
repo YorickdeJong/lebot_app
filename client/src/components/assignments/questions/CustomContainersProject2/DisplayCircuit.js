@@ -217,7 +217,8 @@ export default DisplayCircuit
 const styles = StyleSheet.create({
     outerContainer: {
         flex: 1,
-        paddingBottom: 10
+        paddingBottom: 10,
+        borderRadius: 20,
     },
     battery: {
         position: 'absolute',
@@ -248,6 +249,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         justifyContent: 'center',
         zIndex: 1,
+        borderRadius: 20
     },
     ProtectionDevice: {
         position: 'absolute',
@@ -258,7 +260,7 @@ const styles = StyleSheet.create({
         borderColor: ColorsBlue.blue900,
         borderWidth: 1,
         justifyContent: 'center',
-        borderRadius: 15,
+        borderRadius: 20,
         zIndex: 1,
     },
     lineVertical: {
@@ -275,12 +277,7 @@ const styles = StyleSheet.create({
     },
     header: {
         height: 45,
-        backgroundColor: `rgba(25, 25, 85, 0.6)`, //`rgba(45, 45, 85, 0.6)`,
-        shadowColor: `rgba(11, 11, 11)`,
-        shadowOffset: {height: 2, width: 0},
-        shadowOpacity: 1,
-        shadowRadius: 3,
-        elevation: 2,
+        backgroundColor: ColorsBlue.blue1250, //`rgba(45, 45, 85, 0.6)`,
     },
     headerText: {
         color: ColorsBlue.blue100,
@@ -288,20 +285,20 @@ const styles = StyleSheet.create({
         paddingTop: 6,
         paddingRight: 0,
         textAlign: 'center',
-        fontWeight: '300',
+        fontWeight: 'bold',
     },
     container: {
-        backgroundColor: 'rgba(0, 0, 15, 0.8)',
-        marginTop: 16,
-        marginVertical: 8,
+        backgroundColor: 'rgba(8, 8, 40, 1)',
         height: 300,
         borderWidth: 1,
-        borderColor: `rgba(77, 77, 77, 0.5)`,
+        borderColor: `rgba(77, 77, 77, 0.2)`,
         shadowColor: `rgba(11, 11, 11)`,
         shadowOffset: {height: 1, width: 0},
         shadowOpacity: 1,
         shadowRadius: 3,
         elevation: 2,
         marginHorizontal: 8,
+        borderRadius: 20,
+        overflow: 'hidden'
     }
 })

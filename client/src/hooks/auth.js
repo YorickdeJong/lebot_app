@@ -102,6 +102,7 @@ export async function changeUserProfile(userProfile) {
 export async function updateGroupIDForUsers(group_id) {
     try {
         const response =  await axios.put(url + `users/group/${group_id}`)
+        console.log('updated group id for users')
         return response.data
     }
     catch (error){

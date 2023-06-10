@@ -9,12 +9,20 @@ import WaitingForMeasurementContainer from "./WaitingForMeasurementContainer"
 import PowerOffContianer from "./PowerOffContainer"
 import { ChartContext } from "../../../store/chart-context"
 import BlurWrapper from "../../UI/BlurViewWrapper"
+import { SafeAreaView } from "react-native-safe-area-context"
 
-const { width, height } = Dimensions.get('window');
-function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assignmentNumber}) {
+const { width, height } = Dimensions.get('screen');
+function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assignmentNumber, measurementType}) {
     const socketCtx = useContext(SocketContext)
     const chartCtx = useContext(ChartContext)
+    const [beginMeasurement, setBeginMeasurement] = React.useState(false)
 
+    console.log('measurementType', measurementType)
+    useEffect(() => {
+        if (!socketCtx.power) {
+            setBeginMeasurement(false)
+        }
+    }, [socketCtx.power])
     return (
         <View style={styles.container}>
         <ImageBackground
@@ -22,45 +30,51 @@ function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assig
             style= {styles.background}
             imageStyle={{opacity: 0.8}}
             >
-                <OptionsBar
-                    midIconHandler = {midIconHandler}
-                    moveHandler = {moveHandler}
-                    displayNumber = {displayNumber}
-                    subject={subject}
-                    assignmentNumber = {assignmentNumber}
-                />
-                {socketCtx.power && socketCtx.isConnected ? (
-                    //Display charts if first data is send, otherwise loading screen
-                    socketCtx.isMeasurementStarted && 
-                    chartCtx.chartData && // Check if chartData exists
-                    chartCtx.chartData.distance_time && // Check if distance_time exists
-                    chartCtx.chartData.distance_time[0] && // Check if it has at least one element
-                    chartCtx.chartData.distance_time[0].length !== undefined ? (
-                    <View style={styles.shadowContainer}>
-                        <BlurWrapper style = {styles.loadingContainer} intensity={15} tint="dark">
-                            <ChartDisplay 
-                            chartData = {chartCtx.chartData}
-                            chartToggle = {chartCtx.chartToggle}
-                            trueCount = {chartCtx.trueCount}
-                            displayChart = {390}
-                            subject = {subject}
+            <SafeAreaView style = {{flex: 1}}
+            edges={['top']}>
+                    <OptionsBar
+                        midIconHandler = {midIconHandler}
+                        moveHandler = {moveHandler}
+                        displayNumber = {displayNumber}
+                        subject={subject}
+                        assignmentNumber = {assignmentNumber}
+                    />
+            
+                    {socketCtx.power && socketCtx.isConnected ? (
+                        //Display charts if first data is send, otherwise loading screen
+                        ((beginMeasurement && measurementType === 'free_driving') || 
+                        (socketCtx.isMeasurementStarted && measurementType !== 'free_driving')) &&
+                        chartCtx.chartData.distance_time[0].length !== undefined ? (
+                        <View style={styles.shadowContainer}>
+                            <BlurWrapper style = {styles.loadingContainer} intensity={15} tint="dark">
+                                <ChartDisplay 
+                                chartData = {chartCtx.chartData}
+                                chartToggle = {chartCtx.chartToggle}
+                                trueCount = {chartCtx.trueCount}
+                                displayChart = {390}
+                                subject = {subject}
+                                />
+                            </BlurWrapper>
+                        </View>
+                        ) : (
+                            <WaitingForMeasurementContainer 
+                            isMeasurementStarted = {socketCtx.isMeasurementStarted}
+                            setBeginMeasurement = {setBeginMeasurement}
+                            measurementType = {measurementType}
                             />
-                        </BlurWrapper>
-                    </View>
+                        )
                     ) : (
-                        <WaitingForMeasurementContainer />
-                    )
-                ) : (
-                    <PowerOffContianer />
-                )}
+                        <PowerOffContianer />
+                    )}
 
-                {/* TODO: change controller for windmill, maybe also change background image to be more like a windmill */}
-                <ControlPad 
-                displayNumber = {displayNumber}
-                moveHandler={moveHandler}/> 
+                    {/* TODO: change controller for windmill, maybe also change background image to be more like a windmill */}
+                    <ControlPad 
+                    displayNumber = {displayNumber}
+                    moveHandler={moveHandler}
+                    /> 
+            </SafeAreaView>
         </ImageBackground>
     </View>
-   
     )
 }
 
@@ -70,7 +84,6 @@ export default React.memo(DriveLayout)
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        paddingTop: '10%'
     },
     container: {
         backgroundColor: ColorsBlue.blue1100, 
@@ -103,6 +116,7 @@ const styles = StyleSheet.create({
                 borderWidth: 1.2
             }
         }),
-        height: height > 750 ? 520 : 400,
+        //height: height > 750 ? 520 : 400,
+        flex: height > 750 ? 4.8 : 4
     },
 })

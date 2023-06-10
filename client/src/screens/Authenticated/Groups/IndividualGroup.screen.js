@@ -78,12 +78,12 @@ function IndividualGroup() {
 
     useEffect(() => {
         async function fetchData() {
+            const wifiCredentials = await getRobotWifi(school_id, class_id, group_id);
             const assignments = await getGroupAssignmentDetails(school_id, class_id, group_id);
             const triesPhaseOne = assignmentDetailsCtx.getTriesAssignmentsPerPhase('MOTOR', assignments)
             const correctPhaseOne = assignmentDetailsCtx.getCorrectAnswerCount('MOTOR', assignments)
             const triesAndCountsPhaseOne = assignmentDetailsCtx.getCorrectAndTriesCount('MOTOR', assignments)
-            const wifiCredentials = await getRobotWifi(school_id, class_id, group_id);
-
+            
             if (wifiCredentials) {
                 setRobotCredentials(wifiCredentials);
             }
@@ -114,7 +114,7 @@ function IndividualGroup() {
             return;
         }
 
-        informationCtx.setShowBeginningScreen(false)
+        informationCtx.setShowBeginningScreenHandler(false)
         navigation.navigate('BottomMenu', {screen: 'Assignments'})
     }
 

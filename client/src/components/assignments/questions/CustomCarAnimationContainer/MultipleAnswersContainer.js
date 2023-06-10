@@ -1,7 +1,7 @@
 
 import {View, StyleSheet, Text, Alert} from 'react-native';
 import AnswerContainer from '../../../UI/AnswerContainer';
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ColorsBlue, ColorsGray, ColorsGreen, ColorsRed } from '../../../../constants/palet';
 import { UserProfileContext } from '../../../../store/userProfile-context';
 import { generateAnswerCarQ4 } from '../generateAnswers';
@@ -215,7 +215,7 @@ function MultipleAnswersContainer({questions, title, subject, setFilteredTry, fi
     )
 }
 
-export default MultipleAnswersContainer;
+export default React.memo(MultipleAnswersContainer);
 
 
 const styles= StyleSheet.create({

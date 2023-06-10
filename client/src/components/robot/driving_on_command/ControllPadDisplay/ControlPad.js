@@ -13,8 +13,10 @@ const ControlPad = ({ moveHandler, displayNumber }) => {
             <BlurView style = {styles.controller} intensity={10} tint="dark">
                 <View style = {styles.outercontainer}>
                     <View />
-                        {displayNumber === 1 && <CarPad 
-                        moveHandler = {moveHandler}/>}
+                        {displayNumber === 1 && 
+                        <CarPad 
+                        moveHandler = {moveHandler}
+                        />}
                     <View />
                 </View>
             </BlurView>
@@ -38,7 +40,7 @@ const styles = StyleSheet.create({
                 shadowColor: ColorsBlue.blue1400,
             },
         }),
-        flex: 1
+        flex: 1.1
     },
     outercontainer: {
         justifyContent: 'space-between',

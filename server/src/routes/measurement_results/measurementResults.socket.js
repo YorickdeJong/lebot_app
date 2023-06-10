@@ -9,34 +9,38 @@ function listenToClientMeasurementResults(io) {
 
     measurementResultsNamespace.on('connection', (socket) => {
         console.log('Client connected to measurement-results namespace');
-
-        socket.on('user-profile-id', async (user_profile_id) => {
-            console.log(user_profile_id)
-            socket.user_profile_id = user_profile_id;
-
+    
+        socket.on('group-movement-measurement', async (group_id) => {
+            console.log(group_id)
+            socket.group_id = group_id;
+    
+            // Join the socket to the room identified by group_id.
+            socket.join(group_id);
+    
             const client = await pool.connect();
-
+    
             async function setupNotificationListener(client) {
                 await client.query('LISTEN measurement_results_channel');
                 
                 client.on('notification', async (msg) => {
-                    const measurementResults = await getLatestMeasurementResult(client, socket.user_profile_id);
+                    const measurementResults = await getLatestMeasurementResult(client, socket.group_id);
                     
                     if (measurementResults.error) {
                         console.error(measurementResults.error);
                         socket.emit('sshConnectionStatus', {connected: false, message: 'Meting mislukt'})
                     } 
                     else {
-                        socket.emit('measurement-results-update', measurementResults);
+                        // Emit to all sockets in the group_id room.
+                        measurementResultsNamespace.to(socket.group_id).emit('measurement-results-update', measurementResults);
                     }
                 });
             }
-
+    
             socket.on('disconnect', () => {
                 console.log('Client disconnected from measurement-results namespace');
                 client.release();
             });
-
+    
             setupNotificationListener(client);
         });
     });

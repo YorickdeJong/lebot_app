@@ -11,7 +11,7 @@ function PowerOffContianer() {
         <View style={styles.shadowContainer}>
             <BlurView style = {styles.loadingContainer} intensity={5} tint="dark">
                 <View style = {styles.powerOffContianer}>
-                    <Text style = {styles.powerOffText}>PRESS THE POWER BUTTON TO START A MEASUREMENT</Text>
+                    <Text style = {styles.powerOffText}>DRUK OP DE AAN KNOP OM TE BEGINNEN</Text>
                 </View>
             </BlurView>
         </View>
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
             },
 
         }),
-        height: height > 750 ? 520 : 400,
+        flex: height > 750 ? 4.8 : 4
     },
     powerOffContianer: {
         flex: 1,

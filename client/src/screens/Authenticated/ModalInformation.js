@@ -32,7 +32,7 @@ function ModalInformation({}) {
             case 0:
                 console.log('check')
                 informationCtx.setShowInformationModal(false)
-                informationCtx.setShowBeginningScreen(true)
+                informationCtx.setShowBeginningScreenHandler(true)
                 navigation.navigate('AppExplanation')
                 break;
             case 1:

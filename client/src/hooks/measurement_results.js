@@ -20,11 +20,10 @@ export async function getAllMeasurementResults(user_profile_id) {
 }
 
 
-export const useSocketMeasurementResults = (shouldConnect, user_id) => {
+export const useSocketMeasurementResults = (shouldConnect, group_id) => {
     const chartCtx = useContext(ChartContext);
     const sshSocketCtx = useContext(SocketContext);
     const socket = useRef(null);
-    const [dataCount, setDataCount] = useState(0);
 
     useEffect(() => {
         //return if socket doesn't need to be called
@@ -45,7 +44,7 @@ export const useSocketMeasurementResults = (shouldConnect, user_id) => {
         //Client successfully connected to the server
 
         newSocket.on('connect', () => {
-            newSocket.emit('user-profile-id', user_id);
+            newSocket.emit('group-movement-measurement', group_id);
             console.log('Connected to socket');
         });
     

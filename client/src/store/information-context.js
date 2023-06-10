@@ -30,6 +30,11 @@ export const InformationContextProvider = ({ children }) => {
       }
     }
 
+  const setShowBeginningScreenHandler = (value) => {
+      setShowBeginningScreen(value);
+      storeShowBeginningScreen(value);
+    }
+
     useEffect(() => {
       // load showBeginningScreen when app first renders
       loadShowBeginningScreen();
@@ -39,10 +44,7 @@ export const InformationContextProvider = ({ children }) => {
         showInformationModal,
         showBeginningScreen,
         setShowInformationModal,
-        setShowBeginningScreen: (value) => {
-          setShowBeginningScreen(value);
-          storeShowBeginningScreen(value);
-        },
+        setShowBeginningScreenHandler
     }
 
     return <InformationContext.Provider value = {values}>{children}</InformationContext.Provider>

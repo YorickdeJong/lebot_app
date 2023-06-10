@@ -16,33 +16,26 @@ function ImageContainer({
     imageHeight,
     title,
     assignment_number,
-    tokens,
     keyboardHeight,
     subject,
     chartAvailable,
     setChartAvailable,
-    redirectToMeasurementHandler,
     checkDataCorrectnessHandler,
-    blinkButton,
     performedMeasurement,
-    opacityChange,
     slideCount,
-    nextSlideHandler,
-    prevSlideHandler,
-    slideCountEnd,
-    setSlideCount,
-    slideTotal,
-    currentSlidePosition,
-    isKeyboardOpen,
+    isKeyboardOpen, 
+    swiperRef,
+    currentIndex,
+    setCurrentIndex,
+    setIsLoading,
+    isLoading
   }) {
     const chartCtx = useContext(ChartContext);
     const [isFetched, setIsFetched] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-    const [currentIndex, setCurrentIndex] = useState(0);
     const isFocused = useIsFocused();
     const chartLength = chartCtx.finalChartData.length;
     // const flatListRef = useRef(null);
-    const swiperRef = useRef(null);
+
     const userprofileCtx =  useContext(UserProfileContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
     const [alertShown, setAlertShown] = useState(false);
@@ -111,93 +104,21 @@ function ImageContainer({
         if (!isFocused || isFetched) {
             return;
         }
-        setIsLoading(true);
         setIsFetched(false);
 
-        if (chartLength === 0) {
-            setChartAvailable(false);
-        }
-        else {
-            setChartAvailable(true);
-        }
+        // if (chartLength === 0) {
+        //     setChartAvailable(false);
+        // }
+        // else {
+        //     setChartAvailable(true);
+        // }
     
         fetchData();
     }, [assignment_number, isFocused, chartCtx.finalChartData, slideCount]);
   
-    const deleteImageHandler = useCallback(async () => {
-        const {recordNumber} = chartCtx.finalChartData[currentIndex];
-        console.log('CURRENTCHARTDATA: ', recordNumber);
-
-        Alert.alert(
-          'Let Op!',
-          'Weet je zeker dat je deze meting wilt verwijderen?',
-          [
-              {
-                  text: 'No',
-                  onPress: () => {},
-                  style: 'cancel',
-              },
-              {
-                  text: 'Yes',
-                  onPress: async () => {
-                      try {
-                        if (subject === "MOTOR"){
-                            if (!recordNumber) {
-                              Alert.alert('Produce data before deleting an image');
-                              return;
-                            }
-                            await deleteMeasurementResult(recordNumber)
-                              .then(() => {
-                                console.log(`deleted image with record_number: ${recordNumber}`);
-                                chartCtx.setFinalChartData(
-                                  chartCtx.finalChartData.filter(
-                                    (data) => data.recordNumber !== recordNumber
-                                  )
-                                );
-                                console.log(`deleted image from local app wide state`);
-                                setIsLoading(false);
-                              })
-                              .catch((error) => {
-                                console.log(error);
-                                setIsLoading(false);
-                              });
-                            
-                        }
-
-                        if (subject === "CAR"){
-                            if (!recordNumber) {
-                              Alert.alert('Produce data before deleting an image');
-                              return;
-                            }
-                            await deletePowerMeasurementResult(recordNumber)
-                              .then(() => {
-                                console.log(`deleted image with record_number: ${recordNumber}`);
-                                chartCtx.setFinalChartData(
-                                  chartCtx.finalChartData.filter(
-                                    (data) => data.recordNumber !== recordNumber
-                                  )
-                                );
-                                console.log(`deleted image from local app wide state`);
-                                setIsLoading(false);
-                              })
-                              .catch((error) => {
-                                console.log('failed to delete', error);
-                                setIsLoading(false);
-                            });
-                            
-                        }
-                      }
-                      catch(error) {
-                          Alert.alert('Het is niet gelukt om de meting te verwijderen')
-                          return
-                      }
-                  }
-                }
-              ]
-          )
-    }, [subject, chartCtx.finalChartData, currentIndex]);
+   
   
-    function renderImage({ item, index }) {
+    const renderImage = useCallback(({ item, index }) => {
         let isConstant;
           if (checkDataCorrectnessHandler) {
             // isConstant = checkDataCorrectnessHandler(velocity[index]);
@@ -226,12 +147,10 @@ function ImageContainer({
                 />
             </Animated.View>
           );
-    }
+    }, [chartCtx.finalChartData, chartCtx.chartToggle, chartCtx.trueCount, checkDataCorrectnessHandler, alertShown]);
       
 
-    function onMetingPressed(index) {
-        swiperRef.current.scrollBy(index - currentIndex, true);
-    }
+
 
     if (!isFocused) {
       // setChartAvailable(false);
@@ -246,28 +165,6 @@ function ImageContainer({
           </View>
         ) : (
             <>
-            <View> 
-                  <AssignmentOptionsBar
-                    midIconHandler={deleteImageHandler}
-                    text={tokens}
-                    chartLength={chartLength}
-                    redirectToMeasurementHandler={redirectToMeasurementHandler}
-                    currentIndex={currentIndex}
-                    onMetingPressed={onMetingPressed}
-                    subject={subject}
-                    blinkButton = {blinkButton}
-                    chartAvailable={chartAvailable}
-                    performedMeasurement={performedMeasurement}
-                    opacityChange={opacityChange}
-                    slideCount = {slideCount}
-                    nextSlideHandler = {nextSlideHandler}
-                    prevSlideHandler = {prevSlideHandler}
-                    slideCountEnd = {slideCountEnd}
-                    setSlideCount = {setSlideCount}
-                    slideTotal = {slideTotal}
-                    currentSlidePosition = {currentSlidePosition}
-                  />
-            </View>
           {chartAvailable && chartLength > 0 &&
             <Swiper
               ref={swiperRef}

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {View, Text, StyleSheet, Image, TouchableOpacity, Dimensions} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../constants/palet'
 
@@ -10,7 +10,7 @@ function ChatBoxGPT({ answer: initialAnswer, isLastItem, thread_id, setTyping, t
     const updateText = useCallback(() => {
         let timer = null;
         if (isLastItem && typing && displayText.length < answerPieces[activeIndex].length) {
-            timer = setTimeout(() => setDisplayText(answerPieces[activeIndex].slice(0, displayText.length + 1)), 15);
+            timer = setTimeout(() => setDisplayText(answerPieces[activeIndex].slice(0, displayText.length + 1)), 19);
         } 
         else {
             setTyping(false);
@@ -66,7 +66,14 @@ function ChatBoxGPT({ answer: initialAnswer, isLastItem, thread_id, setTyping, t
         borderWidth: customColor ? 0 :  1
     }
 
-    const renderBubbles = useCallback(() => {
+    const formatText = (text) => {
+        const splitText = text.split('¿');
+        return splitText.map((text, index) => 
+            <Text key={index} style={index % 2 === 1 ? styles.boldText : styles.regularText}>{text}</Text>
+        );
+    }
+
+    const renderBubbles = useMemo(() => {
         let viewedBubbles = answerPieces.slice(0, activeIndex + 1);
         return viewedBubbles.map((piece, index) => (
             <React.Fragment key={index}>
@@ -81,9 +88,12 @@ function ChatBoxGPT({ answer: initialAnswer, isLastItem, thread_id, setTyping, t
                         resizeMode="cover"
                     />
                     <View style={[customColor && shadowCustom, {flex: 1, marginLeft: 50, backgroundColor: customColor}]}>
-                        <TouchableOpacity onPress={showFullText}>
+                        <TouchableOpacity   TouchableOpacity onPress={showFullText}>
                             <View style={[styles.chatGPTTextBox]}>
-                                <Text style={styles.chatGPTText}>{isLastItem && index === activeIndex ? displayText : piece}</Text>
+                                <Text 
+                                style={styles.regularText}
+                                selectable={true}
+                                >{isLastItem && index === activeIndex ? formatText(displayText) : formatText(piece)}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>  
@@ -92,14 +102,14 @@ function ChatBoxGPT({ answer: initialAnswer, isLastItem, thread_id, setTyping, t
                     index === activeIndex && index < answerPieces.length - 1 && displayText.length === piece.length ?
                     <View style={{marginTop: 40}}>
                         <TouchableOpacity onPress={() => showFullText()} style={{position: 'absolute', bottom: '3%', left: '45%'}}>
-                            <Text style={[styles.chatGPTText, {fontSize: 18}]}>Verder</Text>
+                            <Text style={[styles.regularText, {fontSize: 18}]}>Verder</Text>
                         </TouchableOpacity>
                     </View>
                     :
                     index === activeIndex && displayText.length < piece.length && 
                     <View style={{marginTop: 40}}>
                         <TouchableOpacity onPress={() => typing ? showFullTextBubble() : showFullText()} style={{position: 'absolute', bottom: '3%', left: '45%'}}>
-                            <Text style={[styles.chatGPTText, {fontSize: 18}]}>
+                            <Text style={[styles.regularText, {fontSize: 18}]}>
                                 Skip
                             </Text>
                         </TouchableOpacity>
@@ -111,7 +121,7 @@ function ChatBoxGPT({ answer: initialAnswer, isLastItem, thread_id, setTyping, t
     
     return (
         <View style={{flex: 1}}>
-            {renderBubbles()}
+            {renderBubbles}
         </View>
     );
 }
@@ -128,10 +138,7 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     chatGPTText: {
-        color: ColorsGray.gray300,
-        fontSize: 16,
-        fontWeight: '400',
-        lineHeight: 30,
+
     },
     profilePicture: {
         width: 30,
@@ -148,4 +155,16 @@ const styles = StyleSheet.create({
         elevation: 4,
         flex: 1,
     },
+    boldText: {
+        fontWeight: 'bold',
+        color: ColorsBlue.blue600,
+        fontSize: 17,
+        lineHeight: 30,
+    },
+    regularText: {
+        color: ColorsGray.gray300,
+        fontSize: 16,
+        fontWeight: '400',
+        lineHeight: 30,
+    }
 });

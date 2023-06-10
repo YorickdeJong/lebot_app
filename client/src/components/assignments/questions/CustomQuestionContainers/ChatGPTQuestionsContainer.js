@@ -1,5 +1,5 @@
 import { useIsFocused } from '@react-navigation/native';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Keyboard, Animated, View, StyleSheet, ImageBackground, Text, Alert } from 'react-native'
 import Chat from '../../../chatgpt/Chat'
 import { ColorsBlue, ColorsGray, ColorsRed } from '../../../../constants/palet';
@@ -21,7 +21,7 @@ function ChatGPTQuestionsContainer({questionData}) {
     const addAssignmentDetails = assignmentDetailsCtx.addAssignmentDetails;
     const [isCorrect, setIsCorrect] = useState(false)
     const timeCtx = useContext(TimeContext);
-    const maxTries = 2;
+    const maxTries = 100;
 
     useEffect(() => {
         async function fetchData() {
@@ -53,7 +53,7 @@ function ChatGPTQuestionsContainer({questionData}) {
 
     }, []);
 
-    const keyboardWillShow = (event) => {
+    const keyboardWillShow = useCallback((event) => {
         Animated.parallel([
         Animated.timing(keyboardHeight, {
             duration: event.duration,
@@ -61,9 +61,9 @@ function ChatGPTQuestionsContainer({questionData}) {
             useNativeDriver: false
         }),
     ]).start();
-    };
+    }, [keyboardHeight]);
     
-    const keyboardWillHide = (event) => {
+    const keyboardWillHide = useCallback((event) => {
         Animated.parallel([
         Animated.timing(keyboardHeight, {
             duration: event.duration,
@@ -71,7 +71,7 @@ function ChatGPTQuestionsContainer({questionData}) {
             useNativeDriver: false
         }),
         ]).start();
-    };
+    }, [keyboardHeight]);
     
 
     // add send data 
@@ -174,21 +174,23 @@ function ChatGPTQuestionsContainer({questionData}) {
                 size={28}
                 onPress={() => chatCtx.deleteThread_ID(6)}
                 color = {ColorsRed.red600}
-                addStyle = {{position: 'absolute', top: '9%', right: '4%'}}
+                addStyle = {{position: 'absolute', top: 12, right: 18}}
                 differentDir={true}
             />
-            <View style = {{position: 'absolute', top: '12%', left: '8%'}}>
+            <View style = {{position: 'absolute', top: 12, left: '8%'}}>
                 <Text style = {{fontSize: 20, color: ColorsGray.gray400}}>Pogingen {filteredTry}/{maxTries}</Text>
             </View>
             {userprofileCtx.userprofile.class_id &&
+            <View style = {{marginTop: 40}}>
                 <Chat 
                 inputContainer = {inputContainer}
                 validateInput = {validateInput}
                 keyboardHeight={0}
-                placeholder="Type hier je antwoord..."
+                placeholder= {isCorrect === 1 ? "Vraag Correct beantwoord" : "Type hier je antwoord..."}
                 customThread_id={6}
                 customColor = 'rgba(15, 18, 70, 1)'
                 />
+            </View>
             }
             {!userprofileCtx.userprofile.class_id &&
             <View style = {{marginHorizontal: 20, marginBottom: 40}}>
@@ -256,7 +258,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        // backgroundColor: ColorsBlue.blue1150,
         shadowOffset: { height: 3, width: 1 },
         shadowRadius: 3,
         shadowColor: ColorsBlue.blue1400,

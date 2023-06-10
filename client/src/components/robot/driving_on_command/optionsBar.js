@@ -1,8 +1,7 @@
-import { StyleSheet, View, Animated, StatusBar} from "react-native"
+import { StyleSheet, View, Animated, StatusBar, Dimensions, Alert} from "react-native"
 import Icon from "../../Icon"
-import { ColorsBlue } from "../../../constants/palet"
+import { ColorsBlue, ColorsGreen, ColorsRed } from "../../../constants/palet"
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import {  Header } from 'react-navigation-stack';
 import { BlurView } from 'expo-blur';
 import ToggleMenu from "./ToggleMenu";
@@ -10,6 +9,8 @@ import { SocketContext } from "../../../store/socket-context";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { BlinkContext } from "../../../store/animation-context";
 
+
+const {width, height} = Dimensions.get('window');
 function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
     const [isStopActive, setIsStopActive] = useState(false);
     const [hasModalClosed, setHasModalClosed] = useState(false);
@@ -20,8 +21,7 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
     const isFocused = useIsFocused();
     const opacityInterpolation = useRef(new Animated.Value(1)).current;
     const opacityInterpolationPower = useRef(new Animated.Value(1)).current;
-    const [iconButtonPower, setIconButtonPower] = useState("power");
-
+   
 
     const toggleModalOpen = () => {
         setIsStopActive(!isStopActive); 
@@ -33,6 +33,8 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
         setHasModalClosed(true);
         return;
     };
+
+
     // New color interpolation code to show data button
     useEffect(() => {
         if (assignmentNumber === 2 && subject === 'MOTOR' && isFocused) {
@@ -67,27 +69,45 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
         elevation: 4
     }
 
-    // console.log('isConnected', socketCtx.isConnected)
+    function wifiIconHandler() {
+        if (socketCtx.isConnectedViaSSH) {
+            Alert.alert('Verbonden met de robot')
+        } 
+        else {
+            Alert.alert('Niet verbonden met de robot')
+        }
+    }
 
-
+    console.log('ssh', socketCtx.isConnectedViaSSH)
+    console.log('socket', socketCtx.isConnected)
     return(    
         <View style={styles.shadowContainer}>
             <BlurView style = {styles.upperContainer} intensity={10} tint="dark">
                 <View style = {{padding: 10}}>
+                    <View style = {{position: 'absolute', top: '26%', right: '18%', zIndex: 10}}>
+                        <Icon 
+                            icon = {"wifi"} 
+                            size={height > 750 ? 35 : 31}
+                            color={socketCtx.isConnectedViaSSH ? ColorsGreen.green700 : ColorsRed.red700}
+                            onPress = {() => wifiIconHandler()}
+                            addStyle={addStyleIcon}
+                        />
+                    </View>
                     <View style = {styles.upperIcons}>
 
                         <Icon 
                         icon = {"md-arrow-back-circle"} 
-                        size={35}
+                        size={height > 750 ? 34 : 30}
                         color={ColorsBlue.blue200}
                         onPress = {() => navigation.goBack()}
                         addStyle={addStyleIcon}
                         />
                         
+
                             <Animated.View style = {{opacity: blinkCtx.shouldBlinkPowerButton ? opacityInterpolationPower.current : 1}}> 
                                 <Icon 
                                 icon = {midIcon ? midIcon : (socketCtx.power && socketCtx.isConnected && socketCtx.isConnectedViaSSH ? "pause-circle-outline" : "power")}
-                                size={42}
+                                size={height > 750 ? 40 : 36}
                                 color={blinkCtx.shouldBlinkPowerButton ? 'gold' :  ColorsBlue.blue200}
                                 onPress = {midIconHandler}
                                 differentDir={true}
@@ -97,16 +117,12 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
                     
 
                         <Animated.View style = {{opacity: blinkCtx.shouldBlinkChartModal ? opacityInterpolation.current : 1}}> 
-                            <TouchableOpacity onPress={toggleModalOpen}>
-                                <View style={[styles.stopContainer, {borderColor: blinkCtx.shouldBlinkChartModal ? 'gold' :  ColorsBlue.blue200}]}>
-                                    <View
-                                    style={[
-                                        [styles.stopCircle, {backgroundColor: blinkCtx.shouldBlinkChartModal ? 'gold' :  ColorsBlue.blue200}],
-                                        isStopActive ? styles.stopCircleActive : {},
-                                    ]}
-                                    />
-                                </View>
-                            </TouchableOpacity>
+                            <Icon 
+                                size = {height > 750 ? 30 : 27}
+                                icon = {'settings'}
+                                onPress={toggleModalOpen}
+                                color = {blinkCtx.shouldBlinkChartModal ? 'gold' :  ColorsBlue.blue200}
+                            />
                         </Animated.View>
                     </View>
                 </View>
@@ -127,7 +143,7 @@ export default React.memo(OptionsBar)
 const styles = StyleSheet.create({
     shadowContainer: {
         margin: 3,
-        marginTop: 8,
+        marginTop: 5,
         marginHorizontal: 5,
         borderRadius: 20,
         ...Platform.select({

@@ -9,6 +9,7 @@ export async function getIndividualGroup(id) {
     } 
     catch (error) {
         console.log('error while getting individual group', error);
+        throw error
     }
 }
 
@@ -29,6 +30,7 @@ export async function getGroupsPerSchool(school_id) {
     } 
     catch (error) {
         console.log('error while getting groups per school', error);
+        throw error
     }
 }
 
@@ -50,16 +52,19 @@ export async function createGroup({ name, school_id, max_count, class_id }) {
     } 
     catch (error) {
       console.log('error while updating group', error);
+      throw error
     }
 }
 
 export async function deleteGroupByID(group_id) {
     try {
         const response = await axios.delete(url + `/${group_id}`);
+        console.log('deleted group by id')
         return response.data[0];
     } 
     catch (error) {
-        console.log('Error while deleting group', error);
+        console.log('Error while deleting group', error.message);
+        throw error
     }
 }
 
@@ -70,5 +75,6 @@ export async function deleteAllGroupInClass(class_id) {
     } 
     catch (error) {
         console.log('Error while deleting all groups in class', error);
+        throw error
     }
 }

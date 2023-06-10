@@ -1,7 +1,7 @@
 import { useIsFocused, useNavigation } from '@react-navigation/native'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, Dimensions, TouchableOpacity, View, Alert } from 'react-native'
 import { ColorsBlue, ColorsGray, ColorsGreen } from '../../../constants/palet'
 import { ChartContext } from '../../../store/chart-context'
@@ -14,8 +14,10 @@ import CarAnimation from './CustomCarAnimationContainer/CarAnimation'
 import CustomMeasurementModal from '../../UI/CustomMeasurementModal'
 import { BlinkContext } from '../../../store/animation-context'
 import ChatGPTQuestionsContainer from './CustomQuestionContainers/ChatGPTQuestionsContainer'
-
-
+import ZeroVelocityPlot from './CustomQuestionContainers/ZeroVelocityPlot'
+import AssignmentOptionsBar from './assignmentOptionsBar'
+import { deleteMeasurementResult } from '../../../hooks/measurement_results'
+import { deletePowerMeasurementResult } from '../../../hooks/power_measurement.hooks'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 function Questions({ 
@@ -40,39 +42,42 @@ function Questions({
     currentExerciseLesson,
     slideTotal,
     removeTries,
-    questionTitle
+    questionTitle,
+    showZeroVelocityPlot
 }){
-    console.log(slideCount - 1 + " " + index)   
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
 
     const chartCtx = useContext(ChartContext);
     const userprofileCtx = useContext(UserProfileContext);
 
-
+    // Charts
     const opacityInterpolation = useRef(new Animated.Value(1)).current;
     const keyboardHeight = useRef(new Animated.Value(1)).current;
     const imageHeight = useRef(new Animated.Value(chartCtx.trueCount > 1 ? 560 : 340)).current; //Change these values when changing the image size
-    
     const [chartAvailable, setChartAvailable] = useState(false);
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const swiperRef = useRef(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // Animations
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
     const [showMeasurementModal, setShowMeasurementModal] = useState(false);
     const [input, setInput] = useState('');
     const blinkCtx = useContext(BlinkContext);
-
     
     //user details
     const {school_id, class_id, group_id} = userprofileCtx.userprofile
     const chartLength = chartCtx.finalChartData.length;
-    
+
     //filter out assignment∂
     const questionData = questions[assignmentNumber - 1]; //Filter for correct subject
-    
+    const subject = questionData.subject
     const [close, setClose] = useState(false);
     const [toggleInfoModal, setToggleInfoModal] = useState(false);
 
     // New color interpolation code to show data button
     useEffect(() => {
-        if (slideCount === 5 && isFocused) {
+        if (slideCount === 6 && isFocused) {
             blinkCtx.setShouldBlinkDataButton(true)
             opacityInterpolation.current = blinkCtx.colorAnimation.interpolate({
                 inputRange: [0, 0.5, 1],
@@ -102,7 +107,7 @@ function Questions({
         }).start();
     }, [isFocused, chartCtx.trueCount]);
     
-    const keyboardWillShow = (event) => {
+    const keyboardWillShow = useCallback((event) => {
         setIsKeyboardOpen(true);
         Animated.parallel([
             Animated.timing(keyboardHeight, {
@@ -116,9 +121,9 @@ function Questions({
                 useNativeDriver: false
             }),
         ]).start();
-    };
+    });
     
-    const keyboardWillHide = (event) => {
+    const keyboardWillHide = useCallback((event) => {
         setIsKeyboardOpen(false);
         Animated.parallel([
             Animated.timing(keyboardHeight, {
@@ -128,17 +133,90 @@ function Questions({
             }),
             Animated.timing(imageHeight, {
                 duration: event.duration,
-                toValue: chartCtx.trueCount > 1 ? 560 : 360, //Change these values when changing the image size
+                toValue: chartCtx.trueCount > 1 ? 570 : 380, //Change these values when changing the image size
                 useNativeDriver: false
             }),
         ]).start();
-    };
+    });
     
-    function setCloseHandler(){
+    const setCloseHandler = useCallback (() => {
         setClose(!close);
-    }
+    })
     
-    function redirectToMeasurementHandler(optionsVisible){
+    const deleteImageHandler = useCallback(async () => {
+        const {recordNumber} = chartCtx.finalChartData[currentIndex];
+        console.log('CURRENTCHARTDATA: ', recordNumber);
+
+        Alert.alert(
+          'Let Op!',
+          'Weet je zeker dat je deze meting wilt verwijderen?',
+          [
+              {
+                  text: 'No',
+                  onPress: () => {},
+                  style: 'cancel',
+              },
+              {
+                  text: 'Yes',
+                  onPress: async () => {
+                      try {
+                        if (subject === "MOTOR"){
+                            if (!recordNumber) {
+                              Alert.alert('Produce data before deleting an image');
+                              return;
+                            }
+                            await deleteMeasurementResult(recordNumber)
+                              .then(() => {
+                                console.log(`deleted image with record_number: ${recordNumber}`);
+                                chartCtx.setFinalChartData(
+                                  chartCtx.finalChartData.filter(
+                                    (data) => data.recordNumber !== recordNumber
+                                  )
+                                );
+                                console.log(`deleted image from local app wide state`);
+                                setIsLoading(false);
+                              })
+                              .catch((error) => {
+                                console.log(error);
+                                setIsLoading(false);
+                              });
+                            
+                        }
+
+                        if (subject === "CAR"){
+                            if (!recordNumber) {
+                              Alert.alert('Produce data before deleting an image');
+                              return;
+                            }
+                            await deletePowerMeasurementResult(recordNumber)
+                              .then(() => {
+                                console.log(`deleted image with record_number: ${recordNumber}`);
+                                chartCtx.setFinalChartData(
+                                  chartCtx.finalChartData.filter(
+                                    (data) => data.recordNumber !== recordNumber
+                                  )
+                                );
+                                console.log(`deleted image from local app wide state`);
+                                setIsLoading(false);
+                              })
+                              .catch((error) => {
+                                console.log('failed to delete', error);
+                                setIsLoading(false);
+                            });
+                            
+                        }
+                      }
+                      catch(error) {
+                          Alert.alert('Het is niet gelukt om de meting te verwijderen')
+                          return
+                      }
+                  }
+                }
+              ]
+          )
+    }, [subject, chartCtx.finalChartData, currentIndex]);
+
+    const redirectToMeasurementHandler = useCallback((optionsVisible) => {
         
         console.log('clicked')
         if (!school_id || !class_id || !group_id){
@@ -153,7 +231,11 @@ function Questions({
             optionsVisible(false);
         }
         setShowMeasurementModal(true);
-    }
+    })
+
+    const onMetingPressed = useCallback((index) => {
+        swiperRef.current.scrollBy(index - currentIndex, true);
+    }, [currentIndex, swiperRef]);
 
     return(
             <Animated.View style={{flex: 1, marginBottom: keyboardHeight, width: SCREEN_WIDTH}}>
@@ -162,32 +244,55 @@ function Questions({
                     showsVerticalScrollIndicator={false}>
                         <View style = {{paddingBottom: 20}}>
 
-                                {index === slideCount - 1 &&
+
+                                <View> 
+                                    <AssignmentOptionsBar
+                                        midIconHandler={deleteImageHandler}
+                                        text={questionData.tokens}
+                                        chartLength={chartLength}
+                                        redirectToMeasurementHandler={redirectToMeasurementHandler}
+                                        currentIndex={currentIndex}
+                                        onMetingPressed={onMetingPressed}
+                                        subject={subject}
+                                        blinkButton = {blinkCtx.shouldBlinkDataButton}
+                                        chartAvailable={chartAvailable}
+                                        performedMeasurement={performedMeasurement}
+                                        opacityChange={opacityInterpolation.current}
+                                        slideCount = {slideCount}
+                                        nextSlideHandler = {nextSlideHandler}
+                                        prevSlideHandler = {prevSlideHandler}
+                                        slideCountEnd = {slideCountEnd}
+                                        setSlideCount = {setSlideCount}
+                                        slideTotal = {slideTotal}
+                                        currentSlidePosition = {currentSlidePosition}
+                                        index = {index}
+                                    />
+                                </View>
+
+                                {index === slideCount - 1 && 
                                 <ImageContainer 
-                                assignment_number={questionData.assignment_number}
-                                tokens={questionData.tokens}
-                                title={questionData.title}
-                                subject={questionData.subject}
-                                imageHeight={imageHeight}
-                                keyboardHeight={keyboardHeight}
-                                setChartAvailable={setChartAvailable}
-                                chartAvailable={chartAvailable}
-                                redirectToMeasurementHandler={redirectToMeasurementHandler}
-                                checkDataCorrectnessHandler={checkDataCorrectnessHandler}  
-                                blinkButton = {blinkCtx.shouldBlinkDataButton}
-                                performedMeasurement={performedMeasurement}
-                                opacityChange = {opacityInterpolation.current}
-                                slideCount = {slideCount}
-                                nextSlideHandler = {nextSlideHandler}
-                                prevSlideHandler = {prevSlideHandler}
-                                slideCountEnd = {slideCountEnd}
-                                setSlideCount = {setSlideCount}
-                                slideTotal = {slideTotal}
-                                currentSlidePosition = {currentSlidePosition}
-                                isKeyboardOpen = {isKeyboardOpen}
+                                    imageHeight = {imageHeight}
+                                    title = {questionData.title}
+                                    assignment_number = {questionData.assignment_number}
+                                    keyboardHeight = {keyboardHeight}
+                                    subject = {subject}
+                                    chartAvailable = {chartAvailable}
+                                    setChartAvailable = {setChartAvailable}
+                                    checkDataCorrectnessHandler = {checkDataCorrectnessHandler}
+                                    performedMeasurement = {performedMeasurement}
+                                    slideCount = {slideCount}
+                                    isKeyboardOpen = {isKeyboardOpen}
+                                    swiperRef = {swiperRef}
+                                    currentIndex = {currentIndex}
+                                    setCurrentIndex = {setCurrentIndex}
+                                    setIsLoading = {setIsLoading}
+                                    isLoading = {isLoading}
                             />
                             }
-
+                            { showZeroVelocityPlot &&
+                                // show custom plot
+                                <ZeroVelocityPlot />
+                            }
 
                             { 
                             isScreenFocused && 
@@ -224,6 +329,7 @@ function Questions({
                                 questionData={questionData}
                                 assignmentNumber={assignmentNumber}
                                 slideCount = {slideCount} 
+                                index = {index}
                                 prevSlideHandler = {prevSlideHandler}
                                 nextSlideHandler = {nextSlideHandler}
                                 slideCountEnd = {slideCountEnd}

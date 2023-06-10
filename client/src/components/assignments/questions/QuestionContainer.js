@@ -1,5 +1,5 @@
 import { BlurView } from "expo-blur";;
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Alert, Platform, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { TextInput } from "react-native-gesture-handler"
 import { ColorsBlue, ColorsDarkerGreen, ColorsGray, ColorsGreen, ColorsLighterGold, ColorsRed, ColorsTile } from "../../../constants/palet"
@@ -33,6 +33,8 @@ function QuestionContainer({
     questionTitle,
     toggleInfoModal,
     setToggleInfoModal,
+    index,
+    slideCount
     }) {
     
     const [chartNumber, setChartNumber] = useState(null);
@@ -41,16 +43,16 @@ function QuestionContainer({
     const carCtx = useContext(CarContext);
     const {school_id, class_id, group_id} = userprofileCtx.userprofile;
     const assignmentDetailsCtx = useContext(AssignmentDetailsContext);
+    const addAssignmentDetails = assignmentDetailsCtx.addAssignmentDetails;
     const completionStatus = assignmentDetailsCtx.getCompletionStatusAssignment(questionData.assignment_number, questionData.title)
     const [showDescription, setShowDescription] = useState(false);
-    const addAssignmentDetails = assignmentDetailsCtx.addAssignmentDetails;
     const [filteredTry, setFilteredTry] = useState(0);
     const maxTries = 3;
     const timeCtx = useContext(TimeContext);
     const [unitText, setUnitText] = useState('eenheid')
-
-    useEffect(() => {
-        async function fetchData() {
+    
+    const fetchData = useCallback(async () => {
+        try {
             const data = await getSpecificAssignmentsDetail(school_id, class_id, group_id, questionData.assignment_id, questionData.subject);
             
             if (data && data.answers_open_questions.length > 0) {
@@ -64,8 +66,19 @@ function QuestionContainer({
                 setChartNumber(correctAnswersFromData[0].chartNumber)
             }
         }
+        catch(error) {
+            return
+        }
+    }, [school_id, class_id, group_id, questionData.assignment_id, questionData.subject])
+    
+    useEffect(() => {
+        if (index !== slideCount - 1) {
+            return
+        }
+        
         fetchData();
-    }, [])
+
+    }, [index, slideCount])
     
     useEffect(() => {
         setShowDescription(false);
@@ -74,7 +87,7 @@ function QuestionContainer({
   
     
     //define useEffect to getspefic assignment details
-    async function sendData(data, correctness, isMultipleChoice, unit) {
+    const sendData = useCallback(async (data, correctness, isMultipleChoice, unit) => {
         let answers_multiple_choice = null
         let answers_open_questions = null
 
@@ -114,9 +127,9 @@ function QuestionContainer({
             Alert.alert('Er is iets misgegaan met het beantwoorden van de vraag')
             console.log(error);
         }
-    }
+    }, [questionData, chartNumber, addAssignmentDetails, school_id, class_id, group_id])
     
-    function getBackgroundColor(correctAnswers, tries, maxTries) {
+    const getBackgroundColor = useCallback((correctAnswers, tries, maxTries) => {
         if (tries > 0 && correctAnswers === 0) {
             return ['rgba(80, 20, 10,1 )', 2.3]
         }
@@ -130,9 +143,9 @@ function QuestionContainer({
         }
 
         return ['rgba(77,77,77, 0.2)', 1];
-    }
+    })
     
-    function checkTimerActive() {
+    const checkTimerActive = useCallback(() =>{
         const activeLesson = timeCtx.filterActiveTimers(class_id);
         const {subject, planeet} = lessonSelection(activeLesson)
         
@@ -142,11 +155,11 @@ function QuestionContainer({
             return false
         }
         return true
-    }
+    }, [class_id, timeCtx.filterActiveTimers, lessonSelection])
 
-    function expandDescriptionHandler(){
+    const expandDescriptionHandler = useCallback(() =>{
         setShowDescription(!showDescription)
-    }
+    }, [showDescription, setShowDescription])
     
     let questions = '';
     
@@ -155,17 +168,13 @@ function QuestionContainer({
     }
 
     
-
-    function setInputDetails(textInput) {
+    const setInputDetails = useCallback((textInput) => {
         setInput(textInput);
-    }
+    }, [setInput])
     
     console.log('input', input)
 
-    async function validateInput(noChart) {
-        console.log('input', input)
-        console.log('filteredTry', filteredTry)
-        console.log('questionData', questionData.answer)
+    const validateInput = useCallback(async (noChart) => {
         if (!school_id || !class_id || !group_id) {
             Alert.alert('Voeg eerst een klas en group toe om vragen te kunnen beantwoorden')
             return 
@@ -228,10 +237,22 @@ function QuestionContainer({
             }
             await sendData(input, isCorrect, false)
         }
+    }, [school_id, class_id, group_id, checkTimerActive, 
+        correctAnswers, filteredTry, maxTries, input, 
+        performedMeasurement, chartNumber, chartAvailable, 
+        unitText, questionData.answer, questionData.currency, 
+        questionData.subject, questionData.assignment_number, 
+        questionData.title, generate_answer, sendData, carCtx, 
+        assignmentDetailsCtx.incrementTriesOpenQuestions])
+
+
+    const formatText = (text) => {
+        const splitText = text.split('¿');
+        return splitText.map((text, index) => 
+            <Text key={index} style={index % 2 === 1 ? styles.boldText : styles.regularText}>{text}</Text>
+        );
     }
-
-
-
+        
     const [borderColor, borderWidth] = getBackgroundColor(correctAnswers, filteredTry, maxTries);
     const inputContainer = [styles.inputContainer, {borderColor: borderColor, borderWidth: borderWidth}];
 
@@ -263,14 +284,16 @@ function QuestionContainer({
                             {!CustomContainer && 
                                 <>
                                     <View style = {[styles.border, {marginHorizontal: 20}]}/>
-                                        <View style = {{alignItems: 'center'}}>
-                                            <View style={styles.descriptionContainer}>
-                                                <Text style = {styles.question}>
-                                                    {questions ? questions[0] : questionData.question}
-                                                </Text>
-                                            </View>
+                                    <View style = {{alignItems: 'center'}}>
+                                        <View style={styles.descriptionContainer}>
+                                            <Text style = {styles.question}>
+                                                {questions ? formatText(questions[0]) : formatText(questionData.question)}
+                                            </Text>
                                         </View>
-                                    {questionData.multiple_choice  && <View style = {[styles.border, {marginTop: 20, marginHorizontal: 20, marginBottom: 10, borderWidth: 0.2}]}/>}
+                                    </View>
+                                    {questionData.multiple_choice  && 
+                                        <View style = {[styles.border, {marginTop: 20, marginHorizontal: 20, marginBottom: 10, borderWidth: 0.2}]}/>
+                                    }
                                 </>
                             }
                             
@@ -311,7 +334,7 @@ function QuestionContainer({
                             </>
                             }
 
-                            {(questionData.multiple_choice || (normal_and_multiple_choice && correctAnswers === 1)) && 
+                            {(questionData.multiple_choice || (normal_and_multiple_choice && (correctAnswers === 1 || filteredTry === maxTries))) && 
                                 <MultipleChoiceContainer 
                                     multipleChoiceOptions={questionData.options}
                                     multipleChoiceAnswers={questionData.answers_multiple_choice}
@@ -324,7 +347,9 @@ function QuestionContainer({
                                     sendData={sendData}
                                     currency={questionData.currency}
                                     checkTimerActive={checkTimerActive}
-                                />
+                                    index = {index}
+                                    slideCount = {slideCount}
+                                />  
                             }
 
                             {CustomContainer && 
@@ -473,5 +498,12 @@ const styles= StyleSheet.create({
         marginHorizontal: 8,
         borderRadius: 20,
         marginVertical: 8,
+    },
+    boldText: {
+        fontWeight: 'bold',
+        color: ColorsBlue.blue600
+    },
+    regularText: {
+        fontWeight: 'normal',
     }
 })

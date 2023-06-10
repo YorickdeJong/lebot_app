@@ -72,7 +72,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = iconColor
             tint = completionStatus ? 'dark' : 'light'
             intensity = completionStatus ? 60 : 12
-            customColor = completionStatus ? 'rgba(25,30,70,0.8)' : 'rgba(38, 4, 97,0.8)'
+            customColor = completionStatus ? 'rgba(25,30,70,0.8)' : 'rgba(48, 58, 97,0.8)'
             break;
 
         case 'Wheels':

@@ -119,6 +119,7 @@ function CarContextProvider({children}) {
     }
 
     function initializeCarDetails(carDetails) {
+        console.log('carDetails: ', carDetails)
         const { money, speed, acceleration, wheels, handling } = carDetails[0];
         const { upgrade_log } = carDetails[0];
         const carProperties = { money, speed, acceleration, wheels, handling };

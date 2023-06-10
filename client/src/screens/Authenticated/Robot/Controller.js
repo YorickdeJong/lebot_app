@@ -9,6 +9,7 @@ import { UserProfileContext } from '../../../store/userProfile-context';
 import { throttle } from 'lodash';
 import { useSocketPower } from '../../../hooks/power_measurement.hooks';
 import { useSocketMeasurementResults } from '../../../hooks/measurement_results';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 
 function Controller({ navigation, route }) {
     const socketCtx = useContext(SocketContext);
@@ -17,54 +18,112 @@ function Controller({ navigation, route }) {
     const [alertShown, setAlertShown] = useState(false);
     const moveXReceived = useRef(0);
     const moveYReceived = useRef(0);
-    const { displayNumber, startScriptCommand } = route.params;
-    const rerenderCount = useRef(0);
-
+    const { displayNumber, startScriptCommand, measurementType } = route.params;
+    const subject = assignmentCtx.assignmentImage.subject;
 
     //connect power measurement socket to database if subject is CAR
-    const shouldConnectPower = useMemo(() => assignmentCtx.assignmentImage.subject === "CAR", [assignmentCtx.assignmentImage.subject]);
-    const socketPower = useSocketPower(shouldConnectPower, userprofileCtx.userprofile.id);
+    const shouldConnectPower = useMemo(() => subject === "CAR", [assignmentCtx.assignmentImage.subject]);
+    if (subject === "CAR") {
+        const socketPower = useSocketPower(shouldConnectPower, userprofileCtx.userprofile.group_id);
+    }
 
-    const shouldConnectMeasurement = useMemo(() => assignmentCtx.assignmentImage.subject === "MOTOR", [assignmentCtx.assignmentImage.subject]);
-    const socketMeasurement = useSocketMeasurementResults(shouldConnectMeasurement, userprofileCtx.userprofile.id);
+    const shouldConnectMeasurement = useMemo(() => subject === "MOTOR", [assignmentCtx.assignmentImage.subject]);
+    if (subject === "MOTOR") {
+        const socketMeasurement = useSocketMeasurementResults(shouldConnectMeasurement, userprofileCtx.userprofile.group_id);
+    }
+    
+    useFocusEffect(
+        useCallback(() => {
+            return () => {
+                console.log('exit controller')
+                for (let i = 0; i < 5; i++) {
+                    socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
+                }
+                // socketCtx.setPower(false);
+                socketCtx.socket.current.emit('power', { message: false });
+            };
+        }, [])
+    );
 
-    const powerHandler = useCallback(() => {
-        console.log('isConnected', socketCtx.isConnected)
-        console.log('SSH CONNECTED', socketCtx.isConnectedViaSSH)
-        if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
-            Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk, ik probeer je opnieuw te verbinden')
-            socketCtx.CreateSocketConnection();
-            // Try to reconnect
-            // try {
-            
-            // }
-            // catch (err) {
-            //     console.log(err);
-            // }
-            return 
+    useEffect(() => {
+        // Here, we're saying "when a powerCheck event is received, run this callback function"
+        socketCtx.socket.current.on('powerCheck', (data) => {
+            // This is where you're handling the received data.
+            console.log('Received powerCheck: ', data.message);
+    
+            // Here, we're updating our local state to match the state we just received from the server.
+            // We're assuming that data.message is a boolean that represents the current power state.
+            socketCtx.setPower(data.message);
+        });
+    
+        // In the cleanup function, we're saying "when this component is unmounted, stop listening to powerCheck events"
+        return () => {
+            socketCtx.socket.current.off('powerCheck');
+        };
+    }, []);  
+
+
+    useEffect(() => {   
+        if (socketCtx.power) {
+            socketCtx.Command('',  startScriptCommand);
         }
-        socketCtx.setPower((prevPower) => !prevPower);
-        if (!socketCtx.power) {
-            if (startScriptCommand) {
-                socketCtx.Command('',  startScriptCommand);
-            }
-            else{
-                console.log('ERROR: subject is not defined')
-            }
-        } 
         else {
             socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
         }
-    }, [socketCtx.power]);
 
+    }, [socketCtx.power]);
+    // const powerHandler = useCallback(() => {
+    //     if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
+    //         Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk, ik probeer je opnieuw te verbinden')
+    //         return 
+    //     }
+    //     socketCtx.setPower((prevPower) => !prevPower);
+    //     if (!socketCtx.power) {
+    //         if (startScriptCommand) {
+                // socketCtx.Command('',  startScriptCommand);
+                // socketCtx.socket.current.emit('power', { message: true });
+    //         }
+    //         else{
+    //             console.log('ERROR: subject is not defined')
+    //         }
+    //     } 
+    //     else {
+    //         console.log('sent stop command')
+    //         socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
+    //         socketCtx.socket.current.emit('power', { message: false });
+    //     }
+    // }, [socketCtx.power, socketCtx.isConnected, socketCtx.isConnectedViaSSH, startScriptCommand]);
+
+    const powerHandler = useCallback(() => {
+        if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
+            Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk, ik probeer je opnieuw te verbinden')
+            return 
+        }
+    
+        // We only emit 'power' events here, not setting state.
+        if (!socketCtx.power) {
+            if (startScriptCommand) {
+                // socketCtx.Command('',  startScriptCommand);
+                socketCtx.socket.current.emit('power', { message: true });
+            } else{
+                console.log('ERROR: subject is not defined')
+            }
+        } else {
+            console.log('sent stop command')
+            // socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
+            socketCtx.socket.current.emit('power', { message: false });
+        }
+    }, [socketCtx.power, socketCtx.isConnected, socketCtx.isConnectedViaSSH, startScriptCommand]);
+
+    
     useEffect(() => {
         const interval = setInterval(() => {
-            if (socketCtx.power) {
+            if (socketCtx.power && measurementType === 'free_driving') {
                 let newKeyStroke = '';
     
                 let moveX = moveXReceived.current;
                 let moveY = moveYReceived.current;
-    
+
                 if (-1 <= moveX && moveX <= 1 && -1 < moveY && moveY <= -0.1) {
                     newKeyStroke = Math.abs(moveY.toFixed(2)) + ' w';
                 } 
@@ -100,7 +159,7 @@ function Controller({ navigation, route }) {
         moveXReceived.current = moveX;
         moveYReceived.current = moveY;
 
-        if (socketCtx.power) {
+        if (socketCtx.power && measurementType === 'free_driving') {
             let newKeyStroke = '';
 
             if (-1 <= moveX && moveX <= 1 && -1 < moveY && moveY <= -0.1) {
@@ -122,9 +181,11 @@ function Controller({ navigation, route }) {
             if (newKeyStroke) {
                 throttledEmitDriveCommand(newKeyStroke);
             }
+
+            console.log('key throttle self', newKeyStroke)
         } 
         
-        else if (!alertShown) {
+        else if (!alertShown && measurementType === 'free_driving') {
             Alert.alert(
                 'Rover staat uit',
                 'Druk eerst op de aanknop!',
@@ -140,6 +201,9 @@ function Controller({ navigation, route }) {
             );
             setAlertShown(true);
             }
+        else {
+            Alert.alert('Verkeerde Meting', "Met de meting kan je de rover niet besturen, kies 'zelf besturen'")        
+        }
     }, [socketCtx.power, alertShown, throttledEmitDriveCommand]);
 
 

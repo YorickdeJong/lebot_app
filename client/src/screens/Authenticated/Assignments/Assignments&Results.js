@@ -1,12 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
-import { Text, FlatList, StyleSheet, ImageBackground, View, Dimensions, Alert } from "react-native";
+import { Text, FlatList, StyleSheet, ImageBackground, View, Dimensions, Alert, Animated} from "react-native";
 import {assignments} from "../../../data/AssignmentData";
 import AssignmentTile from "../../../components/assignments/questions/AssignmentTile";
 import { ColorsBlue } from "../../../constants/palet";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { BlurView } from "expo-blur";
 import ButtonList from "../../../components/UI/ButtonList.UI";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { scale, verticalScale, moderateScale } from 'react-native-size-matters';
 
 
@@ -35,7 +35,27 @@ function AssignmentsResults() {
     const [selectFase, setSelectFase] = useState(1);
     const [titleFase, setTitleFase] = useState("Motoren Testen");
     const [assignmentData, setAssignmentData] = useState(firstAssignment);
-    
+    const animationRef = useRef(new Animated.Value(-30)).current;  // Initial value for animation
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.timing(animationRef, {
+                toValue: -90,
+                duration: 500,  // Duration of animation
+                useNativeDriver: false,  // You need to set this as false as layout props aren't supported on the native thread
+            }),
+            Animated.timing(animationRef, {
+                toValue: 30,
+                duration: 1000,  // Duration of animation
+                useNativeDriver: false,  // You need to set this as false as layout props aren't supported on the native thread
+            }),
+            Animated.timing(animationRef, {
+                toValue: -30,
+                duration: 500,  // Duration of animation
+                useNativeDriver: false,  // You need to set this as false as layout props aren't supported on the native thread
+            })
+        ]).start();
+    }, []);
 
 
     useEffect(() => {
@@ -105,15 +125,17 @@ function AssignmentsResults() {
                 <View style = {styles.textContainer}>
                     <Text style={[styles.text]}>{titleFase}</Text>
                 </View>
-                <View style = {styles.tileContainer}>
-                    <FlatList 
-                        horizontal
-                        data={assignmentData[0] ? assignmentData : firstAssignment} 
-                        keyExtractor = {(item) => item.assignment_id}
-                        numColumns = {1}
-                        renderItem = {renderAssignment} 
-                        showsHorizontalScrollIndicator={false}
-                    />
+                <View style={[styles.tileContainer]}>  
+                    <Animated.View style = {{flex: 1, marginLeft: animationRef }}>
+                        <FlatList 
+                            horizontal
+                            data={assignmentData[0] ? assignmentData : firstAssignment} 
+                            keyExtractor = {(item) => item.assignment_id}
+                            numColumns = {1}
+                            renderItem = {renderAssignment} 
+                            showsHorizontalScrollIndicator={false}
+                        />
+                    </Animated.View>
                 </View>
                 <ButtonList 
                     selectFase = {selectFase}

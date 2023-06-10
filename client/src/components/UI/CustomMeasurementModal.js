@@ -44,18 +44,22 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
         7: 100% of max speed
         */
         let startScriptCommand = null
+        let measurementType = null
         switch (type) {
             case '1':
                 //constant velocity
                 startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp constant_velocity.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
+                measurementType = 'constant_velocity'
                 break;
             case '2':
                 //constant acceleration
                 startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp constant_acceleration.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
+                measurementType = 'constant_acceleration'
                 break;
             case '3':
                 //free driving
                 startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp encoder_movement.launch vel_max:=${100} vel_ramp:=${vel_ramp} user_id:=${id} school_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
+                measurementType = 'free_driving'
                 break;
             case '4':
                 //power_movement
@@ -84,7 +88,8 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
             { screen: 'Controller',    
                 params: {
                     displayNumber: 1,
-                    startScriptCommand: startScriptCommand
+                    startScriptCommand: startScriptCommand,
+                    measurementType: measurementType
                 },
             }
         ) 

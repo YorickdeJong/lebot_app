@@ -51,10 +51,16 @@ function Login({route}) {
             if (user_role === 'student') {
                 const carDetails = await getUserCarDetails(userData.id);
                 console.log(carDetails)
-                carCtx.initializeCarDetails(carDetails)
-                
+
+                if (carDetails){
+                    carCtx.initializeCarDetails(carDetails)
+                }
+
                 const chatHistory = await getChatHistory(userData.id);
-                chatCtx.initializeChatHistory(chatHistory)
+                if (chatHistory) {
+                    chatCtx.initializeChatHistory(chatHistory)
+
+                }
                 
             }
             

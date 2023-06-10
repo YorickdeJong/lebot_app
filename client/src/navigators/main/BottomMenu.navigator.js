@@ -164,7 +164,7 @@ function BottomMenu() {
                 />
         }
   
-        {showIconsCtx.showIcons.chatgpt &&  
+        {/* {showIconsCtx.showIcons.chatgpt &&   */}
             <Bottom.Screen
               component={ChatScreen}
               name="ChatGPT"
@@ -206,7 +206,7 @@ function BottomMenu() {
                   headerShown: false,
               }}
           />
-        }
+        {/* } */}
 
         <Bottom.Screen
             name="DummyOne" // Add a name for the screen

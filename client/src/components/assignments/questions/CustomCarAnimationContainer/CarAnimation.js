@@ -1,6 +1,6 @@
 
 import { View, Text, StyleSheet, Dimensions, Animated, ImageBackground, Easing, InteractionManager} from 'react-native'
-import { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import BlurWrapper from '../../../UI/BlurViewWrapper';
 import { ColorsRed } from '../../../../constants/palet';
 
@@ -61,7 +61,7 @@ function CarAnimation({input, assignment_number, isFocused,}) {
 }
 
 
-export default CarAnimation
+export default React.memo(CarAnimation)
 
 
 const styles = StyleSheet.create({
