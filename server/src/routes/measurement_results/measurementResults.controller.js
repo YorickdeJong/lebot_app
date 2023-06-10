@@ -62,10 +62,10 @@ const getSpecificMeasurementResult = async (req, res) => {
 }
 
 
-const getLatestMeasurementResult = async (client, user_profile_id) => {
+const getLatestMeasurementResult = async (client, group_id) => {
 
     try {
-        const {rows} = await client.query(getLatestMeasurementResultQuery, [user_profile_id]);
+        const {rows} = await client.query(getLatestMeasurementResultQuery, [group_id]);
 
         if (rows.length === 0) {
             // return an error object instead of using res.status

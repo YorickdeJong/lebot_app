@@ -13,7 +13,7 @@ const getSpecificMeasurementResultQuery = `
 const getLatestMeasurementResultQuery = `
   SELECT mr.assignment_number, mr.distance_time, mr.velocity_time, mr.user_id, mr.title, mr.created_at, mr.type, mr.id, mr.record_number, mr.motor_number, mr.subject, mr.school_id, mr.class_id, mr.group_id FROM measurement_results mr
   INNER JOIN user_profile u ON u.id = mr.user_id
-  WHERE u.id = $1
+  WHERE mr.group_id = $1
   ORDER BY mr.created_at DESC
   LIMIT 1;
   `;

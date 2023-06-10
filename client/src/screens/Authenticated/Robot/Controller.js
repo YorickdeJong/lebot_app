@@ -31,7 +31,7 @@ function Controller({ navigation, route }) {
     if (subject === "MOTOR") {
         const socketMeasurement = useSocketMeasurementResults(shouldConnectMeasurement, userprofileCtx.userprofile.group_id);
     }
-    
+
     useFocusEffect(
         useCallback(() => {
             return () => {
@@ -39,8 +39,11 @@ function Controller({ navigation, route }) {
                 for (let i = 0; i < 5; i++) {
                     socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
                 }
-                // socketCtx.setPower(false);
+                // First, emit 'power' event with message set to false.
                 socketCtx.socket.current.emit('power', { message: false });
+    
+                // Then, immediately set local power state to false.
+                socketCtx.setPower(false);
             };
         }, [])
     );
