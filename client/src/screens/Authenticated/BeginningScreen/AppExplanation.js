@@ -34,7 +34,7 @@ function AppExplanation() {
     
     const message = [
         { 
-            answer: `Welkom! Ik zie dat dit jou eerste keer is in de app. Daarom zal ik je een rondleiding geven! \n\nOp het volgende scherm zal je afbeeldingen zien van de app, die jou een overview geven. Let goed op, dit geeft je een voorsprong op de rest.`,
+            answer: `Welkom! Ik zie dat dit jou eerste keer is in de app. Daarom zal ik je een ¿rondleiding¿ geven! \n\nOp het volgende scherm zal je ¿afbeeldingen zien van de app¿, die jou een ¿overview geven¿. Let goed op, dit geeft je een voorsprong op de rest.`,
             thread_id: 15 
         }, 
     ]

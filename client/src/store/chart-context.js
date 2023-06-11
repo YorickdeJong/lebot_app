@@ -131,7 +131,6 @@ function ChartContextProvider({children}) {
     }
 
     const setChartDataHandler = useCallback((newDataArray) => {
-        console.log('newData', newDataArray)
         setChartData(prevState => {
             // if power is off or recordNumber is zero, reset the state
             if (!socketCtx.power) {

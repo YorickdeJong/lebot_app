@@ -9,35 +9,31 @@ import {getSpecificAssignmentsDetail} from '../hooks/assignmentDetails';
 
 export const ASSIGNMENT_EXPLANATION = {
     BUILDSCREEN_1: {
-        answer: `Hey ik zie dat jij nieuw bent binnen ons bedrijf! Welkom! Ik ben een AI systeem van het team dat een ruimte rover gaat bouwen. Als het goed is ben jij samen met 2 andere aangewezen om deze taak te volbrengen. §We zullen de ruimte rover in 3 fases volbrengen: \n\nFase 1: Hierin testen we de snelheid en versnelling van de motoren. \n\nFase 2: Hierin testen we het elektriciteits netwerk van de rover. \n\nFase 3: Hierin testen we het energieverbruik en efficiëntië van de rover.`,
+        answer: `Hey ik zie dat jij nieuw bent binnen ons bedrijf! Welkom! Ik ben een AI systeem van het team dat een ¿ruimte rover¿ gaat bouwen. ¿Als het goed is ben jij samen met 2 andere aangewezen om deze taak te volbrengen.¿ §We zullen de ruimte rover in 3 fases bouwen: \n\n¿Fase 1:¿ Hierin ¿testen we de snelheid en versnelling¿ van de motoren. \n\n¿Fase 2:¿ Hierin testen we het ¿elektriciteits netwerk¿ van de rover. \n\n¿Fase 3:¿ Hierin testen we het ¿energieverbruik en efficiëntië¿ van de rover.`,
         thread_id: 6,
     },
     BUILDSCREEN_2: {
-        answer: `Elke Fase bestaat uit 4 delen die jij en je team moeten volbrengen: \n\nBouwen: Je bouwt de test opstelling waarmee jij aan de slag gaat. \n\nCodeer kennis: Je leert hier hoe je code kan schrijven om je test opstelling te laten werken. \n\nCode schrijven: Hier schrijf je de code voor de test opstelling. \n\nOnderzoek: Gebruik jouw natuur- en wiskunde kennis om de rover te verbeteren.`,
+        answer: `¿Elke Fase bestaat uit 4 delen¿ die jij en je team moeten volbrengen: \n\n¿Bouwen:¿ Je ¿bouwt de test opstelling¿ waarmee jij aan de slag gaat. \n\n¿Codeer kennis:¿ Je leert hier ¿hoe je code kan schrijven¿ om je test opstelling te laten werken. \n\n¿Code schrijven:¿ Hier ¿schrijf je de code¿ voor de test opstelling. \n\n¿Onderzoek:¿ Gebruik jouw ¿natuur- en wiskunde kennis om de rover te verbeteren.¿`,
         thread_id: 7,
     },
     BUILDSCREEN_3: {
-        answer: `Laten we beginnen met het bouwen van de eerste testopstelling. Er zijn in totaal 4 houders die in elkaar gezet moeten worden. Het is aan jou en je team om de precieze opstelling te vinden, zoals in de bovenstaan figuur. Overleg je aanpak met elkaar, success!`,
+        answer: `Laten we beginnen met het bouwen van de eerste testopstelling. Er zijn in ¿totaal 4 houders¿ die in elkaar gezet moeten worden. Het is aan jou en je team om de ¿precieze opstelling te vinden¿, zoals in de bovenstaan figuur. ¿Overleg¿ je aanpak met elkaar, success!`,
         thread_id: 8,
     },
-    BUILDSCREEN_4: {
-        answer: ' We gaan nu de motor aansluiten. Op de motor vind je een cijfer. Verbind de draden van motor 1 met de M1 aansluiting op het blauwe board. Doe hetzelfde voor motor 2, 3 en 4. Vergeet niet dat de rode draad links moet en de zwarte draad rechts. De GND aansluiten gebruiken we niet.',
-        thread_id: 9
-    },
     CODINGSCREEN_1: {
-        answer: 'Zoals je misschien gemerkt hebt, kunnen we de motoren nog niet aan zetten. Om dit te bereiken, moeten we een klein stukje code schrijven. Ik zie in onze systemen dat jij nog niet eerder gecodeerd hebt. Daarom zal ik jou en je team helpen met het schrijven van de code. §Je kan je vragen over programmeren, natuur- en wiskunde stellen door op het chatgpt icoontje rechtsonderin te klikken. Let wel op dat je mij maximaal 10 vragen per opdracht kan stellen.',
+        answer: 'Zoals je misschien gemerkt hebt, kunnen we de motoren nog niet aan zetten. Om dit te bereiken, moeten we een ¿klein stukje code schrijven.¿ Ik zie in onze systemen dat jij nog niet eerder gecodeerd hebt. Daarom zal ik jou en je team helpen met het schrijven van de code. §¿Je kan je vragen over programmeren, natuur- en wiskunde stellen door op het chatgpt icoontje rechtsonderin te klikken.¿ Let wel op dat je mij ¿maximaal 10 vragen¿ per opdracht kan stellen.',
         thread_id: 10
     },
     CODINGSCREEN_2: {
-        answer: "Hierboven zie je een Aan en Uit knop. De lamp gaat aan als je op 'Aan' klikt en gaat uit als je op 'Uit', logisch. Zo'n knop kunnen we ook gebruiken om de motoren aan en uit te zetten! §Hoe kunnen we hier code voor schrijven? We gaan hiervoor een zogenaamde 'if-else statement' voor gebruiken. Daar heb je waarschijnlijk nog nooit van gehoord. §Laten we op de volgende pagina kijken hoe een if-else statement werkt.",
+        answer: "Hierboven zie je een Aan en Uit knop. De lamp gaat aan als je op 'Aan' klikt en gaat uit als je op 'Uit', logisch. Zo'n knop kunnen we ook gebruiken om de motoren aan en uit te zetten! §¿Hoe kunnen we hier code voor schrijven?¿ We gaan hiervoor een zogenaamde ¿'if-else statement'¿ voor gebruiken. Daar heb je waarschijnlijk nog nooit van gehoord. §Laten we op de volgende pagina kijken hoe een if-else statement werkt.",
         thread_id: 11
     },
     CODINGSCREEN_3: {
-        answer: `In het bovenstaande blok is een if-else statement geschreven. Een if-else statement kan je vergelijken met een 'waar of niet waar' uitspraak. Als de uitspraak waar is, dan voeren we de actie uit die in de if-statement staat. §Is de uitspraak niet waar is? Dan voeren we de actie uit die in de else-statement staat. §Als we op de bovenstaande 'Aan'knop drukken, dan is de uitspraak tussen de haakjes van de if-statement waar, dus wordt dat stukje code uitgevoerd en gaat de lamp aan. Andersom, gaat de lamp uit.`,
+        answer: `In het bovenstaande blok is een ¿if-else statement¿ geschreven. Een ¿if-else statement kan je vergelijken met een 'waar of niet waar' uitspraak.¿ Als de ¿uitspraak waar¿ is, dan voeren we de ¿actie uit die in de if-statement¿ staat. §Is de ¿uitspraak niet waar¿ is? Dan voeren we de ¿actie uit die in de else-statement¿ staat. §Als we op de bovenstaande 'Aan' knop drukken, dan is de uitspraak tussen de haakjes van de if-statement waar, dus wordt dat stukje code uitgevoerd en gaat de lamp aan. Andersom, gaat de lamp uit.`,
         thread_id: 12
     },
     CODINGQUESTIONS_1: {
-        answer: `Het is nu tijd voor het echte werk. Zorg dat de motoren aan gaan als de schakelaar aan de rechterkant is en uitgaan als de schakelaar aan de linker kant is. \n\nTip: Motor 1 doet het al.`,
+        answer: `Het is nu tijd voor het echte werk. Zorg dat de ¿motoren aan gaan¿ als de schakelaar ¿aan de rechterkant is¿ en ¿uitgaan¿ als de ¿schakelaar aan de linker kant¿ is. \n\nTip: ¿Motor 1 doet het al.¿`,
         thread_id: 14
     },
     ASSIGNMENTQUESTIONSINTRO_11: {

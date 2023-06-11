@@ -170,8 +170,8 @@ function BottomMenu() {
               name="ChatGPT"
               options={{
                   title: ``,
-                  tabBarActiveTintColor: ColorsBlue.blue200,
-                  tabBarInactiveTintColor: ColorsBlue.blue700,
+                  tabBarActiveTintColor: ColorsBlue.blue400,
+                  tabBarInactiveTintColor: ColorsBlue.blue900,
                   tabBarIcon: ({ color }) => {
                       return (
                           <Animated.View
@@ -219,8 +219,8 @@ function BottomMenu() {
             }}
             options={{
                 title: '',
-                tabBarActiveTintColor: ColorsBlue.blue200,
-                tabBarInactiveTintColor: ColorsBlue.blue700,
+                tabBarActiveTintColor: ColorsBlue.blue400,
+                tabBarInactiveTintColor: ColorsBlue.blue900,
                 tabBarIcon: ({ color }) => {
                 return (
                     <TouchableOpacity 

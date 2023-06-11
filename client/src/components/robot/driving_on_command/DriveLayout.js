@@ -17,7 +17,6 @@ function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assig
     const chartCtx = useContext(ChartContext)
     const [beginMeasurement, setBeginMeasurement] = React.useState(false)
 
-    console.log('measurementType', measurementType)
     useEffect(() => {
         if (!socketCtx.power) {
             setBeginMeasurement(false)
@@ -42,6 +41,7 @@ function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assig
             
                     {socketCtx.power && socketCtx.isConnected ? (
                         //Display charts if first data is send, otherwise loading screen
+                        // socketCtx.isMeasurementStarted && 
                         ((beginMeasurement && measurementType === 'free_driving') || 
                         (socketCtx.isMeasurementStarted && measurementType !== 'free_driving')) &&
                         chartCtx.chartData.distance_time[0].length !== undefined ? (

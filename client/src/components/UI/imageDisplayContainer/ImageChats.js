@@ -49,16 +49,16 @@ function ImageChat({setImageCount, imageCount, fadeAnim}) {
                 />
             </Animated.View>
         }
-        {imageCount === 1 && 
+
         <TouchableOpacity 
             onPress = {() => NavigateHandler()}
-            style = {{position: 'absolute', bottom: '20.6%', right: '41%', zIndex: 10,}}
+            style = {{position: 'absolute', bottom: '20.6%', right: '40%', zIndex: 10,}}
             >
                 <Animated.View style = {{ opacity:fadeAnim}}>
-                    <Text style = {styles.text}>Begin</Text>
+                    <Text style = {styles.text}>Verder</Text>
                 </Animated.View>
         </TouchableOpacity>
-        }
+        
     </>
     )
 }

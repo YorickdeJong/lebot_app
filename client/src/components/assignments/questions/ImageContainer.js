@@ -170,7 +170,7 @@ function ImageContainer({
               ref={swiperRef}
               loop={false}
               showsPagination={true}
-              dotColor={"#000000"}
+              dotColor={ColorsBlue.blue600}
               activeDotColor={"#999999"}
               index={currentIndex}
               onIndexChanged={(index) => setCurrentIndex(index)}
@@ -185,7 +185,7 @@ function ImageContainer({
                         style={[
                           styles.dot,
                           {marginBottom: chartCtx.trueCount === 1 ? 10 : 0},
-                          i === index ? { backgroundColor: "#999999" } : { backgroundColor: "#000000" }
+                          i === index ? { backgroundColor: ColorsBlue.blue100 } : { backgroundColor: ColorsBlue.blue600 }
                         ]}
                       />
                     ))}

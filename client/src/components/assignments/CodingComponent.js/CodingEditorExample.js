@@ -59,61 +59,48 @@ else{
     });
 
     return(
-        <LinearGradient 
-                colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']}  
-                style = {styles.container}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                >
-                <ImageBackground
-                source={require('./../../../../assets/chatbackground.png')} 
-                style={
-                {flex: 1}
-                }
-                imageStyle={{opacity: slideCount >= 0 ? 0.10 : 0.15}}
-                >
-                    <AssignmentOptionsBar 
-                        slideCount = {slideCount}
-                        nextSlideHandler = {nextSlideHandler}
-                        prevSlideHandler = {prevSlideHandler}
-                        slideCountEnd = {slideCountEnd}
-                        setSlideCount = {setSlideCount}
-                        text = {{text: 'Uitleg', left: '44%' }}
-                        slideTotal = {slideTotal}
-                        currentSlidePosition = {currentSlidePosition}
-                        noPlanet = {true}
-                    />
+        <View style = {styles.container} >
+                <AssignmentOptionsBar 
+                    slideCount = {slideCount}
+                    nextSlideHandler = {nextSlideHandler}
+                    prevSlideHandler = {prevSlideHandler}
+                    slideCountEnd = {slideCountEnd}
+                    setSlideCount = {setSlideCount}
+                    text = {{text: 'Uitleg', left: '44%' }}
+                    slideTotal = {slideTotal}
+                    currentSlidePosition = {currentSlidePosition}
+                    noPlanet = {true}
+                />
 
-                    <CodeEditorScreen
-                        code={code}
-                        setCode={setCode}   
-                        section = 'knop'
-                        onPressHandler={toggleLightBulb}
-                        condition = {isOn}
-                        backgroundColor = {backgroundColor}
-                        containerBackgroundColor = {containerBackgroundColor}
-                        shadowOpacity = {shadowOpacity}
-                    />
-                    <ScrollView style = {{flex: 1, marginTop: 0}}
-                    ref={scrollViewRef}
-                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-                    >
-                            {isScreenFocused && 
-                            <>
-                           
-                                <ChatBoxGPT 
-                                answer={message.answer}
-                                isLastItem={true}
-                                thread_id={message.thread_id}
-                                setTyping={setTyping}
-                                typing={typing}
-                                extraStyle={extraStyle}
-                                />
-                            </>
-                            }
-                        </ScrollView>   
-                </ImageBackground>
-            </LinearGradient>
+                <CodeEditorScreen
+                    code={code}
+                    setCode={setCode}   
+                    section = 'knop'
+                    onPressHandler={toggleLightBulb}
+                    condition = {isOn}
+                    backgroundColor = {backgroundColor}
+                    containerBackgroundColor = {containerBackgroundColor}
+                    shadowOpacity = {shadowOpacity}
+                />
+                <ScrollView style = {{flex: 1, marginTop: 0}}
+                ref={scrollViewRef}
+                onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+                >
+                        {isScreenFocused && 
+                        <>
+                        
+                            <ChatBoxGPT 
+                            answer={message.answer}
+                            isLastItem={true}
+                            thread_id={message.thread_id}
+                            setTyping={setTyping}
+                            typing={typing}
+                            extraStyle={extraStyle}
+                            />
+                        </>
+                        }
+                    </ScrollView>   
+        </View>
     )
 }
 

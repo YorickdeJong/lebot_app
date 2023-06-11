@@ -21,6 +21,7 @@ function Controller({ navigation, route }) {
     const { displayNumber, startScriptCommand, measurementType } = route.params;
     const subject = assignmentCtx.assignmentImage.subject;
 
+
     //connect power measurement socket to database if subject is CAR
     const shouldConnectPower = useMemo(() => subject === "CAR", [assignmentCtx.assignmentImage.subject]);
     if (subject === "CAR") {
@@ -32,12 +33,18 @@ function Controller({ navigation, route }) {
         const socketMeasurement = useSocketMeasurementResults(shouldConnectMeasurement, userprofileCtx.userprofile.group_id);
     }
 
+    useEffect(() => {
+        socketCtx.setScriptCommand(startScriptCommand);
+    }, [startScriptCommand]);
+
+
     useFocusEffect(
         useCallback(() => {
             return () => {
                 console.log('exit controller')
                 for (let i = 0; i < 5; i++) {
                     socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
+                    socketCtx.socket.current.emit('closeStream');
                 }
                 // First, emit 'power' event with message set to false.
                 socketCtx.socket.current.emit('power', { message: false });
@@ -48,74 +55,20 @@ function Controller({ navigation, route }) {
         }, [])
     );
 
-    useEffect(() => {
-        // Here, we're saying "when a powerCheck event is received, run this callback function"
-        socketCtx.socket.current.on('powerCheck', (data) => {
-            // This is where you're handling the received data.
-            console.log('Received powerCheck: ', data.message);
-    
-            // Here, we're updating our local state to match the state we just received from the server.
-            // We're assuming that data.message is a boolean that represents the current power state.
-            socketCtx.setPower(data.message);
-        });
-    
-        // In the cleanup function, we're saying "when this component is unmounted, stop listening to powerCheck events"
-        return () => {
-            socketCtx.socket.current.off('powerCheck');
-        };
-    }, []);  
-
-
-    useEffect(() => {   
-        if (socketCtx.power) {
-            socketCtx.Command('',  startScriptCommand);
-        }
-        else {
-            socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
-        }
-
-    }, [socketCtx.power]);
-    // const powerHandler = useCallback(() => {
-    //     if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
-    //         Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk, ik probeer je opnieuw te verbinden')
-    //         return 
-    //     }
-    //     socketCtx.setPower((prevPower) => !prevPower);
-    //     if (!socketCtx.power) {
-    //         if (startScriptCommand) {
-                // socketCtx.Command('',  startScriptCommand);
-                // socketCtx.socket.current.emit('power', { message: true });
-    //         }
-    //         else{
-    //             console.log('ERROR: subject is not defined')
-    //         }
-    //     } 
-    //     else {
-    //         console.log('sent stop command')
-    //         socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
-    //         socketCtx.socket.current.emit('power', { message: false });
-    //     }
-    // }, [socketCtx.power, socketCtx.isConnected, socketCtx.isConnectedViaSSH, startScriptCommand]);
-
     const powerHandler = useCallback(() => {
+        console.log()
         if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
             Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk, ik probeer je opnieuw te verbinden')
             return 
         }
     
-        // We only emit 'power' events here, not setting state.
-        if (!socketCtx.power) {
-            if (startScriptCommand) {
-                // socketCtx.Command('',  startScriptCommand);
-                socketCtx.socket.current.emit('power', { message: true });
-            } else{
-                console.log('ERROR: subject is not defined')
-            }
-        } else {
-            console.log('sent stop command')
-            // socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
-            socketCtx.socket.current.emit('power', { message: false });
-        }
+        if (!startScriptCommand) {
+            console.log('ERROR: subject is not defined')
+            return
+        } 
+
+        socketCtx.socket.current.emit('power', { message: !socketCtx.power, userId: userprofileCtx.userprofile.id });
+
     }, [socketCtx.power, socketCtx.isConnected, socketCtx.isConnectedViaSSH, startScriptCommand]);
 
     

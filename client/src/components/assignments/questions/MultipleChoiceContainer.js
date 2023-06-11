@@ -22,7 +22,9 @@ function MultipleChoiceContainer({
     sendData, 
     currency,
     index, 
-    slideCount,}) {
+    slideCount,
+    answerHandler
+}) {
     const boolArray = Array.from({length: multipleChoiceOptions.length }, () => false);
     const [tileColor,  setTileColor] = useState(boolArray);
     const userprofileCtx = useContext(UserProfileContext);
@@ -94,6 +96,7 @@ function MultipleChoiceContainer({
                 subject = {subject}
                 multipleChoiceOptions = {multipleChoiceOptions}
                 multipleChoiceAnswers = {multipleChoiceAnswers}
+                answerHandler = {answerHandler}
             />
         </View>
     )

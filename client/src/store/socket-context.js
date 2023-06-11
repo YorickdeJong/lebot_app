@@ -1,9 +1,10 @@
-import { createContext, useState, useEffect, useRef } from "react";
+import { createContext, useState, useEffect, useRef, useContext } from "react";
 import {AppState, Alert} from 'react-native'
 
 import io from 'socket.io-client';
 import { fullIpAddressRaspi, ipAddressComputer, ipAddressRaspberryPi } from "../data/ipaddresses.data";
 import { set } from "react-native-reanimated";
+import { UserProfileContext } from "./userProfile-context";
 export const SocketContext = createContext({
     socket: null,
     output: '',
@@ -15,6 +16,7 @@ export const SocketContext = createContext({
     power: false,
     isMeasurementStarted: false,
     robotConnectedToWifi: false,
+    scriptCommand: '',
     CreateSocketConnection: (socket) => {},
     Disconnect: () => {},
     Command: (input, command) => {},
@@ -31,6 +33,7 @@ export const SocketContext = createContext({
 function SocketContextProvider({children}) {
     // const [socket, setSocket] = useState(null);
     const socket = useRef(null); //use useRef to not trigger a rerender
+    const [scriptCommand, setScriptCommand] = useState('');
     const [isConnected, setIsConnected] = useState(false);
     const [isConnectedViaSSH, setIsConnectedViaSSH] = useState(false);
     const output = useRef('');
@@ -40,43 +43,60 @@ function SocketContextProvider({children}) {
     const [power, setPower] = useState(false); 
     const [isMeasurementStarted, setIsMeasurementStarted] = useState(false);
     const [isAlertShown, setIsAlertShown] = useState(false);
-
-
+    const userprofileCtx = useContext(UserProfileContext);
+    const user_id = userprofileCtx.userprofile.id;
+    const startCommandSent = useRef(false);
     const SOCKET_SERVER_URL = fullIpAddressRaspi;
-    
-    // This effect sets up event listeners when socket.current changes.
-    // It also cleans up these listeners when socket.current changes.
+
+
+    // This effect will run each time `user_id` or `socket.current` changes.
     useEffect(() => {
+        // Check if the socket is set
         if (socket.current) {
-            if (!isMeasurementStarted) {
-                socket.current.on('measurementStarted', (data) => {
-                    if(data.message === 'Measurement started') {
-                        console.log('Measurement Started, DATA RECEIVED')
-                        setIsMeasurementStarted(true)
+            socket.current.on('measurementStarted', (data) => {
+                // Update local state to match received state
+                setIsMeasurementStarted(data.message);
+                
+            });
+            
+            socket.current.on('powerCheck', (data) => {  
+                setPower(data.message);
+
+                if (data.message) {
+                    // If the user ID sent by the server matches our ID, send the start command
+                    if (data.userId === user_id && !startCommandSent.current) {
+                        Command('',  scriptCommand);
+                        startCommandSent.current = true; // Set this to true after sending the start command
                     }
-                });
-            }
-
-            // Return a cleanup function to remove listeners when socket.current changes or the component unmounts.
-            return () => {
-                socket.current.off('command')
-                socket.current.off('terminalOutput');  // Remove the 'terminalOutput' listener
-
-                if (!isMeasurementStarted) {
-                    socket.current.off('measurementStarted');
+                } else {
+                    // Always send the stop command when power is off, regardless of who turned off the power
+                    socket.current.emit('driveCommand', { command: '\x03' });
+                    socket.current.emit('closeStream');
+                    setIsMeasurementStarted(false);
+                    startCommandSent.current = false; // Reset this to false when power turns off
                 }
+            });
+        
+            // return a cleanup function
+            return () => {
+                socket.current.off('powerCheck');
+                socket.current.off('driveCommand');
+                socket.current.off('measurementStarted');
             };
         }
-    }, [socket.current, isMeasurementStarted, power]);
-
-
+        else {
+            console.log('socket is null')
+        }
+    }, [user_id, socket.current, scriptCommand, startCommandSent.current, isConnected, isConnectedViaSSH, isMeasurementStarted]);
 
     function CreateSocketConnection() {
         console.log('creating socket connection')
     
+        // Before establishing a new connection, ensure any previous connection is properly cleaned
         if (socket.current) {
+            socket.current.removeAllListeners();
             socket.current.disconnect();
-            socket.current = null;  // set to null so a new socket can be created
+            socket.current = null; // set to null so a new socket can be created
         }
     
         try {
@@ -181,7 +201,7 @@ function SocketContextProvider({children}) {
             console.log('isConnectedViaSSH: ' + isConnectedViaSSH);
             console.log('command: ' + command);
             socket.current.emit('command', {command: command}); //TODOProblem
-            listenForTerminalOutput();  // Listen for terminal output when the script starts
+            // listenForTerminalOutput();  // Listen for terminal output when the script starts
         } 
         catch (err) {
             console.log(`Failed to send command: ${err}`);
@@ -195,12 +215,9 @@ function SocketContextProvider({children}) {
     }
 
     function listenForTerminalOutput() {
-        if (socket.current) {
-            // Remove any existing listener before adding a new one
-            socket.current.off('terminalOutput');
-    
+        if (socket.current) {    
             // Add a new listener
-            socket.current.on('terminalOutput', (data) => {
+            socket.current.on('output', (data) => {
                 if (data && data.data) {
                     // Print terminal output raspi
                     console.log(data.data)
@@ -208,7 +225,7 @@ function SocketContextProvider({children}) {
                 } 
                 else {
                     showAlert('Niet gelukt om commando te sturen naar de robot!');
-                    socket.current.off('terminalOutput');
+                    socket.current.off('output');
                     return null;
                 }
             });
@@ -262,6 +279,8 @@ function SocketContextProvider({children}) {
         isLoading: isLoading,
         power,
         isMeasurementStarted,
+        scriptCommand,
+        setScriptCommand,
         CreateSocketConnection: CreateSocketConnection,
         DisconnectClientSide: DisconnectClientSide,
         Command: Command,

@@ -1,5 +1,5 @@
-import { Text, View, StyleSheet, ImageBackground, } from 'react-native';
-import { useState, } from 'react';
+import { Text, View, StyleSheet, ImageBackground, Animated, } from 'react-native';
+import { useEffect, useRef, useState, } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { TabView, TabBar } from 'react-native-tab-view';
 import Assignment from '../../screens/Authenticated/Assignments/Assignment';
@@ -20,20 +20,53 @@ function AssignmentTab({title, initialIndex, subject, initSlideCount}){
       { key: 'fourth', title: 'Onderzoek' },
     ]);
 
+    // Create an Animated.Value for each route
+    const animatedOpacity = useRef(routes.map(() => new Animated.Value(0))).current;
+
+    useEffect(() => {
+      animatedOpacity.forEach(value =>
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(value, {
+              toValue: 1,
+              duration: 2000,
+              useNativeDriver: false,
+            }),
+            Animated.timing(value, {
+              toValue: 0,
+              duration: 2000,
+              useNativeDriver: false,
+            })
+          ]),
+          {
+            iterations: -1
+          }
+        ).start()
+      );
+    }, []);
+
     const renderTabBar = (props) => (
-      <View
-        style={styles.tabNav}
-      >
-      <TabBar
-        {...props}
-        style={{ backgroundColor: 'transparent' }}
-        indicatorStyle={{ backgroundColor: ColorsBlue.blue1000 }}
-        renderLabel={({ route, focused, color }) => (
-          <Text style={{ color: focused? ColorsBlue.blue200 : ColorsBlue.blue700, fontWeight: focused ? 'bold' : 'normal', fontSize: focused ? 10 : 10,  paddingLeft: 0, paddingRight: 5, textAlign: 'center'}}>
-            {route.title.toUpperCase()}
-          </Text>
-        )}
-      />
+      <View style={styles.tabNav}>
+        <TabBar
+          {...props}
+          style={{ backgroundColor: 'transparent' }}
+          indicatorStyle={{ backgroundColor: ColorsBlue.blue1000 }}
+          renderLabel={({ route, focused, color }) => (
+            <Animated.Text
+              style={{
+                color: focused? ColorsBlue.blue200 : ColorsBlue.blue700,
+                fontWeight: focused ? 'bold' : 'normal',
+                fontSize: focused ? 10 : 10,
+                paddingLeft: 0,
+                paddingRight: 5,
+                textAlign: 'center',
+                opacity: focused ? animatedOpacity[routes.findIndex((r) => r.key === route.key)] : 1
+              }}
+            >
+              {route.title.toUpperCase()}
+            </Animated.Text>
+          )}
+        />
       </View>
     );
 

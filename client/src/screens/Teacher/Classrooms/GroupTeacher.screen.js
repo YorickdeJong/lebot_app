@@ -8,6 +8,7 @@ import { deleteAllGroupInClass, deleteGroupByID } from "../../../hooks/groups.ho
 import { Alert } from "react-native";
 import { deleteGroupInfo } from "../../../hooks/groupsInfo.hooks";
 import { updateGroupIDForUsers, useUserSocket } from "../../../hooks/auth";
+import { deleteRobotWifi, getRobotWifi } from "../../../hooks/robotWifi";
 
 
 function GroupTeacherScreen({ navigation, route }) {
@@ -24,6 +25,8 @@ function GroupTeacherScreen({ navigation, route }) {
     const user_id = userprofileCtx.userprofile.id
 
     const groups = groupTeacherCtx.getAllGroupsInClass(classroom_id);
+
+
     let group_ids = [];
     if (groups) {
         group_ids = groups.map(group => group.group_id);
@@ -75,8 +78,8 @@ function GroupTeacherScreen({ navigation, route }) {
                                 //delete group from group_users
                                 await deleteGroupInfo(group_id); //deletes all users from group
                             }
-                            console.log('check 2')
-                            console.log(group_id)
+                            await deleteRobotWifi(group_id)
+                            //delete group here
                             await deleteGroupByID(group_id);
                             // also need to delete all user profiles from group and class when deleting
                             console.log('check 3')

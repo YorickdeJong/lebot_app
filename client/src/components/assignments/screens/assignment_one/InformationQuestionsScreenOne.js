@@ -184,6 +184,11 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             slideTotal,
             questionTitle: "Afstand en Snelheid",
             showZeroVelocityPlot: true,
+            answerHandler: (index) => [
+              'We zien hier een lijn vormen waarbij de afstand 0 blijft. v = ds / dt. Dus als ds (verandering in afstand) 0 is, is v (snelheid) ook 0 en dus zijn de afstand en snelheid niet positief, maar beide 0',
+              'We zien hier een lijn vormen waarbij de afstand 0 blijft. v = ds / dt. Dus als ds (verandering in afstand) 0 is, is v (snelheid) ook 0.',
+              'We zien hier een lijn vormen waarbij de afstand 0 blijft. v = ds / dt. Dus als ds (verandering in afstand) 0 is, is v (snelheid) ook 0 en dus zijn de afstand en snelheid niet negatief, maar beide 0',
+          ][index],
           },
       },
       {
@@ -218,7 +223,11 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             normal_and_multiple_choice: true,
             currentExerciseLesson: 2,
             slideTotal,
-            questionTitle: 'Lineaire lijnen'
+            questionTitle: 'Lineaire lijnen',
+            answerHandler: (index) => [
+              'We bepalen de snelheid met v = ds / dt, het verschil in afstand gedeeld door het verschil in tijd. Vergelijk dit maar met de helling van een lijn: a = dy / dx, het verschil in y gedeeld door het verschil in x. y = s en x = t, dus a = ds / dt = v.',
+              'We bepalen de snelheid met v = ds / dt, het verschil in afstand gedeeld door het verschil in tijd. Vergelijk dit maar met de helling van een lijn: a = dy / dx, het verschil in y gedeeld door het verschil in x. y = s en x = t, dus a = ds / dt = v.',
+          ][index],
           },
       },
       {
@@ -314,7 +323,12 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
               slideTotal,
               generate_answer: generateAnswerMotorQ5,
               normal_and_multiple_choice: true,
-              questionTitle: 'Netto Kracht'
+              questionTitle: 'Netto Kracht',
+              answerHandler: (index) => [
+                'De wrijvingskracht werkt altijd in tegenovergestelde richting van de bewegingsrichting. Dus als de netto kracht wordt meegenomen wordt Fnetto = Fmotor - Fwrijv, de netto kracht wordt dus kleiner.',
+                'De wrijvingskracht werkt altijd in tegenovergestelde richting van de bewegingsrichting. Dus als de netto kracht wordt meegenomen wordt Fnetto = Fmotor - Fwrijv, de netto kracht wordt dus kleiner.',
+                'De wrijvingskracht werkt altijd in tegenovergestelde richting van de bewegingsrichting. Dus als de netto kracht wordt meegenomen wordt Fnetto = Fmotor - Fwrijv, de netto kracht wordt dus kleiner.',
+            ][index],
             },
         },
         {
@@ -349,7 +363,15 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             currentExerciseLesson: 3,
             slideTotal,
             questionTitle: 'Afstand en verplaatsing',
-            performedMeasurement: true
+            performedMeasurement: true,
+            answerHandler: (index) => [
+              'Bij verplaatsing kijken we naar zowel de grootte als de richting van de afgelegde weg. Als iets een richting heeft dan kan de waarde zowel positief als negatief zijn.',
+              'Bij verplaatsing kijken we naar zowel de grootte als de richting van de afgelegde weg. Als iets een richting heeft dan kan de waarde zowel positief als negatief zijn.',
+              'Bij verplaatsing kijken we naar zowel de grootte als de richting van de afgelegde weg. Als iets een richting heeft dan kan de waarde zowel positief als negatief zijn.',
+              'Bij afstand kijken we alleen naar de grootte van de afgelegde weg. Als iets een richting heeft dan is de waarde altijd positief.',
+              'Bij afstand kijken we alleen naar de grootte van de afgelegde weg. Als iets een richting heeft dan is de waarde altijd positief.',
+              'Bij afstand kijken we alleen naar de grootte van de afgelegde weg. Als iets een richting heeft dan is de waarde altijd positief.',
+          ][index],
           },
       },
         {

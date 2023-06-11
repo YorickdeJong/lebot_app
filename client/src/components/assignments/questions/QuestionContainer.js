@@ -34,7 +34,8 @@ function QuestionContainer({
     toggleInfoModal,
     setToggleInfoModal,
     index,
-    slideCount
+    slideCount,
+    answerHandler
     }) {
     
     const [chartNumber, setChartNumber] = useState(null);
@@ -349,6 +350,7 @@ function QuestionContainer({
                                     checkTimerActive={checkTimerActive}
                                     index = {index}
                                     slideCount = {slideCount}
+                                    answerHandler = {answerHandler}
                                 />  
                             }
 

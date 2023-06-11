@@ -1,29 +1,15 @@
 import CodeEditor, { CodeEditorSyntaxStyles } from '@rivascva/react-native-code-editor';
 import React, { useContext, useState } from 'react';
 import { Alert, Animated, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ColorsBlue } from '../../../constants/palet';
+import { ColorsBlue, ColorsGreen, ColorsRed } from '../../../constants/palet';
 import { SocketContext } from '../../../store/socket-context';
 import ChartToggle from '../../robot/driving_on_command/chartToggle';
 import { ipAddressRaspberryPi } from '../../../data/ipaddresses.data';
+import Icon from '../../Icon';
 
 function CodeEditorScreen({close, code, setCode, onPressHandler, condition, section, backgroundColor, containerBackgroundColor, shadowOpacity}){
     const socketCtx = useContext(SocketContext);
     const [toggle, setToggle] = useState();
-    const [isOn, setIsOn] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
-
-    console.log(`Check CodeEditorScREEN`)
-
-    const toggleHandler = () => {
-        setIsOn(!isOn);
-        
-        Animated.timing(animatedValue, {
-            toValue: isOn ? 0 : 1,
-            duration: 500,
-            easing: Easing.linear,
-            useNativeDriver: false,
-        }).start();
-    };
 
     function checkIncludeCodeIf(code){
         const motorOne = code[0].includes("motor1Aan()") && code[1].includes("motor1Uit()");
@@ -44,6 +30,11 @@ function CodeEditorScreen({close, code, setCode, onPressHandler, condition, sect
     }
 
     const checkCode = () => {
+        if (!socketCtx.isConnected || !socketCtx.isConnectedViaSSH) {
+            Alert.alert('Niet verbonden met de robot', 'Verbind met het wifi netwerk van de robot en probeer het opnieuw')
+            return
+        }
+
         console.log('Code:', code);
         setToggle(!toggle);
         
@@ -85,6 +76,14 @@ function CodeEditorScreen({close, code, setCode, onPressHandler, condition, sect
         
     };
 
+    function wifiIconHandler() {
+        if (socketCtx.isConnectedViaSSH) {
+            Alert.alert('Verbonden met de robot')
+        } 
+        else {
+            Alert.alert('Niet verbonden met de robot')
+        }
+    }
 
     return (
         <>
@@ -97,16 +96,27 @@ function CodeEditorScreen({close, code, setCode, onPressHandler, condition, sect
                         showLineNumbers
                         initialValue={code}
                         onChange={setCode}
+                        enableEditing={section === 'chartToggle' ? true : false}
                     />
                 </View>
                 {section === 'chartToggle' &&
-                <View style = {[styles.buttonContainer]}>
-                    <ChartToggle
-                        toggleChart = {toggle}
-                        toggleChartSettings = {checkCode}
-                        notShowBorder={true}
-                    />
-                </View>
+                <>
+                    <View style = {[styles.buttonContainer]}>
+                        <ChartToggle
+                            toggleChart = {toggle}
+                            toggleChartSettings = {checkCode}
+                            notShowBorder={true}
+                        />
+                    </View>
+                    <View style = {{position: 'absolute', right: '6%', top: '5%'}}>
+                        <Icon 
+                            icon = 'wifi'
+                            size = {30}
+                            color = {socketCtx.isConnectedViaSSH ? ColorsGreen.green700 : ColorsRed.red700}
+                            onPress = {() => wifiIconHandler()}
+                        />
+                    </View>
+                </>
                 }
 
                 {section === 'knop' && 

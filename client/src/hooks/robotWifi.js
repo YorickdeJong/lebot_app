@@ -24,3 +24,15 @@ export async function getRobotWifi(school_id, class_id, group_id) { // add to lo
     }
 
 }
+
+
+export async function deleteRobotWifi(group_id) {
+    try {
+        const response = await axios.delete(url + `/${group_id}`);
+        return response.data[0];
+    } 
+    catch (error) {
+        console.log('error while deleting robot wifi', error);
+        throw error
+    }
+}

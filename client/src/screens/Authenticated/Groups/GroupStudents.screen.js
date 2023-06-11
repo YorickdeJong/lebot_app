@@ -36,15 +36,15 @@ function GroupStudent({ navigation, route, tileType }) {
         }, [initialize, dbUpdated]) // Add initialize as a dependency
     );
 
-    async function joinGroupHandler(group_id, class_id) {
+    async function joinGroupHandler(group_id, class_id, usernames) {
         const user_id = userprofileCtx.userprofile.id //PROBLEM: FETCHED GROUPS AREN'T ADDED TO LOCAL STORAGE -> ADD THEM 
-        const {name} = groupTeacherCtx.getGroupInfoById(group_id)
-        
+        const {groupName} = groupTeacherCtx.getGroupInfoById(group_id)
+        const {className} = groupTeacherCtx.getClassInfoById(class_id)
 
         const userprofile = {
             ...userprofileCtx.userprofile,
             group_id,
-            group_name: name
+            group_name: groupName
         }
 
         // user has not selected a class
@@ -82,6 +82,14 @@ function GroupStudent({ navigation, route, tileType }) {
                                 userprofileCtx.editUserProfile(userprofile)
                                 setDbUpdated(true)
                                 Alert.alert('Groep toegevoegd!')
+                                navigation.navigate('groups', {
+                                    screen: 'IndividualGroup', 
+                                    params: {
+                                        group_members: usernames,
+                                        group_name: groupName,
+                                        class_name: className,
+                                    },
+                                }) // add specfic group info
                                 return;
                             }  
                             catch(error){

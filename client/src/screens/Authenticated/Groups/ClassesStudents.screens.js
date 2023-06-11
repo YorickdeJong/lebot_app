@@ -7,7 +7,7 @@ import { UserProfileContext } from "../../../store/userProfile-context"
 import { changeUserProfile } from "../../../hooks/auth"
 import { deleteGroupByID } from "../../../hooks/groups.hooks"
 import { deleteGroupUser } from "../../../hooks/groupsInfo.hooks"
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { useFetchClassesDataSocket } from "../../../hooks/classesSocket.hooks"
 import { useFetchTimeLessonsDataSocket } from "../../../hooks/time-lessons.hook"
 
@@ -24,6 +24,7 @@ function ClassesStudent({tileType}) {
 
     const [data, initialize] = useFetchClassesDataSocket(true, user_id, school_id);
     const [dataTime, initializeTime] = useFetchTimeLessonsDataSocket(true, school_id)
+    const navigation = useNavigation();
 
     useFocusEffect(
         useCallback(() => {
@@ -86,6 +87,13 @@ function ClassesStudent({tileType}) {
                                 await changeUserProfile(userprofile)
                                 setDbUpdated(true)
                                 Alert.alert('Veranderd van klas!')
+                                navigation.navigate('groups', {
+                                    screen: 'Grouproom',
+                                    params: {
+                                        classroom_id: class_id,
+                                        class_name: name,
+                                    },
+                                });
                                 return;
                             }  
                             catch(error){

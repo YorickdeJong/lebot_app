@@ -170,7 +170,26 @@ function ThinkScreen({
         }
     }, [addAssignmentDetails, school_id, class_id, group_id, subject]);
 
-
+    function answerHandler(type) {
+        switch(type) {
+            case 0:
+                return 'Dit is de formule voor een lineaire functie. Deze gaat van pas komen bij constante metingnen.';
+            case 1:
+                return 'Met deze formule bereken je de dichtheid van een materiaal. Dit heb je niet nodig bij beweging.';
+            case 2:
+                return 'Dit is de formule voor de versnelling, ofwel verandering van snelheid over tijd. Let op! Vergis de versnelling niet met de hellingscontante in y = ax + b';
+            case 3: 
+                return 'Met deze formule bereken je de totale, ofwel resulterende kracht van een object.';
+            case 4:
+                return 'Dit is de formule voor het elektrisch vermogen. Dit hebben we niet nodig bij mechanische beweging.';
+            case 5:
+                return 'Met deze formule bereken je kracht van een veer. Dit hebben we niet nodig bij mechanische beweging.';
+            case 6:
+                return 'Dit is de formule voor de snelheid, ofwel de verandering van afstand over tijd.';
+            case 7:
+                return 'Met deze formule bereken je de stroom in een circuit. Dit hebben we niet nodig bij mechanische beweging.';
+        }
+    }
     return (
             <View style = {styles.container}>
 
@@ -241,6 +260,7 @@ function ThinkScreen({
                                         subject = {subject}
                                         multipleChoiceOptions = {multipleChoiceOptions}
                                         multipleChoiceAnswers = {multipleChoiceAnswers}
+                                        answerHandler = {answerHandler}
                                     />
                                 </View>
                                 }

@@ -51,7 +51,7 @@ function BatteryScreen({nextSlideHandler, setSlideCount, text, instructions, sli
                 />
                     {isScreenFocused && 
                     <ScrollView 
-                        style = {{flex: 1, }}
+                        style = {{flex: 1}}
                         ref={scrollViewRef}
                         onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
                         >

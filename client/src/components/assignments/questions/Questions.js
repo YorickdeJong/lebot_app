@@ -43,7 +43,8 @@ function Questions({
     slideTotal,
     removeTries,
     questionTitle,
-    showZeroVelocityPlot
+    showZeroVelocityPlot,
+    answerHandler
 }){
     const isScreenFocused = slideCount - 2 <= index && slideCount >= index
 
@@ -147,18 +148,18 @@ function Questions({
         const {recordNumber} = chartCtx.finalChartData[currentIndex];
         console.log('CURRENTCHARTDATA: ', recordNumber);
 
-        Alert.alert(
-          'Let Op!',
-          'Weet je zeker dat je deze meting wilt verwijderen?',
-          [
-              {
-                  text: 'No',
-                  onPress: () => {},
-                  style: 'cancel',
-              },
-              {
-                  text: 'Yes',
-                  onPress: async () => {
+        // Alert.alert(
+        //   'Let Op!',
+        //   'Weet je zeker dat je deze meting wilt verwijderen?',
+        //   [
+        //       {
+        //           text: 'No',
+        //           onPress: () => {},
+        //           style: 'cancel',
+        //       },
+        //       {
+        //           text: 'Yes',
+        //           onPress: async () => {
                       try {
                         if (subject === "MOTOR"){
                             if (!recordNumber) {
@@ -210,10 +211,10 @@ function Questions({
                           Alert.alert('Het is niet gelukt om de meting te verwijderen')
                           return
                       }
-                  }
-                }
-              ]
-          )
+                //   }
+        //         }
+        //       ]
+        //   )
     }, [subject, chartCtx.finalChartData, currentIndex]);
 
     const redirectToMeasurementHandler = useCallback((optionsVisible) => {
@@ -347,6 +348,7 @@ function Questions({
                                 questionTitle = {questionTitle}
                                 setToggleInfoModal = {setToggleInfoModal}
                                 toggleInfoModal = {toggleInfoModal}
+                                answerHandler = {answerHandler}
                                 />
                                 
                                 
@@ -381,7 +383,7 @@ function Questions({
                     </View>
                     }
             </Animated.View>
-)
+    )
 }
 
 export default React.memo(Questions)

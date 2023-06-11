@@ -25,54 +25,41 @@ function CodingExample({nextSlideHandler, prevSlideHandler, text, slideTotal, sl
 
 
     return (
-        <LinearGradient 
-                colors={['rgba(2,2,13,1)', 'rgba(2,2,8,1)']} 
-                style = {styles.container}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                >
-                <ImageBackground
-                source={require('./../../../../assets/chatbackground.png')} 
-                style={
-                {flex: 1}
-                }
-                imageStyle={{opacity: 0.05}}
-                >
-                    <AssignmentOptionsBar 
-                        slideCount = {slideCount}
-                        nextSlideHandler = {nextSlideHandler}
-                        prevSlideHandler = {prevSlideHandler}
-                        slideCountEnd = {slideCountEnd}
-                        setSlideCount = {setSlideCount}
-                        slideTotal = {slideTotal}
-                        currentSlidePosition = {currentSlidePosition}
-                        noPlanet = {true}
-                        text = {text}
-                    />
+        <View style = {styles.container}>
+            <AssignmentOptionsBar 
+                slideCount = {slideCount}
+                nextSlideHandler = {nextSlideHandler}
+                prevSlideHandler = {prevSlideHandler}
+                slideCountEnd = {slideCountEnd}
+                setSlideCount = {setSlideCount}
+                slideTotal = {slideTotal}
+                currentSlidePosition = {currentSlidePosition}
+                noPlanet = {true}
+                text = {text}
+            />
 
 
-                    <ScrollView 
-                    style = {{flex: 1}}
-                    ref={scrollViewRef}
-                    onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
-                    >
-                            {isScreenFocused && 
-                                <>
-                                    <LightBulbAnimation />
+            <ScrollView 
+            style = {{flex: 1}}
+            ref={scrollViewRef}
+            onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
+            >
+                    {isScreenFocused && 
+                        <>
+                            <LightBulbAnimation />
 
-                                    <ChatBoxGPT 
-                                    answer={message.answer}
-                                    isLastItem={true}
-                                    thread_id={message.thread_id}
-                                    setTyping={setTyping}
-                                    typing={typing}
-                                    extraStyle={extraStyle}
-                                    />
-                                </>
-                            }
-                </ScrollView>   
-            </ImageBackground>
-        </LinearGradient>
+                            <ChatBoxGPT 
+                            answer={message.answer}
+                            isLastItem={true}
+                            thread_id={message.thread_id}
+                            setTyping={setTyping}
+                            typing={typing}
+                            extraStyle={extraStyle}
+                            />
+                        </>
+                    }
+            </ScrollView>   
+        </View>
     )
 }
 

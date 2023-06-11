@@ -47,7 +47,7 @@ function GroupCategoryTile({groupNames, navigationHandler, fadeAnim, groupMember
         }
         if (group_id) {
             groupTeacherCtx.setCurrentGroup_id(group_id)
-            editHandler(group_id, class_id);
+            editHandler(group_id, class_id, groupNames);
         }
         
     };
