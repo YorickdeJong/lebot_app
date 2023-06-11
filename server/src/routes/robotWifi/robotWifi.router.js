@@ -6,7 +6,8 @@ const {
     getRobotByGroupIdClassId,
     createRobots,
     updateRobot,
-    deleteRobot,
+    deleteRobotGroup,
+    deleteRobotClass,
     deleteRobots,
     assignSchoolToRobots
 } = require('./robotWifi.controller');
@@ -18,5 +19,7 @@ router.post('/', createRobots);
 router.put('/assign-school/', assignSchoolToRobots);
 router.put('/:id', updateRobot);
 router.delete('/all', deleteRobots);
-router.delete('/:id', deleteRobot);
+router.delete('/group/:id', deleteRobotGroup);
+router.delete('/class/:id', deleteRobotClass);
+
 module.exports = router;

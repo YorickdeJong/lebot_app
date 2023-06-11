@@ -12,6 +12,7 @@ import { deleteAllGroupInClass } from "../../../hooks/groups.hooks";
 import { changeUserProfile, updateGroupIDForClass } from "../../../hooks/auth";
 import { deleteAllLessonsForClass, useFetchTimeLessonsDataSocket } from "../../../hooks/time-lessons.hook";
 import { TimeContext } from "../../../store/time-context";
+import { deleteRobotWifiClass } from "../../../hooks/robotWifi";
 
 function ClassRoomMain({ route }) {
     // implement create user_group and user_classes here            
@@ -86,6 +87,7 @@ function ClassRoomMain({ route }) {
                                 await deleteAllLessonsForClass(class_id)
                             }
 
+                            await deleteRobotWifiClass(class_id)
                             await deleteClassByID(class_id)
                             setDbUpdate(true);
                             Alert.alert('Klas verwijderd!')

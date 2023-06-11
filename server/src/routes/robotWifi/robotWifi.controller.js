@@ -143,11 +143,28 @@ const updateRobot = async (req, res) => {
     }
 }
 
-const deleteRobot = async (req, res) => {
+const deleteRobotGroup = async (req, res) => {
     const client = await pool.connect();
     const id = req.params.id;  // or however you receive the robot id in the request
     try {
         const result = await client.query('DELETE FROM robots WHERE group_id = $1 RETURNING *', [id]);
+        if(result.rows.length === 0) throw new Error('Failed to delete robot');
+        res.status(200).json({message: 'Robot successfully deleted'}); // send a success message back to the client
+    } 
+    catch(err) {
+        console.error(`Error in deleteRobot: ${err.message}`);
+        res.status(500).send(err.message);
+    } 
+    finally {
+        client.release();
+    }
+}
+
+const deleteRobotClass = async (req, res) => {
+    const client = await pool.connect();
+    const id = req.params.id;  // or however you receive the robot id in the request
+    try {
+        const result = await client.query('DELETE FROM robots WHERE class_id = $1 RETURNING *', [id]);
         if(result.rows.length === 0) throw new Error('Failed to delete robot');
         res.status(200).json({message: 'Robot successfully deleted'}); // send a success message back to the client
     } 
@@ -208,7 +225,8 @@ module.exports = {
     getRobotByGroupIdClassId,
     createRobots,
     updateRobot,
-    deleteRobot,
+    deleteRobotGroup,
+    deleteRobotClass,
     deleteRobots,
     assignSchoolToRobots
 }
