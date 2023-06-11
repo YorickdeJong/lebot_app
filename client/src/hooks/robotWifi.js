@@ -28,7 +28,7 @@ export async function getRobotWifi(school_id, class_id, group_id) { // add to lo
 
 export async function deleteRobotWifiGroup(group_id) {
     try {
-        const response = await axios.delete(url + `/group${group_id}`);
+        const response = await axios.delete(url + `/group/${group_id}`);
         return response.data[0];
     } 
     catch (error) {
@@ -40,7 +40,7 @@ export async function deleteRobotWifiGroup(group_id) {
 
 export async function deleteRobotWifiClass(class_id) {
     try {
-        const response = await axios.delete(url + `/class${class_id}`);
+        const response = await axios.delete(url + `/class/${class_id}`);
         return response.data[0];
     } 
     catch (error) {
