@@ -11,33 +11,35 @@ import { Text } from "react-native";
 const { height } = Dimensions.get('window')
 function WaitingForMeasurementContainer({isMeasurementStarted, setBeginMeasurement, measurementType}) {
     const [countDown, setCountDown] = React.useState(3)
+
     const extraStyles = {        
         textShadowColor: ColorsBlue.blue1400, 
         textShadowOffset: { width: 1, height: 3 },
         textShadowRadius: 3} 
 
+    console.log('measurementType', measurementType)
     useEffect(() => {
-        if (isMeasurementStarted && measurementType === 'free_driving') {
-            console.log('measurement started')
-            const interval = setInterval(() => {
-                setCountDown(prevCountDown => {
-                    if (prevCountDown <= 1) { // Check if countDown is 0 or less
-                        clearInterval(interval) // Clear interval if countdown reached 0
-                        setBeginMeasurement(true) // Stop the measurement
-                        return 0; // Return 0 to prevent countDown from going below 0
-                    } else {
-                        return prevCountDown - 1 // Decrease the countdown
-                    }
-                });
-            }, 1000) // Removed the array brackets around 1000
-            // 
-            return () => clearInterval(interval)
-        }
-        if (isMeasurementStarted && measurementType !== 'free_driving') {
-            setBeginMeasurement(true)
-        }
+        if (isMeasurementStarted) {
+            if (measurementType === 'free_driving') {
+                console.log('measurement started')
+                const interval = setInterval(() => {
+                    setCountDown(prevCountDown => {
+                        if (prevCountDown <= 1) { 
+                            clearInterval(interval) 
+                            setBeginMeasurement(true)
+                            return 0; 
+                        } else {
+                            return prevCountDown - 1
+                        }
+                    });
+                }, 1000)
 
-    }, [isMeasurementStarted])
+                return () => clearInterval(interval)
+            } else {
+                setBeginMeasurement(true)
+            }
+        }
+    }, [isMeasurementStarted, measurementType]) 
 
     return (
         <View style={styles.shadowContainer}>

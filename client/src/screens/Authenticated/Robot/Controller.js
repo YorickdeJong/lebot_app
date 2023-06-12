@@ -10,12 +10,18 @@ import { throttle } from 'lodash';
 import { useSocketPower } from '../../../hooks/power_measurement.hooks';
 import { useSocketMeasurementResults } from '../../../hooks/measurement_results';
 import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import NetInfo from "@react-native-community/netinfo";
+import { getRobotWifi } from '../../../hooks/robotWifi';
+
 
 function Controller({ navigation, route }) {
     const socketCtx = useContext(SocketContext);
     const userprofileCtx = useContext(UserProfileContext);
+    const {school_id, class_id, group_id} = userprofileCtx.userprofile;
     const assignmentCtx = useContext(AssignmentContext);
     const [alertShown, setAlertShown] = useState(false);
+    const [robotWifi, setRobotWifi] = useState('');
+    const [currentWifi, setCurrentWifi] = useState('');
     const moveXReceived = useRef(0);
     const moveYReceived = useRef(0);
     const { displayNumber, startScriptCommand, measurementType } = route.params;
@@ -48,7 +54,7 @@ function Controller({ navigation, route }) {
                 }
                 // First, emit 'power' event with message set to false.
                 socketCtx.socket.current.emit('power', { message: false });
-    
+                socketCtx.socket.current.emit('closeStream');
                 // Then, immediately set local power state to false.
                 socketCtx.setPower(false);
             };
@@ -56,7 +62,6 @@ function Controller({ navigation, route }) {
     );
 
     const powerHandler = useCallback(() => {
-        console.log()
         if (!socketCtx.isConnected && !socketCtx.isConnectedViaSSH) {
             Alert.alert('Niet verbonden met de robot', 'Check of de robot aanstaat en dat je verbonden bent met het netwerk, ik probeer je opnieuw te verbinden')
             return 
@@ -68,7 +73,7 @@ function Controller({ navigation, route }) {
         } 
 
         socketCtx.socket.current.emit('power', { message: !socketCtx.power, userId: userprofileCtx.userprofile.id });
-
+        socketCtx.socket.current.emit('closeStream');
     }, [socketCtx.power, socketCtx.isConnected, socketCtx.isConnectedViaSSH, startScriptCommand]);
 
     
@@ -100,7 +105,7 @@ function Controller({ navigation, route }) {
                     throttledEmitDriveCommand(newKeyStroke);
                 }
             }
-        }, 100);
+        }, 500);
     
         return () => clearInterval(interval);
     }, [socketCtx.power, throttledEmitDriveCommand]);
@@ -141,7 +146,7 @@ function Controller({ navigation, route }) {
             console.log('key throttle self', newKeyStroke)
         } 
         
-        else if (!alertShown && measurementType === 'free_driving') {
+        else if (!alertShown && !socketCtx.isConnected && !socketCtx.isConnectedViaSSH && !socketCtx.power && measurementType === 'free_driving') {
             Alert.alert(
                 'Rover staat uit',
                 'Druk eerst op de aanknop!',
@@ -157,7 +162,7 @@ function Controller({ navigation, route }) {
             );
             setAlertShown(true);
             }
-        else {
+        else if (measurementType !== 'free_driving'){
             Alert.alert('Verkeerde Meting', "Met de meting kan je de rover niet besturen, kies 'zelf besturen'")        
         }
     }, [socketCtx.power, alertShown, throttledEmitDriveCommand]);
@@ -170,6 +175,7 @@ function Controller({ navigation, route }) {
         displayNumber={displayNumber}
         subject={assignmentCtx.assignmentImage.subject}
         assignmentNumber={assignmentCtx.assignmentImage.assignment_number}
+        measurementType = {measurementType}
         />
         )
 }

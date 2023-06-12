@@ -87,8 +87,9 @@ export default TriesCorrectGraph;
 
 const styles = StyleSheet.create({
     container: {
+        marginTop: 10,
         marginHorizontal: 10,
-
+        marginBottom: 100,
         borderColor: `rgba(77, 77, 77, 0.17)`,
         borderWidth: 1,
         shadowColor: `rgba(0, 0, 0, 1)`,

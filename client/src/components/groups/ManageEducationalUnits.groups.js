@@ -149,31 +149,15 @@ function  ManageEducationalUnits({user_role, tileType, deletehHandler, editHandl
                     data = {data} //toevoegen dat deze data alleen voor teacher geldt -> wil eigenlijk dat dit gefetch wordt via een socket
                     renderItem = {renderGroups}
                     />
-                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Class'  && !explanationState && 
-                        <View style = {{position: 'absolute', top: height > 750 ? '45%' : '50%', left: '12%'}}>  
-                            <View style = {{}}>
-                                <TextBubbleLeft
-                                    title = 'Kies je klas en groep'
-                                    text = {`• Je deelt alle antwoorden en metingen met je groepsleden\n• Werk samen als een team! \n• Brainstorm met elkaar, dit zal jullie helpen om de juiste antwoorden te vinden! \n• Druk op het hoofd icoon om een klas of groep toe te voegen`}
-                                    setExplanationState={setExplanationState.bind(this, true)}
-
-                                />
-                            </View>
-                            <View style = {{ position: 'absolute', left: '-10%', top: '89%',}}>
-                                <Image
-                                    style={styles.profilePicture}
-                                    source={require("./../../../assets/robotIcon.png")}
-                                    resizeMode="cover"
-                                    />
-                            </View>
-                        </View>
-                    } 
-                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Group' && !explanationState && 
-                        <View style = {{position: 'absolute', top: height > 750 ? '45%' : '50%', left: '12%'}}>
-                            <View style = {{}}>
+                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Class'  && 
+                    <>
+                        {!explanationState && 
+                        
+                            <View style = {{position: 'absolute', top: height > 750 ? '45%' : '50%', left: '12%'}}>  
+                                <View style = {{}}>
                                     <TextBubbleLeft
-                                        title = 'Kies je groep'
-                                        text = {`• Als je een groep hebt gekozen, dan kan je jouw gegevens zien door op de groep te drukken`}
+                                        title = 'Kies je klas en groep'
+                                        text = {`• Je deelt alle antwoorden en metingen met je groepsleden\n• Werk samen als een team! \n• Brainstorm met elkaar, dit zal jullie helpen om de juiste antwoorden te vinden! \n• Druk op het hoofd icoon om een klas of groep toe te voegen`}
                                         setExplanationState={setExplanationState.bind(this, true)}
 
                                     />
@@ -185,9 +169,49 @@ function  ManageEducationalUnits({user_role, tileType, deletehHandler, editHandl
                                         resizeMode="cover"
                                         />
                                 </View>
-                        </View>
+                            </View>
+                        }
+                        {explanationState &&
+                            <View style = {{position: 'absolute', bottom: '20%', right: 20, left: 20}}>
+                                <View style = {styles.textContainer}>
+                                    <Animated.Text style= {[styles.text, {opacity: fadeAnim}]}>Druk op het hoofd-plus-icoontje om een klas toe te voegen verder te gaan</Animated.Text>
+                                </View>
+                            </View>
+                        }
+                        
+                    </>
                     } 
+                    {informationCtx.showBeginningScreen &&  user_role === 'student' && tileType === 'Group' && 
+                    <>
+                        {
+                        !explanationState && 
+                            <View style = {{position: 'absolute', top: height > 750 ? '45%' : '50%', left: '12%'}}>
+                                <View style = {{}}>
+                                        <TextBubbleLeft
+                                            title = 'Kies je groep'
+                                            text = {`• Als je een groep hebt gekozen, dan kan je jouw gegevens zien door op de groep te drukken`}
+                                            setExplanationState={setExplanationState.bind(this, true)}
 
+                                        />
+                                    </View>
+                                    <View style = {{ position: 'absolute', left: '-10%', top: '89%',}}>
+                                        <Image
+                                            style={styles.profilePicture}
+                                            source={require("./../../../assets/robotIcon.png")}
+                                            resizeMode="cover"
+                                            />
+                                    </View>
+                            </View>
+                        }
+                        {explanationState &&
+                            <View style = {{position: 'absolute', bottom: '20%', right: 20, left: 20}}>
+                                <View style = {styles.textContainer}>
+                                    <Animated.Text style= {[styles.text, {opacity: fadeAnim}]}>Druk op het hoofd-plus-icoontje om een groep toe te voegen verder te gaan</Animated.Text>
+                                </View>
+                            </View>
+                        }
+                    </>
+                    }
                 </View>
             </ImageBackground>
         <TeacherModal
@@ -214,4 +238,18 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         zIndex: 3,
     },
+    text: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: ColorsBlue.blue100,
+        textAlign: 'center',
+    },
+    textContainer: {
+        backgroundColor: ColorsBlue.blue1300,
+        borderRadius: 20,
+        padding: 21,
+        borderColor: ColorsBlue.blue700,
+        borderWidth: 0.8,
+    }
+
 })

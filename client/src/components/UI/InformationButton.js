@@ -44,8 +44,8 @@ const styles = StyleSheet.create({
         })
     },
     innercontainer: {
-        borderColor: 'rgba(77, 77, 77, 0.2)',
-        backgroundColor: 'rgba(15, 15, 70, 1)',
+        borderColor: 'rgba(20, 30, 100, 1)',
+        backgroundColor: ColorsBlue.blue1150,
         justifyContent: 'center',
         borderWidth: 1,
         flex: 1,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 20,
         fontWeight: '400',
-        color: ColorsBlue.blue100
+        color: ColorsBlue.blue50
 
     }
 })

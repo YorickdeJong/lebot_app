@@ -8,19 +8,19 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const { width, height } = Dimensions.get('window');
 function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler, textButtonOne, textButtonTwo, textButtonThree, addStyle, selectFase}) {
-    const fadeAnim = useRef(new Animated.Value(0)).current; // Initial value for opacity: 0
+    const fadeAnim = useRef(new Animated.Value(0.4)).current; // Initial value for opacity: 0
 
     useEffect(() => {
         Animated.loop(
           Animated.sequence([
             Animated.timing(fadeAnim, {
               toValue: 1,
-              duration: 2500,
+              duration: 2000,
               useNativeDriver: false,
             }),
             Animated.timing(fadeAnim, {
-              toValue: 0,
-              duration: 2500,
+              toValue: 0.4,
+              duration: 2000,
               useNativeDriver: false,
             }),
           ]),
@@ -30,6 +30,12 @@ function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler
         ).start();
       }, [selectFase]);
     
+    const selectedStyle = {
+        borderColor: ColorsBlue.blue600,
+        borderWidth: 1.5, 
+        backgroundColor: ColorsBlue.blue1200,
+        opacity: fadeAnim,
+    }
     return (
         <View style = {[styles.buttonOuterContainer, addStyle]}>
             <View style={styles.button}>
@@ -37,7 +43,7 @@ function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler
             <View style = {[styles.shadow, {backgroundColor: (selectFase === 1 || selectFase === 'afstand') ? 'transparent': (Platform.OS === 'android' ? 'rgba(0, 0, 0, 0.6)' : 'transparant')}]}> 
                     <TouchableOpacity 
                     onPress = {firstButtonHandler}>
-                        <Animated.View style = {[styles.buttonContainer, { opacity: selectFase === 1 || selectFase === 'afstand' ? fadeAnim : 1 }]}>
+                        <Animated.View style = {[styles.buttonContainer,  (selectFase === 1 || selectFase === 'afstand') && selectedStyle]}>
                             <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 20, overflow: 'hidden', justifyContent: 'center' }}>
                                 
                                 <Text style={styles.buttonText}>{textButtonOne}</Text>
@@ -49,7 +55,7 @@ function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler
                 <View style = {[styles.shadow, {backgroundColor: (selectFase === 2 || selectFase === 'speed') ? 'transparent': (Platform.OS === 'android' ? 'rgba(0, 0, 0, 0.6)' : 'transparant')}]}> 
                     <TouchableOpacity 
                     onPress = {secondButtonHandler}>
-                        <Animated.View style = {[styles.buttonContainer, { opacity: selectFase === 2 || selectFase === 'speed' ? fadeAnim : 1 }]}>
+                        <Animated.View style = {[styles.buttonContainer, (selectFase === 2 || selectFase === 'speed') && selectedStyle]}>
                             <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 20, overflow: 'hidden', justifyContent: 'center' }}>
                                 
                                 <Text style={styles.buttonText}>{textButtonTwo}</Text>
@@ -61,7 +67,7 @@ function ButtonList({firstButtonHandler, secondButtonHandler, thirdButtonHandler
                 <View style = {[styles.shadow, {backgroundColor: (selectFase === 3 || selectFase === 'acceleration') ? 'transparent': (Platform.OS === 'android' ? 'rgba(0, 0, 0, 0.6)' : 'transparant')}]}> 
                     <TouchableOpacity 
                     onPress = {thirdButtonHandler}>
-                        <Animated.View style = {[styles.buttonContainer, { opacity: selectFase === 3 || selectFase === 'acceleration'? fadeAnim : 1, }]}>
+                        <Animated.View style = {[styles.buttonContainer, (selectFase === 3 || selectFase === 'acceleration') && selectedStyle]}>
                             <BlurWrapper intensity={8} style={{ flex: 1, borderRadius: 20, overflow: 'hidden', justifyContent: 'center' }}>
                                 
                                 <Text style={styles.buttonText}>{textButtonThree}</Text>

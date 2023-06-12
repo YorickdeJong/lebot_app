@@ -76,27 +76,6 @@ const postChatgpt = async (req, res) => {
             const studentAnswer = message
             let userPrompt
             console.log('fullContext', lengthChat)
-            // if (lengthChat >= 6) {
-            //     userPrompt = `Based on the student's answer, respond strictly with one of the following phrases only: 'Heel Goed! ', 'Helaas Onjuist! '. 
-            //     Please give an explanation in strictly less than 10 sentences about why the student answer is correct or incorrect and give the correct answer. 
-            //     In your answer you must include an explanation about vectors and constantsRespond in Dutch and a kind tone, in a manner where you speak to the student. 
-            //     Students answer. Student's response: ${studentAnswer}`
-            // }
-            // else {
-                // userPrompt = `
-                // Based on the content of the student's answer, respond strictly with one of the following keywords only: 'Correct', 'Incorrect', or 'Incompleet'. 
-                // If the student's answer does not contain all the necessary information, even if part of it is correct, you should respond with 'Incompleet'. 
-                // keywords: 'Correct', 'Incorrect', or 'Incompleet'.
-                // Student's response: ${studentAnswer}`;
-                // }
-                
-                // let systemPrompt
-                // if (thread_id && lengthChat < 4) {
-                    //     systemPrompt =  "You are a capable Dutch assistant in mathematics, physics, and programming, designed to answer students' questions with strictly 1 word only."
-                    // } 
-                    // else {
-                        //     systemPrompt = "You are a capable Dutch assistant in mathematics, physics, and programming, designed to help students understand their questions."
-                        // }
                         
             userPrompt = `Please respond in dutch to the student's response. Your answer should be in dutch and only contain either 'Correct' or 'Incorrect'.  Students response: 
             ${studentAnswer}. `;

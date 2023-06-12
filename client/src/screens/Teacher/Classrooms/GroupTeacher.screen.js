@@ -7,7 +7,7 @@ import { useFetchGroupsDataSocket } from "../../../hooks/groupSocket.hooks";
 import { deleteAllGroupInClass, deleteGroupByID } from "../../../hooks/groups.hooks";
 import { Alert } from "react-native";
 import { deleteGroupInfo } from "../../../hooks/groupsInfo.hooks";
-import { updateGroupIDForUsers, useUserSocket } from "../../../hooks/auth";
+import { changeUserProfile, updateGroupIDForUsers, useUserSocket } from "../../../hooks/auth";
 import { deleteRobotWifi, deleteRobotWifiGroup, getRobotWifi } from "../../../hooks/robotWifi";
 
 
@@ -57,6 +57,7 @@ function GroupTeacherScreen({ navigation, route }) {
     async function deleteGroupHandler(group_id) {
         //Make it such that all group participants are removed from the group
         setDbUpdate(false);
+
         Alert.alert(
             'Alert',
             'Weet je zeker dat je deze groep wilt verwijderen?',
@@ -72,17 +73,18 @@ function GroupTeacherScreen({ navigation, route }) {
                         try {
                             groupTeacherCtx.deleteGroupHandler(group_id);
                             console.log('check 1')
+                            //delete group from user profile
                             if (groupTeacherCtx.checkIfGroupIsEmpty(group_id)) {
-                                //delete group from user profile
-                                await updateGroupIDForUsers(group_id)
                                 //delete group from group_users
                                 await deleteGroupInfo(group_id); //deletes all users from group
                             }
+                            
+                            await updateGroupIDForUsers(group_id)
                             await deleteRobotWifiGroup(group_id)
+
                             //delete group here
                             await deleteGroupByID(group_id);
                             // also need to delete all user profiles from group and class when deleting
-                            console.log('check 3')
                             setDbUpdate(true);
                             Alert.alert('Groep verwijderd!');
                             return;

@@ -59,6 +59,7 @@ function LightBulbAnimation({exercise}) {
 
     return (
         <Animated.View style={[styles.container, {backgroundColor: containerBackgroundColor}]}>
+            <TouchableOpacity onPress={toggleLightBulb} style={styles.textContainer}>
             <Animated.View
             style={[
                 {
@@ -77,19 +78,9 @@ function LightBulbAnimation({exercise}) {
                 }
             ]}
             />
-                {exercise ? 
-                (<View style = {{alignItems: 'center', justifyContent: 'center', marginRight: 25}}>
-                    <ChartToggle 
-                    extraStyle={extraStyle}
-                    toggleChart = {toggleMenu}
-                    toggleChartSettings = {toggleChartSettings}
-                    
-                    /> 
-                </View>):
-                    (<TouchableOpacity onPress={toggleLightBulb} style={styles.textContainer}>
-                        <Text style={styles.text}>{isOn ? 'Uit' : 'Aan'}</Text>
-                    </TouchableOpacity>)
-                }
+                <Text style={styles.text}>{isOn ? 'Uit' : 'Aan'}</Text>
+            </TouchableOpacity>
+                
         </Animated.View>
     );
 }
@@ -112,11 +103,11 @@ const styles = StyleSheet.create({
         marginTop: 8,
     },
     textContainer: {
-        marginTop: 20, 
         justifyContent: 'center',
         alignItems: 'center',
     },
     text: {
+        marginTop: 20,
         fontSize: 20,
         fontWeight: 'bold',
         color: ColorsBlue.blue100,

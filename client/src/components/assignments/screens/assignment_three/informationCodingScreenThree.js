@@ -72,27 +72,11 @@ function InformationCodingScreenThree({isFocused}) {
                 setTyping={setTyping}
                 typing={typing}
                 message={ASSIGNMENT_EXPLANATION.CODINGSCREEN_3}
-                video = {require('./../../../../../assets/ifelse.mp4')}
                 title = "Jouw Eerste Code"
                 description = "In dit deel leer je hoe if else statements werken. Dit is een van de belangrijkste onderdelen van het coderen. Je kan hiermee bijvoorbeeld de lamp uit het vorige deel laten branden als het donker is. If else statements kan je vergelijken met een waar of niet waar uitspraak. Bekijk deze uitspraak: 'Ik doe de lamp aan'. Als deze uitspraak waar is doe ik daadwerkelijk de lamp aan (dit is de actie), als de uitspraak niet waar is doe ik de lamp uit (dit is de actie)."
                 isFocused={isFocused}
             /> 
         }
-        {/* {
-            slideCount === 3 && 
-            <ExampleExercise 
-                nextSlideHandler={nextSlideHandler}
-                prevSlideHandler={prevSlideHandler}
-                slideCount={slideCount}
-                setTyping={setTyping}
-                typing={typing}
-                message={ASSIGNMENT_EXPLANATION.CODINGSCREEN_4}
-                video = {require('./../../../../../assets/ifelse.mp4')}
-                title = "Test Je Kennis"
-                description = "Sleep de juiste blokken naar de juiste plek om de lamp aan te laten gaan als het donker is. Hou er rekening mee welk blok geld als een uitspraak en wel blok geld als een actie"
-                isFocused={isFocused}
-            />
-        } */}
         </>
     );
 }

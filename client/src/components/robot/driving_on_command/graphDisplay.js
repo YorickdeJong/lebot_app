@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { StyleSheet, } from "react-native";
 import { ColorsBlue, ColorsBrownWood, ColorsGreen,  ColorsPurple, ColorsRed } from "../../../constants/palet";
-import ChartDataPlot from "./charts/ChartDataPlot";
+import ChartDataPlot from "./charts/FinalChartDataPlot";
 import { SocketContext } from "../../../store/socket-context";
+import FinalChartDataPlot from "./charts/FinalChartDataPlot";
+import LiveChartDataPlot from "./charts/LiveChartDataPlot";
 //-----------------------------------------------------------------//
 //N.B. DO NOT IMPORT CHARTCONTEXT HERE, IT WILL CAUSE many rerenders!
 //-----------------------------------------------------------------//
@@ -21,18 +23,36 @@ function GraphDisplay({
     legend,
     isConstant,
 }) {
+    const getTitleXLabelYLabel = useCallback((dataType) => {
+        switch (dataType) {
+            case "distance_time":
+                return { title: "s-t graph", xlabel: " t", ylabel: " s" };
+            case "velocity_time":
+                return { title: "v-t graph", xlabel: " t", ylabel: " v" };
+            case "power_time":
+                return { title: "P-t graph", xlabel: " t", ylabel: " P" };
+            case "voltage_time":
+                return { title: "U-t graph", xlabel: " t", ylabel: " U" };
+            case "current_time":
+                return { title: "I-t graph", xlabel: " t", ylabel: " I" };
+            default:
+                return { title: "", xlabel: "", ylabel: "" };
+        }
+    }, [dataType])
+
+    
     const {title, xlabel, ylabel} = getTitleXLabelYLabel(dataType)
     let legendItems;
 
-    const flattenedChartData = [].concat(...data.flat());
 
-
-    const xData = flattenedChartData.map(point => point.time);
-    const yData = flattenedChartData.map(point => point.value);
-    const xMin = Math.min(...xData);
-    const xMax = Math.max(...xData);
-    const yMin = Math.min(...yData);
-    const yMax = Math.max(...yData);
+    let xMin, xMax, yMin, yMax;
+    if (finalPlot) {
+        const yData = data[0].map(point => point.value);
+        xMin = 0
+        xMax = data[0].length / 2;
+        yMin = Math.min(...yData);
+        yMax = Math.max(...yData);
+    }
 
     if (motorNumber) {
         legendItems = useMemo(() => [
@@ -48,7 +68,8 @@ function GraphDisplay({
     } 
     return (
         <>
-        <ChartDataPlot
+        {finalPlot && 
+        <FinalChartDataPlot
             chartData={data}
             xMin={xMin}
             xMax={xMax}
@@ -60,8 +81,18 @@ function GraphDisplay({
             motorNumber = {motorNumber}
             legend = {legend}
             trueCount = {trueCount}
-            finalPlot = {finalPlot}
         />
+        }
+        {!finalPlot && 
+        <LiveChartDataPlot
+            chartData={data}
+            title = {title}
+            xlabel = {xlabel}
+            ylabel = {ylabel}
+            motorNumber = {motorNumber}
+            legend = {legend}
+            trueCount = {trueCount}
+        />}
         </>
     );
 }
@@ -69,20 +100,4 @@ function GraphDisplay({
 export default React.memo(GraphDisplay)
 
 
-function getTitleXLabelYLabel(dataType) {
-    switch (dataType) {
-        case "distance_time":
-            return { title: "s-t graph", xlabel: " t", ylabel: " s" };
-        case "velocity_time":
-            return { title: "v-t graph", xlabel: " t", ylabel: " v" };
-        case "power_time":
-            return { title: "P-t graph", xlabel: " t", ylabel: " P" };
-        case "voltage_time":
-            return { title: "U-t graph", xlabel: " t", ylabel: " U" };
-        case "current_time":
-            return { title: "I-t graph", xlabel: " t", ylabel: " I" };
-        default:
-            return { title: "", xlabel: "", ylabel: "" };
-    }
-}
 

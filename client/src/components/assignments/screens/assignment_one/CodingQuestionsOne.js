@@ -1,6 +1,6 @@
 import { useIsFocused } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Animated, ImageBackground, Keyboard, ScrollView, StyleSheet, View, Dimensions } from 'react-native';
 import { ColorsBlue } from '../../../../constants/palet';
 import { ASSIGNMENT_EXPLANATION } from '../../../../data/InitialAssignmentExplanation';
@@ -64,7 +64,7 @@ else{
         setTyping(true);
     }
 
-    const keyboardWillShow = (event) => {
+    const keyboardWillShow = useCallback((event) => {
         Animated.parallel([
         Animated.timing(keyboardHeight, {
             duration: event.duration,
@@ -72,9 +72,9 @@ else{
             useNativeDriver: false
         }),
         ]).start();
-    };
+    }, []);
 
-    const keyboardWillHide = (event) => {
+    const keyboardWillHide = useCallback((event) => {
         Animated.parallel([
         Animated.timing(keyboardHeight, {
             duration: event.duration,
@@ -82,7 +82,7 @@ else{
             useNativeDriver: false
         }),
         ]).start();
-    };
+    }, []);
 
     const extraStyle = {
         marginLeft: 8,
@@ -93,6 +93,8 @@ else{
     if (!isFocusedScreen){
         return 
     }
+
+
 
     return (
         <View style = {styles.container}>

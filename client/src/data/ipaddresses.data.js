@@ -13,7 +13,7 @@ const fulllIpaddressRaspiHome = 'http://10.7.191.107:3001'
 const fulllIpaddressRaspiSelf = 'http://192.168.4.1:3001'
 
 //connects to heroku server
-export const ipAddressComputer =   ipAddressHomeRaspi //  herokuSeverIP //ipAddressHomeComputer //ipAddressRasPiComputer ipAddressHomeRaspi //
+export const ipAddressComputer =    herokuSeverIP  //ipAddressHomeRaspi
 
 //connects to ..
 export const ipAddressRaspberryPi = ipAddressRasPiSelf //ipAddressRasPiHomeSelf //ipAddressRasPiSelf

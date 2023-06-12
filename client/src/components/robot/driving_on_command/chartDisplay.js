@@ -1,9 +1,9 @@
-import React, { useCallback, useContext, useEffect, useState, useMemo } from "react"
-import { StyleSheet, View } from "react-native"
+import React from "react"
+import { StyleSheet, View, Dimensions } from "react-native"
 import GraphDisplay from "./graphDisplay"
 
 
-let count = 0;
+const { height } = Dimensions.get('window')
 function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChart, subject, isConstant}) {
 
     let chartHeight;
@@ -28,7 +28,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
 
             const padding = displayChart? 0 : 20; 
             return (
-                <View style = {{ paddingTop: 10,  borderRadius: 20}}>
+                <View style = {{ paddingTop: finalPlot ? 10 : (height > 750 ? 35 : 10 ),  borderRadius: 20}}>
                     {!(selectedData[0] === undefined) && 
                         <GraphDisplay 
                         dataType={dataType[0]}
@@ -51,7 +51,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
             [selectedData, dataType] = selectPlotData(chartToggle, chartData);
 
             return (
-                <View style = {{height: displayChart, paddingTop: finalPlot ? 10 : 10, width: '100%', paddingBottom: 100}}>
+                <View style = {{height: displayChart, paddingTop: finalPlot ? 10 : 15, width: '100%', paddingBottom: 100}}>
                     <View>
                             {!(selectedData[0] === undefined) && <GraphDisplay 
                             dataType={dataType[0]}
@@ -64,7 +64,7 @@ function ChartDisplay({chartData, chartToggle, trueCount, finalPlot, displayChar
                             isConstant = {isConstant}
                             />}
                     </View>
-                    <View style = {{marginTop: finalPlot ? displayChart / 1.65 : displayChart / 1.85}}>
+                    <View style = {{marginTop: finalPlot ? displayChart / 1.8 : (height > 750 ? displayChart / 1.60 : displayChart / 2)}}>
                         {!(selectedData[1] === undefined) && <GraphDisplay 
                         dataType={dataType[1]}
                         data = {selectedData[1]}

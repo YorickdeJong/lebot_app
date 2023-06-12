@@ -16,6 +16,7 @@ export async function getGroupAssignmentDetails(school_id, class_id, group_id) {
     }
     catch (error){
         console.log('Error while getting group assignment details', error);
+        throw error;
     }
 }
 

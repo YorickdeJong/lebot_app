@@ -22,7 +22,7 @@ function StudentClassroomNavigator() {
                     header: ({ route }) => {
                         return (
                             <CustomHeader
-                                title={route.name}
+                                title={{left: '42%', title: 'Klassen'}}
                                 goBack
                             />
                         );
@@ -34,10 +34,11 @@ function StudentClassroomNavigator() {
                 name="Grouproom" 
                 children={({route, navigation}) => <GroupStudent tileType = 'Group' route={route} navigation={navigation}/>}
                 options={{
+                    title: 'Groepen',
                     header: ({ route }) => {
                         return (
                             <CustomHeader
-                                title={route.name}
+                                title={{left: '42%', title: 'Groepen'}}
                                 goBack
                                 navigtor={() => {
                                     navigation.navigate('Classroom');
@@ -55,7 +56,7 @@ function StudentClassroomNavigator() {
                     header: ({ route }) => {
                         return (
                             <CustomHeader
-                                title={route.name}
+                                title={{left: '39.5%', title: 'Jouw Groep'}}
                                 goBack
                                 navigtor={() => {
                                     navigation.navigate('Classroom');

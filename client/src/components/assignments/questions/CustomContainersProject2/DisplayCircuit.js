@@ -2,7 +2,7 @@ import { BlurView } from 'expo-blur'
 import {View, Text, StyleSheet, Dimensions, Animated, Easing, InteractionManager} from 'react-native'
 import { ColorsBlue, ColorsGray } from '../../../../constants/palet'
 import { LinearGradient } from 'expo-linear-gradient'
-import { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { getSpecificAssignmentsDetail } from '../../../../hooks/assignmentDetails';
 import { UserProfileContext } from '../../../../store/userProfile-context';
 import Icon from '../../../Icon';
@@ -211,7 +211,7 @@ function DisplayCircuit({input, assignment_number, isFocused,}) {
 }
 
 
-export default DisplayCircuit
+export default React.memo(DisplayCircuit)
 
 
 const styles = StyleSheet.create({

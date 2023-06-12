@@ -56,7 +56,8 @@ function IntroScreenQuestions({nextSlideHandler, text, prevSlideHandler, onRende
                             video={video}
                             />                
                         )}
-                            {isFocused && <ChatBoxGPT 
+                            {isFocused && 
+                            <ChatBoxGPT 
                             answer={answer}
                             isLastItem={true}
                             thread_id={thread_id}

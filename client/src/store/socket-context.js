@@ -17,6 +17,7 @@ export const SocketContext = createContext({
     isMeasurementStarted: false,
     robotConnectedToWifi: false,
     scriptCommand: '',
+    setScriptCommand: (script) => {},
     CreateSocketConnection: (socket) => {},
     Disconnect: () => {},
     Command: (input, command) => {},
@@ -153,7 +154,6 @@ function SocketContextProvider({children}) {
         try {
             socket.current.emit('connectToRemoteDevice',  config );
             socket.current.on('sshConnectionStatus', (data) => {
-                console.log('data', data.connected)
                 setIsConnectedViaSSH(data.connected);
                 if (data && data.connected) {
                     clearInterval(retryIntervalId);  // Stop the retry interval

@@ -59,6 +59,7 @@ function Questions({
     const [currentIndex, setCurrentIndex] = useState(0);
     const swiperRef = useRef(null);
     const [isLoading, setIsLoading] = useState(true);
+    const MAX_MEASUREMENTS = 4;
 
     // Animations
     const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
@@ -122,7 +123,7 @@ function Questions({
                 useNativeDriver: false
             }),
         ]).start();
-    });
+    }, []);
     
     const keyboardWillHide = useCallback((event) => {
         setIsKeyboardOpen(false);
@@ -138,7 +139,7 @@ function Questions({
                 useNativeDriver: false
             }),
         ]).start();
-    });
+    }, []);
     
     const setCloseHandler = useCallback (() => {
         setClose(!close);
@@ -204,10 +205,11 @@ function Questions({
                                 console.log('failed to delete', error);
                                 setIsLoading(false);
                             });
-                            
                         }
+                        chartCtx.setChartRefresh(!chartCtx.chartRefresh);
                       }
                       catch(error) {
+                        console.log(error)
                           Alert.alert('Het is niet gelukt om de meting te verwijderen')
                           return
                       }
@@ -224,8 +226,8 @@ function Questions({
             Alert.alert('Voeg een klas en/of group toe om verder te gaan');
             return;
         }
-        if (chartLength >= 8){
-            Alert.alert('Je hebt het maximaal aantal metingen bereikt, verwijder oudere metingen om verder te gaan');
+        if (chartLength >= MAX_MEASUREMENTS){
+            Alert.alert('Je hebt het maximaal aantal metingen bereikt', 'verwijder oudere metingen om verder te gaan');
             return;
         }
         if (optionsVisible){

@@ -47,9 +47,9 @@ function InformationBuildScreenOne({isFocused}) {
             setTyping,
             typing,
             message: ASSIGNMENT_EXPLANATION.BUILDSCREEN_1,
+            video: require('../../../../../assets/marsVideo.mp4'),
             title: "Mars Rover",
             description: "We zijn neergestord op een onbekende planeet die dezelfde eigenschappen heeft als de aarde. We kunnen de buitenlucht helaas niet inademen, daarom gaan we een rover bouwen die ons kan helpen bij het bereiken van een ontdekte basis.",  //your description
-            video: require('./../../../../../assets/marsVideo.mp4'),
             isFocused,
             setSlideCount,
             slideTotal,
@@ -63,11 +63,11 @@ function InformationBuildScreenOne({isFocused}) {
             prevSlideHandler,
             slideCount,
             setTyping,
+            video: require('../../../../../assets/marsVideo.mp4'),
             typing,
             message: ASSIGNMENT_EXPLANATION.BUILDSCREEN_2,
             title: "Batterij Aansluiten",
             description: "Sluit de batterij aan op het blauwe bordje. De rode draad moet altijd in de plus kant en de blauwe draad in de min kant. Als het groene lampje gaat branden, dan weet je dat je het goed hebt gedaan.",  //your description
-            video: require('./../../../../../assets/marsVideo.mp4'),
             isFocused,
             setSlideCount,
             slideTotal,
@@ -85,7 +85,6 @@ function InformationBuildScreenOne({isFocused}) {
               message: ASSIGNMENT_EXPLANATION.BUILDSCREEN_3,
               title: "Motor Aansluiten",
               description: "Sluit nu de motor aan op het blauwe bordje. De rode draad moet aan de meest linker kant van de zwarte aansluiting. Sluit motor 1 aan op M1, motor 2 op M2, enzovoort",  //your description
-              video: require('./../../../../../assets/batterijFilm.mp4'),
               isFocused,
               setSlideCount,
               slideTotal,

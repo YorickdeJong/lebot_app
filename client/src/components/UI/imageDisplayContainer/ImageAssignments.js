@@ -76,7 +76,7 @@ function ImageAssignments({imageCount, setImageCount, fadeAnim}) {
             </>
             }
             {imageCount > 2 && imageCount < 6 &&
-                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '8%', left: '6.8%', 
+                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '8%', left: '6.8%', borderRadius: 10,
                 zIndex: 3, height: '4%', width: '6%', backgroundColor: ColorsBlue.blue1200}}>
                     <TouchableOpacity
                         style = {styles.touchableArea}
@@ -87,16 +87,15 @@ function ImageAssignments({imageCount, setImageCount, fadeAnim}) {
             {
                 imageCount === 6 && 
                 <>
-                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '6.95%', left: '2.7%', zIndex: 3}}>
-                    <Icon 
-                        size = {25}
-                        color = {ColorsBlue.blue1400}
-                        onPress = {() => {setImageCount(0)}}
-                        icon = 'home'
-                    />
+                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '7.5%', left: '3.2%', zIndex: 3, borderRadius: 10,
+                height: '4%', width: '7%', backgroundColor: ColorsBlue.blue1400}}>
+                    <TouchableOpacity
+                            style = {styles.touchableArea}
+                            onPress = {() => setImageCount(0)}
+                        />
                 </Animated.View>
 
-                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '46%', left: '43.5%', zIndex: 3}}>
+                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '46.3%', left: '43.8%', zIndex: 3}}>
                     <Icon 
                         size = {45}
                         color = {'rgba(0, 0, 0, 1)'}
@@ -112,22 +111,20 @@ function ImageAssignments({imageCount, setImageCount, fadeAnim}) {
             {
                 imageCount === 7 && 
                 <>
-                    <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '8.35%', left: '6.6%', zIndex: 3}}>
-                        <Icon 
-                            size = {23}
-                            color = {ColorsBlue.blue1400}
-                            onPress = {() => {setImageCount(6)}}
-                            icon = 'planet'
-                        />
-                    </Animated.View>
-                    <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '7.9%', left: '16.6%', zIndex: 3}}>
-                        <Icon 
-                            size = {23}
-                            color = {ColorsBlue.blue1400}
-                            onPress = {() => {setImageCount(0)}}
-                            icon = 'home'
-                        />
-                    </Animated.View>
+                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '8%', left: '6.3%', borderRadius: 10,
+                zIndex: 3, height: '4%', width: '8%', backgroundColor: ColorsBlue.blue1200}}>
+                    <TouchableOpacity
+                        style = {styles.touchableArea}
+                        onPress = {() => setImageCount(0)}
+                    />
+                </Animated.View>
+                <Animated.View style = {{opacity: fadeAnim, position: 'absolute', top: '8%', left: '15.3%', borderRadius: 10,
+                zIndex: 3, height: '4%', width: '8%', backgroundColor: ColorsBlue.blue1200}}>
+                    <TouchableOpacity
+                        style = {styles.touchableArea}
+                        onPress = {() => setImageCount(0)}
+                    />
+                </Animated.View>
                 </>
             }
         </>

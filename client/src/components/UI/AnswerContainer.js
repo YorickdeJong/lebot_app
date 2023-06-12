@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, TextInput, TouchableOpacity} from 'react-native'
 import Icon from '../Icon';
 import { ColorsBlue, ColorsGray } from '../../constants/palet';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import UnitsModal from './UnitsModal';
 
 
@@ -91,7 +91,7 @@ function AnswerContainer({
     )
 }
 
-export default AnswerContainer;
+export default React.memo(AnswerContainer);
 
 
 const styles = StyleSheet.create({

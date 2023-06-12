@@ -162,11 +162,13 @@ const deleteClassByID = async (req, res) => {
             console.log('deleted class');
             return res.status(200).json(rows);
         }
-    } catch (error) {
+    } 
+    catch (error) {
         console.log('failed to delete class by id')
         console.log(error);
         return res.status(500).json({ error: 'Failed to delete class' });
-    } finally {
+    } 
+    finally {
         client.release();
     }
 };

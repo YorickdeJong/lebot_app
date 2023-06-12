@@ -95,14 +95,14 @@ function AssignmentTile ({onPress, title, subject, icon,
             colors = completionStatus ? colorDark : colorLight;
             currentStatus = completionStatus ? "COMPLETED" : ": €" + completionData.acquiredCurrency + "/" + completionData.totalCurrency;
             borderColor = completionStatus ? ColorsBlue.blue400 : ColorsBlue.blue700;
-            shadowOpacity = 1
+            shadowOpacity = 0.1
             rewardColor = ColorsBlue.blue50; //CHANGE 
             finishedAssignmentsColor = ColorsBlue.blue50; //CHANGE
             colorText = ColorsBlue.blue50;
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
-            customColor = 'rgba(6, 28, 70, 1)'
+            customColor = 'rgba(6, 28, 70, 0.8)'
             break;
 
         case 'LED': 
@@ -118,7 +118,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
-            customColor = 'rgba(8, 25, 80, 1)'
+            customColor = 'rgba(6, 28, 70, 0.8)'
             break;
 
         case 'CAR':
@@ -134,7 +134,7 @@ function AssignmentTile ({onPress, title, subject, icon,
             colorIcon = ColorsBlue.blue50;
             tint = 'dark'
             intensity = 70
-            customColor = 'rgba(8, 25, 80, 1)'
+            customColor = 'rgba(6, 28, 70, 0.8)'
             break;
     }
 

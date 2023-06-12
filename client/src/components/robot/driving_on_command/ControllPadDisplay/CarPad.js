@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, StyleSheet, PanResponder, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ColorsBlue } from '../../../../constants/palet';
@@ -13,7 +13,7 @@ function CarPad({moveHandler}){
     // State variable to handle visual feedback
     const [isOutOfBounds, setIsOutOfBounds] = useState(false);
 
-    const handleMove = (dx, dy) => {
+    const handleMove = useCallback((dx, dy) => {
         const maxX = padWidth / 2.5 ;
         const maxY = padHeight / 2.5;
 
@@ -51,9 +51,9 @@ function CarPad({moveHandler}){
 
         moveHandler(newMoveX / maxX, newMoveY / maxY) 
 
-    };
+    }, [padWidth, padHeight, moveX, moveY]);
 
-    const panResponder = PanResponder.create({
+    const panResponder = useMemo(() =>PanResponder.create({
         onStartShouldSetPanResponder: () => true,
             onPanResponderGrant: (event, gestureState) => {
             setMoveX(0);
@@ -70,7 +70,7 @@ function CarPad({moveHandler}){
             setSpeed(0);
             moveHandler(0, 0);
         },
-    });
+    }), [handleMove]);
 
     const padStyles = isOutOfBounds 
         ? [styles.pad, styles.padOutOfBounds] 

@@ -85,22 +85,39 @@ function CodeEditorScreen({close, code, setCode, onPressHandler, condition, sect
         }
     }
 
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    function refreshHandler() {
+        setCode(`if (toggle == rechts){
+    motor1Aan()
+// Voeg hieronder jouw code toe
+}
+else{
+    motor1Uit()
+// Voeg hieronder jouw code toe
+}`);
+        // Increment refreshKey when the button is pressed
+        setRefreshKey(oldKey => oldKey + 1);
+    }
+    
     return (
         <>
             <View style={[styles.outerContainer, {height: close? "100%" : 250}]}>
                 <View style = {{overflow: 'hidden', borderRadius: 20, paddingRight: 90}}>
-                    <CodeEditor
-                        style={styles.codeEditor}
-                        language="javascript"
-                        syntaxStyle={CodeEditorSyntaxStyles.atomOneDark}
-                        showLineNumbers
-                        initialValue={code}
-                        onChange={setCode}
-                        enableEditing={section === 'chartToggle' ? true : false}
-                    />
+                <CodeEditor
+                    key={refreshKey} // use refreshKey here
+                    style={styles.codeEditor}
+                    language="javascript"
+                    syntaxStyle={CodeEditorSyntaxStyles.atomOneDark}
+                    showLineNumbers
+                    initialValue={code}
+                    onChange={setCode}
+                    enableEditing={section === 'chartToggle' ? true : false}
+                />
                 </View>
                 {section === 'chartToggle' &&
                 <>
+                {/* chart toggle */}
                     <View style = {[styles.buttonContainer]}>
                         <ChartToggle
                             toggleChart = {toggle}
@@ -108,6 +125,18 @@ function CodeEditorScreen({close, code, setCode, onPressHandler, condition, sect
                             notShowBorder={true}
                         />
                     </View>
+
+                {/* Reset button */}
+                    <View style = {{position: 'absolute', right: '6%', top: '45%'}}>
+                        <Icon 
+                            icon = 'refresh'
+                            size = {30}
+                            color = {ColorsBlue.blue400}
+                            onPress = {() => refreshHandler()}
+                        />
+                    </View>
+
+                {/* Wif connect */}
                     <View style = {{position: 'absolute', right: '6%', top: '5%'}}>
                         <Icon 
                             icon = 'wifi'

@@ -66,15 +66,15 @@ function ClassRoomMain({ route }) {
                                 // check if groups are occupied
                                 if (groupTeacherCtx.checkIfGroupsAreEmpty(class_id)) {
                                 console.log('check groups are not empty')
-                                //delete from classes_users
-                                await deleteAllGroupsInfo(class_id)
-                                
-                                //delete group from user profile
-                                await updateGroupIDForClass(class_id) 
+                                    //delete from classes_users
+                                    await deleteAllGroupsInfo(class_id)
+                                    
+                                    //delete group from user profile
                                 } 
                                 await deleteAllGroupInClass(class_id) 
                             }
                             
+                            await updateGroupIDForClass(class_id) 
                             
                             // check if class is occupied
                             if (groupTeacherCtx.checkIfClassIsEmpty(class_id)) {

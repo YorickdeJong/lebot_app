@@ -1,7 +1,7 @@
 import { StyleSheet, View, Animated, StatusBar, Dimensions, Alert} from "react-native"
 import Icon from "../../Icon"
 import { ColorsBlue, ColorsGreen, ColorsRed } from "../../../constants/palet"
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {  Header } from 'react-navigation-stack';
 import { BlurView } from 'expo-blur';
 import ToggleMenu from "./ToggleMenu";
@@ -23,16 +23,16 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
     const opacityInterpolationPower = useRef(new Animated.Value(1)).current;
    
 
-    const toggleModalOpen = () => {
+    const toggleModalOpen = useCallback(() => {
         setIsStopActive(!isStopActive); 
         return;
-    };
+    }, [isStopActive]);
 
-    const toggleModalClose = () => {
+    const toggleModalClose = useCallback(() => {
         setIsStopActive(false);
         setHasModalClosed(true);
         return;
-    };
+    }, [isStopActive, hasModalClosed])
 
 
     // New color interpolation code to show data button
@@ -69,17 +69,15 @@ function OptionsBar({midIconHandler, midIcon, subject, assignmentNumber}) {
         elevation: 4
     }
 
-    function wifiIconHandler() {
+    const wifiIconHandler = useCallback(() => {
         if (socketCtx.isConnectedViaSSH) {
             Alert.alert('Verbonden met de robot')
         } 
         else {
             Alert.alert('Niet verbonden met de robot')
         }
-    }
+    }, [socketCtx.isConnectedViaSSH])
 
-    console.log('ssh', socketCtx.isConnectedViaSSH)
-    console.log('socket', socketCtx.isConnected)
     return(    
         <View style={styles.shadowContainer}>
             <BlurView style = {styles.upperContainer} intensity={10} tint="dark">

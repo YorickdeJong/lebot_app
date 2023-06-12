@@ -1,15 +1,10 @@
 
-import {  ImageBackground, ScrollView, StyleSheet,  View, Text, Dimensions } from 'react-native';
-import React, {useEffect, useRef} from 'react';
+import {  ScrollView, StyleSheet,  View, Dimensions } from 'react-native';
+import React, { useRef} from 'react';
 import { ColorsBlue,} from '../../../constants/palet';
 import ChatBoxGPT from '../../chatgpt/ChatBoxGPT';
-import { LinearGradient } from 'expo-linear-gradient';
-import VideoDisplay from '../BuildComponent.js/VideoDisplay';
-import SwitchScreens from '../BuildComponent.js/SwitchScreens';
-import SwitchScreensQuestions from '../questions/SwitchScreensQuestions';
-import Icon from '../../Icon';
 import AssignmentOptionsBar from '../questions/assignmentOptionsBar';
-import { useIsFocused } from '../../../hooks/isFocused.hooks';
+
 
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');

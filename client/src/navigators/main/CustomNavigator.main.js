@@ -12,7 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 
 const { width, height } = Dimensions.get('window');
 const CustomHeader = ({ title, height, goBack, goBackTwice, onCustomHeaderLayout, chatBubbles, chatPlus, MoneyContainer, addHandler, navigtor, robotConnect}) => {
-  
+    const informationCtx = useContext(AuthContext)
     const navigation = useNavigation()
     const groupTeacherCtx = useContext(GroupTeacherContext)
     
@@ -25,7 +25,7 @@ const CustomHeader = ({ title, height, goBack, goBackTwice, onCustomHeaderLayout
               end={{ x: 1, y: 0.5 }}
             >
                   {title && (
-                    <Text style={styles.title}>{title}</Text>
+                    <Text style={[styles.title, {left: title.left}]}>{title.title}</Text>
                   )}
                   {chatBubbles && <View style={{ marginLeft: 10, marginTop: verticalScale(30)
                       }}>
@@ -71,7 +71,7 @@ const CustomHeader = ({ title, height, goBack, goBackTwice, onCustomHeaderLayout
                       />
                     </View>
                   }
-
+                  {!informationCtx.showBeginningScreen &&
                   <View style={{ right: 25, top: height ? (Platform.OS === 'ios' ?  height / 3 : verticalScale(30)) : verticalScale(37), position: 'absolute'
                       }}>
                       <Icon
@@ -82,6 +82,7 @@ const CustomHeader = ({ title, height, goBack, goBackTwice, onCustomHeaderLayout
                           MaterialIconsDir = {addHandler ? true : false}
                       />
                   </View>
+                  }
             </LinearGradient>
       </>
     );

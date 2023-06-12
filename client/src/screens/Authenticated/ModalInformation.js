@@ -108,7 +108,7 @@ function ModalInformation({}) {
                 <View style = {[styles.shadow, {marginTop: 15 }]}>
                         <LinearGradient
                             style = {styles.textContainer}
-                            colors={[ColorsBlue.blue1150, ColorsBlue.blue1200]}
+                            colors={[ColorsBlue.blue1200, ColorsBlue.blue1250]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                                 >
@@ -181,9 +181,9 @@ export default ModalInformation
 const styles = StyleSheet.create({
     textContainer: {
         marginBottom: 0, 
-        borderRadius: 20,
-        borderWidth: 0.6,
-        borderColor: 'rgba(77, 77, 77, 0.40)',
+        borderRadius: 21,
+        borderWidth: 1.5,
+        borderColor: ColorsBlue.blue1000,
     },
     shadow: {
         shadowColor: 'rgba(0, 0, 0, 1)',
@@ -200,14 +200,13 @@ const styles = StyleSheet.create({
     },
     header: {
         height: 45,
-        backgroundColor: 'rgba(30, 30, 120, 1)',
+        backgroundColor: 'rgba(20, 30, 100, 1)',
         shadowColor: ColorsBlue.blue1400,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 1,
         shadowRadius: 2,
         justifyContent: 'center',
         borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
     },
     iconRight: {
         position: 'absolute',

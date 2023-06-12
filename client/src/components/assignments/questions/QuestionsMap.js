@@ -196,7 +196,6 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flexGrow: 1,
-        // paddingTop: 15,
     },
     pressed: {
         opacity: 0.3,

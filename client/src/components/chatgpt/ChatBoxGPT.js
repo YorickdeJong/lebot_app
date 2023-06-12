@@ -120,7 +120,7 @@ function ChatBoxGPT({ answer: initialAnswer, isLastItem, thread_id, setTyping, t
     }, [answerPieces, activeIndex, displayText, typing]);
     
     return (
-        <View style={{flex: 1}}>
+        <View style={{flex: 1, marginBottom: 20}}>
             {renderBubbles}
         </View>
     );

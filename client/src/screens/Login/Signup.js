@@ -51,6 +51,7 @@ function Signup({route}) {
             console.log('check 4')
             {user_role === "student" ? assignmentCtx.initializeAssignments(assignments) : null}
             console.log('check 5')
+            
             authCtx.authenticate(userData.token);
             console.log('check 6')
         }

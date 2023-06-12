@@ -110,7 +110,6 @@ function InformationCodingScreenOne({isFocused}) {
               setTyping,
               typing,
               message: ASSIGNMENT_EXPLANATION.CODINGSCREEN_3,
-              video: require('./../../../../../assets/ifelse.mp4'),
               isFocused,
               setSlideCount,
               slideTotal,

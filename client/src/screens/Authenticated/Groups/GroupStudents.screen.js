@@ -38,8 +38,9 @@ function GroupStudent({ navigation, route, tileType }) {
 
     async function joinGroupHandler(group_id, class_id, usernames) {
         const user_id = userprofileCtx.userprofile.id //PROBLEM: FETCHED GROUPS AREN'T ADDED TO LOCAL STORAGE -> ADD THEM 
-        const {groupName} = groupTeacherCtx.getGroupInfoById(group_id)
-        const {className} = groupTeacherCtx.getClassInfoById(class_id)
+        const {'name': groupName} = groupTeacherCtx.getGroupInfoById(group_id)
+        const {'name': className} = groupTeacherCtx.getClassInfoById(class_id)
+        usernames.push(userprofileCtx.userprofile.name);
 
         const userprofile = {
             ...userprofileCtx.userprofile,

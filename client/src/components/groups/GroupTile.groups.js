@@ -22,10 +22,6 @@ function GroupCategoryTile({groupNames, navigationHandler, fadeAnim, groupMember
     const currentActiveLessonData = timeCtx.filterSpecificLesson(class_id)
     const [timeLeft, setTimeLeft] = useState(0);
 
-
-
-
-
     useEffect(() => {
         if (currentActiveLessonData && currentActiveLessonData.duration !== 10000) {
             const interval = setInterval(() => {
@@ -47,7 +43,7 @@ function GroupCategoryTile({groupNames, navigationHandler, fadeAnim, groupMember
         }
         if (group_id) {
             groupTeacherCtx.setCurrentGroup_id(group_id)
-            editHandler(group_id, class_id, groupNames);
+            editHandler(group_id, class_id, groupMembers);
         }
         
     };

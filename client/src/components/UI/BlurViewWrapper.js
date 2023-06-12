@@ -18,3 +18,4 @@ const BlurWrapper = ({ children, intensity, tint, style, customColor }) => {
 
 
 export default BlurWrapper;
+

@@ -30,7 +30,6 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor, valida
         setIsLoading(true);
         const tempInput = inputValue;
         setInputValue(''); // clear input
-        console.log(`Checking current thread ${thread_id}`);
     
         const chatQuestion = {
             question: tempInput,
@@ -40,7 +39,6 @@ const Chat = ({keyboardHeight, placeholder, customThread_id, customColor, valida
         // Add the user's question to the chat immediately
         await chatCtx.addChat(chatQuestion);
         const chatgptAnswer = chatCtx.currentBotMessage.current
-        console.log('chatgptAnswer', chatgptAnswer)
         // check answer if user uses chatgpt for answer questions
         if (validateInput) {
           validateInput(chatgptAnswer, inputValue)

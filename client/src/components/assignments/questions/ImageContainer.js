@@ -105,13 +105,6 @@ function ImageContainer({
             return;
         }
         setIsFetched(false);
-
-        // if (chartLength === 0) {
-        //     setChartAvailable(false);
-        // }
-        // else {
-        //     setChartAvailable(true);
-        // }
     
         fetchData();
     }, [assignment_number, isFocused, chartCtx.finalChartData, slideCount]);

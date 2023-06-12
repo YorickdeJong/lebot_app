@@ -5,7 +5,7 @@ import { UserProfileContext } from '../../../store/userProfile-context';
 import { getGroupAssignmentDetails, } from '../../../hooks/assignmentDetails';
 import { useContext, useEffect, useRef, useState } from 'react';
 import TriesCorrectGraph from '../../../components/groups/statistics_page/tries_correct_graph';
-import { ColorsBlue, ColorsGray } from '../../../constants/palet';
+import { ColorsBlue, ColorsBronze, ColorsGray, ColorsLighterGold, ColorsSilver, StoreColors } from '../../../constants/palet';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { InformationContext } from '../../../store/information-context';
@@ -49,12 +49,16 @@ function IndividualGroup() {
     const fadeAnim = useRef(new Animated.Value(1)).current; // Initial value for opacity: 0
     const navigation = useNavigation();
 
+    console.log('------------------')
+    console.log('group_members', group_members)
+
+
     useEffect(() => {
         fadeAnim.setValue(1)
         const animation = Animated.loop(
           Animated.sequence([
             Animated.timing(fadeAnim, {
-              toValue: 0.4,
+              toValue: 0,
               duration: 2000,
               useNativeDriver: false,
             }),
@@ -78,38 +82,49 @@ function IndividualGroup() {
 
     useEffect(() => {
         async function fetchData() {
-            const wifiCredentials = await getRobotWifi(school_id, class_id, group_id);
-            const assignments = await getGroupAssignmentDetails(school_id, class_id, group_id);
-            const triesPhaseOne = assignmentDetailsCtx.getTriesAssignmentsPerPhase('MOTOR', assignments)
-            const correctPhaseOne = assignmentDetailsCtx.getCorrectAnswerCount('MOTOR', assignments)
-            const triesAndCountsPhaseOne = assignmentDetailsCtx.getCorrectAndTriesCount('MOTOR', assignments)
-            
-            if (wifiCredentials) {
-                setRobotCredentials(wifiCredentials);
+            try {
+                const wifiCredentials = await getRobotWifi(school_id, class_id, group_id);
+                if (wifiCredentials) {
+                    setRobotCredentials(wifiCredentials);
+                }
             }
-            setTries(prevData => [...prevData, triesPhaseOne])
-            setCorrect(prevData => [...prevData, correctPhaseOne])
-            setTriesAndCounts(prevData => prevData.map(item => {
-                if (item.title === "Fase 1") {
-                    return {...item, data: triesAndCountsPhaseOne}
-                } 
-                else if (item.title === "Fase 2") {
-                    return {...item, data: triesAndCountsPhaseOne}
-                }
-                else if (item.title === "Fase 3") {
-                    return {...item, data: triesAndCountsPhaseOne}
-                }
-                else {
-                    return item;
-                }
-            }));
+            catch (error) {
+                    console.log(error)
+            }
 
+            try {
+                const assignments = await getGroupAssignmentDetails(school_id, class_id, group_id);
+                const triesPhaseOne = assignmentDetailsCtx.getTriesAssignmentsPerPhase('MOTOR', assignments)
+                const correctPhaseOne = assignmentDetailsCtx.getCorrectAnswerCount('MOTOR', assignments)
+                const triesAndCountsPhaseOne = assignmentDetailsCtx.getCorrectAndTriesCount('MOTOR', assignments)
+                setTries(prevData => [...prevData, triesPhaseOne])
+                setCorrect(prevData => [...prevData, correctPhaseOne])
+    
+                setTriesAndCounts(prevData => prevData.map(item => {
+                    if (item.title === "Fase 1") {
+                        return {...item, data: triesAndCountsPhaseOne}
+                    } 
+                    else if (item.title === "Fase 2") {
+                        return {...item, data: triesAndCountsPhaseOne}
+                    }
+                    else if (item.title === "Fase 3") {
+                        return {...item, data: triesAndCountsPhaseOne}
+                    }
+                    else {
+                        return item;
+                    }
+                }));
+            }
+            catch (error) {
+                setTriesAndCounts()
+            }
+                
         }
         fetchData();
     }, []);
 
     function navigateToAppHandler() {
-        if (class_id === '' && group_id === ''){
+        if (class_id === '' || group_id === ''){
             Alert.alert('Voeg een klas en/of groep toe voordat je verder kan!')
             return;
         }
@@ -130,6 +145,10 @@ function IndividualGroup() {
     
     const renderItem = (title, initialIndex, subject, style, { item, index }) => {
         function navigateToAssignmentHandler() {
+            if (informationCtx.showBeginningScreen) {
+                Alert.alert("Druk op 'Naar de Appr' om verder te gaan!")
+                return;
+            }
             navigation.navigate('BottomMenu', {
                 screen: 'Assignments',
                 params: {
@@ -159,9 +178,9 @@ function IndividualGroup() {
     const assignmentSlidesFaseTwo = [3, 5, 7, 8, 9]
     const assignmentSlidesFaseThree = [3, 5, 7, 8,  10, 12, 14, 16]
 
-    const itemOne = [styles.item, { backgroundColor: 'rgba(30, 60, 100, 1)' }]
-    const itemTwo = [styles.item, { backgroundColor: 'rgba(20, 55, 140, 1)' }]
-    const itemThree = [styles.item, { backgroundColor: 'rgba(30, 60, 180, 1)' }]
+    const itemOne = [styles.item, { backgroundColor: ColorsBronze.bronze900 }]
+    const itemTwo = [styles.item, { backgroundColor: ColorsSilver.silver900 }]
+    const itemThree = [styles.item, { backgroundColor: 'rgba(170, 120, 0, 1)' }]
 
     return (
         <LinearGradient style = {styles.container}
@@ -191,7 +210,7 @@ function IndividualGroup() {
 
                     <View style={styles.row}>
                         <Text style={styles.groupInfoLabel}>Groupsleden:</Text>
-                        <Text style={styles.groupInfoText}>{group_members.join(', ')}</Text>
+                        <Text style={styles.groupInfoText}>{group_members ? group_members.join(', ') : ''}</Text>
                     </View>
                     <View style={styles.border} />
 
@@ -211,16 +230,9 @@ function IndividualGroup() {
                     </View>
                     <View style={styles.border} />
                 </View>
-                <FlatList 
-                    horizontal
-                    data = {triesAndCounts}
-                    keyExtractor = {(item, index) => 'tries' + index}
-                    showsHorizontalScrollIndicator = {false}
-                    renderItem = {renderCharts} 
-                    pagination = {true}
-                />
+
                 {/* Display all assignments here */}
-                <View style = {[styles.assignmentInfo, { backgroundColor: ColorsBlue.blue1200,}]}>
+                <View style = {[styles.assignmentInfo, { marginTop: 0, backgroundColor: ColorsBlue.blue1200, borderColor: ColorsBronze.bronze900, borderWidth: 1.2}]}>
                     <Text style = {styles.header}>Opdrachten Fase 1</Text>
                     <FlatList
                         data={assignmentSlidesFaseOne}
@@ -230,7 +242,7 @@ function IndividualGroup() {
                     />
                 </View>
 
-                <View style = {[styles.assignmentInfo, { backgroundColor: ColorsBlue.blue1100,}]}>
+                <View style = {[styles.assignmentInfo, { backgroundColor: ColorsBlue.blue1200,borderColor: ColorsSilver.silver500, borderWidth: 0.7}]}>
                     <Text style = {styles.header}>Opdrachten Fase 2</Text>
                     <FlatList
                         data={assignmentSlidesFaseTwo}
@@ -240,7 +252,7 @@ function IndividualGroup() {
                     />
                 </View>
 
-                <View style = {[styles.assignmentInfo, { marginBottom: 100, backgroundColor: ColorsBlue.blue900,}]}>
+                <View style = {[styles.assignmentInfo, { backgroundColor: ColorsBlue.blue1200, borderColor: ColorsLighterGold.gold600, borderWidth: 0.7}]}>
                     <Text style = {styles.header}>Opdrachten Fase 3</Text>
                     <FlatList
                         data={assignmentSlidesFaseThree}
@@ -249,7 +261,14 @@ function IndividualGroup() {
                         numColumns={4}
                     />
                 </View>
-
+                <FlatList 
+                    horizontal
+                    data = {triesAndCounts}
+                    keyExtractor = {(item, index) => 'tries' + index}
+                    showsHorizontalScrollIndicator = {false}
+                    renderItem = {renderCharts} 
+                    pagination = {true}
+                />
 
                     {informationCtx.showBeginningScreen &&  user_role === 'student' && !explanationState && 
                             <View style = {{position: 'absolute', top: height > 750 ? '20%' : '25%', left: '12%'}}>
@@ -270,17 +289,18 @@ function IndividualGroup() {
                                     </View>
                             </View>
                     } 
+                    
             </ScrollView>
                     {informationCtx.showBeginningScreen &&  user_role === 'student' &&
-                        <Animated.View style = {{position: 'absolute', bottom: height > 750 ? '5%' : '2%', left: '28%', padding: 15, backgroundColor: ColorsBlue.blue1325,
-                                borderRadius: 10, borderColor: 'rgba(77,77,77,0.3)', borderWidth: 1, shadowColor: 'rgba(0,0,0,1)',
-                                shadowRadius: 4, shadowOffset: {width: 2, height: 3}, shadowOpacity: 1, elevation: 4, opacity: fadeAnim}}>
+                        <View style = {{position: 'absolute', bottom: height > 750 ? '5%' : '2%', left: '28%', padding: 15, backgroundColor: ColorsBlue.blue1300,
+                                borderRadius: 10, borderColor: 'rgba(77,77,77,1)', borderWidth: 1, shadowColor: 'rgba(0,0,0,1)',
+                                shadowRadius: 4, shadowOffset: {width: 2, height: 3}, shadowOpacity: 1, elevation: 4, }}>
                                 <TouchableOpacity 
                                     onPress={() => navigateToAppHandler()}
                                 >
-                                    <Text style = {{fontSize: 27, color: ColorsGray.gray300}}>Naar de App</Text>
+                                    <Animated.Text style = {{fontSize: 27, color: ColorsGray.gray300, opacity: fadeAnim}}>Naar de App</Animated.Text>
                                 </TouchableOpacity>
-                            </Animated.View>
+                            </View>
                     } 
             </ImageBackground>
         </LinearGradient>
@@ -311,7 +331,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 15,
         backgroundColor: ColorsBlue.blue1200,
-        marginVertical: 8
+        marginVertical: 8,
     },
     row: {
         flexDirection: 'row',
@@ -346,7 +366,7 @@ const styles = StyleSheet.create({
     },
     header: {
         fontSize: 22,
-        color: ColorsBlue.blue200,
+        color: ColorsBlue.blue100,
         marginTop: 10,
         marginBottom: 15,
         textAlign: 'center',
@@ -360,8 +380,8 @@ const styles = StyleSheet.create({
     },
     item: {
         justifyContent: 'center',
-        borderColor: 'rgba(77,77,77,1)',
-        borderWidth: 1,
+        borderColor: ColorsBlue.blue200,
+        borderWidth: 0.5,
         marginRight: 3,
         marginBottom: 3,
         borderRadius: 23,

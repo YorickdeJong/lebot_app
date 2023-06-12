@@ -48,7 +48,8 @@ function CustomMeasurementModal({showMeasurementModal, setShowMeasurementModal, 
         switch (type) {
             case '1':
                 //constant velocity
-                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work && roslaunch driver_bot_cpp constant_velocity.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
+                startScriptCommand = `cd Documents/lebot_robot_code/catkin_work/src/driver_bot_cpp && roslaunch driver_bot_cpp constant_velocity.launch user_id:=${id} assignment_number:=${assignment_number} assignment_title:="${assignment_title}" subject_title:=${subject_title} school_id:=${school_id} class_id:=${class_id} group_id:=${group_id} ip_address:=${ipAddressComputer}`;
+                // startScriptCommand = `cd Documents/lebot_robot_code/catkin_work/src/driver_bot_cpp/launch && python3 constant_velocity.py --user_id ${id} --assignment_number ${assignment_number} --assignment_title "${assignment_title}" --subject_title ${subject_title} --school_id ${school_id} --class_id ${class_id} --group_id ${group_id} --ip_address ${ipAddressComputer}`
                 measurementType = 'constant_velocity'
                 break;
             case '2':

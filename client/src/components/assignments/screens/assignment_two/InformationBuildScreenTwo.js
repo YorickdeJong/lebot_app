@@ -57,7 +57,6 @@ function InformationBuildScreenTwo({isFocused}) {
                 setTyping={setTyping}
                 typing={typing}
                 message={ASSIGNMENT_EXPLANATION.BUILDSCREEN_2}
-                video = {require('./../../../../../assets/batterijFilm.mp4')}
                 title = "Batterij Aansluiten"
                 description = "Sluit de batterij aan op het blauwe bordje. De rode draad moet altijd in de plus kant en de blauwe draad in de min kant. Als het groene lampje gaat branden, dan weet je dat je het goed hebt gedaan."
                 isFocused={isFocused}
@@ -72,7 +71,6 @@ function InformationBuildScreenTwo({isFocused}) {
                 setTyping={setTyping}
                 typing={typing}
                 message={ASSIGNMENT_EXPLANATION.BUILDSCREEN_3}
-                video = {require('./../../../../../assets/BatterijFilm2.mp4')}
                 title = "Motor Aansluiten"
                 description = "Sluit nu de motor aan op het blauwe bordje. De rode draad moet aan de meest linker kant van de zwarte aansluiting. Sluit motor 1 aan op M1, motor 2 op M2, enzovoort."
                 isFocused={isFocused}

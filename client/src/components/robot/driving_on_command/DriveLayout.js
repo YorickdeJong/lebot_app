@@ -22,6 +22,8 @@ function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assig
             setBeginMeasurement(false)
         }
     }, [socketCtx.power])
+
+    console.log('started', socketCtx.isMeasurementStarted) 
     return (
         <View style={styles.container}>
         <ImageBackground
@@ -41,10 +43,9 @@ function DriveLayout({moveHandler, midIconHandler, displayNumber, subject, assig
             
                     {socketCtx.power && socketCtx.isConnected ? (
                         //Display charts if first data is send, otherwise loading screen
-                        // socketCtx.isMeasurementStarted && 
                         ((beginMeasurement && measurementType === 'free_driving') || 
-                        (socketCtx.isMeasurementStarted && measurementType !== 'free_driving')) &&
-                        chartCtx.chartData.distance_time[0].length !== undefined ? (
+                        (socketCtx.isMeasurementStarted && measurementType !== 'free_driving')) ?
+                        (
                         <View style={styles.shadowContainer}>
                             <BlurWrapper style = {styles.loadingContainer} intensity={15} tint="dark">
                                 <ChartDisplay 

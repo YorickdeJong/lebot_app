@@ -165,7 +165,6 @@ function InformationQuestionsScreenOne({ assignmentTopic, isFocused, initSlideCo
             setSlideCount,
             slideCount,
             ExplanationAnimation: ExplanationAnimation,
-            video: require("./../../../../../assets/instructions/starting_measurement.mp4"),
             slideTotal,
             text: {text: 'Meten', left: '43%'}
           },

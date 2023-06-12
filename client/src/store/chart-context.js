@@ -11,6 +11,8 @@ export const ChartContext = createContext({
     finalChartData: {},
     chartToggle: {},
     trueCount: null,
+    chartRefresh: false,
+    setChartRefresh: (data) => {},
     setTrueCount: (data) => {},
     setChartData: (data) => {},
     setChartDataHandler: (data) => {},
@@ -23,7 +25,8 @@ export const ChartContext = createContext({
 
 function ChartContextProvider({children}) {
     const socketCtx = useContext(SocketContext);
-
+    const [chartRefresh, setChartRefresh] = useState(false);
+    
     const [chartToggle, setChartToggle] = useState({
         "s_t": true,
         "v_t": false,
@@ -154,10 +157,9 @@ function ChartContextProvider({children}) {
                 
                 // stop measurement if buffer size is reached
                 if (hasReachedBufferSize) {
-                    socketCtx.setPower((prevPower) => !prevPower);
                     socketCtx.socket.current.emit('driveCommand', { command: '\x03' });
+                    socketCtx.socket.current.emit('power', { message: false });
                     Alert.alert('Meeting Gestopt!', 'Je hebt je maximale meettijd bereikt.')
-                    return;
                 }
     
                 return {
@@ -204,6 +206,8 @@ function ChartContextProvider({children}) {
         finalChartData,
         chartToggle,
         trueCount,
+        chartRefresh,
+        setChartRefresh,
         setChartData,
         setChartDataHandler,
         setFinalChartData,
